@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heritage Museum - Discover History</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Georgia', serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f8f6f3;
+        }
+
+        /* Navigation */
+        nav {
+            background: linear-gradient(135deg, #2c1810, #4a2c1a);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: #d4af37;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: #e8e8e8;
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+
+        .nav-links a:hover {
+            color: #d4af37;
+            background: rgba(212, 175, 55, 0.1);
+        }
+
+        .nav-links a.active {
+            color: #d4af37;
+            background: rgba(212, 175, 55, 0.2);
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), 
+                        url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600"><rect fill="%23654321" width="1200" height="600"/><rect fill="%23d4af37" x="100" y="100" width="200" height="400" opacity="0.3"/><rect fill="%238b4513" x="400" y="150" width="150" height="300" opacity="0.4"/><circle fill="%23daa520" cx="800" cy="200" r="80" opacity="0.3"/></svg>');
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: white;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.7);
+        }
+
+        .hero-content p {
+            font-size: 1.3rem;
+            margin-bottom: 2rem;
+            max-width: 600px;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #d4af37, #b8941f);
+            color: white;
+            padding: 1rem 2rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4);
+        }
+
+        /* Main Content */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 4rem 2rem;
+        }
+
+        /* Museum Info Section */
+        .museum-info {
+            background: white;
+            padding: 4rem 0;
+            border-radius: 15px;
+            margin: 2rem 0;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+
+        .museum-info .container {
+            padding: 2rem;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .info-text h2 {
+            color: #2c1810;
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            border-bottom: 3px solid #d4af37;
+            padding-bottom: 0.5rem;
+        }
+
+        .info-text p {
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            color: #555;
+        }
+
+        .info-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-box {
+            background: #f8f6f3;
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            border-left: 4px solid #d4af37;
+        }
+
+        .stat-box h3 {
+            color: #d4af37;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-image {
+            background: linear-gradient(45deg, #d4af37, #b8941f);
+            height: 400px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.2rem;
+            text-align: center;
+        }
+
+        /* Events and Exhibitions */
+        .events-exhibitions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin: 4rem 0;
+        }
+
+        .section {
+            background: white;
+            padding: 2rem;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+        }
+
+        .section h2 {
+            color: #2c1810;
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+            border-bottom: 2px solid #d4af37;
+            padding-bottom: 1rem;
+        }
+
+        .event-item, .exhibition-item {
+            background: #f8f6f3;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-radius: 10px;
+            border-left: 4px solid #d4af37;
+            transition: transform 0.3s ease;
+        }
+
+        .event-item:hover, .exhibition-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .event-item h3, .exhibition-item h3 {
+            color: #2c1810;
+            margin-bottom: 0.5rem;
+            font-size: 1.3rem;
+        }
+
+        .event-date {
+            color: #d4af37;
+            font-weight: bold;
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .event-item p, .exhibition-item p {
+            color: #666;
+            font-size: 0.95rem;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, #2c1810, #4a2c1a);
+            color: #e8e8e8;
+            text-align: center;
+            padding: 3rem 0;
+            margin-top: 4rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-section h3 {
+            color: #d4af37;
+            margin-bottom: 1rem;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .events-exhibitions {
+                grid-template-columns: 1fr;
+            }
+
+            .info-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="#" class="logo">Heritage Museum</a>
+            <ul class="nav-links">
+                <li><a href="#home" class="active">Home</a></li>
+                <li><a href="#about">About Us</a></li>
+                <li><a href="#exhibits">Exhibits</a></li>
+                <li><a href="#ticketing">Ticketing System</a></li>
+                <li><a href="#contact">Contact</a></li>
+                <li><a href="#news">News</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Welcome to Heritage Museum</h1>
+            <p>Discover centuries of history, art, and culture in our world-class exhibitions. Journey through time and explore the stories that shaped our world.</p>
+            <a href="#exhibits" class="cta-button">Explore Our Exhibits</a>
+        </div>
+    </section>
+
+    <!-- Museum Information -->
+    <section class="museum-info">
+        <div class="container">
+            <div class="info-grid">
+                <div class="info-text">
+                    <h2>About Our Museum</h2>
+                    <p>Founded in 1892, the Heritage Museum stands as one of the world's premier cultural institutions. Our mission is to preserve, interpret, and share the rich tapestry of human history and artistic achievement.</p>
+                    <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an unparalleled journey through time. From ancient civilizations to contemporary art, our collections tell the story of humanity's greatest achievements.</p>
+                    
+                    <div class="info-stats">
+                        <div class="stat-box">
+                            <h3>50K+</h3>
+                            <p>Artifacts</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>15</h3>
+                            <p>Galleries</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>500K+</h3>
+                            <p>Annual Visitors</p>
+                        </div>
+                        <div class="stat-box">
+                            <h3>130</h3>
+                            <p>Years of History</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="info-image">
+                    <div>
+                        <h3>Historic Building</h3>
+                        <p>Our beautiful 19th-century architecture<br>houses priceless collections</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events and Exhibitions -->
+    <div class="container">
+        <div class="events-exhibitions">
+            <!-- Upcoming Events -->
+            <div class="section">
+                <h2>Upcoming Events</h2>
+                
+                <div class="event-item">
+                    <div class="event-date">March 25, 2025</div>
+                    <h3>Ancient Egypt Night Tour</h3>
+                    <p>Experience the mysteries of ancient Egypt in a special after-hours guided tour. Explore mummies, sarcophagi, and treasures under atmospheric lighting.</p>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-date">April 12, 2025</div>
+                    <h3>Renaissance Art Workshop</h3>
+                    <p>Learn traditional painting techniques from master artists. This hands-on workshop covers fresco and oil painting methods used by the great Renaissance masters.</p>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-date">April 28, 2025</div>
+                    <h3>Family Discovery Day</h3>
+                    <p>A special event designed for families with interactive exhibits, treasure hunts, and educational activities that make history come alive for children.</p>
+                </div>
+
+                <div class="event-item">
+                    <div class="event-date">May 15, 2025</div>
+                    <h3>Curator's Lecture Series</h3>
+                    <p>Join our chief curator for an exclusive behind-the-scenes look at our newest acquisitions and upcoming exhibition plans.</p>
+                </div>
+            </div>
+
+            <!-- Featured Exhibitions -->
+            <div class="section">
+                <h2>Featured Exhibitions</h2>
+                
+                <div class="exhibition-item">
+                    <h3>Treasures of Ancient Rome</h3>
+                    <div class="event-date">Now through June 2025</div>
+                    <p>Marvel at authentic Roman artifacts including sculptures, mosaics, and everyday objects that reveal life in the Roman Empire. Features items never before displayed to the public.</p>
+                </div>
+
+                <div class="exhibition-item">
+                    <h3>Modern Masters: 20th Century Art</h3>
+                    <div class="event-date">Permanent Collection</div>
+                    <p>Explore works by Picasso, Van Gogh, and other influential artists who shaped modern art. This exhibition traces the evolution of artistic expression through turbulent times.</p>
+                </div>
+
+                <div class="exhibition-item">
+                    <h3>Lost Civilizations of the Americas</h3>
+                    <div class="event-date">Opening April 2025</div>
+                    <p>Discover the sophisticated cultures of pre-Columbian America through artifacts from the Maya, Aztec, and Inca civilizations. Interactive displays bring these cultures to life.</p>
+                </div>
+
+                <div class="exhibition-item">
+                    <h3>Innovation Through the Ages</h3>
+                    <div class="event-date">Ongoing</div>
+                    <p>From the wheel to the smartphone, explore humanity's greatest inventions and their impact on society. Features working replicas and hands-on demonstrations.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-section">
+                    <h3>Visit Us</h3>
+                    <p>123 Museum Boulevard</p>
+                    <p>Cultural District</p>
+                    <p>City, State 12345</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hours</h3>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p>Saturday - Sunday: 10:00 AM - 8:00 PM</p>
+                    <p>Closed on major holidays</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Admission</h3>
+                    <p>Adults: $15</p>
+                    <p>Students/Seniors: $12</p>
+                    <p>Children under 12: Free</p>
+                    <p>Members: Always Free</p>
+                </div>
+            </div>
+            <p>&copy; 2025 Heritage Museum. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Update active navigation item based on scroll position
+        window.addEventListener('scroll', function() {
+            const sections = document.querySelectorAll('section');
+            const navLinks = document.querySelectorAll('.nav-links a');
+            
+            let current = '';
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (scrollY >= (sectionTop - 200)) {
+                    current = section.getAttribute('id');
+                }
+            });
+
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // Add entrance animations for event and exhibition items
+        function animateOnScroll() {
+            const items = document.querySelectorAll('.event-item, .exhibition-item');
+            items.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                const itemVisible = 150;
+                
+                if (itemTop < window.innerHeight - itemVisible) {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }
+            });
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const items = document.querySelectorAll('.event-item, .exhibition-item');
+            items.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'all 0.6s ease';
+            });
+        });
+
+        window.addEventListener('scroll', animateOnScroll);
+        window.addEventListener('load', animateOnScroll);
+
+        // Add hover effect for CTA button
+        const ctaButton = document.querySelector('.cta-button');
+        ctaButton.addEventListener('mouseover', function() {
+            this.style.background = 'linear-gradient(135deg, #b8941f, #d4af37)';
+        });
+        
+        ctaButton.addEventListener('mouseout', function() {
+            this.style.background = 'linear-gradient(135deg, #d4af37, #b8941f)';
+        });
+    </script>
+</body>
+</html>
