@@ -1,0 +1,679 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About Us - Heritage Museum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a365d;
+            --primary-light: #2d4e8f;
+            --accent: #d4af37;
+            --accent-light: #e6c875;
+            --neutral-light: #f8f9fa;
+            --neutral-dark: #2d3748;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--neutral-light);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "◈";
+            color: var(--accent);
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 80%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-dark);
+        }
+
+        /* Page Content */
+        .page-content {
+            padding-top: 6rem;
+            min-height: 100vh;
+        }
+
+        .page-hero {
+            background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            padding: 8rem 0 5rem;
+            text-align: center;
+            color: var(--white);
+            margin-bottom: 3rem;
+        }
+
+        .page-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            margin: 0 auto;
+        }
+
+        /* History Section */
+        .history-section {
+            margin: 5rem 0;
+        }
+
+        .timeline {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .timeline::after {
+            content: '';
+            position: absolute;
+            width: 4px;
+            background-color: var(--accent);
+            top: 0;
+            bottom: 0;
+            left: 50%;
+            margin-left: -2px;
+        }
+
+        .timeline-item {
+            padding: 10px 40px;
+            position: relative;
+            width: 50%;
+            box-sizing: border-box;
+        }
+
+        .timeline-item:nth-child(odd) {
+            left: 0;
+        }
+
+        .timeline-item:nth-child(even) {
+            left: 50%;
+        }
+
+        .timeline-content {
+            padding: 20px;
+            background-color: var(--white);
+            border-radius: 8px;
+            box-shadow: var(--shadow);
+            position: relative;
+        }
+
+        .timeline-content::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background-color: var(--white);
+            top: 15px;
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content::after {
+            right: -10px;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content::after {
+            left: -10px;
+        }
+
+        .timeline-date {
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Mission Section */
+        .mission-section {
+            background: var(--white);
+            padding: 5rem 0;
+            border-radius: 12px;
+            margin: 5rem 0;
+            box-shadow: var(--shadow);
+        }
+
+        .mission-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 3rem;
+        }
+
+        .mission-card {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .mission-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem;
+            color: var(--white);
+            font-size: 2rem;
+        }
+
+        .mission-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        /* Team Section */
+        .team-section {
+            margin: 5rem 0;
+        }
+
+        .team-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+        }
+
+        .team-member {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .team-member:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .team-img {
+            height: 250px;
+            background: linear-gradient(45deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+        }
+
+        .team-content {
+            padding: 1.5rem;
+        }
+
+        .team-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .team-role {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Stats Section */
+        .stats-section {
+            background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            padding: 5rem 0;
+            border-radius: 12px;
+            margin: 5rem 0;
+            color: var(--white);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 4rem 0 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .timeline::after {
+                left: 31px;
+            }
+
+            .timeline-item {
+                width: 100%;
+                padding-left: 70px;
+                padding-right: 25px;
+            }
+
+            .timeline-item:nth-child(even) {
+                left: 0;
+            }
+
+            .timeline-content::after {
+                left: 15px;
+                right: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="Home.html" class="logo">Heritage Museum</a>
+            <ul class="nav-links">
+                <li><a href="Home.html">Home</a></li>
+                <li><a href="AboutUs.html" class="active">About Us</a></li>
+                <li><a href="Exhibits.html">Exhibits</a></li>
+                <li><a href="Ticketing.html">Ticketing</a></li>
+                <li><a href="Contact.html">Contact</a></li>
+                <li><a href="News.html">News</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <!-- Page Hero -->
+        <section class="page-hero">
+            <div class="container">
+                <h1>About Our Museum</h1>
+                <p>Discover the rich history, mission, and people behind the Heritage Museum, a cultural landmark dedicated to preserving and sharing our collective heritage.</p>
+            </div>
+        </section>
+
+        <!-- History Section -->
+        <section class="container history-section">
+            <div class="section-title">
+                <h2>Our History</h2>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">1892</div>
+                        <h3>Foundation</h3>
+                        <p>The Heritage Museum was established through a generous donation from industrialist Johnathan Heritage, who envisioned a space where history could be preserved and shared with future generations.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">1925</div>
+                        <h3>First Expansion</h3>
+                        <p>The museum underwent its first major expansion, adding the West Wing to accommodate growing collections of ancient artifacts from Egyptian and Mediterranean excavations.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">1954</div>
+                        <h3>Post-War Renaissance</h3>
+                        <p>After temporary closure during the war years, the museum reopened with renewed focus on education and community outreach programs.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">1987</div>
+                        <h3>Modernization Project</h3>
+                        <p>A comprehensive modernization updated facilities while preserving the historic architecture, including climate-controlled galleries and improved accessibility.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2015</div>
+                        <h3>Digital Initiative</h3>
+                        <p>Launched our digital archives, making over 25,000 artifacts accessible online to researchers and enthusiasts worldwide.</p>
+                    </div>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2023</div>
+                        <h3>Sustainability Commitment</h3>
+                        <p>Became the first museum in the region to achieve carbon neutrality through renewable energy and sustainable practices.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mission Section -->
+        <section class="mission-section">
+            <div class="container">
+                <div class="section-title">
+                    <h2>Our Mission & Values</h2>
+                </div>
+                
+                <div class="mission-grid">
+                    <div class="mission-card">
+                        <div class="mission-icon">📚</div>
+                        <h3>Preservation</h3>
+                        <p>We safeguard cultural heritage for future generations through state-of-the-art conservation techniques and climate-controlled environments.</p>
+                    </div>
+                    <div class="mission-card">
+                        <div class="mission-icon">🌍</div>
+                        <h3>Education</h3>
+                        <p>We make history accessible and engaging through innovative exhibitions, programs, and digital resources for all ages.</p>
+                    </div>
+                    <div class="mission-card">
+                        <div class="mission-icon">🤝</div>
+                        <h3>Community</h3>
+                        <p>We serve as a gathering place for cultural exchange, dialogue, and shared experiences that connect people across generations.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Team Section -->
+        <section class="container team-section">
+            <div class="section-title">
+                <h2>Our Leadership</h2>
+            </div>
+            
+            <div class="team-grid">
+                <div class="team-member">
+                    <div class="team-img">Dr. Evelyn Reed</div>
+                    <div class="team-content">
+                        <h3>Dr. Evelyn Reed</h3>
+                        <span class="team-role">Director & Chief Curator</span>
+                        <p>With over 25 years of experience in museum leadership, Dr. Reed specializes in Renaissance art history and collection management.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="team-img">Marcus Chen</div>
+                    <div class="team-content">
+                        <h3>Marcus Chen</h3>
+                        <span class="team-role">Head of Conservation</span>
+                        <p>Marcus leads our team of conservators with expertise in textile preservation and preventive conservation techniques.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="team-img">Dr. Amina Jabari</div>
+                    <div class="team-content">
+                        <h3>Dr. Amina Jabari</h3>
+                        <span class="team-role">Curator of Ancient Collections</span>
+                        <p>Specializing in Mediterranean archaeology, Dr. Jabari has published extensively on trade routes in the ancient world.</p>
+                    </div>
+                </div>
+                <div class="team-member">
+                    <div class="team-img">Robert Fitzgerald</div>
+                    <div class="team-content">
+                        <h3>Robert Fitzgerald</h3>
+                        <span class="team-role">Education Director</span>
+                        <p>Robert develops our award-winning educational programs that serve over 50,000 students annually.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Stats Section -->
+        <section class="container stats-section">
+            <div class="section-title">
+                <h2>By The Numbers</h2>
+            </div>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">130+</div>
+                    <div class="stat-label">Years of History</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">50,000+</div>
+                    <div class="stat-label">Artifacts</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">15</div>
+                    <div class="stat-label">Exhibition Galleries</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">500,000+</div>
+                    <div class="stat-label">Annual Visitors</div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-section">
+                    <h3>Visit Us</h3>
+                    <p>123 Museum Boulevard</p>
+                    <p>Cultural District</p>
+                    <p>City, State 12345</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hours</h3>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p>Saturday - Sunday: 10:00 AM - 8:00 PM</p>
+                    <p>Closed on major holidays</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Admission</h3>
+                    <p>Adults: $15</p>
+                    <p>Students/Seniors: $12</p>
+                    <p>Children under 12: Free</p>
+                    <p>Members: Always Free</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Heritage Museum. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.7rem 0';
+                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                nav.style.padding = '1rem 0';
+                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
+            }
+        });
+
+        // Animation for elements on scroll
+        function animateOnScroll() {
+            const items = document.querySelectorAll('.timeline-content, .mission-card, .team-member, .stat-item');
+            items.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                const itemVisible = 150;
+                
+                if (itemTop < window.innerHeight - itemVisible) {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }
+            });
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const items = document.querySelectorAll('.timeline-content, .mission-card, .team-member, .stat-item');
+            items.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'all 0.6s ease';
+            });
+            
+            // Trigger initial animation check
+            setTimeout(animateOnScroll, 100);
+        });
+
+        window.addEventListener('scroll', animateOnScroll);
+    </script>
+</body>
+</html>

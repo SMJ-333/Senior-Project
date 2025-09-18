@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ticketing - Heritage Museum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a365d;
+            --primary-light: #2d4e8f;
+            --accent: #d4af37;
+            --accent-light: #e6c875;
+            --neutral-light: #f8f9fa;
+            --neutral-dark: #2d3748;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --transition: all 0.3s ease;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--neutral-light);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "◈";
+            color: var(--accent);
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 80%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-dark);
+        }
+
+        /* Page Content */
+        .page-content {
+            padding-top: 6rem;
+            min-height: 100vh;
+        }
+
+        .page-hero {
+            background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            padding: 8rem 0 5rem;
+            text-align: center;
+            color: var(--white);
+            margin-bottom: 3rem;
+        }
+
+        .page-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            margin: 0 auto;
+        }
+
+        /* Ticket Options */
+        .ticket-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .ticket-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .ticket-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .ticket-header {
+            background: linear-gradient(45deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            padding: 1.5rem;
+            color: var(--white);
+            text-align: center;
+        }
+
+        .ticket-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-price {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .ticket-price span {
+            font-size: 1rem;
+            font-weight: 400;
+        }
+
+        .ticket-body {
+            padding: 1.5rem;
+        }
+
+        .ticket-features {
+            list-style: none;
+            margin-bottom: 1.5rem;
+        }
+
+        .ticket-features li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            align-items: center;
+        }
+
+        .ticket-features li::before {
+            content: "✓";
+            color: var(--success);
+            margin-right: 0.5rem;
+            font-weight: bold;
+        }
+
+        .ticket-features li.disabled {
+            color: var(--text-light);
+        }
+
+        .ticket-features li.disabled::before {
+            content: "✕";
+            color: var(--danger);
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background: var(--accent);
+            color: var(--primary-dark);
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
+        }
+
+        .btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        /* Booking Form */
+        .booking-section {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 5rem;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: var(--neutral-light);
+        }
+
+        .form-input:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .form-note {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+        }
+
+        /* Calendar */
+        .calendar {
+            margin-bottom: 2rem;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 0.5rem;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .calendar-date {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calendar-date:hover {
+            background: var(--accent-light);
+        }
+
+        .calendar-date.selected {
+            background: var(--accent);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        .calendar-date.unavailable {
+            color: var(--text-light);
+            cursor: not-allowed;
+            text-decoration: line-through;
+        }
+
+        /* Ticket Summary */
+        .summary-card {
+            background: var(--neutral-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 1rem 0;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            margin-bottom: 5rem;
+        }
+
+        .faq-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .faq-item {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow);
+        }
+
+        .faq-item h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .faq-item p {
+            color: var(--text-light);
+            line-height: 1.6;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 4rem 0 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .ticket-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Heritage Museum</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="AboutUs.html">About Us</a></li>
+                <li><a href="Exhibits.html">Exhibits</a></li>
+                <li><a href="Ticketing.html" class="active">Ticketing</a></li>
+                <li><a href="Contact.html">Contact</a></li>
+                <li><a href="News.html">News</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <!-- Page Hero -->
+        <section class="page-hero">
+            <div class="container">
+                <h1>Museum Tickets</h1>
+                <p>Plan your visit to the Heritage Museum. Purchase tickets online to guarantee entry and enjoy special member benefits.</p>
+            </div>
+        </section>
+
+        <!-- Ticket Options -->
+        <section class="container">
+            <div class="section-title">
+                <h2>Ticket Options</h2>
+            </div>
+            
+            <div class="ticket-options">
+                <!-- General Admission -->
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <h3>General Admission</h3>
+                        <div class="ticket-price">$15<span>/person</span></div>
+                        <p>Standard museum access</p>
+                    </div>
+                    <div class="ticket-body">
+                        <ul class="ticket-features">
+                            <li>Access to all permanent exhibits</li>
+                            <li>Valid for one full day</li>
+                            <li>Free museum map</li>
+                            <li class="disabled">Special exhibitions</li>
+                            <li class="disabled">Audio guide</li>
+                        </ul>
+                        <a href="#" class="btn">Select Tickets</a>
+                    </div>
+                </div>
+
+                <!-- Premium Pass -->
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <h3>Premium Pass</h3>
+                        <div class="ticket-price">$25<span>/person</span></div>
+                        <p>Full museum experience</p>
+                    </div>
+                    <div class="ticket-body">
+                        <ul class="ticket-features">
+                            <li>Access to all permanent exhibits</li>
+                            <li>Access to special exhibitions</li>
+                            <li>Audio guide included</li>
+                            <li>Skip-the-line entry</li>
+                            <li>10% discount at museum shops</li>
+                        </ul>
+                        <a href="#" class="btn">Select Tickets</a>
+                    </div>
+                </div>
+
+                <!-- Family Package -->
+                <div class="ticket-card">
+                    <div class="ticket-header">
+                        <h3>Family Package</h3>
+                        <div class="ticket-price">$40<span>/package</span></div>
+                        <p>Perfect for families</p>
+                    </div>
+                    <div class="ticket-body">
+                        <ul class="ticket-features">
+                            <li>2 adults + 2 children entry</li>
+                            <li>Access to all permanent exhibits</li>
+                            <li>Children's activity pack</li>
+                            <li>Family guide booklet</li>
+                            <li>Complimentary coat check</li>
+                        </ul>
+                        <a href="#" class="btn">Select Tickets</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking Form -->
+        <section class="container">
+            <div class="section-title">
+                <h2>Book Your Visit</h2>
+            </div>
+            
+            <div class="booking-section">
+                <h3>Select Date & Time</h3>
+                
+                <!-- Calendar -->
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <h4>March 2025</h4>
+                        <div>
+                            <button class="btn" style="width: auto; padding: 0.5rem 1rem; margin-right: 0.5rem;">←</button>
+                            <button class="btn" style="width: auto; padding: 0.5rem 1rem;">→</button>
+                        </div>
+                    </div>
+                    
+                    <div class="calendar-grid">
+                        <div class="calendar-day">Sun</div>
+                        <div class="calendar-day">Mon</div>
+                        <div class="calendar-day">Tue</div>
+                        <div class="calendar-day">Wed</div>
+                        <div class="calendar-day">Thu</div>
+                        <div class="calendar-day">Fri</div>
+                        <div class="calendar-day">Sat</div>
+                        
+                        <!-- Dummy calendar dates -->
+                        <div class="calendar-date unavailable">24</div>
+                        <div class="calendar-date unavailable">25</div>
+                        <div class="calendar-date">26</div>
+                        <div class="calendar-date">27</div>
+                        <div class="calendar-date">28</div>
+                        <div class="calendar-date selected">29</div>
+                        <div class="calendar-date">30</div>
+                        <div class="calendar-date">31</div>
+                        <div class="calendar-date">1</div>
+                        <div class="calendar-date">2</div>
+                        <div class="calendar-date">3</div>
+                        <div class="calendar-date">4</div>
+                        <div class="calendar-date">5</div>
+                        <div class="calendar-date">6</div>
+                        <div class="calendar-date">7</div>
+                        <div class="calendar-date">8</div>
+                        <div class="calendar-date">9</div>
+                        <div class="calendar-date">10</div>
+                        <div class="calendar-date">11</div>
+                        <div class="calendar-date">12</div>
+                        <div class="calendar-date">13</div>
+                        <div class="calendar-date">14</div>
+                        <div class="calendar-date">15</div>
+                        <div class="calendar-date">16</div>
+                        <div class="calendar-date">17</div>
+                        <div class="calendar-date">18</div>
+                        <div class="calendar-date">19</div>
+                        <div class="calendar-date">20</div>
+                        <div class="calendar-date">21</div>
+                        <div class="calendar-date">22</div>
+                        <div class="calendar-date">23</div>
+                    </div>
+                </div>
+                
+                <!-- Time Selection -->
+                <div class="form-group">
+                    <label class="form-label">Available Time Slots</label>
+                    <select class="form-select">
+                        <option value="">Select a time</option>
+                        <option value="9:00">9:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="13:00">1:00 PM</option>
+                        <option value="14:00">2:00 PM</option>
+                        <option value="15:00">3:00 PM</option>
+                    </select>
+                </div>
+                
+                <h3 style="margin-top: 2rem;">Ticket Selection</h3>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Adults (18-64)</label>
+                        <select class="form-select">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <p class="form-note">$15 per ticket</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Seniors (65+)</label>
+                        <select class="form-select">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <p class="form-note">$12 per ticket</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Students</label>
+                        <select class="form-select">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <p class="form-note">$12 per ticket (with valid ID)</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Children (0-17)</label>
+                        <select class="form-select">
+                            <option value="0">0</option>
+                            <option value="1">1</option>
+                            <option value="2">2</option>
+                            <option value="3">3</option>
+                            <option value="4">4</option>
+                            <option value="5">5</option>
+                        </select>
+                        <p class="form-note">Free admission</p>
+                    </div>
+                </div>
+                
+                <!-- Ticket Summary -->
+                <div class="summary-card">
+                    <h3>Order Summary</h3>
+                    <div class="summary-item">
+                        <span>2 x Adult General Admission</span>
+                        <span>$30.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>1 x Senior General Admission</span>
+                        <span>$12.00</span>
+                    </div>
+                    <div class="summary-item">
+                        <span>Service Fee</span>
+                        <span>$2.50</span>
+                    </div>
+                    <div class="summary-total">
+                        <span>Total</span>
+                        <span>$44.50</span>
+                    </div>
+                </div>
+                
+                <a href="#" class="btn" style="margin-top: 2rem;">Continue to Checkout</a>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="container faq-section">
+            <div class="section-title">
+                <h2>Frequently Asked Questions</h2>
+            </div>
+            
+            <div class="faq-grid">
+                <div class="faq-item">
+                    <h3>Do I need to book in advance?</h3>
+                    <p>While walk-in tickets are available, we highly recommend booking in advance to guarantee entry, especially during weekends and holidays.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>What is your cancellation policy?</h3>
+                    <p>Tickets can be cancelled or rescheduled up to 24 hours before your visit for a full refund. Within 24 hours, tickets are non-refundable.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>Is the museum accessible?</h3>
+                    <p>Yes, the museum is fully accessible with ramps, elevators, and accessible restrooms. Wheelchairs are available free of charge.</p>
+                </div>
+                
+                <div class="faq-item">
+                    <h3>Are photography and videography allowed?</h3>
+                    <p>Photography for personal use is permitted in permanent collections. Flash photography, tripods, and videography may be restricted in certain areas.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-section">
+                    <h3>Visit Us</h3>
+                    <p>123 Museum Boulevard</p>
+                    <p>Cultural District</p>
+                    <p>City, State 12345</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hours</h3>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p>Saturday - Sunday: 10:00 AM - 8:00 PM</p>
+                    <p>Closed on major holidays</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Admission</h3>
+                    <p>Adults: $15</p>
+                    <p>Students/Seniors: $12</p>
+                    <p>Children under 12: Free</p>
+                    <p>Members: Always Free</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Heritage Museum. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.7rem 0';
+                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                nav.style.padding = '1rem 0';
+                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
+            }
+        });
+
+        // Calendar selection
+        const calendarDates = document.querySelectorAll('.calendar-date:not(.unavailable)');
+        calendarDates.forEach(date => {
+            date.addEventListener('click', function() {
+                // Remove selected class from all dates
+                calendarDates.forEach(d => d.classList.remove('selected'));
+                // Add selected class to clicked date
+                this.classList.add('selected');
+            });
+        });
+
+        // Ticket quantity update (simplified version)
+        const ticketSelects = document.querySelectorAll('.form-select');
+        ticketSelects.forEach(select => {
+            select.addEventListener('change', updateSummary);
+        });
+
+        function updateSummary() {
+            // This would calculate the total based on selected values
+            console.log("Summary would update here with real data");
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhibitions - Heritage Museum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a365d;
+            --primary-light: #2d4e8f;
+            --accent: #d4af37;
+            --accent-light: #e6c875;
+            --neutral-light: #f8f9fa;
+            --neutral-dark: #2d3748;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--neutral-light);
+            overflow-x: hidden;
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "◈";
+            color: var(--accent);
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 80%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-dark);
+        }
+
+        /* Page Content */
+        .page-content {
+            padding-top: 6rem;
+            min-height: 100vh;
+        }
+
+        .page-hero {
+            background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            padding: 8rem 0 5rem;
+            text-align: center;
+            color: var(--white);
+            margin-bottom: 3rem;
+        }
+
+        .page-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .page-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            margin: 0 auto;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+
+        .filter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .filter-group {
+            margin-bottom: 1rem;
+        }
+
+        .filter-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .filter-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 6px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+            background-color: var(--neutral-light);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background: var(--accent);
+            color: var(--primary-dark);
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        /* Exhibitions Grid */
+        .exhibitions-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 5rem;
+        }
+
+        .exhibition-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .exhibition-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .exhibition-img {
+            height: 220px;
+            background: linear-gradient(45deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .exhibition-img::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><rect fill="%23ffffff" width="200" height="200"/><path d="M40,40 C60,20 80,40 100,30 C120,20 140,40 160,30 C180,20 200,40 200,40 L200,200 L40,200 Z" fill="%23d4af37"/></svg>');
+            background-size: cover;
+        }
+
+        .exhibition-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: var(--accent);
+            color: var(--primary-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .exhibition-content {
+            padding: 1.5rem;
+        }
+
+        .exhibition-content h3 {
+            color: var(--primary-dark);
+            margin-bottom: 0.8rem;
+            font-size: 1.4rem;
+        }
+
+        .exhibition-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .exhibition-date {
+            color: var(--accent);
+            font-weight: 600;
+        }
+
+        .exhibition-location {
+            color: var(--text-light);
+        }
+
+        .exhibition-content p {
+            color: var(--text-light);
+            font-size: 0.95rem;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .exhibition-actions {
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Featured Exhibition */
+        .featured-exhibition {
+            background: linear-gradient(to right, var(--primary-dark) 0%, var(--primary-light) 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 5rem;
+            display: flex;
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .featured-content {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-content h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+
+        .featured-content p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            line-height: 1.7;
+        }
+
+        .featured-image {
+            flex: 1;
+            min-height: 400px;
+            background: linear-gradient(45deg, var(--accent) 0%, var(--accent-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><rect fill="%23ffffff" width="200" height="200"/><path d="M40,40 C60,20 80,40 100,30 C120,20 140,40 160,30 C180,20 200,40 200,40 L200,200 L40,200 Z" fill="%231a365d"/></svg>');
+            background-size: cover;
+        }
+
+        /* Coming Soon Section */
+        .coming-soon {
+            margin-bottom: 5rem;
+        }
+
+        .coming-soon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .coming-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border-left: 4px solid var(--accent);
+        }
+
+        .coming-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .coming-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .coming-date {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 4rem 0 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .featured-exhibition {
+                flex-direction: column;
+            }
+
+            .featured-image {
+                min-height: 300px;
+            }
+
+            .exhibitions-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="index.html" class="logo">Heritage Museum</a>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="AboutUs.html">About Us</a></li>
+                <li><a href="Exhibits.html" class="active">Exhibits</a></li>
+                <li><a href="Ticketing.html">Ticketing</a></li>
+                <li><a href="Contact.html">Contact</a></li>
+                <li><a href="News.html">News</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <!-- Page Hero -->
+        <section class="page-hero">
+            <div class="container">
+                <h1>Current Exhibitions</h1>
+                <p>Explore our diverse collection of exhibitions that showcase art, history, and culture from around the world and across centuries.</p>
+            </div>
+        </section>
+
+        <!-- Filter Section -->
+        <section class="container">
+            <div class="filter-section">
+                <div class="filter-grid">
+                    <div class="filter-group">
+                        <label class="filter-label">Category</label>
+                        <select class="filter-select">
+                            <option value="all">All Categories</option>
+                            <option value="ancient">Ancient History</option>
+                            <option value="modern">Modern Art</option>
+                            <option value="sculpture">Sculpture</option>
+                            <option value="photography">Photography</option>
+                            <option value="science">Science & Technology</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Time Period</label>
+                        <select class="filter-select">
+                            <option value="all">All Periods</option>
+                            <option value="current">Current</option>
+                            <option value="upcoming">Upcoming</option>
+                            <option value="past">Past Exhibitions</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Location</label>
+                        <select class="filter-select">
+                            <option value="all">All Locations</option>
+                            <option value="main">Main Hall</option>
+                            <option value="west">West Wing</option>
+                            <option value="east">East Gallery</option>
+                            <option value="special">Special Exhibits Hall</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="filter-buttons">
+                    <button class="btn">Apply Filters</button>
+                    <button class="btn btn-outline">Reset Filters</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Featured Exhibition -->
+        <section class="container">
+            <div class="featured-exhibition">
+                <div class="featured-content">
+                    <h2>Treasures of Ancient Rome</h2>
+                    <p>Experience the grandeur of the Roman Empire through an unparalleled collection of artifacts, including rare sculptures, intricate mosaics, and everyday objects that reveal the fascinating details of Roman life.</p>
+                    <p>This exclusive exhibition features items on loan from the Vatican Museums and the British Museum, many never before displayed to the public.</p>
+                    <div class="exhibition-meta">
+                        <span class="exhibition-date">Through June 30, 2025</span>
+                        <span class="exhibition-location">Special Exhibits Hall</span>
+                    </div>
+                    <div class="exhibition-actions">
+                        <a href="#" class="btn">Learn More</a>
+                        <a href="#" class="btn btn-outline">Book Tickets</a>
+                    </div>
+                </div>
+                <div class="featured-image">
+                    <div>
+                        <h3>Featured Exhibition</h3>
+                        <p>Marble statue of Emperor Augustus</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Current Exhibitions -->
+        <section class="container">
+            <div class="section-title">
+                <h2>Current Exhibitions</h2>
+            </div>
+            
+            <div class="exhibitions-grid">
+                <!-- Exhibition 1 -->
+                <div class="exhibition-card">
+                    <div class="exhibition-img">
+                        <div>Modern Masters Collection</div>
+                        <span class="exhibition-badge">Popular</span>
+                    </div>
+                    <div class="exhibition-content">
+                        <h3>Modern Masters: 20th Century Art</h3>
+                        <div class="exhibition-meta">
+                            <span class="exhibition-date">Permanent</span>
+                            <span class="exhibition-location">West Wing</span>
+                        </div>
+                        <p>Explore works by Picasso, Van Gogh, and other influential artists who shaped modern art. This exhibition traces the evolution of artistic expression through turbulent times.</p>
+                        <div class="exhibition-actions">
+                            <a href="#">Details</a>
+                            <a href="#">Tickets</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exhibition 2 -->
+                <div class="exhibition-card">
+                    <div class="exhibition-img">
+                        <div>Egyptian Afterlife</div>
+                        <span class="exhibition-badge">New</span>
+                    </div>
+                    <div class="exhibition-content">
+                        <h3>Egyptian Afterlife: Mummies & Beyond</h3>
+                        <div class="exhibition-meta">
+                            <span class="exhibition-date">Through Aug 15, 2025</span>
+                            <span class="exhibition-location">Hall of Ancient Civilizations</span>
+                        </div>
+                        <p>Discover the fascinating beliefs and practices surrounding death and the afterlife in ancient Egypt. Features well-preserved mummies, sarcophagi, and funerary artifacts.</p>
+                        <div class="exhibition-actions">
+                            <a href="#">Details</a>
+                            <a href="#">Tickets</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exhibition 3 -->
+                <div class="exhibition-card">
+                    <div class="exhibition-img">
+                        <div>Nature's Wonders</div>
+                    </div>
+                    <div class="exhibition-content">
+                        <h3>Nature's Wonders: Biodiversity Gallery</h3>
+                        <div class="exhibition-meta">
+                            <span class="exhibition-date">Permanent</span>
+                            <span class="exhibition-location">Natural History Wing</span>
+                        </div>
+                        <p>Journey through diverse ecosystems and discover the incredible variety of life on Earth. Interactive displays and rare specimens from our natural history collection.</p>
+                        <div class="exhibition-actions">
+                            <a href="#">Details</a>
+                            <a href="#">Tickets</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exhibition 4 -->
+                <div class="exhibition-card">
+                    <div class="exhibition-img">
+                        <div>Medieval Times</div>
+                    </div>
+                    <div class="exhibition-content">
+                        <h3>Medieval Times: Knights & Nobility</h3>
+                        <div class="exhibition-meta">
+                            <span class="exhibition-date">Through Dec 20, 2025</span>
+                            <span class="exhibition-location">History Gallery</span>
+                        </div>
+                        <p>Step back into the Middle Ages with authentic armor, weaponry, and artifacts from European castles. Experience the life of knights, nobles, and common folk.</p>
+                        <div class="exhibition-actions">
+                            <a href="#">Details</a>
+                            <a href="#">Tickets</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exhibition 5 -->
+                <div class="exhibition-card">
+                    <div class="exhibition-img">
+                        <div>Ocean Exploration</div>
+                        <span class="exhibition-badge">Family Friendly</span>
+                    </div>
+                    <div class="exhibition-content">
+                        <h3>Ocean Exploration: Deep Sea Discoveries</h3>
+                        <div class="exhibition-meta">
+                            <span class="exhibition-date">Through Sep 10, 2025</span>
+                            <span class="exhibition-location">Science & Discovery Center</span>
+                        </div>
+                        <p>Dive into the mysteries of the deep ocean with rare specimens, interactive submarine simulations, and footage from recent deep-sea expeditions.</p>
+                        <div class="exhibition-actions">
+                            <a href="#">Details</a>
+                            <a href="#">Tickets</a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Exhibition 6 -->
+                <div class="exhibition-card">
+                    <div class="exhibition-img">
+                        <div>Asian Artistry</div>
+                    </div>
+                    <div class="exhibition-content">
+                        <h3>Asian Artistry: Ceramics & Silk</h3>
+                        <div class="exhibition-meta">
+                            <span class="exhibition-date">Permanent</span>
+                            <span class="exhibition-location">East Gallery</span>
+                        </div>
+                        <p>Celebrate the rich artistic traditions of Asia with exquisite ceramics, silk textiles, and decorative arts from China, Japan, Korea, and Southeast Asia.</p>
+                        <div class="exhibition-actions">
+                            <a href="#">Details</a>
+                            <a href="#">Tickets</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Coming Soon Section -->
+        <section class="container coming-soon">
+            <div class="section-title">
+                <h2>Coming Soon</h2>
+            </div>
+            
+            <div class="coming-soon-grid">
+                <div class="coming-card">
+                    <h3>Lost Civilizations of the Americas</h3>
+                    <span class="coming-date">Opening April 12, 2025</span>
+                    <p>Discover the sophisticated cultures of pre-Columbian America through artifacts from the Maya, Aztec, and Inca civilizations. Interactive displays bring these cultures to life.</p>
+                    <a href="#">Notify Me</a>
+                </div>
+                
+                <div class="coming-card">
+                    <h3>Renaissance Masters: Drawings & Sketches</h3>
+                    <span class="coming-date">Opening May 5, 2025</span>
+                    <p>An intimate look at the creative process of Renaissance masters through their preliminary drawings and sketches. Features works by Leonardo, Michelangelo, and Raphael.</p>
+                    <a href="#">Notify Me</a>
+                </div>
+                
+                <div class="coming-card">
+                    <h3>Space Race: Journey to the Stars</h3>
+                    <span class="coming-date">Opening June 20, 2025</span>
+                    <p>Experience the excitement of the space race with authentic artifacts, spacecraft models, and interactive exhibits that explore humanity's journey beyond Earth.</p>
+                    <a href="#">Notify Me</a>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-section">
+                    <h3>Visit Us</h3>
+                    <p>123 Museum Boulevard</p>
+                    <p>Cultural District</p>
+                    <p>City, State 12345</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hours</h3>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p>Saturday - Sunday: 10:00 AM - 8:00 PM</p>
+                    <p>Closed on major holidays</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Admission</h3>
+                    <p>Adults: $15</p>
+                    <p>Students/Seniors: $12</p>
+                    <p>Children under 12: Free</p>
+                    <p>Members: Always Free</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Heritage Museum. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Navigation scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.7rem 0';
+                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                nav.style.padding = '1rem 0';
+                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
+            }
+        });
+
+        // Animation for elements on scroll
+        function animateOnScroll() {
+            const items = document.querySelectorAll('.exhibition-card, .coming-card');
+            items.forEach(item => {
+                const itemTop = item.getBoundingClientRect().top;
+                const itemVisible = 150;
+                
+                if (itemTop < window.innerHeight - itemVisible) {
+                    item.style.opacity = '1';
+                    item.style.transform = 'translateY(0)';
+                }
+            });
+        }
+
+        // Initialize animations
+        document.addEventListener('DOMContentLoaded', function() {
+            const items = document.querySelectorAll('.exhibition-card, .coming-card');
+            items.forEach(item => {
+                item.style.opacity = '0';
+                item.style.transform = 'translateY(20px)';
+                item.style.transition = 'all 0.6s ease';
+            });
+            
+            // Trigger initial animation check
+            setTimeout(animateOnScroll, 100);
+        });
+
+        window.addEventListener('scroll', animateOnScroll);
+    </script>
+</body>
+</html>
