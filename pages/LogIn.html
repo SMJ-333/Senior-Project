@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heritage Museum - Member Login</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary-dark: #1a365d;
@@ -51,7 +54,10 @@
             background-position: center;
         }
 
-        h1, h2, h3, h4 {
+        h1,
+        h2,
+        h3,
+        h4 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             line-height: 1.2;
@@ -74,7 +80,7 @@
             border-radius: 20px;
             box-shadow: var(--shadow-large);
             width: 100%;
-            max-width: 450px;
+            max-width: 700px;
             position: relative;
             backdrop-filter: blur(10px);
             animation: slideUp 0.6s ease-out;
@@ -169,7 +175,7 @@
         .password-toggle {
             position: absolute;
             right: 1rem;
-            top: 2.3rem;
+            top: 50%;
             cursor: pointer;
             color: var(--text-light);
             font-size: 1.1rem;
@@ -302,7 +308,7 @@
         .social-button:hover {
             border-color: var(--accent);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         .social-button.google {
@@ -369,6 +375,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -376,8 +383,13 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         @keyframes slideDown {
@@ -385,6 +397,7 @@
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -392,8 +405,13 @@
         }
 
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
 
         /* Responsive Design */
@@ -480,16 +498,26 @@
             <div class="social-login">
                 <button class="social-button google" id="googleLogin">
                     <svg class="social-icon" viewBox="0 0 24 24">
-                        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
-                        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
-                        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
-                        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+                        <path
+                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                            fill="#4285F4" />
+                        <path
+                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                            fill="#34A853" />
+                        <path
+                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                            fill="#FBBC05" />
+                        <path
+                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                            fill="#EA4335" />
                     </svg>
                     <span>Google</span>
                 </button>
                 <button class="social-button facebook" id="facebookLogin">
                     <svg class="social-icon" viewBox="0 0 24 24">
-                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z" fill="#1877F2"/>
+                        <path
+                            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
+                            fill="#1877F2" />
                     </svg>
                     <span>Facebook</span>
                 </button>
@@ -506,7 +534,7 @@
         const passwordToggle = document.getElementById('passwordToggle');
         const passwordInput = document.getElementById('password');
 
-        passwordToggle.addEventListener('click', function() {
+        passwordToggle.addEventListener('click', function () {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             this.textContent = type === 'password' ? '👁' : '🙈';
@@ -525,7 +553,7 @@
         function showError(inputId, errorId, message) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            
+
             input.classList.add('error');
             input.classList.remove('success');
             error.textContent = message;
@@ -535,7 +563,7 @@
         function showSuccess(inputId, errorId) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            
+
             input.classList.remove('error');
             input.classList.add('success');
             error.style.display = 'none';
@@ -544,7 +572,7 @@
         function clearValidation(inputId, errorId) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            
+
             input.classList.remove('error', 'success');
             error.style.display = 'none';
         }
@@ -553,7 +581,7 @@
         const emailInput = document.getElementById('email');
         const passwordInputField = document.getElementById('password');
 
-        emailInput.addEventListener('blur', function() {
+        emailInput.addEventListener('blur', function () {
             if (this.value) {
                 if (validateEmail(this.value)) {
                     showSuccess('email', 'emailError');
@@ -563,13 +591,13 @@
             }
         });
 
-        emailInput.addEventListener('input', function() {
+        emailInput.addEventListener('input', function () {
             if (this.classList.contains('error')) {
                 clearValidation('email', 'emailError');
             }
         });
 
-        passwordInputField.addEventListener('blur', function() {
+        passwordInputField.addEventListener('blur', function () {
             if (this.value) {
                 if (validatePassword(this.value)) {
                     showSuccess('password', 'passwordError');
@@ -579,7 +607,7 @@
             }
         });
 
-        passwordInputField.addEventListener('input', function() {
+        passwordInputField.addEventListener('input', function () {
             if (this.classList.contains('error')) {
                 clearValidation('password', 'passwordError');
             }
@@ -590,9 +618,9 @@
         const loginButton = document.getElementById('loginButton');
         const successMessage = document.getElementById('successMessage');
 
-        loginForm.addEventListener('submit', function(e) {
+        loginForm.addEventListener('submit', function (e) {
             e.preventDefault();
-            
+
             const email = emailInput.value;
             const password = passwordInputField.value;
             let isValid = true;
@@ -637,7 +665,7 @@
 
                     // Show success message
                     successMessage.style.display = 'block';
-                    
+
                     // Simulate redirect after success
                     setTimeout(() => {
                         console.log('Redirecting to dashboard...');
@@ -648,12 +676,12 @@
         });
 
         // Social login handlers with actual implementation
-        document.getElementById('googleLogin').addEventListener('click', function() {
+        document.getElementById('googleLogin').addEventListener('click', function () {
             // Google OAuth implementation
             loginWithGoogle();
         });
 
-        document.getElementById('facebookLogin').addEventListener('click', function() {
+        document.getElementById('facebookLogin').addEventListener('click', function () {
             // Facebook OAuth implementation
             loginWithFacebook();
         });
@@ -668,12 +696,12 @@
 
             // Simulate Google OAuth flow
             console.log('Initiating Google OAuth...');
-            
+
             // In a real implementation, you would:
             // 1. Initialize Google OAuth client
             // 2. Call gapi.auth2.getAuthInstance().signIn()
             // 3. Handle the response and extract user data
-            
+
             // Mock Google OAuth response
             setTimeout(() => {
                 const mockGoogleUser = {
@@ -685,7 +713,7 @@
                 };
 
                 handleSocialLoginSuccess(mockGoogleUser);
-                
+
                 // Reset button
                 googleBtn.innerHTML = originalContent;
                 googleBtn.disabled = false;
@@ -730,12 +758,12 @@
 
             // Simulate Facebook OAuth flow
             console.log('Initiating Facebook OAuth...');
-            
+
             // In a real implementation, you would:
             // 1. Initialize Facebook SDK
             // 2. Call FB.login()
             // 3. Handle the response and extract user data
-            
+
             // Mock Facebook OAuth response
             setTimeout(() => {
                 const mockFacebookUser = {
@@ -747,7 +775,7 @@
                 };
 
                 handleSocialLoginSuccess(mockFacebookUser);
-                
+
                 // Reset button
                 facebookBtn.innerHTML = originalContent;
                 facebookBtn.disabled = false;
@@ -788,18 +816,18 @@
         // Handle successful social login
         function handleSocialLoginSuccess(userData) {
             console.log('Social login successful:', userData);
-            
+
             // Show success message
             const successMessage = document.getElementById('successMessage');
             successMessage.innerHTML = `Welcome ${userData.name}! Login successful via ${userData.provider}.`;
             successMessage.style.display = 'block';
-            
+
             // In a real app, you would:
             // 1. Send user data to your backend
             // 2. Create/update user account
             // 3. Set authentication cookies/tokens
             // 4. Redirect to dashboard
-            
+
             setTimeout(() => {
                 console.log('Redirecting to dashboard...');
                 // window.location.href = 'Home.html';
