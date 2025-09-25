@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Heritage Museum - Discover History</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <style>
         :root {
             --primary-dark: #1a365d;
@@ -114,6 +116,28 @@
         .nav-links a:hover,
         .nav-links a.active {
             color: var(--primary-dark);
+        }
+
+        .account-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--white);
+            color: var(--white);
+            font-size: 1.2rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .account-icon:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 15px rgba(26, 54, 93, 0.25);
+            border-color: var(--accent-light);
         }
 
         /* Hero Section */
@@ -264,7 +288,7 @@
         .stat-box:hover {
             transform: translateY(-5px);
             border-bottom: 3px solid var(--accent);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
         }
 
         .stat-box h3 {
@@ -333,7 +357,7 @@
 
         .section:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
         .section h2 {
@@ -356,7 +380,8 @@
             background: var(--accent);
         }
 
-        .event-item, .exhibition-item {
+        .event-item,
+        .exhibition-item {
             background: var(--neutral-light);
             padding: 1.8rem;
             margin-bottom: 1.8rem;
@@ -365,13 +390,15 @@
             border-left: 4px solid transparent;
         }
 
-        .event-item:hover, .exhibition-item:hover {
+        .event-item:hover,
+        .exhibition-item:hover {
             transform: translateX(5px);
             border-left: 4px solid var(--accent);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
         }
 
-        .event-item h3, .exhibition-item h3 {
+        .event-item h3,
+        .exhibition-item h3 {
             color: var(--primary-dark);
             margin-bottom: 0.8rem;
             font-size: 1.3rem;
@@ -385,7 +412,8 @@
             display: block;
         }
 
-        .event-item p, .exhibition-item p {
+        .event-item p,
+        .exhibition-item p {
             color: var(--text-light);
             font-size: 0.95rem;
             line-height: 1.6;
@@ -426,14 +454,21 @@
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0.8;
         }
 
         /* Animations */
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Responsive Design */
@@ -441,7 +476,7 @@
             .hero-content h1 {
                 font-size: 2.8rem;
             }
-            
+
             .info-grid {
                 gap: 3rem;
             }
@@ -455,7 +490,7 @@
             .hero-content h1 {
                 font-size: 2.3rem;
             }
-            
+
             .hero-content p {
                 font-size: 1.1rem;
             }
@@ -472,7 +507,7 @@
             .info-stats {
                 grid-template-columns: 1fr;
             }
-            
+
             .section {
                 padding: 2rem;
             }
@@ -482,21 +517,22 @@
             .hero-content h1 {
                 font-size: 2rem;
             }
-            
+
             .container {
                 padding: 4rem 1.5rem;
             }
-            
+
             .info-image {
                 height: 350px;
             }
-            
+
             .stat-box {
                 padding: 1.5rem;
             }
         }
     </style>
 </head>
+
 <body>
     <!-- Navigation -->
     <nav>
@@ -510,14 +546,17 @@
                 <li><a href="Contact.html">Contact</a></li>
                 <li><a href="News.html">News</a></li>
             </ul>
-        </div>
+            <a href="Account.html" class="account-icon" title="My Account">
+                👤
+            </a>
     </nav>
 
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
             <h1>Discover Timeless Heritage</h1>
-            <p>Experience centuries of art, culture, and history through our world-class collections and immersive exhibitions.</p>
+            <p>Experience centuries of art, culture, and history through our world-class collections and immersive
+                exhibitions.</p>
             <a href="Exhibits.html" class="cta-button">Explore Exhibitions</a>
         </div>
     </section>
@@ -528,9 +567,13 @@
             <div class="info-grid">
                 <div class="info-text">
                     <h2>About Our Museum</h2>
-                    <p>Established in 1892, the Heritage Museum stands as a beacon of cultural preservation and education. Our mission is to inspire curiosity and understanding of our shared human story through carefully curated collections and engaging programs.</p>
-                    <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an unparalleled journey through time. Our expertly designed galleries provide context and meaning to the objects that have shaped our world.</p>
-                    
+                    <p>Established in 1892, the Heritage Museum stands as a beacon of cultural preservation and
+                        education. Our mission is to inspire curiosity and understanding of our shared human story
+                        through carefully curated collections and engaging programs.</p>
+                    <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an
+                        unparalleled journey through time. Our expertly designed galleries provide context and meaning
+                        to the objects that have shaped our world.</p>
+
                     <div class="info-stats">
                         <div class="stat-box">
                             <h3>50K+</h3>
@@ -565,63 +608,71 @@
         <div class="section-title">
             <h2>What's On</h2>
         </div>
-        
+
         <div class="events-exhibitions">
             <!-- Upcoming Events -->
             <div class="section">
                 <h2>Upcoming Events</h2>
-                
+
                 <div class="event-item">
                     <span class="event-date">March 25, 2025 • 6:30 PM</span>
                     <h3>Ancient Egypt Night Tour</h3>
-                    <p>Experience the mysteries of ancient Egypt in a special after-hours guided tour. Explore mummies, sarcophagi, and treasures under atmospheric lighting.</p>
+                    <p>Experience the mysteries of ancient Egypt in a special after-hours guided tour. Explore mummies,
+                        sarcophagi, and treasures under atmospheric lighting.</p>
                 </div>
 
                 <div class="event-item">
                     <span class="event-date">April 12, 2025 • 10:00 AM</span>
                     <h3>Renaissance Art Workshop</h3>
-                    <p>Learn traditional painting techniques from master artists. This hands-on workshop covers fresco and oil painting methods used by the great Renaissance masters.</p>
+                    <p>Learn traditional painting techniques from master artists. This hands-on workshop covers fresco
+                        and oil painting methods used by the great Renaissance masters.</p>
                 </div>
 
                 <div class="event-item">
                     <span class="event-date">April 28, 2025 • 11:00 AM</span>
                     <h3>Family Discovery Day</h3>
-                    <p>A special event designed for families with interactive exhibits, treasure hunts, and educational activities that make history come alive for children.</p>
+                    <p>A special event designed for families with interactive exhibits, treasure hunts, and educational
+                        activities that make history come alive for children.</p>
                 </div>
 
                 <div class="event-item">
                     <span class="event-date">May 15, 2025 • 7:00 PM</span>
                     <h3>Curator's Lecture Series</h3>
-                    <p>Join our chief curator for an exclusive behind-the-scenes look at our newest acquisitions and upcoming exhibition plans.</p>
+                    <p>Join our chief curator for an exclusive behind-the-scenes look at our newest acquisitions and
+                        upcoming exhibition plans.</p>
                 </div>
             </div>
 
             <!-- Featured Exhibitions -->
             <div class="section">
                 <h2>Featured Exhibitions</h2>
-                
+
                 <div class="exhibition-item">
                     <h3>Treasures of Ancient Rome</h3>
                     <span class="event-date">Now through June 2025</span>
-                    <p>Marvel at authentic Roman artifacts including sculptures, mosaics, and everyday objects that reveal life in the Roman Empire. Features items never before displayed to the public.</p>
+                    <p>Marvel at authentic Roman artifacts including sculptures, mosaics, and everyday objects that
+                        reveal life in the Roman Empire. Features items never before displayed to the public.</p>
                 </div>
 
                 <div class="exhibition-item">
                     <h3>Modern Masters: 20th Century Art</h3>
                     <span class="event-date">Permanent Collection</span>
-                    <p>Explore works by Picasso, Van Gogh, and other influential artists who shaped modern art. This exhibition traces the evolution of artistic expression through turbulent times.</p>
+                    <p>Explore works by Picasso, Van Gogh, and other influential artists who shaped modern art. This
+                        exhibition traces the evolution of artistic expression through turbulent times.</p>
                 </div>
 
                 <div class="exhibition-item">
                     <h3>Lost Civilizations of the Americas</h3>
                     <span class="event-date">Opening April 2025</span>
-                    <p>Discover the sophisticated cultures of pre-Columbian America through artifacts from the Maya, Aztec, and Inca civilizations. Interactive displays bring these cultures to life.</p>
+                    <p>Discover the sophisticated cultures of pre-Columbian America through artifacts from the Maya,
+                        Aztec, and Inca civilizations. Interactive displays bring these cultures to life.</p>
                 </div>
 
                 <div class="exhibition-item">
                     <h3>Innovation Through the Ages</h3>
                     <span class="event-date">Ongoing</span>
-                    <p>From the wheel to the smartphone, explore humanity's greatest inventions and their impact on society. Features working replicas and hands-on demonstrations.</p>
+                    <p>From the wheel to the smartphone, explore humanity's greatest inventions and their impact on
+                        society. Features working replicas and hands-on demonstrations.</p>
                 </div>
             </div>
         </div>
@@ -660,7 +711,7 @@
 
     <script>
         // Navigation scroll effect
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
                 nav.style.padding = '0.7rem 0';
@@ -672,13 +723,13 @@
         });
 
         // Set active navigation link
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const currentPage = window.location.pathname.split('/').pop();
             const navLinks = document.querySelectorAll('.nav-links a');
-            
+
             navLinks.forEach(link => {
                 link.classList.remove('active');
-                
+
                 if (link.getAttribute('href') === currentPage) {
                     link.classList.add('active');
                 }
@@ -698,7 +749,7 @@
             items.forEach(item => {
                 const itemTop = item.getBoundingClientRect().top;
                 const itemVisible = 150;
-                
+
                 if (itemTop < window.innerHeight - itemVisible) {
                     item.style.opacity = '1';
                     item.style.transform = 'translateY(0)';
@@ -707,14 +758,14 @@
         }
 
         // Initialize animations
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const items = document.querySelectorAll('.event-item, .exhibition-item, .stat-box');
             items.forEach(item => {
                 item.style.opacity = '0';
                 item.style.transform = 'translateY(20px)';
                 item.style.transition = 'all 0.6s ease';
             });
-            
+
             // Trigger initial animation check
             setTimeout(animateOnScroll, 100);
         });
@@ -724,14 +775,16 @@
         // CTA button hover effect
         const ctaButton = document.querySelector('.cta-button');
         if (ctaButton) {
-            ctaButton.addEventListener('mouseover', function() {
+            ctaButton.addEventListener('mouseover', function () {
                 this.style.background = 'linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%)';
             });
-            
-            ctaButton.addEventListener('mouseout', function() {
+
+            ctaButton.addEventListener('mouseout', function () {
                 this.style.background = 'linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%)';
             });
         }
     </script>
+
 </body>
+
 </html>

@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Account - Heritage Museum</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --primary-dark: #1a365d;
+            --primary-light: #2d4e8f;
+            --accent: #d4af37;
+            --accent-light: #e6c875;
+            --neutral-light: #f8f9fa;
+            --neutral-dark: #2d3748;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+            --error: #e53e3e;
+            --success: #38a169;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--neutral-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        h1,h2,h3,h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* ========== Navigation ========== */
+        nav {
+            background: var(--white);
+            padding: 1rem 0;
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "◈";
+            color: var(--accent);
+            margin-right: 0.5rem;
+            font-size: 1.4rem;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 1.5rem;
+            list-style: none;
+            align-items: center;
+        }
+
+        .nav-links a {
+            position: relative;
+            text-decoration: none;
+            font-weight: 500;
+            color: var(--text-dark);
+            padding: 0.5rem 0.75rem;
+            transition: var(--transition);
+        }
+
+        .nav-links a::after {
+            content: "";
+            position: absolute;
+            left: 50%;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-dark);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 80%;
+        }
+
+        .account-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            /* background: linear-gradient(135deg, var(--primary-light), var(--primary-dark)); */
+            color: var(--white);
+            font-size: 1.2rem;
+            /* border: 2px solid var(--accent); */
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .account-icon:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 15px rgba(26, 54, 93, 0.25);
+            border-color: var(--accent-light);
+        }
+
+        .account-icon.active {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: var(--primary-dark);
+            border-color: var(--primary-dark);
+        }
+
+        /* ========== Page Header ========== */
+        .account-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .page-header {
+            text-align: center;
+            padding: 3rem 2rem;
+            /* border-radius: 18px; */
+            height: 40vh;
+            margin-bottom: 3rem;
+            color: var(--white);
+            background: linear-gradient(120deg, var(--primary-dark), var(--primary-light));
+            position: relative;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        .page-header::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            opacity: 0.08;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><path d="M0,100 C150,50 350,150 500,100 C650,50 850,25 1000,75 C1150,125 1200,75 1200,75 L1200,400 L0,400 Z" fill="%23d4af37"/></svg>');
+            background-size: cover;
+        }
+
+        .page-header h1 {
+            position: relative;
+            z-index: 1;
+            font-size: 2.5rem;
+        }
+
+        .page-header p {
+            position: relative;
+            z-index: 1;
+            margin-top: 0.5rem;
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        /* ========== Responsive ========== */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .nav-right {
+                gap: 1rem;
+            }
+
+            .page-header {
+                padding: 2rem 1rem;
+                margin-bottom: 2rem;
+            }
+
+            .page-header h1 {
+                font-size: 2rem;
+            }
+        }
+
+        /* ========== Account Card ========== */
+        .account-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+
+        /* Profile Section */
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 2rem;
+        }
+
+        .profile-section {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .profile-image-container {
+            position: relative;
+            width: 120px;
+            height: 120px;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent);
+            background: var(--neutral-light);
+        }
+
+        .change-photo-btn {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            background: var(--accent);
+            border: none;
+            border-radius: 50%;
+            padding: 0.5rem;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .change-photo-btn:hover {
+            background: var(--accent-light);
+        }
+
+        .hidden-file-input {
+            display: none;
+        }
+
+        /* Section Layout */
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            border-bottom: 2px solid var(--neutral-light);
+            padding-bottom: 0.5rem;
+        }
+
+        /* Form Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .form-input {
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
+        }
+
+        /* Buttons */
+        .btn-group {
+            margin-top: 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-secondary {
+            background: var(--neutral-dark);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .btn-outline:hover {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        /* Password Section */
+        .password-section {
+            margin-top: 1rem;
+        }
+
+        .password-toggle {
+            background: none;
+            border: none;
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--primary-dark);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .password-form {
+            display: none;
+            margin-top: 1.5rem;
+        }
+
+        .password-form.active {
+            display: block;
+        }
+
+        .error-message {
+            color: var(--error);
+            font-size: 0.85rem;
+            margin-top: 0.25rem;
+            display: none;
+        }
+
+        .success-message {
+            color: var(--success);
+            font-size: 0.9rem;
+            margin-bottom: 0.75rem;
+            display: none;
+        }
+
+        /* Alerts */
+        .alert {
+            margin: 1rem 0;
+            padding: 0.75rem 1rem;
+            border-radius: 8px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: #f0fff4;
+            color: var(--success);
+        }
+
+        .alert-error {
+            background: #fff5f5;
+            color: var(--error);
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="Home.html" class="logo">Heritage Museum</a>
+            <div class="nav-right">
+                <ul class="nav-links">
+                    <li><a href="Home.html">Home</a></li>
+                    <li><a href="AboutUs.html">About Us</a></li>
+                    <li><a href="Exhibits.html">Exhibits</a></li>
+                    <li><a href="Ticketing.html">Ticketing</a></li>
+                    <li><a href="Contact.html">Contact</a></li>
+                    <li><a href="News.html">News</a></li>
+                </ul>
+                <a href="Account.html" class="account-icon active" title="My Account">👤</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Page Header -->
+    <div class="page-header">
+        <h1>My Account</h1>
+        <p>Manage your profile information and account settings</p>
+    </div>
+    <div class="account-container">
+
+        <!-- Account Card -->
+        <div class="account-card">
+            <!-- Profile Header -->
+            <div class="card-header">
+                <div class="profile-section">
+                    <div class="profile-image-container">
+                        <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23e2e8f0'/%3E%3Ctext x='60' y='70' text-anchor='middle' fill='%23718096' font-size='30' font-family='Arial'%3E👤%3C/text%3E%3C/svg%3E"
+                            alt="Profile" class="profile-image" id="profileImage">
+                        <button class="change-photo-btn"
+                            onclick="document.getElementById('fileInput').click()">📷</button>
+                        <input type="file" id="fileInput" class="hidden-file-input" accept="image/*"
+                            onchange="handleImageUpload(event)">
+                    </div>
+                    <div class="profile-info">
+                        <h2 id="profileName">John Alexander Smith</h2>
+                        <p id="profileEmail">john.smith@email.com</p>
+                        <p style="color: var(--accent); font-weight: 500; margin-top: 0.5rem;">Premium Member</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Account Information -->
+            <div class="card-body">
+                <!-- Personal Information Section -->
+                <div class="section">
+                    <h3 class="section-title">👤 Personal Information</h3>
+
+                    <form id="profileForm">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label" for="firstName">First Name</label>
+                                <input type="text" id="firstName" class="form-input" value="John Alexander" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="lastName">Last Name</label>
+                                <input type="text" id="lastName" class="form-input" value="Smith" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="email">Email Address</label>
+                                <input type="email" id="email" class="form-input" value="john.smith@email.com" disabled>
+                                <small style="color: var(--text-light); font-size: 0.8rem;">Contact support to change
+                                    your email address</small>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="phone">Phone Number</label>
+                                <input type="tel" id="phone" class="form-input" value="+1 (555) 123-4567" required>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                                <input type="date" id="dateOfBirth" class="form-input" value="1985-03-15">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label" for="memberSince">Member Since</label>
+                                <input type="text" id="memberSince" class="form-input" value="January 2020" disabled>
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button type="submit" class="btn btn-primary">💾 Save Changes</button>
+                            <button type="button" class="btn btn-secondary" onclick="resetForm()">↺ Reset</button>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Password Section -->
+                <div class="section">
+                    <h3 class="section-title">🔒 Password & Security</h3>
+
+                    <div class="password-section">
+                        <button class="password-toggle" onclick="togglePasswordSection()">
+                            Change Password
+                            <span id="passwordToggleIcon">▶</span>
+                        </button>
+
+                        <div class="password-form" id="passwordForm">
+                            <form id="passwordChangeForm" onsubmit="handlePasswordChange(event)">
+                                <div class="form-group">
+                                    <label class="form-label" for="currentPassword">Current Password</label>
+                                    <input type="password" id="currentPassword" class="form-input"
+                                        placeholder="Enter your current password" required>
+                                    <div class="error-message" id="currentPasswordError"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="newPassword">New Password</label>
+                                    <input type="password" id="newPassword" class="form-input"
+                                        placeholder="Enter new password (min 8 characters)" required minlength="8">
+                                    <div class="error-message" id="newPasswordError"></div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label class="form-label" for="confirmPassword">Confirm New Password</label>
+                                    <input type="password" id="confirmPassword" class="form-input"
+                                        placeholder="Confirm your new password" required>
+                                    <div class="error-message" id="confirmPasswordError"></div>
+                                </div>
+
+                                <div class="success-message" id="passwordSuccess">Password changed successfully!</div>
+
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">🔒 Update Password</button>
+                                    <button type="button" class="btn btn-secondary"
+                                        onclick="resetPasswordForm()">Cancel</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        // User data object
+        let userData = {
+            firstName: "John Alexander",
+            lastName: "Smith",
+            email: "john.smith@email.com",
+            phone: "+1 (555) 123-4567",
+            dateOfBirth: "1985-03-15",
+            memberSince: "January 2020",
+            profileImage: "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120' viewBox='0 0 120 120'%3E%3Ccircle cx='60' cy='60' r='60' fill='%23e2e8f0'/%3E%3Ctext x='60' y='70' text-anchor='middle' fill='%23718096' font-size='30' font-family='Arial'%3E👤%3C/text%3E%3C/svg%3E"
+        };
+
+        // Load user data on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            loadUserData();
+        });
+
+        // Load user data into form fields
+        function loadUserData() {
+            document.getElementById('firstName').value = userData.firstName;
+            document.getElementById('lastName').value = userData.lastName;
+            document.getElementById('email').value = userData.email;
+            document.getElementById('phone').value = userData.phone;
+            document.getElementById('dateOfBirth').value = userData.dateOfBirth;
+            document.getElementById('memberSince').value = userData.memberSince;
+            document.getElementById('profileImage').src = userData.profileImage;
+
+            // Update profile header
+            document.getElementById('profileName').textContent = `${userData.firstName} ${userData.lastName}`;
+            document.getElementById('profileEmail').textContent = userData.email;
+        }
+
+        // Handle profile form submission
+        document.getElementById('profileForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            // Get form data
+            const formData = new FormData(e.target);
+            const firstName = document.getElementById('firstName').value.trim();
+            const lastName = document.getElementById('lastName').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            const dateOfBirth = document.getElementById('dateOfBirth').value;
+
+            // Validate inputs
+            if (!firstName || !lastName) {
+                showAlert('Please fill in all required fields.', 'error');
+                return;
+            }
+
+            if (!phone) {
+                showAlert('Please enter a valid phone number.', 'error');
+                return;
+            }
+
+            // Update user data
+            userData.firstName = firstName;
+            userData.lastName = lastName;
+            userData.phone = phone;
+            userData.dateOfBirth = dateOfBirth;
+
+            // Update profile header
+            document.getElementById('profileName').textContent = `${firstName} ${lastName}`;
+
+            showAlert('Profile updated successfully!', 'success');
+        });
+
+        // Reset form to original data
+        function resetForm() {
+            loadUserData();
+            showAlert('Form reset to original values.', 'success');
+        }
+
+        // Handle image upload
+        function handleImageUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            // Validate file type
+            if (!file.type.startsWith('image/')) {
+                showAlert('Please select a valid image file.', 'error');
+                return;
+            }
+
+            // Validate file size (max 5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                showAlert('Please select an image smaller than 5MB.', 'error');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const profileImg = document.getElementById('profileImage');
+                profileImg.src = e.target.result;
+                userData.profileImage = e.target.result;
+                showAlert('Profile image updated successfully!', 'success');
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Toggle password section
+        function togglePasswordSection() {
+            const passwordForm = document.getElementById('passwordForm');
+            const icon = document.getElementById('passwordToggleIcon');
+
+            if (passwordForm.classList.contains('active')) {
+                passwordForm.classList.remove('active');
+                icon.textContent = '▶';
+                resetPasswordForm();
+            } else {
+                passwordForm.classList.add('active');
+                icon.textContent = '▼';
+            }
+        }
+
+        // Handle password change
+        function handlePasswordChange(event) {
+            event.preventDefault();
+
+            // Clear previous error messages
+            clearErrorMessages();
+
+            const currentPassword = document.getElementById('currentPassword').value;
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            let hasErrors = false;
+
+            // Validate current password (in a real app, this would be verified on the server)
+            if (currentPassword !== 'currentpass123') {
+                showFieldError('currentPasswordError', 'Current password is incorrect');
+                hasErrors = true;
+            }
+
+            // Validate new password
+            if (newPassword.length < 8) {
+                showFieldError('newPasswordError', 'New password must be at least 8 characters long');
+                hasErrors = true;
+            } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(newPassword)) {
+                showFieldError('newPasswordError', 'Password must contain at least one uppercase letter, one lowercase letter, and one number');
+                hasErrors = true;
+            }
+
+            // Validate password confirmation
+            if (newPassword !== confirmPassword) {
+                showFieldError('confirmPasswordError', 'Passwords do not match');
+                hasErrors = true;
+            }
+
+            // If no errors, simulate password change
+            if (!hasErrors) {
+                setTimeout(() => {
+                    document.getElementById('passwordSuccess').style.display = 'block';
+                    document.getElementById('passwordChangeForm').reset();
+                    showAlert('Password changed successfully!', 'success');
+
+                    // Hide success message after 3 seconds
+                    setTimeout(() => {
+                        document.getElementById('passwordSuccess').style.display = 'none';
+                    }, 3000);
+                }, 500);
+            }
+        }
+
+        // Reset password form
+        function resetPasswordForm() {
+            document.getElementById('passwordChangeForm').reset();
+            clearErrorMessages();
+            document.getElementById('passwordSuccess').style.display = 'none';
+        }
+
+        // Real-time password validation
+        document.getElementById('newPassword').addEventListener('input', function () {
+            const password = this.value;
+
+            if (password.length > 0 && password.length < 8) {
+                showFieldError('newPasswordError', 'Password must be at least 8 characters long');
+            } else if (password.length >= 8 && !/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+                showFieldError('newPasswordError', 'Password must contain uppercase, lowercase, and number');
+            } else if (password.length >= 8) {
+                document.getElementById('newPasswordError').style.display = 'none';
+            }
+        });
+
+        document.getElementById('confirmPassword').addEventListener('input', function () {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = this.value;
+
+            if (confirmPassword.length > 0 && newPassword !== confirmPassword) {
+                showFieldError('confirmPasswordError', 'Passwords do not match');
+            } else if (newPassword === confirmPassword) {
+                document.getElementById('confirmPasswordError').style.display = 'none';
+            }
+        });
+
+        // Utility functions
+        function clearErrorMessages() {
+            const errorElements = document.querySelectorAll('.error-message');
+            errorElements.forEach(element => {
+                element.style.display = 'none';
+                element.textContent = '';
+            });
+        }
+
+        function showFieldError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        function showAlert(message, type) {
+            // Remove existing alerts
+            const existingAlerts = document.querySelectorAll('.alert');
+            existingAlerts.forEach(alert => alert.remove());
+
+            // Create new alert
+            const alert = document.createElement('div');
+            alert.className = `alert alert-${type}`;
+            alert.textContent = message;
+
+            // Insert alert at the top of the account container
+            const container = document.querySelector('.account-container');
+            const pageHeader = document.querySelector('.page-header');
+            container.insertBefore(alert, pageHeader.nextSibling);
+
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (alert.parentNode) {
+                    alert.remove();
+                }
+            }, 5000);
+
+            // Scroll to alert
+            alert.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function (e) {
+            // ESC key closes password section if open
+            if (e.key === 'Escape') {
+                const passwordForm = document.getElementById('passwordForm');
+                if (passwordForm.classList.contains('active')) {
+                    togglePasswordSection();
+                }
+            }
+        });
+
+        // Add smooth scrolling for internal navigation
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Form validation feedback
+        document.querySelectorAll('.form-input').forEach(input => {
+            input.addEventListener('blur', function () {
+                if (this.hasAttribute('required') && !this.value.trim()) {
+                    this.style.borderColor = 'var(--error)';
+                } else {
+                    this.style.borderColor = '#e2e8f0';
+                }
+            });
+
+            input.addEventListener('input', function () {
+                if (this.style.borderColor === 'var(--error)' && this.value.trim()) {
+                    this.style.borderColor = 'var(--accent)';
+                }
+            });
+        });
+
+        // Auto-save draft functionality (simulate)
+        let autoSaveTimeout;
+        document.querySelectorAll('#profileForm .form-input').forEach(input => {
+            input.addEventListener('input', function () {
+                clearTimeout(autoSaveTimeout);
+                autoSaveTimeout = setTimeout(() => {
+                    // In a real app, this would save to localStorage or server
+                    console.log('Auto-saving draft...');
+                }, 2000);
+            });
+        });
+    </script>
+
+</body>
+
+</html>
