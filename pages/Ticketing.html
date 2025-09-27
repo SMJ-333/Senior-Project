@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticketing - Heritage Museum</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
             --primary-dark: #1a365d;
@@ -117,6 +118,28 @@
         .nav-links a:hover,
         .nav-links a.active {
             color: var(--primary-dark);
+        }
+
+        .account-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--white);
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .account-icon:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 15px rgba(26, 54, 93, 0.25);
+            border-color: var(--accent-light);
         }
 
         /* Page Content */
@@ -487,9 +510,10 @@
                 <li><a href="AboutUs.html">About Us</a></li>
                 <li><a href="Exhibits.html">Exhibits</a></li>
                 <li><a href="Ticketing.html" class="active">Ticketing</a></li>
-                <li><a href="Contact.html">Contact</a></li>
                 <li><a href="News.html">News</a></li>
+                <li><a href="Gallery.html">Gallery</a></li>
             </ul>
+            <a href="Account.html" class="account-icon" title="My Account"><span class="material-icons">person</span></a>
         </div>
     </nav>
 

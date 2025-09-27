@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Art Details - Heritage Museum</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a365d;
+            --primary-light: #2d4e8f;
+            --accent: #d4af37;
+            --accent-light: #e6c875;
+            --neutral-light: #f8f9fa;
+            --neutral-dark: #2d3748;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--neutral-light);
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        /* Navigation */
+        nav {
+            background: var(--white);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "◈";
+            color: var(--accent);
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 80%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-dark);
+        }
+
+        .account-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--white);
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .account-icon:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 15px rgba(26, 54, 93, 0.25);
+            border-color: var(--accent-light);
+        }
+
+        /* Page Content */
+        .page-content {
+            padding-top: 6rem;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Back Button */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--primary-dark);
+            text-decoration: none;
+            font-weight: 500;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .back-button:hover {
+            background: var(--neutral-light);
+            color: var(--accent);
+        }
+
+        /* Art Details Layout */
+        .art-details {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            margin-bottom: 3rem;
+        }
+
+        .art-image-container {
+            display: flex;
+            align-items: flex-start;
+            justify-content: center;
+            padding: 2rem;
+            background: var(--neutral-light);
+            min-height: 100%;
+        }
+
+        .art-image {
+            width: 100%;
+            height: auto;
+            max-height: none;
+            object-fit: cover;
+            object-position: top;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .art-info {
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .art-title {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .art-artist {
+            font-size: 1.3rem;
+            color: var(--accent);
+            font-style: italic;
+            margin-bottom: 2rem;
+        }
+
+        .art-details-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .detail-item {
+            padding: 1rem;
+            background: var(--neutral-light);
+            border-radius: 8px;
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-value {
+            color: var(--text-dark);
+            font-size: 1rem;
+        }
+
+        .art-description {
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 2px solid var(--neutral-light);
+        }
+
+        .description-title {
+            font-size: 1.5rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+        }
+
+        .description-text {
+            color: var(--text-light);
+            line-height: 1.8;
+            font-size: 1.1rem;
+        }
+
+        /* Loading and Error States */
+        .loading, .error {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .error {
+            color: #e53e3e;
+            background: #fff5f5;
+            border-radius: 12px;
+        }
+
+        /* Footer */
+        .footer {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 4rem 0 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.8;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .art-details {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .art-title {
+                font-size: 2rem;
+            }
+
+            .art-info {
+                padding: 1.5rem;
+            }
+
+            .art-details-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <a href="Home.html" class="logo">Heritage Museum</a>
+            <ul class="nav-links">
+                <li><a href="Home.html">Home</a></li>
+                <li><a href="AboutUs.html">About Us</a></li>
+                <li><a href="Exhibits.html">Exhibits</a></li>
+                <li><a href="Ticketing.html">Ticketing</a></li>
+                <li><a href="News.html">News</a></li>
+                <li><a href="Gallery.html" class="active">Gallery</a></li>
+            </ul>
+            <a href="Account.html" class="account-icon" title="My Account">
+                <span class="material-icons">person</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="page-content">
+        <div class="container">
+            <!-- Back Button -->
+            <a href="Gallery.html" class="back-button">
+                <span class="material-icons">arrow_back</span>
+                Back to Collections
+            </a>
+
+            <!-- Loading State -->
+            <div id="loading" class="loading">
+                Loading artwork details...
+            </div>
+
+            <!-- Error State -->
+            <div id="error" class="error" style="display: none;">
+                <h3>Artwork Not Found</h3>
+                <p id="error-message">Sorry, we couldn't find the artwork you're looking for.</p>
+            </div>
+
+            <!-- Art Details -->
+            <div id="art-content" class="art-details" style="display: none;">
+                <div class="art-image-container">
+                    <img id="art-image" class="art-image" src="" alt="">
+                </div>
+
+                <div class="art-info">
+                    <h1 id="art-title" class="art-title"></h1>
+                    <p id="art-artist" class="art-artist"></p>
+
+                    <div class="art-details-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Date</div>
+                            <div id="art-date" class="detail-value">Unknown</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Medium</div>
+                            <div id="art-medium" class="detail-value">Unknown</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Dimensions</div>
+                            <div id="art-dimensions" class="detail-value">Unknown</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Category</div>
+                            <div id="art-category" class="detail-value">Artwork</div>
+                        </div>
+                    </div>
+
+                    <div class="art-description">
+                        <h3 class="description-title">About This Piece</h3>
+                        <p id="art-description" class="description-text">
+                            Description not available.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-section">
+                    <h3>Visit Us</h3>
+                    <p>123 Museum Boulevard</p>
+                    <p>Cultural District</p>
+                    <p>City, State 12345</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hours</h3>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p>Saturday - Sunday: 10:00 AM - 8:00 PM</p>
+                    <p>Closed on major holidays</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Admission</h3>
+                    <p>Adults: $15</p>
+                    <p>Students/Seniors: $12</p>
+                    <p>Children under 12: Free</p>
+                    <p>Members: Always Free</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Heritage Museum. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        // Import Firestore functions from CDN
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // Firebase config
+        const firebaseConfig = {
+            apiKey: "AIzaSyBQtJl-1lI6HmPUnN6UKbADMvdUA9RXYpo",
+            authDomain: "museum-management-4244e.firebaseapp.com",
+            projectId: "museum-management-4244e",
+            storageBucket: "museum-management-4244e.appspot.com",
+            messagingSenderId: "86285806144",
+            appId: "1:86285806144:web:f761e4f0c3577ac063cda5",
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Get URL parameter
+        function getUrlParameter(name) {
+            name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
+            const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
+            const results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        // Show error
+        function showError(message) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('error').style.display = 'block';
+            document.getElementById('error-message').textContent = message;
+        }
+
+        // Render art details
+        function renderArtDetails(artwork) {
+            document.getElementById('loading').style.display = 'none';
+            document.getElementById('art-content').style.display = 'grid';
+
+            // Set basic info
+            document.getElementById('art-title').textContent = artwork.title || 'Untitled';
+            document.getElementById('art-artist').textContent = `by ${artwork.artist || artwork.artistName || 'Unknown Artist'}`;
+            
+            // Set image
+            const artImage = document.getElementById('art-image');
+            artImage.src = artwork.imageURL || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Crect fill="%23e2e8f0" width="400" height="400"/%3E%3Ctext x="200" y="200" text-anchor="middle" fill="%23718096" font-size="24"%3ENo Image%3C/text%3E%3C/svg%3E';
+            artImage.alt = artwork.title || 'Artwork';
+
+            // Set details
+            document.getElementById('art-date').textContent = artwork.date || artwork.year || 'Unknown';
+            document.getElementById('art-medium').textContent = artwork.medium || artwork.materials || 'Unknown';
+            document.getElementById('art-dimensions').textContent = artwork.dimensions || artwork.size || 'Unknown';
+            document.getElementById('art-category').textContent = artwork.category || artwork.type || 'Artwork';
+            document.getElementById('art-description').textContent = artwork.description || 'Description not available for this piece.';
+
+            // Update page title
+            document.title = `${artwork.title || 'Artwork'} - Heritage Museum`;
+        }
+
+        // Fetch artwork by ID
+        async function fetchArtwork(id) {
+            try {
+                const docRef = doc(db, "Museum_Collection", id);
+                const docSnap = await getDoc(docRef);
+                
+                if (docSnap.exists()) {
+                    return { id: docSnap.id, ...docSnap.data() };
+                } else {
+                    throw new Error('Artwork not found');
+                }
+            } catch (error) {
+                console.error("Error fetching artwork:", error);
+                throw error;
+            }
+        }
+
+        // Main execution
+        document.addEventListener("DOMContentLoaded", async () => {
+            const artworkId = getUrlParameter('id');
+            
+            if (!artworkId) {
+                showError('No artwork ID provided. Please return to collections and select an artwork.');
+                return;
+            }
+
+            try {
+                // Check if we have cached collections data
+                const cachedCollections = sessionStorage.getItem('collections_cache');
+                let artwork = null;
+
+                if (cachedCollections) {
+                    // Try to find artwork in cached collections first
+                    const collections = JSON.parse(cachedCollections);
+                    artwork = collections.find(item => item.id === artworkId);
+                    
+                    if (artwork) {
+                        // Use cached data for immediate render
+                        renderArtDetails(artwork);
+                        return;
+                    }
+                }
+
+                // Fallback to Firebase if not in cache
+                artwork = await fetchArtwork(artworkId);
+                renderArtDetails(artwork);
+                
+            } catch (error) {
+                console.error("Error loading artwork:", error);
+                showError('Failed to load artwork details. The artwork may no longer exist.');
+            }
+        });
+
+        // Handle back button with scroll position preservation
+        document.querySelector('.back-button').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Navigate back to collections
+            window.location.href = 'Gallery.html';
+        });
+
+        // Navigation scroll effect
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.7rem 0';
+                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                nav.style.padding = '1rem 0';
+                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
+            }
+        });
+    </script>
+</body>
+
+</html>
