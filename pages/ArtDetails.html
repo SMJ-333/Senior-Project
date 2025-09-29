@@ -272,7 +272,8 @@
         }
 
         /* Loading and Error States */
-        .loading, .error {
+        .loading,
+        .error {
             text-align: center;
             padding: 4rem 2rem;
             color: var(--text-light);
@@ -461,23 +462,9 @@
     </footer>
 
     <script type="module">
-        // Import Firestore functions from CDN
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBQtJl-1lI6HmPUnN6UKbADMvdUA9RXYpo",
-            authDomain: "museum-management-4244e.firebaseapp.com",
-            projectId: "museum-management-4244e",
-            storageBucket: "museum-management-4244e.appspot.com",
-            messagingSenderId: "86285806144",
-            appId: "1:86285806144:web:f761e4f0c3577ac063cda5",
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        // Import Firebase services from your centralized config
+        import { db } from './firebase-config.js';
+        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // Get URL parameter
         function getUrlParameter(name) {
@@ -499,23 +486,19 @@
             document.getElementById('loading').style.display = 'none';
             document.getElementById('art-content').style.display = 'grid';
 
-            // Set basic info
             document.getElementById('art-title').textContent = artwork.title || 'Untitled';
             document.getElementById('art-artist').textContent = `by ${artwork.artist || artwork.artistName || 'Unknown Artist'}`;
-            
-            // Set image
+
             const artImage = document.getElementById('art-image');
             artImage.src = artwork.imageURL || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Crect fill="%23e2e8f0" width="400" height="400"/%3E%3Ctext x="200" y="200" text-anchor="middle" fill="%23718096" font-size="24"%3ENo Image%3C/text%3E%3C/svg%3E';
             artImage.alt = artwork.title || 'Artwork';
 
-            // Set details
             document.getElementById('art-date').textContent = artwork.date || artwork.year || 'Unknown';
             document.getElementById('art-medium').textContent = artwork.medium || artwork.materials || 'Unknown';
             document.getElementById('art-dimensions').textContent = artwork.dimensions || artwork.size || 'Unknown';
             document.getElementById('art-category').textContent = artwork.category || artwork.type || 'Artwork';
             document.getElementById('art-description').textContent = artwork.description || 'Description not available for this piece.';
 
-            // Update page title
             document.title = `${artwork.title || 'Artwork'} - Heritage Museum`;
         }
 
@@ -524,7 +507,7 @@
             try {
                 const docRef = doc(db, "Museum_Collection", id);
                 const docSnap = await getDoc(docRef);
-                
+
                 if (docSnap.exists()) {
                     return { id: docSnap.id, ...docSnap.data() };
                 } else {
@@ -539,49 +522,41 @@
         // Main execution
         document.addEventListener("DOMContentLoaded", async () => {
             const artworkId = getUrlParameter('id');
-            
+
             if (!artworkId) {
                 showError('No artwork ID provided. Please return to collections and select an artwork.');
                 return;
             }
 
             try {
-                // Check if we have cached collections data
                 const cachedCollections = sessionStorage.getItem('collections_cache');
                 let artwork = null;
 
                 if (cachedCollections) {
-                    // Try to find artwork in cached collections first
                     const collections = JSON.parse(cachedCollections);
                     artwork = collections.find(item => item.id === artworkId);
-                    
+
                     if (artwork) {
-                        // Use cached data for immediate render
                         renderArtDetails(artwork);
                         return;
                     }
                 }
 
-                // Fallback to Firebase if not in cache
                 artwork = await fetchArtwork(artworkId);
                 renderArtDetails(artwork);
-                
+
             } catch (error) {
                 console.error("Error loading artwork:", error);
                 showError('Failed to load artwork details. The artwork may no longer exist.');
             }
         });
 
-        // Handle back button with scroll position preservation
-        document.querySelector('.back-button').addEventListener('click', function(e) {
+        document.querySelector('.back-button').addEventListener('click', function (e) {
             e.preventDefault();
-            
-            // Navigate back to collections
             window.location.href = 'Gallery.html';
         });
 
-        // Navigation scroll effect
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
                 nav.style.padding = '0.7rem 0';

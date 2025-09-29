@@ -22,6 +22,8 @@
             --transition: all 0.3s ease;
             --number-color: #d4af37;
             --border-grey: #e2e8f0;
+            --error: #e53e3e;
+            --success: #38a169;
         }
 
         * {
@@ -186,13 +188,6 @@
             color: var(--text-light);
         }
 
-        .step-subtext {
-            text-align: center;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
         .categories-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -246,11 +241,9 @@
             0% {
                 transform: scale(0.5);
             }
-
             50% {
                 transform: scale(1.2);
             }
-
             100% {
                 transform: scale(1);
             }
@@ -329,12 +322,33 @@
             color: var(--accent);
         }
 
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: none;
+            text-align: center;
+        }
+
+        .message.error {
+            background: #fff5f5;
+            color: var(--error);
+            border: 1px solid #feb2b2;
+            display: block;
+        }
+
+        .message.success {
+            background: #f0fff4;
+            color: var(--success);
+            border: 1px solid #9ae6b4;
+            display: block;
+        }
+
         @keyframes slideUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -346,8 +360,6 @@
 <body>
 
     <div class="signup-card">
-
-        <!-- Step 2 back arrow inside card, above header -->
         <div id="step2Arrow" class="hidden">
             <div class="back-arrow" id="backArrow">←</div>
         </div>
@@ -357,16 +369,31 @@
             <h1 id="mainHeader">Create Your Account</h1>
         </div>
 
+        <div id="message" class="message"></div>
+
         <!-- Step 1 -->
         <form id="step1">
-            <div class="form-group"><label for="username">Username</label><input type="text" id="username" required>
+            <div class="form-group">
+                <label for="username">Username</label>
+                <input type="text" id="username" required>
             </div>
-            <div class="form-group"><label for="email">Email Address</label><input type="email" id="email" required>
+            <div class="form-group">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" required>
             </div>
-            <div class="form-group"><label for="password">Password</label><input type="password" id="password"
-                    minlength="6" required> <span class="password-toggle" id="passwordToggle">👁</span></div>
-            <div class="form-group"><label for="dob">Date of Birth</label><input type="date" id="dob" required></div>
-            <div class="form-group"><label for="phone">Phone Number</label><input type="tel" id="phone" required></div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" minlength="6" required>
+                <span class="password-toggle" id="passwordToggle">👁</span>
+            </div>
+            <div class="form-group">
+                <label for="dob">Date of Birth</label>
+                <input type="date" id="dob" required>
+            </div>
+            <div class="form-group">
+                <label for="phone">Phone Number</label>
+                <input type="tel" id="phone" required>
+            </div>
             <button type="submit" class="signup-button">Continue</button>
         </form>
 
@@ -432,14 +459,28 @@
             </div>
 
             <div class="button-row">
-                <button id="finishBtn" class="signup-button" disabled>Continue to Your Museum Dashboard</button>
+                <button id="finishBtn" class="signup-button" disabled>Complete Registration</button>
                 <button id="selectAllBtn" class="select-all-button">Select All</button>
             </div>
         </div>
-
     </div>
 
-    <script>
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { 
+            createUserWithEmailAndPassword, 
+            updateProfile 
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { 
+            doc, 
+            setDoc, 
+            Timestamp,
+            collection,
+            query,
+            where,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
         const step1 = document.getElementById('step1');
         const step2 = document.getElementById('step2');
         const step2Arrow = document.getElementById('step2Arrow');
@@ -449,11 +490,25 @@
         const selectAllBtn = document.getElementById('selectAllBtn');
         const counter = document.getElementById('counter');
         const mainHeader = document.getElementById('mainHeader');
+        const messageDiv = document.getElementById('message');
+        
         let selectedCategories = [];
         const totalCategories = categoriesGrid.querySelectorAll('.category-card').length;
+        let userData = {};
 
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.getElementById('passwordToggle');
+
+        function showMessage(message, type) {
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function hideMessage() {
+            messageDiv.style.display = 'none';
+        }
 
         passwordToggle.addEventListener('click', () => {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
@@ -461,18 +516,66 @@
             passwordToggle.textContent = type === 'password' ? '👁' : '🙈';
         });
 
-        step1.addEventListener('submit', function (e) {
+        async function checkUsernameExists(username) {
+            try {
+                const usersRef = collection(db, "Users");
+                const q = query(usersRef, where("Username", "==", username));
+                const querySnapshot = await getDocs(q);
+                return !querySnapshot.empty;
+            } catch (error) {
+                console.error("Error checking username:", error);
+                throw error;
+            }
+        }
+
+        step1.addEventListener('submit', async function (e) {
             e.preventDefault();
-            step1.classList.add('hidden');
-            step2.classList.remove('hidden');
-            step2Arrow.classList.remove('hidden'); // show arrow
-            mainHeader.textContent = 'What Are You Interested In?';
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            hideMessage();
+            
+            const continueBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = continueBtn.textContent;
+            continueBtn.disabled = true;
+            continueBtn.textContent = 'Checking...';
+
+            // Store form data
+            userData = {
+                username: document.getElementById('username').value.trim(),
+                email: document.getElementById('email').value.trim(),
+                password: document.getElementById('password').value,
+                dob: document.getElementById('dob').value,
+                phone: document.getElementById('phone').value.trim()
+            };
+
+            try {
+                // Check if username already exists before moving to step 2
+                const usernameExists = await checkUsernameExists(userData.username);
+                if (usernameExists) {
+                    showMessage('This username is already taken. Please choose another one.', 'error');
+                    continueBtn.disabled = false;
+                    continueBtn.textContent = originalText;
+                    return;
+                }
+
+                // Username is unique, proceed to step 2
+                continueBtn.disabled = false;
+                continueBtn.textContent = originalText;
+                step1.classList.add('hidden');
+                step2.classList.remove('hidden');
+                step2Arrow.classList.remove('hidden');
+                mainHeader.textContent = 'What Are You Interested In?';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            } catch (error) {
+                console.error('Error checking username:', error);
+                showMessage('Error validating username. Please try again.', 'error');
+                continueBtn.disabled = false;
+                continueBtn.textContent = originalText;
+            }
         });
 
         backArrow.addEventListener('click', () => {
+            hideMessage();
             step2.classList.add('hidden');
-            step2Arrow.classList.add('hidden'); // hide arrow
+            step2Arrow.classList.add('hidden');
             step1.classList.remove('hidden');
             mainHeader.textContent = 'Create Your Account';
             window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -512,11 +615,64 @@
             updateCounter();
         });
 
-        finishBtn.addEventListener('click', () => {
-            // Redirect to the home page
-            window.location.href = 'Home.html';
-        });
+        finishBtn.addEventListener('click', async () => {
+            hideMessage();
+            finishBtn.disabled = true;
+            finishBtn.textContent = 'Creating Account...';
 
+            try {
+                // Create authentication account
+                const userCredential = await createUserWithEmailAndPassword(
+                    auth, 
+                    userData.email, 
+                    userData.password
+                );
+                const user = userCredential.user;
+
+                // Update display name
+                await updateProfile(user, {
+                    displayName: userData.username
+                });
+
+                // Convert date of birth string to Timestamp
+                const dobDate = new Date(userData.dob);
+                const dobTimestamp = Timestamp.fromDate(dobDate);
+
+                // Create user document in Firestore with exact field names
+                await setDoc(doc(db, "Users", user.uid), {
+                    "Username": userData.username,
+                    "Email Address": userData.email,
+                    "Phone Number": userData.phone,
+                    "Date of Birth": dobTimestamp,
+                    "Interests": selectedCategories,
+                    "Created At": Timestamp.now(),
+                    "Is Active": true,
+                    "uid": user.uid
+                });
+
+                showMessage('Account created successfully! Redirecting...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'Home.html';
+                }, 2000);
+
+            } catch (error) {
+                console.error('Registration error:', error);
+                let errorMessage = 'Failed to create account. Please try again.';
+                
+                if (error.code === 'auth/email-already-in-use') {
+                    errorMessage = 'This email is already registered.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email address.';
+                } else if (error.code === 'auth/weak-password') {
+                    errorMessage = 'Password must be at least 6 characters.';
+                }
+                
+                showMessage(errorMessage, 'error');
+                finishBtn.disabled = false;
+                finishBtn.textContent = 'Complete Registration';
+            }
+        });
 
         updateCounter();
     </script>

@@ -54,16 +54,12 @@
             background-position: center;
         }
 
-        h1,
-        h2,
-        h3,
-        h4 {
+        h1, h2, h3, h4 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             line-height: 1.2;
         }
 
-        /* Main Content */
         .login-container {
             display: flex;
             align-items: center;
@@ -80,7 +76,7 @@
             border-radius: 20px;
             box-shadow: var(--shadow-large);
             width: 100%;
-            max-width: 700px;
+            max-width: 500px;
             position: relative;
             backdrop-filter: blur(10px);
             animation: slideUp 0.6s ease-out;
@@ -151,34 +147,16 @@
             border-color: var(--accent);
             background: var(--white);
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
-            transform: translateY(-2px);
-        }
-
-        .form-group input.error {
-            border-color: var(--error);
-            background: rgba(229, 62, 62, 0.05);
-        }
-
-        .form-group input.success {
-            border-color: var(--success);
-            background: rgba(56, 161, 105, 0.05);
-        }
-
-        .error-message {
-            color: var(--error);
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            display: none;
-            animation: fadeIn 0.3s ease;
         }
 
         .password-toggle {
             position: absolute;
             right: 1rem;
-            top: 50%;
+            top: 68%;
+            transform: translateY(-50%);
             cursor: pointer;
             color: var(--text-light);
-            font-size: 1.1rem;
+            font-size: 1.2rem;
             transition: var(--transition);
         }
 
@@ -231,8 +209,6 @@
             cursor: pointer;
             transition: var(--transition);
             font-family: 'Inter', sans-serif;
-            position: relative;
-            overflow: hidden;
         }
 
         .login-button:hover:not(:disabled) {
@@ -245,104 +221,11 @@
             cursor: not-allowed;
         }
 
-        .login-button .loading {
-            display: none;
-        }
-
-        .login-button.loading .loading {
-            display: inline-block;
-            margin-right: 0.5rem;
-            animation: spin 1s linear infinite;
-        }
-
-        .divider {
-            text-align: center;
-            margin: 2rem 0;
-            position: relative;
-            color: var(--text-light);
-            font-size: 0.9rem;
-        }
-
-        .divider::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: #e2e8f0;
-            z-index: 1;
-        }
-
-        .divider span {
-            background: var(--white);
-            padding: 0 1rem;
-            position: relative;
-            z-index: 2;
-        }
-
-        .social-login {
-            display: flex;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-
-        .social-button {
-            flex: 1;
-            padding: 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            background: var(--white);
-            cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            font-weight: 500;
-            color: var(--text-dark);
-            font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .social-button:hover {
-            border-color: var(--accent);
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .social-button.google {
-            border-color: #4285f4;
-            color: #4285f4;
-        }
-
-        .social-button.google:hover {
-            background: #4285f4;
-            color: white;
-            border-color: #4285f4;
-        }
-
-        .social-button.facebook {
-            border-color: #1877f2;
-            color: #1877f2;
-        }
-
-        .social-button.facebook:hover {
-            background: #1877f2;
-            color: white;
-            border-color: #1877f2;
-        }
-
-        .social-icon {
-            width: 18px;
-            height: 18px;
-            fill: currentColor;
-        }
-
         .signup-link {
             text-align: center;
             color: var(--text-light);
             font-size: 0.95rem;
+            margin-top: 2rem;
         }
 
         .signup-link a {
@@ -357,64 +240,39 @@
             text-decoration: underline;
         }
 
-        /* Success Message */
-        .success-message {
-            background: rgba(56, 161, 105, 0.1);
-            color: var(--success);
+        .message {
             padding: 1rem;
-            border-radius: 8px;
+            border-radius: 10px;
             margin-bottom: 1.5rem;
-            border-left: 4px solid var(--success);
             display: none;
-            animation: slideDown 0.4s ease;
+            text-align: center;
         }
 
-        /* Animations */
+        .message.error {
+            background: #fff5f5;
+            color: var(--error);
+            border: 1px solid #feb2b2;
+            display: block;
+        }
+
+        .message.success {
+            background: #f0fff4;
+            color: var(--success);
+            border: 1px solid #9ae6b4;
+            display: block;
+        }
+
         @keyframes slideUp {
             from {
                 opacity: 0;
                 transform: translateY(30px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-10px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @keyframes spin {
-            from {
-                transform: rotate(0deg);
-            }
-
-            to {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* Responsive Design */
         @media (max-width: 768px) {
             .login-container {
                 padding: 2rem 1rem;
@@ -422,15 +280,10 @@
 
             .login-card {
                 padding: 2rem;
-                margin: 0 1rem;
             }
 
             .login-header h1 {
                 font-size: 1.8rem;
-            }
-
-            .social-login {
-                flex-direction: column;
             }
         }
 
@@ -447,10 +300,8 @@
         }
     </style>
 </head>
+
 <body>
-
-
-    <!-- Login Container -->
     <div class="login-container">
         <div class="login-card">
             <div class="login-header">
@@ -459,69 +310,30 @@
                 <p>Sign in to your Heritage Museum member account</p>
             </div>
 
-            <div class="success-message" id="successMessage">
-                Welcome back! Login successful.
-            </div>
+            <div id="message" class="message"></div>
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" name="email" required>
-                    <div class="error-message" id="emailError">Please enter a valid email address</div>
+                    <label for="emailOrUsername">Email or Username</label>
+                    <input type="text" id="emailOrUsername" required autocomplete="username">
                 </div>
 
                 <div class="form-group">
                     <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <input type="password" id="password" required autocomplete="current-password">
                     <span class="password-toggle" id="passwordToggle">👁</span>
-                    <div class="error-message" id="passwordError">Password must be at least 6 characters</div>
                 </div>
 
                 <div class="form-options">
                     <label class="remember-me">
-                        <input type="checkbox" id="rememberMe" name="rememberMe">
+                        <input type="checkbox" id="rememberMe">
                         <span>Remember me</span>
                     </label>
                     <a href="#" class="forgot-password">Forgot password?</a>
                 </div>
 
-                <button type="submit" class="login-button" id="loginButton">
-                    <span class="loading">⟳</span>
-                    <span class="button-text">Sign In</span>
-                </button>
+                <button type="submit" class="login-button" id="loginButton">Sign In</button>
             </form>
-
-            <div class="divider">
-                <span>or continue with</span>
-            </div>
-
-            <div class="social-login">
-                <button class="social-button google" id="googleLogin">
-                    <svg class="social-icon" viewBox="0 0 24 24">
-                        <path
-                            d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
-                            fill="#4285F4" />
-                        <path
-                            d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
-                            fill="#34A853" />
-                        <path
-                            d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
-                            fill="#FBBC05" />
-                        <path
-                            d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
-                            fill="#EA4335" />
-                    </svg>
-                    <span>Google</span>
-                </button>
-                <button class="social-button facebook" id="facebookLogin">
-                    <svg class="social-icon" viewBox="0 0 24 24">
-                        <path
-                            d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"
-                            fill="#1877F2" />
-                    </svg>
-                    <span>Facebook</span>
-                </button>
-            </div>
 
             <div class="signup-link">
                 Don't have an account? <a href="SignUp.html">Create one here</a>
@@ -529,322 +341,128 @@
         </div>
     </div>
 
-    <script>
-        // Password toggle functionality
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { 
+            signInWithEmailAndPassword,
+            setPersistence,
+            browserSessionPersistence,
+            browserLocalPersistence
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { 
+            collection,
+            query,
+            where,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
         const passwordToggle = document.getElementById('passwordToggle');
         const passwordInput = document.getElementById('password');
-
-        passwordToggle.addEventListener('click', function () {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            this.textContent = type === 'password' ? '👁' : '🙈';
-        });
-
-        // Form validation
-        function validateEmail(email) {
-            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return re.test(email);
-        }
-
-        function validatePassword(password) {
-            return password.length >= 6;
-        }
-
-        function showError(inputId, errorId, message) {
-            const input = document.getElementById(inputId);
-            const error = document.getElementById(errorId);
-
-            input.classList.add('error');
-            input.classList.remove('success');
-            error.textContent = message;
-            error.style.display = 'block';
-        }
-
-        function showSuccess(inputId, errorId) {
-            const input = document.getElementById(inputId);
-            const error = document.getElementById(errorId);
-
-            input.classList.remove('error');
-            input.classList.add('success');
-            error.style.display = 'none';
-        }
-
-        function clearValidation(inputId, errorId) {
-            const input = document.getElementById(inputId);
-            const error = document.getElementById(errorId);
-
-            input.classList.remove('error', 'success');
-            error.style.display = 'none';
-        }
-
-        // Real-time validation
-        const emailInput = document.getElementById('email');
-        const passwordInputField = document.getElementById('password');
-
-        emailInput.addEventListener('blur', function () {
-            if (this.value) {
-                if (validateEmail(this.value)) {
-                    showSuccess('email', 'emailError');
-                } else {
-                    showError('email', 'emailError', 'Please enter a valid email address');
-                }
-            }
-        });
-
-        emailInput.addEventListener('input', function () {
-            if (this.classList.contains('error')) {
-                clearValidation('email', 'emailError');
-            }
-        });
-
-        passwordInputField.addEventListener('blur', function () {
-            if (this.value) {
-                if (validatePassword(this.value)) {
-                    showSuccess('password', 'passwordError');
-                } else {
-                    showError('password', 'passwordError', 'Password must be at least 6 characters');
-                }
-            }
-        });
-
-        passwordInputField.addEventListener('input', function () {
-            if (this.classList.contains('error')) {
-                clearValidation('password', 'passwordError');
-            }
-        });
-
-        // Form submission
+        const emailOrUsernameInput = document.getElementById('emailOrUsername');
         const loginForm = document.getElementById('loginForm');
         const loginButton = document.getElementById('loginButton');
-        const successMessage = document.getElementById('successMessage');
+        const messageDiv = document.getElementById('message');
+        const rememberMeCheckbox = document.getElementById('rememberMe');
 
-        loginForm.addEventListener('submit', function (e) {
+        function showMessage(message, type) {
+            messageDiv.textContent = message;
+            messageDiv.className = `message ${type}`;
+            messageDiv.style.display = 'block';
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function hideMessage() {
+            messageDiv.style.display = 'none';
+        }
+
+        passwordToggle.addEventListener('click', () => {
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            passwordToggle.textContent = type === 'password' ? '👁' : '🙈';
+        });
+
+        async function findEmailByUsername(username) {
+            try {
+                const usersRef = collection(db, "Users");
+                const q = query(usersRef, where("Username", "==", username));
+                const querySnapshot = await getDocs(q);
+                
+                if (!querySnapshot.empty) {
+                    return querySnapshot.docs[0].data()["Email Address"];
+                }
+                return null;
+            } catch (error) {
+                console.error("Error finding email by username:", error);
+                return null;
+            }
+        }
+
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
+            hideMessage();
 
-            const email = emailInput.value;
-            const password = passwordInputField.value;
-            let isValid = true;
+            const emailOrUsername = emailOrUsernameInput.value.trim();
+            const password = passwordInput.value;
+            const rememberMe = rememberMeCheckbox.checked;
 
-            // Clear previous success message
-            successMessage.style.display = 'none';
-
-            // Validate email
-            if (!email) {
-                showError('email', 'emailError', 'Email is required');
-                isValid = false;
-            } else if (!validateEmail(email)) {
-                showError('email', 'emailError', 'Please enter a valid email address');
-                isValid = false;
-            } else {
-                showSuccess('email', 'emailError');
+            if (!emailOrUsername || !password) {
+                showMessage('Please enter both email/username and password.', 'error');
+                return;
             }
 
-            // Validate password
-            if (!password) {
-                showError('password', 'passwordError', 'Password is required');
-                isValid = false;
-            } else if (!validatePassword(password)) {
-                showError('password', 'passwordError', 'Password must be at least 6 characters');
-                isValid = false;
-            } else {
-                showSuccess('password', 'passwordError');
-            }
+            loginButton.disabled = true;
+            loginButton.textContent = 'Signing In...';
 
-            if (isValid) {
-                // Show loading state
-                loginButton.classList.add('loading');
-                loginButton.disabled = true;
-                loginButton.querySelector('.button-text').textContent = 'Signing In...';
+            try {
+                const persistence = rememberMe ? browserLocalPersistence : browserSessionPersistence;
+                await setPersistence(auth, persistence);
 
-                // Simulate login process
-                setTimeout(() => {
-                    // Reset button state
-                    loginButton.classList.remove('loading');
-                    loginButton.disabled = false;
-                    loginButton.querySelector('.button-text').textContent = 'Sign In';
+                let emailToUse = emailOrUsername;
 
-                    // Show success message
-                    successMessage.style.display = 'block';
-
-                    // Simulate redirect after success
-                    setTimeout(() => {
-                        console.log('Redirecting to dashboard...');
-                        // window.location.href = 'Home.html';
-                    }, 1500);
-                }, 2000);
-            }
-        });
-
-        // Social login handlers with actual implementation
-        document.getElementById('googleLogin').addEventListener('click', function () {
-            // Google OAuth implementation
-            loginWithGoogle();
-        });
-
-        document.getElementById('facebookLogin').addEventListener('click', function () {
-            // Facebook OAuth implementation
-            loginWithFacebook();
-        });
-
-        // Google OAuth implementation
-        function loginWithGoogle() {
-            // Show loading state
-            const googleBtn = document.getElementById('googleLogin');
-            const originalContent = googleBtn.innerHTML;
-            googleBtn.innerHTML = '<span class="loading">⟳</span> Connecting...';
-            googleBtn.disabled = true;
-
-            // Simulate Google OAuth flow
-            console.log('Initiating Google OAuth...');
-
-            // In a real implementation, you would:
-            // 1. Initialize Google OAuth client
-            // 2. Call gapi.auth2.getAuthInstance().signIn()
-            // 3. Handle the response and extract user data
-
-            // Mock Google OAuth response
-            setTimeout(() => {
-                const mockGoogleUser = {
-                    id: 'google_123456',
-                    email: 'user@gmail.com',
-                    name: 'John Doe',
-                    picture: 'https://example.com/avatar.jpg',
-                    provider: 'google'
-                };
-
-                handleSocialLoginSuccess(mockGoogleUser);
-
-                // Reset button
-                googleBtn.innerHTML = originalContent;
-                googleBtn.disabled = false;
-            }, 2000);
-
-            // Real implementation would look like this:
-            /*
-            // Load Google API
-            if (typeof gapi !== 'undefined') {
-                gapi.load('auth2', function() {
-                    gapi.auth2.init({
-                        client_id: 'YOUR_GOOGLE_CLIENT_ID.apps.googleusercontent.com'
-                    }).then(function() {
-                        const authInstance = gapi.auth2.getAuthInstance();
-                        authInstance.signIn().then(function(googleUser) {
-                            const profile = googleUser.getBasicProfile();
-                            const userData = {
-                                id: profile.getId(),
-                                email: profile.getEmail(),
-                                name: profile.getName(),
-                                picture: profile.getImageUrl(),
-                                provider: 'google',
-                                token: googleUser.getAuthResponse().id_token
-                            };
-                            handleSocialLoginSuccess(userData);
-                        }).catch(function(error) {
-                            handleSocialLoginError('Google', error);
-                        });
-                    });
-                });
-            }
-            */
-        }
-
-        // Facebook OAuth implementation
-        function loginWithFacebook() {
-            // Show loading state
-            const facebookBtn = document.getElementById('facebookLogin');
-            const originalContent = facebookBtn.innerHTML;
-            facebookBtn.innerHTML = '<span class="loading">⟳</span> Connecting...';
-            facebookBtn.disabled = true;
-
-            // Simulate Facebook OAuth flow
-            console.log('Initiating Facebook OAuth...');
-
-            // In a real implementation, you would:
-            // 1. Initialize Facebook SDK
-            // 2. Call FB.login()
-            // 3. Handle the response and extract user data
-
-            // Mock Facebook OAuth response
-            setTimeout(() => {
-                const mockFacebookUser = {
-                    id: 'facebook_789012',
-                    email: 'user@facebook.com',
-                    name: 'Jane Smith',
-                    picture: 'https://example.com/fb-avatar.jpg',
-                    provider: 'facebook'
-                };
-
-                handleSocialLoginSuccess(mockFacebookUser);
-
-                // Reset button
-                facebookBtn.innerHTML = originalContent;
-                facebookBtn.disabled = false;
-            }, 2000);
-
-            // Real implementation would look like this:
-            /*
-            // Initialize Facebook SDK
-            if (typeof FB !== 'undefined') {
-                FB.init({
-                    appId: 'YOUR_FACEBOOK_APP_ID',
-                    cookie: true,
-                    xfbml: true,
-                    version: 'v18.0'
-                });
-
-                FB.login(function(response) {
-                    if (response.authResponse) {
-                        FB.api('/me', { fields: 'name,email,picture' }, function(userData) {
-                            const formattedUser = {
-                                id: userData.id,
-                                email: userData.email,
-                                name: userData.name,
-                                picture: userData.picture.data.url,
-                                provider: 'facebook',
-                                token: response.authResponse.accessToken
-                            };
-                            handleSocialLoginSuccess(formattedUser);
-                        });
-                    } else {
-                        handleSocialLoginError('Facebook', 'User cancelled login');
+                if (!emailOrUsername.includes('@')) {
+                    const foundEmail = await findEmailByUsername(emailOrUsername);
+                    if (!foundEmail) {
+                        showMessage('Username not found. Please check and try again.', 'error');
+                        loginButton.disabled = false;
+                        loginButton.textContent = 'Sign In';
+                        return;
                     }
-                }, { scope: 'email' });
+                    emailToUse = foundEmail;
+                }
+
+                const userCredential = await signInWithEmailAndPassword(auth, emailToUse, password);
+                const user = userCredential.user;
+
+                showMessage('Login successful! Redirecting...', 'success');
+
+                setTimeout(() => {
+                    window.location.href = 'Home.html';
+                }, 1500);
+
+            } catch (error) {
+                console.error('Login error:', error);
+                let errorMessage = 'Failed to sign in. Please try again.';
+
+                if (error.code === 'auth/user-not-found') {
+                    errorMessage = 'No account found with this email/username.';
+                } else if (error.code === 'auth/wrong-password') {
+                    errorMessage = 'Incorrect password. Please try again.';
+                } else if (error.code === 'auth/invalid-email') {
+                    errorMessage = 'Invalid email format.';
+                } else if (error.code === 'auth/user-disabled') {
+                    errorMessage = 'This account has been disabled.';
+                } else if (error.code === 'auth/too-many-requests') {
+                    errorMessage = 'Too many failed attempts. Please try again later.';
+                } else if (error.code === 'auth/invalid-credential') {
+                    errorMessage = 'Invalid credentials. Please check your email/username and password.';
+                }
+
+                showMessage(errorMessage, 'error');
+                loginButton.disabled = false;
+                loginButton.textContent = 'Sign In';
             }
-            */
-        }
-
-        // Handle successful social login
-        function handleSocialLoginSuccess(userData) {
-            console.log('Social login successful:', userData);
-
-            // Show success message
-            const successMessage = document.getElementById('successMessage');
-            successMessage.innerHTML = `Welcome ${userData.name}! Login successful via ${userData.provider}.`;
-            successMessage.style.display = 'block';
-
-            // In a real app, you would:
-            // 1. Send user data to your backend
-            // 2. Create/update user account
-            // 3. Set authentication cookies/tokens
-            // 4. Redirect to dashboard
-
-            setTimeout(() => {
-                console.log('Redirecting to dashboard...');
-                // window.location.href = 'Home.html';
-                alert(`Login successful! User: ${userData.name}\nEmail: ${userData.email}\nProvider: ${userData.provider}`);
-            }, 1500);
-        }
-
-        // Handle social login errors
-        function handleSocialLoginError(provider, error) {
-            console.error(`${provider} login error:`, error);
-            alert(`${provider} login failed. Please try again.`);
-        }
-
-        // Demo credentials hint (for testing purposes)
-        console.log('Demo credentials for testing:');
-        console.log('Email: demo@heritage.museum');
-        console.log('Password: heritage123');
+        });
     </script>
 </body>
+
 </html>
