@@ -286,6 +286,31 @@
             border-radius: 12px;
         }
 
+        .like-btn {
+            font-size: 32px;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: var(--primary-dark);
+            transition: transform 0.2s ease, color 0.3s ease;
+        }
+
+        .like-btn:hover {
+            transform: scale(1.2);
+        }
+
+        .like-btn.liked {
+            color: red;
+        }
+
+        .like-container {
+            margin-top: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+
         /* Footer */
         .footer {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
@@ -425,6 +450,12 @@
                             Description not available.
                         </p>
                     </div>
+
+                    <div class="like-container">
+                        <button id="likeBtn" class="like-btn material-icons">favorite_border</button>
+                        <span id="likeCount">0</span> Likes
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -462,11 +493,16 @@
     </footer>
 
     <script type="module">
-        // Import Firebase services from your centralized config
         import { db } from './firebase-config.js';
-        import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        // import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { doc, getDoc, updateDoc, arrayUnion, arrayRemove, increment }
+            from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { onAuthStateChanged }
+            from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import { auth } from "./firebase-config.js";
 
-        // Get URL parameter
+        let currentArtworkId = null;
+
         function getUrlParameter(name) {
             name = name.replace(/[\[]/, '\\[').replace(/[\]]/, '\\]');
             const regex = new RegExp('[\\?&]' + name + '=([^&#]*)');
@@ -474,14 +510,12 @@
             return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
         }
 
-        // Show error
         function showError(message) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('error').style.display = 'block';
             document.getElementById('error-message').textContent = message;
         }
 
-        // Render art details
         function renderArtDetails(artwork) {
             document.getElementById('loading').style.display = 'none';
             document.getElementById('art-content').style.display = 'grid';
@@ -502,7 +536,6 @@
             document.title = `${artwork.title || 'Artwork'} - Heritage Museum`;
         }
 
-        // Fetch artwork by ID
         async function fetchArtwork(id) {
             try {
                 const docRef = doc(db, "Museum_Collection", id);
@@ -519,9 +552,9 @@
             }
         }
 
-        // Main execution
         document.addEventListener("DOMContentLoaded", async () => {
             const artworkId = getUrlParameter('id');
+            currentArtworkId = artworkId;
 
             if (!artworkId) {
                 showError('No artwork ID provided. Please return to collections and select an artwork.');
@@ -553,6 +586,9 @@
 
         document.querySelector('.back-button').addEventListener('click', function (e) {
             e.preventDefault();
+            if (currentArtworkId) {
+                sessionStorage.setItem('scrollToArtwork', currentArtworkId);
+            }
             window.location.href = 'Gallery.html';
         });
 
@@ -566,6 +602,63 @@
                 nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
             }
         });
+
+        const likeBtn = document.getElementById("likeBtn");
+        const likeCountEl = document.getElementById("likeCount");
+        let currentUser = null;
+
+        // Track auth state
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            if (user && currentArtworkId) {
+                loadLikes();
+            }
+        });
+
+        async function loadLikes() {
+            const artRef = doc(db, "Museum_Collection", currentArtworkId);
+            const artSnap = await getDoc(artRef);
+            if (artSnap.exists()) {
+                const data = artSnap.data();
+                likeCountEl.textContent = data.likesCount || 0;
+
+                if (data.likedBy && data.likedBy.includes(currentUser.uid)) {
+                    likeBtn.textContent = "favorite"; // filled heart
+                    likeBtn.classList.add("liked");
+                } else {
+                    likeBtn.textContent = "favorite_border"; // outlined heart
+                    likeBtn.classList.remove("liked");
+                }
+
+            }
+        }
+
+        likeBtn.addEventListener("click", async () => {
+            if (!currentUser) return alert("Please log in to like artworks.");
+
+            const artRef = doc(db, "Museum_Collection", currentArtworkId);
+            const artSnap = await getDoc(artRef);
+            const data = artSnap.data();
+
+            if (data.likedBy && data.likedBy.includes(currentUser.uid)) {
+                await updateDoc(artRef, {
+                    likedBy: arrayRemove(currentUser.uid),
+                    likesCount: increment(-1)
+                });
+                likeBtn.textContent = "favorite_border";
+                likeBtn.classList.remove("liked");
+                likeCountEl.textContent = (data.likesCount || 1) - 1;
+            } else {
+                await updateDoc(artRef, {
+                    likedBy: arrayUnion(currentUser.uid),
+                    likesCount: increment(1)
+                });
+                likeBtn.textContent = "favorite";
+                likeBtn.classList.add("liked");
+                likeCountEl.textContent = (data.likesCount || 0) + 1;
+            }
+        });
+
     </script>
 </body>
 

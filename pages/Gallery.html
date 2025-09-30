@@ -144,12 +144,14 @@
             border-color: var(--accent-light);
         }
 
+        .page-content {
+            padding-top: 6rem;
+            min-height: 100vh;
+        }
+
         .hero {
             background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary-light) 100%);
-            height: 60vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            padding: 8rem 0 5rem;
             text-align: center;
             color: var(--white);
             background-size: cover;
@@ -172,6 +174,7 @@
 
         .hero-content {
             max-width: 800px;
+            margin: 0 auto;
             padding: 2rem;
             position: relative;
             z-index: 1;
@@ -183,15 +186,16 @@
         }
 
         .hero-content p {
-            font-size: 1.1rem;
-            margin-bottom: 2rem;
+            font-size: 1.2rem;
+            margin-bottom: 0;
             font-weight: 300;
+            opacity: 0.9;
         }
 
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 5rem 2rem;
+            padding: 3rem 2rem;
         }
 
         .section-title {
@@ -216,7 +220,6 @@
             margin: 0 auto;
         }
 
-        /* Search and Filter Controls */
         .controls-section {
             background: var(--white);
             border-radius: 12px;
@@ -346,6 +349,10 @@
             box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
         }
 
+        .collection-item.highlight {
+            box-shadow: 0 0 0 3px var(--accent);
+        }
+
         .collection-item img {
             width: 100%;
             height: 250px;
@@ -453,6 +460,14 @@
                 display: none;
             }
 
+            .page-content {
+                padding-top: 4.5rem;
+            }
+
+            .hero {
+                padding: 4rem 0 3rem;
+            }
+
             .hero-content h1 {
                 font-size: 2.3rem;
             }
@@ -478,7 +493,7 @@
             }
 
             .container {
-                padding: 3rem 1rem;
+                padding: 2rem 1rem;
             }
 
             .controls-section {
@@ -507,74 +522,72 @@
         </div>
     </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Explore Our Gallery</h1>
-            <p>Discover a wide variety of historical artifacts, from ancient codices to exquisite bottles, carefully
-                preserved to tell their stories.</p>
-        </div>
-    </section>
-
-    <!-- Collections Section -->
-    <div class="container">
-        <div class="section-title">
-            <h2>Museum Gallery</h2>
-        </div>
-
-        <!-- Search and Filter Controls -->
-        <div class="controls-section">
-            <div class="search-filter-container">
-                <div class="search-wrapper">
-                    <span class="material-icons search-icon">search</span>
-                    <input 
-                        type="text" 
-                        id="search-input" 
-                        class="search-input" 
-                        placeholder="Search artworks by title or artist..."
-                        autocomplete="off"
-                    >
-                </div>
-                
-                <div class="filter-wrapper">
-                    <select id="category-filter" class="filter-select">
-                        <option value="">All Categories</option>
-                        <option value="codices">Codices</option>
-                        <option value="arms">Arms</option>
-                        <option value="boxes">Boxes</option>
-                        <option value="bottles">Bottles</option>
-                    </select>
-                    <span class="material-icons filter-icon">expand_more</span>
-                </div>
-                
-                <button id="clear-filters" class="clear-filters-btn">
-                    <span class="material-icons">clear</span>
-                    Clear
-                </button>
+    <!-- Page Content -->
+    <div class="page-content">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Explore Our Gallery</h1>
+                <p>Discover a wide variety of historical artifacts, from ancient codices to exquisite bottles, carefully
+                    preserved to tell their stories.</p>
             </div>
-        </div>
+        </section>
 
-        <!-- Results Info -->
-        <div id="results-info" class="results-info" style="display: none;">
-            Showing <span id="results-count">0</span> results
-        </div>
+        <!-- Collections Section -->
+        <div class="container">
+            <div class="section-title">
+                <h2>Museum Gallery</h2>
+            </div>
 
-        <div id="loading" class="loading">
-            Loading Gallery...
-        </div>
+            <!-- Search and Filter Controls -->
+            <div class="controls-section">
+                <div class="search-filter-container">
+                    <div class="search-wrapper">
+                        <span class="material-icons search-icon">search</span>
+                        <input type="text" id="search-input" class="search-input"
+                            placeholder="Search artworks by title or artist..." autocomplete="off">
+                    </div>
 
-        <div id="error" class="error" style="display: none;">
-            <h3>Unable to Load Gallery</h3>
-            <p id="error-message"></p>
-        </div>
+                    <div class="filter-wrapper">
+                        <select id="category-filter" class="filter-select">
+                            <option value="">All Categories</option>
+                            <option value="codices">Codices</option>
+                            <option value="arms">Arms</option>
+                            <option value="boxes">Boxes</option>
+                            <option value="bottles">Bottles</option>
+                        </select>
+                        <span class="material-icons filter-icon">expand_more</span>
+                    </div>
 
-        <div id="no-results" class="no-results" style="display: none;">
-            <div class="material-icons">search_off</div>
-            <h3>No Results Found</h3>
-            <p>Try adjusting your search or filter criteria</p>
-        </div>
+                    <button id="clear-filters" class="clear-filters-btn">
+                        <span class="material-icons">clear</span>
+                        Clear
+                    </button>
+                </div>
+            </div>
 
-        <div class="collections-grid" id="collections-grid">
+            <!-- Results Info -->
+            <div id="results-info" class="results-info" style="display: none;">
+                Showing <span id="results-count">0</span> results
+            </div>
+
+            <div id="loading" class="loading">
+                Loading Gallery...
+            </div>
+
+            <div id="error" class="error" style="display: none;">
+                <h3>Unable to Load Gallery</h3>
+                <p id="error-message"></p>
+            </div>
+
+            <div id="no-results" class="no-results" style="display: none;">
+                <div class="material-icons">search_off</div>
+                <h3>No Results Found</h3>
+                <p>Try adjusting your search or filter criteria</p>
+            </div>
+
+            <div class="collections-grid" id="collections-grid">
+            </div>
         </div>
     </div>
 
@@ -610,29 +623,12 @@
     </footer>
 
     <script type="module">
-        // Import Firestore functions from CDN
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-        import { getFirestore, collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { auth, db } from './firebase-config.js';
+        import { collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // Firebase config
-        const firebaseConfig = {
-            apiKey: "AIzaSyBQtJl-1lI6HmPUnN6UKbADMvdUA9RXYpo",
-            authDomain: "museum-management-4244e.firebaseapp.com",
-            projectId: "museum-management-4244e",
-            storageBucket: "museum-management-4244e.appspot.com",
-            messagingSenderId: "86285806144",
-            appId: "1:86285806144:web:f761e4f0c3577ac063cda5",
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        // Global variables
         let allCollections = [];
         let filteredCollections = [];
 
-        // DOM elements
         const searchInput = document.getElementById('search-input');
         const categoryFilter = document.getElementById('category-filter');
         const clearFiltersBtn = document.getElementById('clear-filters');
@@ -643,47 +639,35 @@
         const errorDiv = document.getElementById('error');
         const noResults = document.getElementById('no-results');
 
-        // Show error function
         function showError(message) {
             loading.style.display = 'none';
             errorDiv.style.display = 'block';
             document.getElementById('error-message').textContent = message;
         }
 
-        // Filter and search functions
         function filterAndSearch() {
             const searchTerm = searchInput.value.toLowerCase().trim();
             const selectedCategory = categoryFilter.value.toLowerCase();
 
-            console.log("Filter Debug:");
-            console.log("Selected category:", selectedCategory);
-            console.log("All collections:", allCollections);
-
             filteredCollections = allCollections.filter(item => {
-                // Search filter
-                const matchesSearch = !searchTerm || 
+                const matchesSearch = !searchTerm ||
                     (item.title && item.title.toLowerCase().includes(searchTerm)) ||
                     (item.artist && item.artist.toLowerCase().includes(searchTerm)) ||
                     (item.artistName && item.artistName.toLowerCase().includes(searchTerm));
 
-                // Category filter - using 'classification' field
                 const itemCategory = (item.classification || '').toLowerCase().trim();
-                console.log(`Item: ${item.title}, Classification: "${item.classification}", Normalized: "${itemCategory}"`);
-                
                 const matchesCategory = !selectedCategory || itemCategory === selectedCategory;
-                console.log(`Matches category: ${matchesCategory}`);
 
                 return matchesSearch && matchesCategory;
             });
 
-            console.log("Filtered results:", filteredCollections);
             renderCollections(filteredCollections);
             updateResultsInfo();
         }
 
         function updateResultsInfo() {
             const hasFilters = searchInput.value.trim() !== '' || categoryFilter.value !== '';
-            
+
             if (hasFilters) {
                 resultsInfo.style.display = 'block';
                 resultsCount.textContent = filteredCollections.length;
@@ -700,13 +684,12 @@
             updateResultsInfo();
         }
 
-        // Render collections
         function renderCollections(collections) {
             loading.style.display = 'none';
             collectionsGrid.innerHTML = "";
             errorDiv.style.display = 'none';
             noResults.style.display = 'none';
-            
+
             if (collections.length === 0) {
                 if (allCollections.length === 0) {
                     collectionsGrid.innerHTML = '<div class="loading">No collections found in the database.</div>';
@@ -719,13 +702,13 @@
             collections.forEach(item => {
                 const div = document.createElement("div");
                 div.className = "collection-item";
-                
-                // Handle missing fields with fallbacks
+                div.setAttribute('data-artwork-id', item.id);
+
                 const imageURL = item.imageURL || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="280" height="250" viewBox="0 0 280 250"%3E%3Crect fill="%23e2e8f0" width="280" height="250"/%3E%3Ctext x="140" y="125" text-anchor="middle" fill="%23718096" font-size="18"%3ENo Image%3C/text%3E%3C/svg%3E';
                 const title = item.title || 'Untitled';
                 const artist = item.artist || item.artistName || 'Unknown Artist';
                 const category = item.classification || '';
-                
+
                 div.innerHTML = `
                     <img src="${imageURL}" alt="${title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"280\\" height=\\"250\\" viewBox=\\"0 0 280 250\\"%3E%3Crect fill=\\"%23e2e8f0\\" width=\\"280\\" height=\\"250\\"/%3E%3Ctext x=\\"140\\" y=\\"125\\" text-anchor=\\"middle\\" fill=\\"%23718096\\" font-size=\\"18\\"%3EImage Error%3C/text%3E%3C/svg%3E'">
                     <div class="collection-info">
@@ -734,25 +717,19 @@
                         ${category ? `<div class="collection-category">${category}</div>` : ''}
                     </div>
                 `;
-                
-                // Add click event listener
+
                 div.addEventListener('click', () => {
-                    // Store current scroll position before navigating
-                    storeScrollPosition();
-                    // Navigate to art details page with the item ID
                     window.location.href = `ArtDetails.html?id=${item.id}`;
                 });
-                
+
                 collectionsGrid.appendChild(div);
             });
         }
 
-        // Fetch collections
         async function fetchCollections() {
             try {
                 const querySnapshot = await getDocs(collection(db, "Museum_Collection"));
                 const collections = querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                console.log("Collections fetched:", collections);
                 return collections;
             } catch (error) {
                 console.error("Error fetching collections:", error);
@@ -760,7 +737,6 @@
             }
         }
 
-        // Listen in real-time
         function listenCollections(callback) {
             return onSnapshot(collection(db, "Museum_Collection"), snapshot => {
                 const collections = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
@@ -768,58 +744,55 @@
             });
         }
 
-        // Event listeners
         searchInput.addEventListener('input', filterAndSearch);
         categoryFilter.addEventListener('change', filterAndSearch);
         clearFiltersBtn.addEventListener('click', clearAllFilters);
 
-        // Restore scroll position immediately before page renders
-        const savedScrollPos = sessionStorage.getItem('collections_scroll_position');
-        if (savedScrollPos) {
-            document.documentElement.scrollTop = parseInt(savedScrollPos);
-            document.body.scrollTop = parseInt(savedScrollPos);
-        }
-
-        // Main execution
         document.addEventListener("DOMContentLoaded", async () => {
             try {
-                // Disable automatic scroll restoration
                 if ('scrollRestoration' in history) {
                     history.scrollRestoration = 'manual';
                 }
 
-                // Check if we're returning from art details and have cached data
                 const cachedCollections = sessionStorage.getItem('collections_cache');
-                const isReturning = sessionStorage.getItem('collections_scroll_position');
-                
-                if (cachedCollections && isReturning) {
-                    // Use cached data for immediate render
+
+                if (cachedCollections) {
                     allCollections = JSON.parse(cachedCollections);
                     filteredCollections = [...allCollections];
                     renderCollections(filteredCollections);
-                    
-                    // Clean up the scroll position marker
-                    sessionStorage.removeItem('collections_scroll_position');
-                    
-                    // Then set up real-time listener for updates
+
                     listenCollections(updatedCollections => {
                         allCollections = updatedCollections;
                         sessionStorage.setItem('collections_cache', JSON.stringify(allCollections));
-                        filterAndSearch(); // Re-apply current filters
+                        filterAndSearch();
                     });
                 } else {
-                    // Normal first load
                     allCollections = await fetchCollections();
                     filteredCollections = [...allCollections];
                     sessionStorage.setItem('collections_cache', JSON.stringify(allCollections));
                     renderCollections(filteredCollections);
 
-                    // Set up real-time listener
                     listenCollections(updatedCollections => {
                         allCollections = updatedCollections;
                         sessionStorage.setItem('collections_cache', JSON.stringify(allCollections));
-                        filterAndSearch(); // Re-apply current filters
+                        filterAndSearch();
                     });
+                }
+
+                const scrollToArtwork = sessionStorage.getItem('scrollToArtwork');
+                if (scrollToArtwork) {
+                    sessionStorage.removeItem('scrollToArtwork');
+                    
+                    setTimeout(() => {
+                        const artworkCard = document.querySelector(`[data-artwork-id="${scrollToArtwork}"]`);
+                        if (artworkCard) {
+                            artworkCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                            artworkCard.classList.add('highlight');
+                            setTimeout(() => {
+                                artworkCard.classList.remove('highlight');
+                            }, 2000);
+                        }
+                    }, 300);
                 }
 
             } catch (error) {
@@ -828,13 +801,7 @@
             }
         });
 
-        // Store scroll position before navigating to art details
-        function storeScrollPosition() {
-            sessionStorage.setItem('collections_scroll_position', window.pageYOffset.toString());
-        }
-
-        // Navigation scroll effect
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
                 nav.style.padding = '0.7rem 0';
