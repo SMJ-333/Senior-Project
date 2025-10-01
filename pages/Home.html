@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heritage Museum - Discover History</title>
+    <title>ATHAR Museum - Discover History</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
@@ -11,19 +11,27 @@
     
 
     <style>
-        :root {
-            --primary-dark: #1a365d;
-            --primary-light: #2d4e8f;
-            --accent: #d4af37;
-            --accent-light: #e6c875;
-            --neutral-light: #f8f9fa;
-            --neutral-dark: #2d3748;
-            --text-dark: #2d3748;
-            --text-light: #718096;
-            --white: #ffffff;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-            --transition: all 0.3s ease;
-        }
+       :root {
+    --primary-dark: #123420b6;     
+    --primary-light: #2f4f3b;    
+    
+    --accent: #67332A;           
+    --accent-light: #8a4a3e;     
+
+    --highlight: #C2A670;        
+    --highlight-light: #d6bf90;  
+
+    --neutral-light: #f4f1e8;    
+    --neutral-dark: #4a4033;     
+
+    --text-dark: #2e2a26;        
+    --text-light: #7c7365;       
+
+    --white: #fdfcf9;            
+    --shadow: 0 4px 6px rgba(0, 0, 0, 0.12);
+    --transition: all 0.3s ease;
+}
+
 
         * {
             margin: 0;
@@ -536,10 +544,11 @@
             }
         }
         .seal {
-            width: 60px;       
+            width: 100px;       
             height: auto;
             margin-left: 10px; 
             vertical-align: middle; 
+            transform: rotate(15deg);
             }
 
     </style>
@@ -549,7 +558,7 @@
     <!-- Navigation -->
     <nav>
         <div class="nav-container">
-            <a href="Home.html" class="logo">Heritage Museum</a>
+            <a href="Home.html" class="logo">ATHAR Museum</a>
             <ul class="nav-links">
                 <li><a href="Home.html" class="active">Home</a></li>
                 <li><a href="AboutUs.html">About Us</a></li>
@@ -564,10 +573,10 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content">
-            <h1>Discover Timeless Heritage</h1>
+            <h1>Discover Timeless ATHAR</h1>
             <p>Experience centuries of art, culture, and history through our world-class collections and immersive
-                exhibitions.</p>
-            <a href="Exhibits.html" class="cta-button">Explore Exhibitions</a>
+                exhibitions. </p>
+           <a href="Exhibits.html" class="cta-button"> Explore Exhibitions </a>
         </div>
     </section>
 
@@ -576,8 +585,8 @@
         <div class="container">
             <div class="info-grid">
                 <div class="info-text">
-                    <h2>About Our Museum </h2>
-                    <p>Established in 1892, the Heritage Museum stands as a beacon of cultural preservation and
+                    <h2>About Our Museum <img src="../images/seal.png" class="seal"> </h2>
+                    <p>Established in 1892, the ATHAR Museum stands as a beacon of cultural preservation and
                         education. Our mission is to inspire curiosity and understanding of our shared human story
                         through carefully curated collections and engaging programs.</p>
                     <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an
@@ -714,7 +723,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Heritage Museum. All rights reserved.</p>
+                <p>&copy; 2025 ATHAR Museum. All rights reserved.</p>
             </div>
         </div>
     </footer>
