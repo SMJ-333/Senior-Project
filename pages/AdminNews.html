@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - News Management</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #1a365d;
+            --primary-light: #2d4e8f;
+            --accent: #d4af37;
+            --accent-light: #e6c875;
+            --neutral-light: #f8f9fa;
+            --text-dark: #2d3748;
+            --text-light: #718096;
+            --white: #ffffff;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+            --transition: all 0.3s ease;
+            --success: #48bb78;
+            --danger: #f56565;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--neutral-light);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+        }
+
+        .admin-badge {
+            background: var(--accent);
+            color: var(--primary-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            color: var(--white);
+        }
+
+        .stat-icon.accent {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: var(--primary-dark);
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .action-bar {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 400px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.8rem 1rem 0.8rem 3rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .add-btn {
+            background: var(--accent);
+            color: var(--primary-dark);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .add-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .news-table-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--neutral-light);
+        }
+
+        .table-header h2 {
+            color: var(--primary-dark);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--neutral-light);
+        }
+
+        th {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        td {
+            padding: 1rem 1.5rem;
+            border-bottom: 1px solid var(--neutral-light);
+        }
+
+        tbody tr:hover {
+            background: var(--neutral-light);
+        }
+
+        .news-title-cell {
+            font-weight: 600;
+            color: var(--primary-dark);
+            max-width: 300px;
+        }
+
+        .news-preview {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            max-width: 400px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .news-date {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .news-image-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-right: 0.3rem;
+        }
+
+        .badge-featured {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        .badge-new {
+            background: var(--success);
+            color: white;
+        }
+
+        .badge-category {
+            background: var(--neutral-light);
+            color: var(--text-dark);
+        }
+
+        .badge-deleted {
+            background: var(--danger);
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-edit {
+            background: var(--primary-light);
+            color: var(--white);
+        }
+
+        .btn-edit:hover {
+            background: var(--primary-dark);
+        }
+
+        .btn-delete {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .btn-delete:hover {
+            background: #e53e3e;
+        }
+
+        .btn-restore {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .btn-restore:hover {
+            background: #38a169;
+        }
+
+        .deleted-by-info {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .deleted-section {
+            margin-top: 2rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            overflow-y: auto;
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 12px;
+            max-width: 700px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            padding: 1.5rem 2rem;
+            border-bottom: 2px solid var(--neutral-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-header h2 {
+            color: var(--primary-dark);
+        }
+
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 1.8rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+        }
+
+        .checkbox-group label {
+            cursor: pointer;
+            margin: 0;
+        }
+
+        .image-preview {
+            margin-top: 1rem;
+            border-radius: 8px;
+            overflow: hidden;
+            display: none;
+        }
+
+        .image-preview img {
+            width: 100%;
+            max-height: 300px;
+            object-fit: cover;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            padding-top: 1rem;
+            border-top: 2px solid var(--neutral-light);
+        }
+
+        .btn {
+            padding: 0.8rem 1.8rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        .btn-primary:hover {
+            background: var(--accent-light);
+        }
+
+        .btn-secondary {
+            background: var(--neutral-light);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state .material-icons {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .action-bar {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .search-box {
+                max-width: none;
+            }
+
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.8rem;
+            }
+
+            .news-preview {
+                max-width: none;
+            }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="header-title">
+                <span class="material-icons" style="font-size: 2.5rem;">dashboard</span>
+                <div>
+                    <h1>News Management</h1>
+                    <span class="admin-badge">Admin Dashboard</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="user-info">
+                    <span class="material-icons">person</span>
+                    <span id="admin-email">Admin</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon primary">
+                    <span class="material-icons">article</span>
+                </div>
+                <div class="stat-info">
+                    <h3 id="total-news">0</h3>
+                    <p>Total News Articles</p>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon accent">
+                    <span class="material-icons">today</span>
+                </div>
+                <div class="stat-info">
+                    <h3 id="recent-news">0</h3>
+                    <p>Published This Month</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="action-bar">
+            <div class="search-box">
+                <span class="material-icons search-icon">search</span>
+                <input type="text" class="search-input" id="search-input" placeholder="Search news articles...">
+            </div>
+            <button class="add-btn" id="add-news-btn">
+                <span class="material-icons">add</span>
+                Add New Article
+            </button>
+        </div>
+
+        <div class="news-table-container">
+            <div class="table-header">
+                <h2>All News Articles</h2>
+            </div>
+            
+            <div id="loading" class="loading">
+                <span class="material-icons" style="font-size: 3rem; animation: spin 1s linear infinite;">refresh</span>
+                <p>Loading news articles...</p>
+            </div>
+
+            <div id="empty-state" class="empty-state" style="display: none;">
+                <span class="material-icons">article</span>
+                <h3>No News Articles Yet</h3>
+                <p>Click "Add New Article" to create your first news article</p>
+            </div>
+
+            <table id="news-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Published Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="news-tbody">
+                </tbody>
+            </table>
+        </div>
+
+        <div class="news-table-container deleted-section" id="deleted-section" style="display: none;">
+            <div class="table-header">
+                <h2>Deleted Articles</h2>
+            </div>
+
+            <table id="deleted-table" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Deleted By</th>
+                        <th>Deleted Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody id="deleted-tbody">
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="modal" id="news-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add News Article</h2>
+                <button class="close-modal" id="close-modal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="news-form">
+                    <div class="form-group">
+                        <label class="form-label">Title *</label>
+                        <input type="text" class="form-input" id="news-title" required placeholder="Enter article title">
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Category *</label>
+                        <select class="form-select" id="news-category" required>
+                            <option value="">Select a category</option>
+                            <option value="Exhibitions">Exhibitions</option>
+                            <option value="Events">Events</option>
+                            <option value="Collections">Collections</option>
+                            <option value="Research">Research</option>
+                            <option value="Announcements">Announcements</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Excerpt (Short Summary)</label>
+                        <textarea class="form-textarea" id="news-excerpt" placeholder="Brief summary for preview (optional)" style="min-height: 80px;"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Full Content *</label>
+                        <textarea class="form-textarea" id="news-content" required placeholder="Write your full article content here..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Image URL *</label>
+                        <input type="url" class="form-input" id="news-image" required placeholder="https://example.com/image.jpg">
+                        <div class="image-preview" id="image-preview">
+                            <img id="preview-img" src="" alt="Preview">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Article Options</label>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="news-featured">
+                            <label for="news-featured">Mark as Featured (show in featured section)</label>
+                        </div>
+                        <div class="checkbox-group">
+                            <input type="checkbox" id="news-new">
+                            <label for="news-new">Mark as New (show "New" badge)</label>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
+                        <button type="submit" class="btn btn-primary" id="submit-btn">Publish Article</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        let currentEditId = null;
+        let allNews = [];
+        let filteredNews = [];
+        let deletedNews = [];
+        let currentUser = null;
+
+        const newsModal = document.getElementById('news-modal');
+        const closeModal = document.getElementById('close-modal');
+        const cancelBtn = document.getElementById('cancel-btn');
+        const newsForm = document.getElementById('news-form');
+        const modalTitle = document.getElementById('modal-title');
+        const submitBtn = document.getElementById('submit-btn');
+        const newsTbody = document.getElementById('news-tbody');
+        const newsTable = document.getElementById('news-table');
+        const loading = document.getElementById('loading');
+        const emptyState = document.getElementById('empty-state');
+        const addNewsBtn = document.getElementById('add-news-btn');
+        const searchInput = document.getElementById('search-input');
+        const imageInput = document.getElementById('news-image');
+        const imagePreview = document.getElementById('image-preview');
+        const previewImg = document.getElementById('preview-img');
+        const deletedSection = document.getElementById('deleted-section');
+        const deletedTable = document.getElementById('deleted-table');
+        const deletedTbody = document.getElementById('deleted-tbody');
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                currentUser = user;
+                document.getElementById('admin-email').textContent = user.email;
+            }
+        });
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Unknown';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+        }
+
+        function truncateText(text, maxLength = 50) {
+            if (!text) return '';
+            if (text.length <= maxLength) return text;
+            return text.substring(0, maxLength) + '...';
+        }
+
+        function updateStats() {
+            const activeNews = allNews.filter(news => !news.isDeleted);
+            document.getElementById('total-news').textContent = activeNews.length;
+            
+            const now = new Date();
+            const thisMonth = activeNews.filter(news => {
+                if (!news.publishedAt) return false;
+                const date = news.publishedAt.toDate ? news.publishedAt.toDate() : new Date(news.publishedAt);
+                return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
+            }).length;
+            
+            document.getElementById('recent-news').textContent = thisMonth;
+        }
+
+        function renderDeletedTable() {
+            deletedTbody.innerHTML = '';
+
+            if (deletedNews.length === 0) {
+                deletedSection.style.display = 'none';
+                return;
+            }
+
+            deletedSection.style.display = 'block';
+            deletedTable.style.display = 'table';
+
+            deletedNews.forEach(news => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <img src="${news.imageURL}" alt="${news.title}" class="news-image-thumb" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect fill=%22%23e2e8f0%22 width=%2260%22 height=%2260%22/%3E%3C/svg%3E'">
+                    </td>
+                    <td>
+                        <div class="news-title-cell">${truncateText(news.title, 40)}</div>
+                    </td>
+                    <td>
+                        <span class="badge badge-category">${news.category || 'Uncategorized'}</span>
+                    </td>
+                    <td>
+                        <div class="deleted-by-info">
+                            ${news.deletedBy || 'Unknown'}<br>
+                            <small>${formatDate(news.deletedAt)}</small>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="news-date">${formatDate(news.deletedAt)}</div>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-restore" data-id="${news.id}" title="Restore">
+                                <span class="material-icons">restore</span>
+                            </button>
+                            <button class="btn-icon btn-delete" data-id="${news.id}" title="Permanently Delete">
+                                <span class="material-icons">delete_forever</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                deletedTbody.appendChild(row);
+            });
+
+            document.querySelectorAll('#deleted-tbody .btn-restore').forEach(btn => {
+                btn.addEventListener('click', handleRestore);
+            });
+
+            document.querySelectorAll('#deleted-tbody .btn-delete').forEach(btn => {
+                btn.addEventListener('click', handlePermanentDelete);
+            });
+        }
+
+        function renderNewsTable(newsList) {
+            loading.style.display = 'none';
+            newsTbody.innerHTML = '';
+
+            if (newsList.length === 0) {
+                newsTable.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            newsTable.style.display = 'table';
+            emptyState.style.display = 'none';
+
+            newsList.forEach(news => {
+                const badges = [];
+                if (news.isFeatured) badges.push('<span class="badge badge-featured">Featured</span>');
+                if (news.isNew) badges.push('<span class="badge badge-new">New</span>');
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <img src="${news.imageURL}" alt="${news.title}" class="news-image-thumb" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%2260%22 height=%2260%22%3E%3Crect fill=%22%23e2e8f0%22 width=%2260%22 height=%2260%22/%3E%3C/svg%3E'">
+                    </td>
+                    <td>
+                        <div class="news-title-cell">${truncateText(news.title, 40)}</div>
+                    </td>
+                    <td>
+                        <span class="badge badge-category">${news.category || 'Uncategorized'}</span>
+                    </td>
+                    <td>
+                        ${badges.join(' ')}
+                    </td>
+                    <td>
+                        <div class="news-date">${formatDate(news.publishedAt)}</div>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="btn-icon btn-edit" data-id="${news.id}" title="Edit">
+                                <span class="material-icons">edit</span>
+                            </button>
+                            <button class="btn-icon btn-delete" data-id="${news.id}" title="Delete">
+                                <span class="material-icons">delete</span>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                newsTbody.appendChild(row);
+            });
+
+            document.querySelectorAll('#news-tbody .btn-edit').forEach(btn => {
+                btn.addEventListener('click', handleEdit);
+            });
+
+            document.querySelectorAll('#news-tbody .btn-delete').forEach(btn => {
+                btn.addEventListener('click', handleDelete);
+            });
+        }
+
+        function loadNews() {
+            try {
+                const q = query(collection(db, "News"), orderBy("publishedAt", "desc"));
+                
+                onSnapshot(q, (snapshot) => {
+                    allNews = snapshot.docs.map(doc => ({
+                        id: doc.id,
+                        ...doc.data()
+                    }));
+                    
+                    const activeNews = allNews.filter(news => !news.isDeleted);
+                    deletedNews = allNews.filter(news => news.isDeleted);
+                    
+                    filteredNews = [...activeNews];
+                    renderNewsTable(filteredNews);
+                    renderDeletedTable();
+                    updateStats();
+                }, (error) => {
+                    console.error("Error listening to news:", error);
+                    loading.innerHTML = '<p style="color: var(--danger);">Error loading news</p>';
+                });
+
+            } catch (error) {
+                console.error("Error loading news:", error);
+                loading.innerHTML = '<p style="color: var(--danger);">Error loading news</p>';
+            }
+        }
+
+        function openModal(editMode = false, newsData = null) {
+            if (editMode && newsData) {
+                modalTitle.textContent = 'Edit News Article';
+                submitBtn.textContent = 'Update Article';
+                currentEditId = newsData.id;
+                document.getElementById('news-title').value = newsData.title;
+                document.getElementById('news-category').value = newsData.category || '';
+                document.getElementById('news-excerpt').value = newsData.excerpt || '';
+                document.getElementById('news-content').value = newsData.content;
+                document.getElementById('news-image').value = newsData.imageURL;
+                document.getElementById('news-featured').checked = newsData.isFeatured || false;
+                document.getElementById('news-new').checked = newsData.isNew || false;
+                
+                previewImg.src = newsData.imageURL;
+                imagePreview.style.display = 'block';
+            } else {
+                modalTitle.textContent = 'Add News Article';
+                submitBtn.textContent = 'Publish Article';
+                currentEditId = null;
+                newsForm.reset();
+                imagePreview.style.display = 'none';
+            }
+            newsModal.classList.add('active');
+        }
+
+        function closeModalFn() {
+            newsModal.classList.remove('active');
+            newsForm.reset();
+            currentEditId = null;
+            imagePreview.style.display = 'none';
+        }
+
+        async function handleSubmit(e) {
+            e.preventDefault();
+
+            const title = document.getElementById('news-title').value.trim();
+            const category = document.getElementById('news-category').value;
+            const excerpt = document.getElementById('news-excerpt').value.trim();
+            const content = document.getElementById('news-content').value.trim();
+            const imageURL = document.getElementById('news-image').value.trim();
+            const isFeatured = document.getElementById('news-featured').checked;
+            const isNew = document.getElementById('news-new').checked;
+
+            if (!title || !category || !content || !imageURL) {
+                alert('Please fill in all required fields');
+                return;
+            }
+
+            submitBtn.disabled = true;
+            submitBtn.textContent = currentEditId ? 'Updating...' : 'Publishing...';
+
+            try {
+                const newsData = {
+                    title,
+                    category,
+                    excerpt: excerpt || content.substring(0, 150),
+                    content,
+                    imageURL,
+                    isFeatured,
+                    isNew
+                };
+
+                if (currentEditId) {
+                    await updateDoc(doc(db, "News", currentEditId), newsData);
+                    alert('News article updated successfully!');
+                } else {
+                    newsData.publishedAt = Timestamp.now();
+                    await addDoc(collection(db, "News"), newsData);
+                    alert('News article published successfully!');
+                }
+
+                closeModalFn();
+            } catch (error) {
+                console.error("Error saving news:", error);
+                alert('Error saving news: ' + error.message);
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = currentEditId ? 'Update Article' : 'Publish Article';
+            }
+        }
+
+        function handleEdit(e) {
+            const newsId = e.currentTarget.getAttribute('data-id');
+            const newsData = allNews.find(n => n.id === newsId);
+            if (newsData) {
+                openModal(true, newsData);
+            }
+        }
+
+        async function handleDelete(e) {
+            const newsId = e.currentTarget.getAttribute('data-id');
+            const newsData = allNews.find(n => n.id === newsId);
+            
+            if (!confirm(`Are you sure you want to delete "${newsData.title}"?\n\nThis article will be moved to deleted articles and hidden from users.`)) {
+                return;
+            }
+
+            try {
+                const deletedBy = currentUser ? currentUser.email : 'Admin';
+                await updateDoc(doc(db, "News", newsId), {
+                    isDeleted: true,
+                    deletedAt: Timestamp.now(),
+                    deletedBy: deletedBy
+                });
+                alert('News article moved to deleted articles!');
+            } catch (error) {
+                console.error("Error deleting news:", error);
+                alert('Error deleting news: ' + error.message);
+            }
+        }
+
+        async function handleRestore(e) {
+            const newsId = e.currentTarget.getAttribute('data-id');
+            const newsData = deletedNews.find(n => n.id === newsId);
+            
+            if (!confirm(`Restore "${newsData.title}"?\n\nThis article will be visible to users again.`)) {
+                return;
+            }
+
+            try {
+                await updateDoc(doc(db, "News", newsId), {
+                    isDeleted: false,
+                    deletedAt: null,
+                    deletedBy: null
+                });
+                alert('News article restored successfully!');
+            } catch (error) {
+                console.error("Error restoring news:", error);
+                alert('Error restoring news: ' + error.message);
+            }
+        }
+
+        async function handlePermanentDelete(e) {
+            const newsId = e.currentTarget.getAttribute('data-id');
+            const newsData = deletedNews.find(n => n.id === newsId);
+            
+            if (!confirm(`PERMANENTLY DELETE "${newsData.title}"?\n\nThis action cannot be undone and will remove the article from the database forever!`)) {
+                return;
+            }
+
+            try {
+                await deleteDoc(doc(db, "News", newsId));
+                alert('News article permanently deleted!');
+            } catch (error) {
+                console.error("Error permanently deleting news:", error);
+                alert('Error permanently deleting news: ' + error.message);
+            }
+        }
+
+        function handleSearch() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const activeNews = allNews.filter(news => !news.isDeleted);
+            
+            if (!searchTerm) {
+                filteredNews = [...activeNews];
+            } else {
+                filteredNews = activeNews.filter(news => 
+                    news.title.toLowerCase().includes(searchTerm) ||
+                    news.content.toLowerCase().includes(searchTerm) ||
+                    (news.category && news.category.toLowerCase().includes(searchTerm))
+                );
+            }
+            
+            renderNewsTable(filteredNews);
+        }
+
+        imageInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            if (url) {
+                previewImg.src = url;
+                imagePreview.style.display = 'block';
+            } else {
+                imagePreview.style.display = 'none';
+            }
+        });
+
+        previewImg.addEventListener('error', function() {
+            imagePreview.style.display = 'none';
+        });
+
+        addNewsBtn.addEventListener('click', () => openModal(false));
+        closeModal.addEventListener('click', closeModalFn);
+        cancelBtn.addEventListener('click', closeModalFn);
+        newsForm.addEventListener('submit', handleSubmit);
+        searchInput.addEventListener('input', handleSearch);
+
+        newsModal.addEventListener('click', (e) => {
+            if (e.target === newsModal) {
+                closeModalFn();
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', loadNews);
+    </script>
+</body>
+</html>

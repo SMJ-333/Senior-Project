@@ -528,9 +528,9 @@
             artImage.alt = artwork.title || 'Artwork';
 
             document.getElementById('art-date').textContent = artwork.date || artwork.year || 'Unknown';
-            document.getElementById('art-medium').textContent = artwork.medium || artwork.materials || 'Unknown';
+            document.getElementById('art-medium').textContent = artwork.material || artwork.materials || 'Unknown';
             document.getElementById('art-dimensions').textContent = artwork.dimensions || artwork.size || 'Unknown';
-            document.getElementById('art-category').textContent = artwork.category || artwork.type || 'Artwork';
+            document.getElementById('art-category').textContent = artwork.classification || artwork.type || 'Artwork';
             document.getElementById('art-description').textContent = artwork.description || 'Description not available for this piece.';
 
             document.title = `${artwork.title || 'Artwork'} - ATHAR Museum`;

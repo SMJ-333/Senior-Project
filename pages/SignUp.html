@@ -653,7 +653,11 @@
                 showMessage('Account created successfully! Redirecting...', 'success');
                 
                 setTimeout(() => {
-                    window.location.href = 'Home.html';
+                    if (user.email === 'admin@example.com') {
+                        window.location.href = 'AdminNews.html';
+                    } else {
+                        window.location.href = 'Home.html';
+                    }
                 }, 2000);
 
             } catch (error) {
