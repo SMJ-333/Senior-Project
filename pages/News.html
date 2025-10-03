@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News - ATHAR Museum</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
@@ -39,13 +42,15 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4 {
+        h1,
+        h2,
+        h3,
+        h4 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             line-height: 1.2;
         }
 
-        /* Navigation */
         nav {
             background: var(--white);
             padding: 1rem 0;
@@ -143,7 +148,6 @@
             border-color: var(--accent-light);
         }
 
-        /* Page Content */
         .page-content {
             padding-top: 6rem;
             min-height: 100vh;
@@ -197,7 +201,6 @@
             margin: 0 auto;
         }
 
-        /* Filter Section */
         .filter-section {
             background: var(--white);
             padding: 2rem;
@@ -276,7 +279,6 @@
             color: var(--primary-dark);
         }
 
-        /* News Grid */
         .news-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -294,7 +296,7 @@
 
         .news-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
         }
 
         .news-img {
@@ -387,7 +389,6 @@
             color: var(--accent);
         }
 
-        /* Featured News */
         .featured-news {
             background: linear-gradient(to right, var(--primary-dark) 0%, var(--primary-light) 100%);
             border-radius: 12px;
@@ -442,7 +443,6 @@
             background-size: cover;
         }
 
-        /* Newsletter Section */
         .newsletter-section {
             background: var(--white);
             border-radius: 12px;
@@ -498,7 +498,6 @@
             background: var(--accent-light);
         }
 
-        /* Pagination */
         .pagination {
             display: flex;
             justify-content: center;
@@ -521,12 +520,12 @@
             box-shadow: var(--shadow);
         }
 
-        .pagination-item:hover, .pagination-item.active {
+        .pagination-item:hover,
+        .pagination-item.active {
             background: var(--accent);
             color: var(--primary-dark);
         }
 
-        /* Footer */
         .footer {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
             color: var(--white);
@@ -561,11 +560,10 @@
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0.8;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -602,8 +600,8 @@
         }
     </style>
 </head>
+
 <body>
-    <!-- Navigation -->
     <nav>
         <div class="nav-container">
             <a href="Home.html" class="logo">ATHAR Museum</a>
@@ -615,13 +613,12 @@
                 <li><a href="News.html" class="active">News</a></li>
                 <li><a href="Gallery.html">Gallery</a></li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account"><span class="material-icons">person</span></a>
+            <a href="Account.html" class="account-icon" title="My Account"><span
+                    class="material-icons">person</span></a>
         </div>
     </nav>
 
-    <!-- Page Content -->
     <div class="page-content">
-        <!-- Page Hero -->
         <section class="page-hero">
             <div class="container">
                 <h1>Museum News</h1>
@@ -629,24 +626,23 @@
             </div>
         </section>
 
-        <!-- Filter Section -->
         <section class="container">
             <div class="filter-section">
                 <div class="filter-grid">
                     <div class="filter-group">
                         <label class="filter-label">Category</label>
-                        <select class="filter-select">
+                        <select class="filter-select" id="categoryFilter">
                             <option value="all">All Categories</option>
-                            <option value="exhibitions">Exhibitions</option>
-                            <option value="events">Events</option>
-                            <option value="collections">Collections</option>
-                            <option value="research">Research</option>
-                            <option value="announcements">Announcements</option>
+                            <option value="Exhibitions">Exhibitions</option>
+                            <option value="Events">Events</option>
+                            <option value="Collections">Collections</option>
+                            <option value="Research">Research</option>
+                            <option value="Announcements">Announcements</option>
                         </select>
                     </div>
                     <div class="filter-group">
                         <label class="filter-label">Time Period</label>
-                        <select class="filter-select">
+                        <select class="filter-select" id="timeFilter">
                             <option value="all">All Time</option>
                             <option value="week">This Week</option>
                             <option value="month">This Month</option>
@@ -655,30 +651,27 @@
                     </div>
                     <div class="filter-group">
                         <label class="filter-label">Sort By</label>
-                        <select class="filter-select">
+                        <select class="filter-select" id="sortFilter">
                             <option value="newest">Newest First</option>
                             <option value="oldest">Oldest First</option>
-                            <option value="popular">Most Popular</option>
                         </select>
                     </div>
                 </div>
                 <div class="filter-buttons">
-                    <button class="btn">Apply Filters</button>
-                    <button class="btn btn-outline">Reset Filters</button>
+                    <button class="btn" id="applyFilters">Apply Filters</button>
+                    <button class="btn btn-outline" id="resetFilters">Reset Filters</button>
                 </div>
             </div>
         </section>
 
-        <!-- Featured News -->
         <section class="container">
             <div class="featured-news">
                 <div class="featured-content">
-                    <h2>New Ancient Egypt Exhibition Opens Next Month</h2>
-                    <p>Discover the fascinating world of pharaohs, pyramids, and ancient rituals in our upcoming exhibition featuring artifacts never before displayed to the public.</p>
-                    <p>This exclusive collection includes items on loan from the Egyptian Museum in Cairo and the British Museum.</p>
+                    <h2>Loading Featured News...</h2>
+                    <p>Please wait while we fetch the latest featured article.</p>
                     <div class="news-meta">
-                        <span class="news-date">March 15, 2025</span>
-                        <span class="news-category">Exhibitions</span>
+                        <span class="news-date"></span>
+                        <span class="news-category"></span>
                     </div>
                     <div class="news-actions">
                         <a href="#" class="btn">Read More</a>
@@ -687,163 +680,21 @@
                 <div class="featured-image">
                     <div>
                         <h3>Featured Story</h3>
-                        <p>Golden mask of Pharaoh Psusennes I</p>
+                        <p>Latest museum updates</p>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- News Grid -->
         <section class="container">
             <div class="section-title">
                 <h2>Latest News</h2>
             </div>
-            
+
             <div class="news-grid">
-                <!-- News 1 -->
-                <div class="news-card">
-                    <div class="news-img">
-                        <div>Museum Expansion</div>
-                        <span class="news-badge">New</span>
-                    </div>
-                    <div class="news-content">
-                        <h3>Museum Announces Major Expansion Project</h3>
-                        <div class="news-meta">
-                            <span class="news-date">March 12, 2025</span>
-                            <span class="news-category">Announcements</span>
-                        </div>
-                        <p>The ATHAR Museum has unveiled plans for a significant expansion that will add two new wings dedicated to modern art and interactive science exhibits.</p>
-                        <div class="news-actions">
-                            <a href="#">Read More</a>
-                            <div class="news-share">
-                                <a href="#"><i class="fab fa-facebook"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fas fa-link"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- News 2 -->
-                <div class="news-card">
-                    <div class="news-img">
-                        <div>Children's Program</div>
-                    </div>
-                    <div class="news-content">
-                        <h3>New Children's Program Launches This Summer</h3>
-                        <div class="news-meta">
-                            <span class="news-date">March 8, 2025</span>
-                            <span class="news-category">Events</span>
-                        </div>
-                        <p>Our new "Young Explorers" program will offer hands-on activities, interactive tours, and creative workshops designed for children ages 5-12.</p>
-                        <div class="news-actions">
-                            <a href="#">Read More</a>
-                            <div class="news-share">
-                                <a href="#"><i class="fab fa-facebook"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fas fa-link"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- News 3 -->
-                <div class="news-card">
-                    <div class="news-img">
-                        <div>Research Grant</div>
-                        <span class="news-badge">Research</span>
-                    </div>
-                    <div class="news-content">
-                        <h3>Museum Receives $2M Grant for Archaeological Research</h3>
-                        <div class="news-meta">
-                            <span class="news-date">March 5, 2025</span>
-                            <span class="news-category">Research</span>
-                        </div>
-                        <p>The National Science Foundation has awarded our research team a substantial grant to continue excavations at the Roman site discovered last year.</p>
-                        <div class="news-actions">
-                            <a href="#">Read More</a>
-                            <div class="news-share">
-                                <a href="#"><i class="fab fa-facebook"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fas fa-link"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- News 4 -->
-                <div class="news-card">
-                    <div class="news-img">
-                        <div>New Acquisition</div>
-                    </div>
-                    <div class="news-content">
-                        <h3>Renaissance Masterpiece Added to Permanent Collection</h3>
-                        <div class="news-meta">
-                            <span class="news-date">February 28, 2025</span>
-                            <span class="news-category">Collections</span>
-                        </div>
-                        <p>An previously unknown work by Renaissance master Raphael has been acquired by the museum and will go on display next month after restoration.</p>
-                        <div class="news-actions">
-                            <a href="#">Read More</a>
-                            <div class="news-share">
-                                <a href="#"><i class="fab fa-facebook"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fas fa-link"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- News 5 -->
-                <div class="news-card">
-                    <div class="news-img">
-                        <div>Evening Events</div>
-                        <span class="news-badge">Popular</span>
-                    </div>
-                    <div class="news-content">
-                        <h3>Friday Night Lecture Series Returns This Spring</h3>
-                        <div class="news-meta">
-                            <span class="news-date">February 25, 2025</span>
-                            <span class="news-category">Events</span>
-                        </div>
-                        <p>Our popular Friday night lecture series returns with talks from leading historians, artists, and scientists throughout April and May.</p>
-                        <div class="news-actions">
-                            <a href="#">Read More</a>
-                            <div class="news-share">
-                                <a href="#"><i class="fab fa-facebook"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fas fa-link"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- News 6 -->
-                <div class="news-card">
-                    <div class="news-img">
-                        <div>Digital Archive</div>
-                    </div>
-                    <div class="news-content">
-                        <h3>Museum Launches Digital Collection Archive</h3>
-                        <div class="news-meta">
-                            <span class="news-date">February 20, 2025</span>
-                            <span class="news-category">Collections</span>
-                        </div>
-                        <p>Over 10,000 items from our collection are now available to view online through our new digital archive platform with high-resolution images.</p>
-                        <div class="news-actions">
-                            <a href="#">Read More</a>
-                            <div class="news-share">
-                                <a href="#"><i class="fab fa-facebook"></i></a>
-                                <a href="#"><i class="fab fa-twitter"></i></a>
-                                <a href="#"><i class="fas fa-link"></i></a>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
         </section>
 
-        <!-- Pagination -->
         <section class="container">
             <div class="pagination">
                 <a href="#" class="pagination-item"><i class="fas fa-chevron-left"></i></a>
@@ -855,11 +706,11 @@
             </div>
         </section>
 
-        <!-- Newsletter Section -->
         <section class="container">
             <div class="newsletter-section">
                 <h2>Stay Updated</h2>
-                <p>Subscribe to our newsletter to receive the latest news, event invitations, and exclusive content directly to your inbox.</p>
+                <p>Subscribe to our newsletter to receive the latest news, event invitations, and exclusive content
+                    directly to your inbox.</p>
                 <form class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address" required>
                     <button type="submit" class="newsletter-btn">Subscribe</button>
@@ -868,7 +719,6 @@
         </section>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-info">
@@ -899,9 +749,264 @@
         </div>
     </footer>
 
-    <script>
-        // Navigation scroll effect
-        window.addEventListener('scroll', function() {
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, getDocs, query, orderBy, limit, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+
+        let allNews = [];
+
+        function formatDate(timestamp) {
+            if (!timestamp) return 'Date not available';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const options = { year: 'numeric', month: 'long', day: 'numeric' };
+            return date.toLocaleDateString('en-US', options);
+        }
+
+        function createNewsCard(newsItem) {
+            const excerpt = newsItem.excerpt || (newsItem.content ? newsItem.content.substring(0, 150) + '...' : 'No description available');
+            const category = newsItem.category || 'News';
+            const isNew = newsItem.isNew ? '<span class="news-badge">New</span>' : '';
+            const imageStyle = newsItem.imageURL ?
+                `background-image: url('${newsItem.imageURL}'); background-size: cover; background-position: center;` :
+                '';
+
+            return `
+                <div class="news-card" style="opacity: 0; transform: translateY(20px); transition: all 0.6s ease;">
+                    <div class="news-img" style="${imageStyle}">
+                        ${!newsItem.imageURL ? '<div>News Article</div>' : ''}
+                        ${isNew}
+                    </div>
+                    <div class="news-content">
+                        <h3>${newsItem.title}</h3>
+                        <div class="news-meta">
+                            <span class="news-date">${formatDate(newsItem.publishedAt)}</span>
+                            <span class="news-category">${category}</span>
+                        </div>
+                        <p>${excerpt}</p>
+                        <div class="news-actions">
+                            <a href="#" onclick="showNewsDetails('${newsItem.id}')">Read More</a>
+                            <div class="news-share">
+                                <a href="#"><i class="fab fa-facebook"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fas fa-link"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        async function loadFeaturedNews() {
+            try {
+                const newsQuery = query(
+                    collection(db, 'News'),
+                    where('isFeatured', '==', true),
+                    orderBy('publishedAt', 'desc')
+                );
+                const querySnapshot = await getDocs(newsQuery);
+
+                if (!querySnapshot.empty) {
+                    // Find first non-deleted featured article
+                    let featuredArticle = null;
+                    for (const doc of querySnapshot.docs) {
+                        const data = doc.data();
+                        if (!data.isDeleted) {
+                            featuredArticle = data;
+                            break;
+                        }
+                    }
+
+                    if (featuredArticle) {
+                        displayFeaturedNews(featuredArticle);
+                    } else {
+                        loadRecentAsFeatured();
+                    }
+                } else {
+                    loadRecentAsFeatured();
+                }
+            } catch (error) {
+                console.error('Error loading featured news:', error);
+                loadRecentAsFeatured();
+            }
+        }
+
+        function displayFeaturedNews(featured) {
+            const featuredSection = document.querySelector('.featured-news');
+            const contentExcerpt = featured.content ? featured.content.substring(0, 200) + '...' : 'Check out our latest featured news article.';
+
+            // Update the content text
+            featuredSection.querySelector('.featured-content h2').textContent = featured.title;
+            featuredSection.querySelector('.featured-content p').textContent = contentExcerpt;
+            featuredSection.querySelector('.news-date').textContent = formatDate(featured.publishedAt);
+            featuredSection.querySelector('.news-category').textContent = featured.category || 'Featured';
+
+            // Update the featured image only if present
+            const imageDiv = featuredSection.querySelector('.featured-image');
+            if (featured.imageURL) {
+                imageDiv.style.backgroundImage = `url('${featured.imageURL}')`;
+                imageDiv.style.backgroundSize = 'cover';
+                imageDiv.style.backgroundPosition = 'center';
+                // Hide the placeholder text inside the image div
+                const placeholderDiv = imageDiv.querySelector('div');
+                if (placeholderDiv) placeholderDiv.style.display = 'none';
+            } else {
+                // Show the placeholder if no image
+                imageDiv.style.backgroundImage = 'linear-gradient(45deg, var(--accent) 0%, var(--accent-light) 100%)';
+                const placeholderDiv = imageDiv.querySelector('div');
+                if (placeholderDiv) placeholderDiv.style.display = 'flex';
+            }
+        }
+
+        async function loadRecentAsFeatured() {
+            try {
+                const recentQuery = query(
+                    collection(db, 'News'),
+                    orderBy('publishedAt', 'desc'),
+                    limit(10)
+                );
+                const recentSnapshot = await getDocs(recentQuery);
+
+                if (!recentSnapshot.empty) {
+                    // Find first non-deleted article
+                    for (const doc of recentSnapshot.docs) {
+                        const data = doc.data();
+                        if (!data.isDeleted) {
+                            displayFeaturedNews(data);
+                            return;
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error loading recent news as featured:', error);
+            }
+        }
+
+        async function loadNews() {
+            try {
+                const newsQuery = query(
+                    collection(db, 'News'),
+                    orderBy('publishedAt', 'desc')
+                );
+
+                const querySnapshot = await getDocs(newsQuery);
+                const newsGrid = document.querySelector('.news-grid');
+                newsGrid.innerHTML = '';
+
+                if (querySnapshot.empty) {
+                    newsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light);">No news articles available at the moment.</p>';
+                    return;
+                }
+
+                allNews = [];
+                querySnapshot.forEach((doc) => {
+                    const newsData = doc.data();
+                    // Only add non-deleted articles
+                    if (!newsData.isDeleted) {
+                        allNews.push({ id: doc.id, ...newsData });
+                    }
+                });
+
+                displayNews(allNews);
+            } catch (error) {
+                console.error('Error loading news:', error);
+                const newsGrid = document.querySelector('.news-grid');
+                newsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--danger);">Error loading news. Please try again later.</p>';
+            }
+        }
+
+        function displayNews(newsArray) {
+            const newsGrid = document.querySelector('.news-grid');
+            newsGrid.innerHTML = '';
+
+            if (newsArray.length === 0) {
+                newsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--text-light);">No news articles match your filters.</p>';
+                return;
+            }
+
+            newsArray.forEach((newsItem) => {
+                newsGrid.innerHTML += createNewsCard(newsItem);
+            });
+
+            setTimeout(() => {
+                const cards = document.querySelectorAll('.news-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }, 50);
+        }
+
+        function applyFilters() {
+            let filteredNews = [...allNews];
+
+            const category = document.getElementById('categoryFilter').value;
+            if (category !== 'all') {
+                filteredNews = filteredNews.filter(news => news.category === category);
+            }
+
+            const timePeriod = document.getElementById('timeFilter').value;
+            if (timePeriod !== 'all') {
+                const now = new Date();
+                const filterDate = new Date();
+
+                switch (timePeriod) {
+                    case 'week':
+                        filterDate.setDate(now.getDate() - 7);
+                        break;
+                    case 'month':
+                        filterDate.setMonth(now.getMonth() - 1);
+                        break;
+                    case 'year':
+                        filterDate.setFullYear(now.getFullYear() - 1);
+                        break;
+                }
+
+                filteredNews = filteredNews.filter(news => {
+                    const newsDate = news.publishedAt.toDate ? news.publishedAt.toDate() : new Date(news.publishedAt);
+                    return newsDate >= filterDate;
+                });
+            }
+
+            const sortBy = document.getElementById('sortFilter').value;
+            if (sortBy === 'oldest') {
+                filteredNews.sort((a, b) => {
+                    const dateA = a.publishedAt.toDate ? a.publishedAt.toDate() : new Date(a.publishedAt);
+                    const dateB = b.publishedAt.toDate ? b.publishedAt.toDate() : new Date(b.publishedAt);
+                    return dateA - dateB;
+                });
+            } else {
+                filteredNews.sort((a, b) => {
+                    const dateA = a.publishedAt.toDate ? a.publishedAt.toDate() : new Date(a.publishedAt);
+                    const dateB = b.publishedAt.toDate ? b.publishedAt.toDate() : new Date(b.publishedAt);
+                    return dateB - dateA;
+                });
+            }
+
+            displayNews(filteredNews);
+        }
+
+        window.showNewsDetails = function (newsId) {
+            const newsItem = allNews.find(news => news.id === newsId);
+            if (newsItem) {
+                alert(`${newsItem.title}\n\n${newsItem.content}\n\nPublished: ${formatDate(newsItem.publishedAt)}`);
+            }
+        };
+
+        document.getElementById('applyFilters').addEventListener('click', applyFilters);
+
+        document.getElementById('resetFilters').addEventListener('click', function () {
+            document.querySelectorAll('.filter-select').forEach(select => select.selectedIndex = 0);
+            displayNews(allNews);
+        });
+
+        document.addEventListener('DOMContentLoaded', async function () {
+            await loadFeaturedNews();
+            await loadNews();
+        });
+
+        window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
                 nav.style.padding = '0.7rem 0';
@@ -912,43 +1017,14 @@
             }
         });
 
-        // Newsletter form submission
         const newsletterForm = document.querySelector('.newsletter-form');
-        newsletterForm.addEventListener('submit', function(e) {
+        newsletterForm.addEventListener('submit', function (e) {
             e.preventDefault();
             const email = this.querySelector('input').value;
             alert(`Thank you for subscribing with ${email}! You'll receive our newsletter soon.`);
             this.reset();
         });
-
-        // Animation for elements on scroll
-        function animateOnScroll() {
-            const items = document.querySelectorAll('.news-card, .featured-news, .newsletter-section');
-            items.forEach(item => {
-                const itemTop = item.getBoundingClientRect().top;
-                const itemVisible = 150;
-                
-                if (itemTop < window.innerHeight - itemVisible) {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateY(0)';
-                }
-            });
-        }
-
-        // Initialize animations
-        document.addEventListener('DOMContentLoaded', function() {
-            const items = document.querySelectorAll('.news-card, .featured-news, .newsletter-section');
-            items.forEach(item => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(20px)';
-                item.style.transition = 'all 0.6s ease';
-            });
-            
-            // Trigger initial animation check
-            setTimeout(animateOnScroll, 100);
-        });
-
-        window.addEventListener('scroll', animateOnScroll);
     </script>
 </body>
+
 </html>
