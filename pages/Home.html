@@ -12,19 +12,18 @@
 
     <style>
        :root {
-   --primary-dark: #1a365d;
-            --primary-light: #2d4e8f;
-            --accent: #d4af37;
-            --accent-light: #e6c875;
-            --neutral-light: #f8f9fa;
-            --neutral-dark: #2d3748;
-            --text-dark: #2d3748;
-            --text-light: #718096;
-            --white: #ffffff;
-            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
-            --transition: all 0.3s ease;
-
-}
+        --primary-dark: #8b1a1a;     
+        --primary-light: #8d2e1d;    
+        --accent: #b08d57;           
+        --accent-light: #d4b483;     
+        --neutral-light: #f4f1e3;    
+        --neutral-dark: #4a3c2a;     
+        --text-dark: #3b2f23;        
+        --text-light: #7c6f57;       
+        --white: #fdfaf4;            
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+        --transition: all 0.3s ease;
+        }
 
 
         * {
@@ -149,36 +148,34 @@
 
         /* Hero Section */
         .hero {
-            background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary-light) 100%);
-            height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: var(--white);
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            overflow: hidden;
+        height: 100vh;
+        position: relative;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        color: #d9d4be;
+
+        background: url("../images/RedRug.jpg") no-repeat top right;
+        background-size: cover;
         }
 
         .hero::before {
-            content: '';
+            content: "";
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" opacity="0.03"><rect fill="%23ffffff" width="1200" height="600"/><path d="M0,150 C150,100 350,200 500,150 C650,100 850,50 1000,100 C1150,150 1200,100 1200,100 L1200,600 L0,600 Z" fill="%23d4af37"/></svg>');
-            background-size: cover;
-            background-position: center;
+            background: rgba(0, 0, 0, 0.4); 
+            z-index: 0;
         }
 
         .hero-content {
+            position: relative;
+            z-index: 1; 
             max-width: 800px;
             padding: 2rem;
-            position: relative;
-            z-index: 1;
             animation: fadeIn 1s ease-out;
         }
 
@@ -191,9 +188,6 @@
         .hero-content p {
             font-size: 1.2rem;
             margin-bottom: 2.5rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
             font-weight: 300;
             opacity: 0.9;
         }
@@ -207,10 +201,10 @@
             border: none;
             border-radius: 50px;
             cursor: pointer;
-            transition: var(--transition);
             text-decoration: none;
             display: inline-block;
             box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+            transition: var(--transition);
         }
 
         .cta-button:hover {
@@ -565,14 +559,16 @@
     </nav>
 
     <!-- Hero Section -->
-    <section class="hero" id="home">
-        <div class="hero-content">
-            <h1>Discover Timeless ATHAR</h1>
-            <p>Experience centuries of art, culture, and history through our world-class collections and immersive
-                exhibitions. </p>
-           <a href="Exhibits.html" class="cta-button"> Explore Exhibitions </a>
-        </div>
-    </section>
+       <section class="hero" id="home">
+  <div class="hero-content">
+    <h1>Discover Timeless ATHAR</h1>
+    <p>Experience centuries of art, culture, and history through our world-class collections and immersive exhibitions.</p>
+    <a href="Exhibits.html" class="cta-button">Explore Exhibitions</a>
+  </div>
+</section>
+
+
+
 
     <!-- Museum Information -->
     <section class="museum-info">
