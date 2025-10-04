@@ -1,26 +1,29 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - News Management</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-        --primary-dark: #8b1a1a;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
-        --success: #48bb78;
-        --danger: #f56565;
+            --primary-dark: #8b1a1a;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --success: #48bb78;
+            --danger: #f56565;
         }
 
         * {
@@ -36,7 +39,9 @@
             background-color: var(--neutral-light);
         }
 
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
         }
@@ -552,7 +557,8 @@
                 font-size: 0.9rem;
             }
 
-            th, td {
+            th,
+            td {
                 padding: 0.8rem;
             }
 
@@ -562,11 +568,17 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
+
 <body>
     <header class="admin-header">
         <div class="header-content">
@@ -623,7 +635,7 @@
             <div class="table-header">
                 <h2>All News Articles</h2>
             </div>
-            
+
             <div id="loading" class="loading">
                 <span class="material-icons" style="font-size: 3rem; animation: spin 1s linear infinite;">refresh</span>
                 <p>Loading news articles...</p>
@@ -683,7 +695,8 @@
                 <form id="news-form">
                     <div class="form-group">
                         <label class="form-label">Title *</label>
-                        <input type="text" class="form-input" id="news-title" required placeholder="Enter article title">
+                        <input type="text" class="form-input" id="news-title" required
+                            placeholder="Enter article title">
                     </div>
 
                     <div class="form-group">
@@ -700,17 +713,20 @@
 
                     <div class="form-group">
                         <label class="form-label">Excerpt (Short Summary)</label>
-                        <textarea class="form-textarea" id="news-excerpt" placeholder="Brief summary for preview (optional)" style="min-height: 80px;"></textarea>
+                        <textarea class="form-textarea" id="news-excerpt"
+                            placeholder="Brief summary for preview (optional)" style="min-height: 80px;"></textarea>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Full Content *</label>
-                        <textarea class="form-textarea" id="news-content" required placeholder="Write your full article content here..."></textarea>
+                        <textarea class="form-textarea" id="news-content" required
+                            placeholder="Write your full article content here..."></textarea>
                     </div>
 
                     <div class="form-group">
                         <label class="form-label">Image URL *</label>
-                        <input type="url" class="form-input" id="news-image" required placeholder="https://example.com/image.jpg">
+                        <input type="url" class="form-input" id="news-image" required
+                            placeholder="https://example.com/image.jpg">
                         <div class="image-preview" id="image-preview">
                             <img id="preview-img" src="" alt="Preview">
                         </div>
@@ -789,14 +805,14 @@
         function updateStats() {
             const activeNews = allNews.filter(news => !news.isDeleted);
             document.getElementById('total-news').textContent = activeNews.length;
-            
+
             const now = new Date();
             const thisMonth = activeNews.filter(news => {
                 if (!news.publishedAt) return false;
                 const date = news.publishedAt.toDate ? news.publishedAt.toDate() : new Date(news.publishedAt);
                 return date.getMonth() === now.getMonth() && date.getFullYear() === now.getFullYear();
             }).length;
-            
+
             document.getElementById('recent-news').textContent = thisMonth;
         }
 
@@ -872,7 +888,7 @@
                 const badges = [];
                 if (news.isFeatured) badges.push('<span class="badge badge-featured">Featured</span>');
                 if (news.isNew) badges.push('<span class="badge badge-new">New</span>');
-                
+
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>
@@ -916,16 +932,16 @@
         function loadNews() {
             try {
                 const q = query(collection(db, "News"), orderBy("publishedAt", "desc"));
-                
+
                 onSnapshot(q, (snapshot) => {
                     allNews = snapshot.docs.map(doc => ({
                         id: doc.id,
                         ...doc.data()
                     }));
-                    
+
                     const activeNews = allNews.filter(news => !news.isDeleted);
                     deletedNews = allNews.filter(news => news.isDeleted);
-                    
+
                     filteredNews = [...activeNews];
                     renderNewsTable(filteredNews);
                     renderDeletedTable();
@@ -953,7 +969,7 @@
                 document.getElementById('news-image').value = newsData.imageURL;
                 document.getElementById('news-featured').checked = newsData.isFeatured || false;
                 document.getElementById('news-new').checked = newsData.isNew || false;
-                
+
                 previewImg.src = newsData.imageURL;
                 imagePreview.style.display = 'block';
             } else {
@@ -1033,7 +1049,7 @@
         async function handleDelete(e) {
             const newsId = e.currentTarget.getAttribute('data-id');
             const newsData = allNews.find(n => n.id === newsId);
-            
+
             if (!confirm(`Are you sure you want to delete "${newsData.title}"?\n\nThis article will be moved to deleted articles and hidden from users.`)) {
                 return;
             }
@@ -1055,7 +1071,7 @@
         async function handleRestore(e) {
             const newsId = e.currentTarget.getAttribute('data-id');
             const newsData = deletedNews.find(n => n.id === newsId);
-            
+
             if (!confirm(`Restore "${newsData.title}"?\n\nThis article will be visible to users again.`)) {
                 return;
             }
@@ -1076,7 +1092,7 @@
         async function handlePermanentDelete(e) {
             const newsId = e.currentTarget.getAttribute('data-id');
             const newsData = deletedNews.find(n => n.id === newsId);
-            
+
             if (!confirm(`PERMANENTLY DELETE "${newsData.title}"?\n\nThis action cannot be undone and will remove the article from the database forever!`)) {
                 return;
             }
@@ -1093,21 +1109,21 @@
         function handleSearch() {
             const searchTerm = searchInput.value.toLowerCase().trim();
             const activeNews = allNews.filter(news => !news.isDeleted);
-            
+
             if (!searchTerm) {
                 filteredNews = [...activeNews];
             } else {
-                filteredNews = activeNews.filter(news => 
+                filteredNews = activeNews.filter(news =>
                     news.title.toLowerCase().includes(searchTerm) ||
                     news.content.toLowerCase().includes(searchTerm) ||
                     (news.category && news.category.toLowerCase().includes(searchTerm))
                 );
             }
-            
+
             renderNewsTable(filteredNews);
         }
 
-        imageInput.addEventListener('input', function() {
+        imageInput.addEventListener('input', function () {
             const url = this.value.trim();
             if (url) {
                 previewImg.src = url;
@@ -1117,7 +1133,7 @@
             }
         });
 
-        previewImg.addEventListener('error', function() {
+        previewImg.addEventListener('error', function () {
             imagePreview.style.display = 'none';
         });
 
@@ -1136,4 +1152,5 @@
         document.addEventListener('DOMContentLoaded', loadNews);
     </script>
 </body>
+
 </html>

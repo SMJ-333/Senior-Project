@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - ATHAR Museum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #8b1a1a;     
+            --primary-light: #8d2e1d;    
+            --accent: #b08d57;           
+            --accent-light: #d4b483;     
+            --neutral-light: #f4f1e3;    
+            --neutral-dark: #4a3c2a;     
+            --text-dark: #3b2f23;        
+            --text-light: #7c6f57;       
+            --white: #fdfaf4;            
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --info: #4299e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--neutral-light);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 2rem;
+            box-shadow: var(--shadow);
+        }
+
+        .header-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-title h1 {
+            font-size: 2rem;
+        }
+
+        .admin-badge {
+            background: var(--accent);
+            color: var(--primary-dark);
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+        }
+
+        .logout-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .logout-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            color: var(--white);
+        }
+
+        .stat-icon.accent {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: var(--primary-dark);
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: var(--white);
+        }
+
+        .stat-icon.info {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: var(--white);
+        }
+
+        .stat-content {
+            flex: 1;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.2rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .stat-change {
+            display: inline-block;
+            font-size: 0.85rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 12px;
+            margin-top: 0.5rem;
+        }
+
+        .stat-change.positive {
+            background: rgba(72, 187, 120, 0.1);
+            color: var(--success);
+        }
+
+        .quick-actions {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .quick-actions h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .action-card {
+            background: var(--neutral-light);
+            padding: 1.5rem;
+            border-radius: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: var(--text-dark);
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .action-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .action-card .material-icons {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .action-card h3 {
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .action-card p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .content-section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .content-section h2 {
+            color: var(--primary-dark);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .activity-item {
+            padding: 1rem;
+            border-left: 3px solid var(--accent);
+            background: var(--neutral-light);
+            margin-bottom: 1rem;
+            border-radius: 4px;
+        }
+
+        .activity-time {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            display: block;
+            margin-bottom: 0.3rem;
+        }
+
+        .activity-desc {
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .alert-item {
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .alert-item.warning {
+            background: rgba(236, 201, 75, 0.1);
+            border-left: 4px solid var(--warning);
+        }
+
+        .alert-item.info {
+            background: rgba(66, 153, 225, 0.1);
+            border-left: 4px solid var(--info);
+        }
+
+        .alert-item .material-icons {
+            color: var(--warning);
+        }
+
+        .alert-item.info .material-icons {
+            color: var(--info);
+        }
+
+        .alert-content {
+            flex: 1;
+        }
+
+        .alert-title {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.2rem;
+        }
+
+        .alert-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <div class="header-content">
+            <div class="header-title">
+                <span class="material-icons" style="font-size: 2.5rem;">dashboard</span>
+                <div>
+                    <h1>Admin Dashboard</h1>
+                    <span class="admin-badge">ATHAR Museum</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <div class="user-info">
+                    <span class="material-icons">person</span>
+                    <span id="admin-email">Admin</span>
+                </div>
+                <button class="logout-btn" id="logout-btn">
+                    <span class="material-icons" style="font-size: 1rem;">logout</span>
+                    Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon primary">
+                        <span class="material-icons">article</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value" id="total-news">0</div>
+                        <div class="stat-label">News Articles</div>
+                        <span class="stat-change positive">↑ 12% this month</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon accent">
+                        <span class="material-icons">event</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">24</div>
+                        <div class="stat-label">Upcoming Events</div>
+                        <span class="stat-change positive">↑ 8 new events</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon success">
+                        <span class="material-icons">people</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-label">Registered Users</div>
+                        <span class="stat-change positive">↑ 156 this week</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-header">
+                    <div class="stat-icon info">
+                        <span class="material-icons">confirmation_number</span>
+                    </div>
+                    <div class="stat-content">
+                        <div class="stat-value">892</div>
+                        <div class="stat-label">Tickets Sold</div>
+                        <span class="stat-change positive">↑ 23% this week</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="quick-actions">
+            <h2>
+                <span class="material-icons">bolt</span>
+                Quick Actions
+            </h2>
+            <div class="action-grid">
+                <a href="AdminNews.html" class="action-card">
+                    <span class="material-icons">article</span>
+                    <h3>Manage News</h3>
+                    <p>Create and edit news articles</p>
+                </a>
+
+                <a href="AdminEvents.html" class="action-card">
+                    <span class="material-icons">event</span>
+                    <h3>Manage Events</h3>
+                    <p>Schedule and organize events</p>
+                </a>
+
+                <a href="AdminExhibits.html" class="action-card">
+                    <span class="material-icons">museum</span>
+                    <h3>Manage Exhibits</h3>
+                    <p>Update exhibition information</p>
+                </a>
+
+                <a href="AdminGallery.html" class="action-card">
+                    <span class="material-icons">photo_library</span>
+                    <h3>Manage Gallery</h3>
+                    <p>Upload and organize images</p>
+                </a>
+
+                <a href="AdminUsers.html" class="action-card">
+                    <span class="material-icons">people</span>
+                    <h3>Manage Users</h3>
+                    <p>View and manage user accounts</p>
+                </a>
+
+                <a href="AdminTickets.html" class="action-card">
+                    <span class="material-icons">confirmation_number</span>
+                    <h3>Ticket Sales</h3>
+                    <p>View and manage bookings</p>
+                </a>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="content-section">
+                <h2>
+                    <span class="material-icons">history</span>
+                    Recent Activity
+                </h2>
+                <div class="activity-item">
+                    <span class="activity-time">2 hours ago</span>
+                    <div class="activity-desc">New article published: "Ancient Egypt Exhibition Opening"</div>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">5 hours ago</span>
+                    <div class="activity-desc">Event updated: Renaissance Art Workshop - Date changed</div>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">Yesterday</span>
+                    <div class="activity-desc">15 new user registrations</div>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">2 days ago</span>
+                    <div class="activity-desc">Gallery updated with 24 new images</div>
+                </div>
+                <div class="activity-item">
+                    <span class="activity-time">3 days ago</span>
+                    <div class="activity-desc">Exhibit information updated: Treasures of Ancient Rome</div>
+                </div>
+            </div>
+
+            <div class="content-section">
+                <h2>
+                    <span class="material-icons">notifications</span>
+                    Alerts & Reminders
+                </h2>
+                <div class="alert-item warning">
+                    <span class="material-icons">warning</span>
+                    <div class="alert-content">
+                        <div class="alert-title">Event Starting Soon</div>
+                        <div class="alert-desc">Ancient Egypt Night Tour starts in 3 days</div>
+                    </div>
+                </div>
+                <div class="alert-item info">
+                    <span class="material-icons">info</span>
+                    <div class="alert-content">
+                        <div class="alert-title">System Update</div>
+                        <div class="alert-desc">Platform maintenance scheduled for Sunday 2 AM</div>
+                    </div>
+                </div>
+                <div class="alert-item warning">
+                    <span class="material-icons">warning</span>
+                    <div class="alert-content">
+                        <div class="alert-title">Low Ticket Inventory</div>
+                        <div class="alert-desc">Weekend tickets selling fast - only 15 left</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('admin-email').textContent = user.email;
+            }
+        });
+
+        async function loadNewsCount() {
+            try {
+                const newsQuery = query(collection(db, 'News'), orderBy('publishedAt', 'desc'));
+                const snapshot = await getDocs(newsQuery);
+                const activeNews = snapshot.docs.filter(doc => !doc.data().isDeleted);
+                document.getElementById('total-news').textContent = activeNews.length;
+            } catch (error) {
+                console.error('Error loading news count:', error);
+            }
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('Error logging out:', error);
+                    alert('Error logging out. Please try again.');
+                }
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            loadNewsCount();
+        });
+    </script>
+</body>
+</html>

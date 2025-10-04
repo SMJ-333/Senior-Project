@@ -8,20 +8,20 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-        --primary-dark: #8b1a1a;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
-        --success: #48bb78;
-        --warning: #ecc94b;
-        --danger: #f56565;
+            --primary-dark: #8b1a1a;     
+            --primary-light: #8d2e1d;    
+            --accent: #b08d57;           
+            --accent-light: #d4b483;     
+            --neutral-light: #f4f1e3;    
+            --neutral-dark: #4a3c2a;     
+            --text-dark: #3b2f23;        
+            --text-light: #7c6f57;       
+            --white: #fdfaf4;            
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
         }
 
         * {
@@ -44,7 +44,6 @@
             line-height: 1.2;
         }
 
-        /* Navigation */
         nav {
             background: var(--white);
             padding: 1rem 0;
@@ -115,11 +114,6 @@
             width: 80%;
         }
 
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary-dark);
-        }
-
         .account-icon {
             width: 42px;
             height: 42px;
@@ -139,10 +133,8 @@
         .account-icon:hover {
             transform: scale(1.08);
             box-shadow: 0 6px 15px rgba(26, 54, 93, 0.25);
-            border-color: var(--accent-light);
         }
 
-        /* Page Content */
         .page-content {
             padding-top: 6rem;
             min-height: 100vh;
@@ -196,7 +188,6 @@
             margin: 0 auto;
         }
 
-        /* Ticket Options */
         .ticket-options {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -210,11 +201,18 @@
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            cursor: pointer;
+            border: 3px solid transparent;
         }
 
         .ticket-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.1);
+        }
+
+        .ticket-card.selected {
+            border-color: var(--accent);
+            box-shadow: 0 15px 30px rgba(176, 141, 87, 0.3);
         }
 
         .ticket-header {
@@ -246,7 +244,7 @@
 
         .ticket-features {
             list-style: none;
-            margin-bottom: 1.5rem;
+            margin-bottom: 0;
         }
 
         .ticket-features li {
@@ -263,49 +261,17 @@
             font-weight: bold;
         }
 
-        .ticket-features li.disabled {
-            color: var(--text-light);
-        }
-
         .ticket-features li.disabled::before {
             content: "✕";
             color: var(--danger);
         }
 
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.8rem;
-            background: var(--accent);
-            color: var(--primary-dark);
-            font-weight: 600;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
-            text-align: center;
-            width: 100%;
-        }
-
-        .btn:hover {
-            background: var(--accent-light);
-            transform: translateY(-2px);
-        }
-
-        /* Booking Form */
         .booking-section {
             background: var(--white);
             border-radius: 12px;
             padding: 2rem;
             box-shadow: var(--shadow);
             margin-bottom: 5rem;
-        }
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 1.5rem;
-            margin-bottom: 2rem;
         }
 
         .form-group {
@@ -319,7 +285,7 @@
             color: var(--text-dark);
         }
 
-        .form-input, .form-select {
+        .form-select {
             width: 100%;
             padding: 0.8rem 1rem;
             border: 1px solid #e2e8f0;
@@ -330,19 +296,12 @@
             background-color: var(--neutral-light);
         }
 
-        .form-input:focus, .form-select:focus {
+        .form-select:focus {
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
         }
 
-        .form-note {
-            font-size: 0.9rem;
-            color: var(--text-light);
-            margin-top: 0.5rem;
-        }
-
-        /* Calendar */
         .calendar {
             margin-bottom: 2rem;
         }
@@ -352,6 +311,27 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .calendar-btn {
+            background: var(--accent);
+            color: var(--primary-dark);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .calendar-btn:hover {
+            background: var(--accent-light);
         }
 
         .calendar-grid {
@@ -375,9 +355,10 @@
             border-radius: 6px;
             cursor: pointer;
             transition: var(--transition);
+            background: var(--white);
         }
 
-        .calendar-date:hover {
+        .calendar-date:hover:not(.unavailable):not(.empty) {
             background: var(--accent-light);
         }
 
@@ -393,7 +374,71 @@
             text-decoration: line-through;
         }
 
-        /* Ticket Summary */
+        .calendar-date.empty {
+            cursor: default;
+        }
+
+        .counter-group {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--neutral-light);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .counter-info {
+            flex: 1;
+        }
+
+        .counter-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 0.2rem;
+        }
+
+        .counter-price {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .counter-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .counter-btn {
+            width: 36px;
+            height: 36px;
+            border: none;
+            border-radius: 6px;
+            background: var(--accent);
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .counter-btn:hover {
+            background: var(--accent-light);
+        }
+
+        .counter-btn:disabled {
+            background: #e2e8f0;
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+
+        .counter-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            min-width: 30px;
+            text-align: center;
+        }
+
         .summary-card {
             background: var(--neutral-light);
             border-radius: 12px;
@@ -417,35 +462,33 @@
             color: var(--primary-dark);
         }
 
-        /* FAQ Section */
-        .faq-section {
-            margin-bottom: 5rem;
-        }
-
-        .faq-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .faq-item {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 1.5rem;
-            box-shadow: var(--shadow);
-        }
-
-        .faq-item h3 {
+        .btn {
+            display: inline-block;
+            padding: 0.8rem 1.8rem;
+            background: var(--accent);
             color: var(--primary-dark);
-            margin-bottom: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            text-align: center;
+            width: 100%;
         }
 
-        .faq-item p {
+        .btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #e2e8f0;
             color: var(--text-light);
-            line-height: 1.6;
+            cursor: not-allowed;
+            transform: none;
         }
 
-        /* Footer */
         .footer {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
             color: var(--white);
@@ -484,7 +527,6 @@
             opacity: 0.8;
         }
 
-        /* Responsive Design */
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -501,7 +543,6 @@
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav>
         <div class="nav-container">
             <a href="Home.html" class="logo">ATHAR Museum</a>
@@ -517,9 +558,7 @@
         </div>
     </nav>
 
-    <!-- Page Content -->
     <div class="page-content">
-        <!-- Page Hero -->
         <section class="page-hero">
             <div class="container">
                 <h1>Museum Tickets</h1>
@@ -527,15 +566,13 @@
             </div>
         </section>
 
-        <!-- Ticket Options -->
         <section class="container">
             <div class="section-title">
                 <h2>Ticket Options</h2>
             </div>
             
             <div class="ticket-options">
-                <!-- General Admission -->
-                <div class="ticket-card">
+                <div class="ticket-card" data-type="general" data-price="15">
                     <div class="ticket-header">
                         <h3>General Admission</h3>
                         <div class="ticket-price">$15<span>/person</span></div>
@@ -549,12 +586,10 @@
                             <li class="disabled">Special exhibitions</li>
                             <li class="disabled">Audio guide</li>
                         </ul>
-                        <a href="#" class="btn">Select Tickets</a>
                     </div>
                 </div>
 
-                <!-- Premium Pass -->
-                <div class="ticket-card">
+                <div class="ticket-card" data-type="premium" data-price="25">
                     <div class="ticket-header">
                         <h3>Premium Pass</h3>
                         <div class="ticket-price">$25<span>/person</span></div>
@@ -568,12 +603,10 @@
                             <li>Skip-the-line entry</li>
                             <li>10% discount at museum shops</li>
                         </ul>
-                        <a href="#" class="btn">Select Tickets</a>
                     </div>
                 </div>
 
-                <!-- Family Package -->
-                <div class="ticket-card">
+                <div class="ticket-card" data-type="family" data-price="40">
                     <div class="ticket-header">
                         <h3>Family Package</h3>
                         <div class="ticket-price">$40<span>/package</span></div>
@@ -587,202 +620,111 @@
                             <li>Family guide booklet</li>
                             <li>Complimentary coat check</li>
                         </ul>
-                        <a href="#" class="btn">Select Tickets</a>
                     </div>
                 </div>
             </div>
         </section>
 
-        <!-- Booking Form -->
         <section class="container">
             <div class="section-title">
                 <h2>Book Your Visit</h2>
             </div>
             
             <div class="booking-section">
-                <h3>Select Date & Time</h3>
+                <div class="form-group">
+                    <label class="form-label">Select Event or Exhibit</label>
+                    <select class="form-select" id="event-select">
+                        <option value="">General Museum Visit</option>
+                        <option value="egypt">Ancient Egypt Night Tour - March 25, 2025</option>
+                        <option value="renaissance">Renaissance Art Workshop - April 12, 2025</option>
+                        <option value="family">Family Discovery Day - April 28, 2025</option>
+                        <option value="rome">Treasures of Ancient Rome Exhibition</option>
+                        <option value="modern">Modern Masters: 20th Century Art</option>
+                        <option value="americas">Lost Civilizations of the Americas</option>
+                    </select>
+                </div>
+
+                <h3 style="margin-top: 2rem;">Select Date</h3>
                 
-                <!-- Calendar -->
                 <div class="calendar">
                     <div class="calendar-header">
-                        <h4>March 2025</h4>
-                        <div>
-                            <button class="btn" style="width: auto; padding: 0.5rem 1rem; margin-right: 0.5rem;">←</button>
-                            <button class="btn" style="width: auto; padding: 0.5rem 1rem;">→</button>
+                        <h4 id="calendar-month"></h4>
+                        <div class="calendar-nav">
+                            <button class="calendar-btn" id="prev-month">←</button>
+                            <button class="calendar-btn" id="next-month">→</button>
                         </div>
                     </div>
                     
-                    <div class="calendar-grid">
-                        <div class="calendar-day">Sun</div>
-                        <div class="calendar-day">Mon</div>
-                        <div class="calendar-day">Tue</div>
-                        <div class="calendar-day">Wed</div>
-                        <div class="calendar-day">Thu</div>
-                        <div class="calendar-day">Fri</div>
-                        <div class="calendar-day">Sat</div>
-                        
-                        <!-- Dummy calendar dates -->
-                        <div class="calendar-date unavailable">24</div>
-                        <div class="calendar-date unavailable">25</div>
-                        <div class="calendar-date">26</div>
-                        <div class="calendar-date">27</div>
-                        <div class="calendar-date">28</div>
-                        <div class="calendar-date selected">29</div>
-                        <div class="calendar-date">30</div>
-                        <div class="calendar-date">31</div>
-                        <div class="calendar-date">1</div>
-                        <div class="calendar-date">2</div>
-                        <div class="calendar-date">3</div>
-                        <div class="calendar-date">4</div>
-                        <div class="calendar-date">5</div>
-                        <div class="calendar-date">6</div>
-                        <div class="calendar-date">7</div>
-                        <div class="calendar-date">8</div>
-                        <div class="calendar-date">9</div>
-                        <div class="calendar-date">10</div>
-                        <div class="calendar-date">11</div>
-                        <div class="calendar-date">12</div>
-                        <div class="calendar-date">13</div>
-                        <div class="calendar-date">14</div>
-                        <div class="calendar-date">15</div>
-                        <div class="calendar-date">16</div>
-                        <div class="calendar-date">17</div>
-                        <div class="calendar-date">18</div>
-                        <div class="calendar-date">19</div>
-                        <div class="calendar-date">20</div>
-                        <div class="calendar-date">21</div>
-                        <div class="calendar-date">22</div>
-                        <div class="calendar-date">23</div>
+                    <div class="calendar-grid" id="calendar-grid">
                     </div>
                 </div>
                 
-                <!-- Time Selection -->
-                <div class="form-group">
-                    <label class="form-label">Available Time Slots</label>
-                    <select class="form-select">
-                        <option value="">Select a time</option>
-                        <option value="9:00">9:00 AM</option>
-                        <option value="10:00">10:00 AM</option>
-                        <option value="11:00">11:00 AM</option>
-                        <option value="12:00">12:00 PM</option>
-                        <option value="13:00">1:00 PM</option>
-                        <option value="14:00">2:00 PM</option>
-                        <option value="15:00">3:00 PM</option>
-                    </select>
-                </div>
+                <h3 style="margin-top: 2rem;">Select Number of Visitors</h3>
                 
-                <h3 style="margin-top: 2rem;">Ticket Selection</h3>
-                
-                <div class="form-grid">
-                    <div class="form-group">
-                        <label class="form-label">Adults (18-64)</label>
-                        <select class="form-select">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                        <p class="form-note">$15 per ticket</p>
+                <div id="visitor-counters">
+                    <div class="counter-group">
+                        <div class="counter-info">
+                            <div class="counter-label">Adults (18-64)</div>
+                            <div class="counter-price" id="adult-price">$15 per person</div>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="counter-btn" onclick="decrementCounter('adults')">−</button>
+                            <span class="counter-value" id="adults-count">0</span>
+                            <button class="counter-btn" onclick="incrementCounter('adults')">+</button>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Seniors (65+)</label>
-                        <select class="form-select">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                        <p class="form-note">$12 per ticket</p>
+
+                    <div class="counter-group">
+                        <div class="counter-info">
+                            <div class="counter-label">Seniors (65+)</div>
+                            <div class="counter-price">$12 per person</div>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="counter-btn" onclick="decrementCounter('seniors')">−</button>
+                            <span class="counter-value" id="seniors-count">0</span>
+                            <button class="counter-btn" onclick="incrementCounter('seniors')">+</button>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Students</label>
-                        <select class="form-select">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                        <p class="form-note">$12 per ticket (with valid ID)</p>
+
+                    <div class="counter-group">
+                        <div class="counter-info">
+                            <div class="counter-label">Students</div>
+                            <div class="counter-price">$12 per person (with valid ID)</div>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="counter-btn" onclick="decrementCounter('students')">−</button>
+                            <span class="counter-value" id="students-count">0</span>
+                            <button class="counter-btn" onclick="incrementCounter('students')">+</button>
+                        </div>
                     </div>
-                    
-                    <div class="form-group">
-                        <label class="form-label">Children (0-17)</label>
-                        <select class="form-select">
-                            <option value="0">0</option>
-                            <option value="1">1</option>
-                            <option value="2">2</option>
-                            <option value="3">3</option>
-                            <option value="4">4</option>
-                            <option value="5">5</option>
-                        </select>
-                        <p class="form-note">Free admission</p>
+
+                    <div class="counter-group">
+                        <div class="counter-info">
+                            <div class="counter-label">Children (0-17)</div>
+                            <div class="counter-price">Free admission</div>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="counter-btn" onclick="decrementCounter('children')">−</button>
+                            <span class="counter-value" id="children-count">0</span>
+                            <button class="counter-btn" onclick="incrementCounter('children')">+</button>
+                        </div>
                     </div>
                 </div>
                 
-                <!-- Ticket Summary -->
-                <div class="summary-card">
+                <div class="summary-card" id="summary-card" style="display:none;">
                     <h3>Order Summary</h3>
-                    <div class="summary-item">
-                        <span>2 x Adult General Admission</span>
-                        <span>$30.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>1 x Senior General Admission</span>
-                        <span>$12.00</span>
-                    </div>
-                    <div class="summary-item">
-                        <span>Service Fee</span>
-                        <span>$2.50</span>
-                    </div>
+                    <div id="summary-items"></div>
                     <div class="summary-total">
                         <span>Total</span>
-                        <span>$44.50</span>
+                        <span id="total-price">$0.00</span>
                     </div>
                 </div>
                 
-                <a href="#" class="btn" style="margin-top: 2rem;">Continue to Checkout</a>
-            </div>
-        </section>
-
-        <!-- FAQ Section -->
-        <section class="container faq-section">
-            <div class="section-title">
-                <h2>Frequently Asked Questions</h2>
-            </div>
-            
-            <div class="faq-grid">
-                <div class="faq-item">
-                    <h3>Do I need to book in advance?</h3>
-                    <p>While walk-in tickets are available, we highly recommend booking in advance to guarantee entry, especially during weekends and holidays.</p>
-                </div>
-                
-                <div class="faq-item">
-                    <h3>What is your cancellation policy?</h3>
-                    <p>Tickets can be cancelled or rescheduled up to 24 hours before your visit for a full refund. Within 24 hours, tickets are non-refundable.</p>
-                </div>
-                
-                <div class="faq-item">
-                    <h3>Is the museum accessible?</h3>
-                    <p>Yes, the museum is fully accessible with ramps, elevators, and accessible restrooms. Wheelchairs are available free of charge.</p>
-                </div>
-                
-                <div class="faq-item">
-                    <h3>Are photography and videography allowed?</h3>
-                    <p>Photography for personal use is permitted in permanent collections. Flash photography, tripods, and videography may be restricted in certain areas.</p>
-                </div>
+                <button class="btn" id="checkout-btn" disabled style="margin-top: 2rem;">Continue to Checkout</button>
             </div>
         </section>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-info">
@@ -814,6 +756,250 @@
     </footer>
 
     <script>
+        let selectedTicketType = null;
+        let selectedTicketPrice = 15;
+        let selectedDate = null;
+        let currentMonth = new Date();
+        let maxDate = new Date();
+        maxDate.setMonth(maxDate.getMonth() + 3);
+
+        const visitors = {
+            adults: 0,
+            seniors: 0,
+            students: 0,
+            children: 0
+        };
+
+        const prices = {
+            general: { adults: 15, seniors: 12, students: 12, children: 0 },
+            premium: { adults: 25, seniors: 20, students: 20, children: 0 },
+            family: { package: 40 }
+        };
+
+        // Ticket selection
+        document.querySelectorAll('.ticket-card').forEach(card => {
+            card.addEventListener('click', function() {
+                document.querySelectorAll('.ticket-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedTicketType = this.dataset.type;
+                selectedTicketPrice = parseInt(this.dataset.price);
+                
+                updatePriceDisplay();
+                calculateTotal();
+            });
+        });
+
+        function updatePriceDisplay() {
+            if (selectedTicketType === 'family') {
+                document.getElementById('adult-price').textContent = 'Included in package';
+                document.querySelectorAll('.counter-price').forEach(el => {
+                    el.textContent = 'Included in package';
+                });
+            } else {
+                const currentPrices = prices[selectedTicketType || 'general'];
+                document.getElementById('adult-price').textContent = `$${currentPrices.adults} per person`;
+                document.querySelectorAll('.counter-group').forEach((group, index) => {
+                    const priceEl = group.querySelector('.counter-price');
+                    const types = ['adults', 'seniors', 'students', 'children'];
+                    const type = types[index];
+                    if (type === 'children') {
+                        priceEl.textContent = 'Free admission';
+                    } else {
+                        priceEl.textContent = `$${currentPrices[type]} per person`;
+                    }
+                });
+            }
+        }
+
+        // Counter functions
+        function incrementCounter(type) {
+            visitors[type]++;
+            document.getElementById(`${type}-count`).textContent = visitors[type];
+            calculateTotal();
+        }
+
+        function decrementCounter(type) {
+            if (visitors[type] > 0) {
+                visitors[type]--;
+                document.getElementById(`${type}-count`).textContent = visitors[type];
+                calculateTotal();
+            }
+        }
+
+        function calculateTotal() {
+            if (!selectedTicketType) {
+                document.querySelector('.ticket-card').click();
+                return;
+            }
+
+            let total = 0;
+            let items = [];
+            const serviceFee = 2.50;
+
+            if (selectedTicketType === 'family') {
+                const packages = Math.ceil((visitors.adults + visitors.seniors + visitors.students) / 4);
+                if (packages > 0) {
+                    total = packages * 40;
+                    items.push({ label: `${packages} x Family Package (2 adults + 2 children)`, price: packages * 40 });
+                }
+            } else {
+                const currentPrices = prices[selectedTicketType];
+                
+                if (visitors.adults > 0) {
+                    const cost = visitors.adults * currentPrices.adults;
+                    total += cost;
+                    items.push({ label: `${visitors.adults} x Adult ${selectedTicketType === 'premium' ? 'Premium' : 'General'} Admission`, price: cost });
+                }
+                
+                if (visitors.seniors > 0) {
+                    const cost = visitors.seniors * currentPrices.seniors;
+                    total += cost;
+                    items.push({ label: `${visitors.seniors} x Senior ${selectedTicketType === 'premium' ? 'Premium' : 'General'} Admission`, price: cost });
+                }
+                
+                if (visitors.students > 0) {
+                    const cost = visitors.students * currentPrices.students;
+                    total += cost;
+                    items.push({ label: `${visitors.students} x Student ${selectedTicketType === 'premium' ? 'Premium' : 'General'} Admission`, price: cost });
+                }
+                
+                if (visitors.children > 0) {
+                    items.push({ label: `${visitors.children} x Children (Free)`, price: 0 });
+                }
+            }
+
+            const summaryItems = document.getElementById('summary-items');
+            summaryItems.innerHTML = '';
+            
+            if (items.length > 0) {
+                items.forEach(item => {
+                    summaryItems.innerHTML += `
+                        <div class="summary-item">
+                            <span>${item.label}</span>
+                            <span>$${item.price.toFixed(2)}</span>
+                        </div>
+                    `;
+                });
+
+                if (total > 0) {
+                    summaryItems.innerHTML += `
+                        <div class="summary-item">
+                            <span>Service Fee</span>
+                            <span>$${serviceFee.toFixed(2)}</span>
+                        </div>
+                    `;
+                    total += serviceFee;
+                }
+
+                document.getElementById('summary-card').style.display = 'block';
+                document.getElementById('total-price').textContent = `${total.toFixed(2)}`;
+                
+                document.getElementById('checkout-btn').disabled = false;
+            } else {
+                document.getElementById('summary-card').style.display = 'none';
+                document.getElementById('checkout-btn').disabled = true;
+            }
+        }
+
+        // Calendar functions
+        function renderCalendar() {
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
+            
+            const monthNames = ["January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"];
+            document.getElementById('calendar-month').textContent = `${monthNames[month]} ${year}`;
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            const calendarGrid = document.getElementById('calendar-grid');
+            calendarGrid.innerHTML = `
+                <div class="calendar-day">Sun</div>
+                <div class="calendar-day">Mon</div>
+                <div class="calendar-day">Tue</div>
+                <div class="calendar-day">Wed</div>
+                <div class="calendar-day">Thu</div>
+                <div class="calendar-day">Fri</div>
+                <div class="calendar-day">Sat</div>
+            `;
+            
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDiv = document.createElement('div');
+                emptyDiv.className = 'calendar-date empty';
+                calendarGrid.appendChild(emptyDiv);
+            }
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateDiv = document.createElement('div');
+                dateDiv.className = 'calendar-date';
+                dateDiv.textContent = day;
+                
+                const currentDate = new Date(year, month, day);
+                
+                if (currentDate < today || currentDate > maxDate) {
+                    dateDiv.classList.add('unavailable');
+                } else {
+                    dateDiv.addEventListener('click', function() {
+                        document.querySelectorAll('.calendar-date').forEach(d => d.classList.remove('selected'));
+                        this.classList.add('selected');
+                        selectedDate = new Date(year, month, day);
+                    });
+                }
+                
+                calendarGrid.appendChild(dateDiv);
+            }
+        }
+
+        document.getElementById('prev-month').addEventListener('click', function() {
+            const newMonth = new Date(currentMonth);
+            newMonth.setMonth(newMonth.getMonth() - 1);
+            
+            const today = new Date();
+            if (newMonth >= new Date(today.getFullYear(), today.getMonth(), 1)) {
+                currentMonth = newMonth;
+                renderCalendar();
+            }
+        });
+
+        document.getElementById('next-month').addEventListener('click', function() {
+            const newMonth = new Date(currentMonth);
+            newMonth.setMonth(newMonth.getMonth() + 1);
+            
+            if (newMonth <= maxDate) {
+                currentMonth = newMonth;
+                renderCalendar();
+            }
+        });
+
+        document.getElementById('checkout-btn').addEventListener('click', function() {
+            if (!selectedDate) {
+                alert('Please select a date for your visit.');
+                return;
+            }
+            
+            const totalVisitors = visitors.adults + visitors.seniors + visitors.students + visitors.children;
+            if (totalVisitors === 0) {
+                alert('Please select at least one visitor.');
+                return;
+            }
+            
+            const dateStr = selectedDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            });
+            
+            const event = document.getElementById('event-select').value;
+            const eventText = event ? document.getElementById('event-select').options[document.getElementById('event-select').selectedIndex].text : 'General Museum Visit';
+            
+            alert(`Booking Summary:\n\nEvent: ${eventText}\nDate: ${dateStr}\nVisitors: ${totalVisitors}\nTotal: ${document.getElementById('total-price').textContent}\n\nProceeding to secure checkout...`);
+        });
+
         // Navigation scroll effect
         window.addEventListener('scroll', function() {
             const nav = document.querySelector('nav');
@@ -826,27 +1012,11 @@
             }
         });
 
-        // Calendar selection
-        const calendarDates = document.querySelectorAll('.calendar-date:not(.unavailable)');
-        calendarDates.forEach(date => {
-            date.addEventListener('click', function() {
-                // Remove selected class from all dates
-                calendarDates.forEach(d => d.classList.remove('selected'));
-                // Add selected class to clicked date
-                this.classList.add('selected');
-            });
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            renderCalendar();
+            document.querySelector('.ticket-card').click();
         });
-
-        // Ticket quantity update (simplified version)
-        const ticketSelects = document.querySelectorAll('.form-select');
-        ticketSelects.forEach(select => {
-            select.addEventListener('change', updateSummary);
-        });
-
-        function updateSummary() {
-            // This would calculate the total based on selected values
-            console.log("Summary would update here with real data");
-        }
     </script>
 </body>
 </html>
