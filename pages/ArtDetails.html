@@ -11,17 +11,17 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-        --primary-dark: #8b1a1a;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
+            --primary-dark: #8b1a1a;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
         }
 
         * {
@@ -189,11 +189,13 @@
 
         .art-image-container {
             display: flex;
-            align-items: flex-start;
-            justify-content: center;
+            flex-direction: column;
+            /* stack items vertically */
+            align-items: center;
+            /* center image + caption */
+            justify-content: flex-start;
             padding: 2rem;
             background: var(--neutral-light);
-            min-height: 100%;
         }
 
         .art-image {
@@ -205,6 +207,19 @@
             display: block;
             border-radius: 8px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .art-geography {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            font-style: italic;
+            color: var(--primary-dark);
+            text-align: center;
+        }
+
+        .art-geography strong {
+            color: var(--primary-dark);
+            margin-right: 0.3rem;
         }
 
         .art-info {
@@ -223,7 +238,7 @@
             font-size: 1.3rem;
             color: var(--accent);
             font-style: italic;
-            margin-bottom: 2rem;
+            margin-bottom: 4rem;
         }
 
         .art-details-grid {
@@ -419,6 +434,7 @@
             <div id="art-content" class="art-details" style="display: none;">
                 <div class="art-image-container">
                     <img id="art-image" class="art-image" src="" alt="">
+                    <p class="art-geography" id="art-geography"></p>
                 </div>
 
                 <div class="art-info">
@@ -527,6 +543,7 @@
             artImage.src = artwork.imageURL || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400" viewBox="0 0 400 400"%3E%3Crect fill="%23e2e8f0" width="400" height="400"/%3E%3Ctext x="200" y="200" text-anchor="middle" fill="%23718096" font-size="24"%3ENo Image%3C/text%3E%3C/svg%3E';
             artImage.alt = artwork.title || 'Artwork';
 
+            document.getElementById('art-geography').textContent = artwork.Geography || artwork.origin || "Unknown";
             document.getElementById('art-date').textContent = artwork.date || artwork.year || 'Unknown';
             document.getElementById('art-medium').textContent = artwork.material || artwork.materials || 'Unknown';
             document.getElementById('art-dimensions').textContent = artwork.dimensions || artwork.size || 'Unknown';
