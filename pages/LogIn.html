@@ -10,19 +10,19 @@
         rel="stylesheet">
     <style>
         :root {
-        --primary-dark: #8b1a1a;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
-        --error: #e53e3e;
-        --success: #38a169;
+            --primary-dark: #8b1a1a;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --error: #e53e3e;
+            --success: #38a169;
         }
 
         * {
@@ -53,7 +53,10 @@
             background-position: center;
         }
 
-        h1, h2, h3, h4 {
+        h1,
+        h2,
+        h3,
+        h4 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             line-height: 1.2;
@@ -266,6 +269,7 @@
                 opacity: 0;
                 transform: translateY(30px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -342,13 +346,13 @@
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { 
+        import {
             signInWithEmailAndPassword,
             setPersistence,
             browserSessionPersistence,
             browserLocalPersistence
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-        import { 
+        import {
             collection,
             query,
             where,
@@ -385,7 +389,7 @@
                 const usersRef = collection(db, "Users");
                 const q = query(usersRef, where("Username", "==", username));
                 const querySnapshot = await getDocs(q);
-                
+
                 if (!querySnapshot.empty) {
                     return querySnapshot.docs[0].data()["Email Address"];
                 }
@@ -434,11 +438,26 @@
 
                 showMessage('Login successful! Redirecting...', 'success');
 
-                setTimeout(() => {
-                    if (user.email === 'admin@example.com') {
-                        window.location.href = 'AdminNews.html';
-                    } else {
-                        window.location.href = 'Home.html';
+                setTimeout(async () => {
+                    try {
+                        const userDocRef = doc(db, "Users", user.uid);
+                        const userDocSnap = await getDoc(userDocRef);
+
+                        if (userDocSnap.exists()) {
+                            const userData = userDocSnap.data();
+
+                            if (userData.role === "admin") {
+                                window.location.href = "AdminNews.html";
+                            } else {
+                                window.location.href = "Home.html";
+                            }
+                        } else {
+                            console.error("User document not found in Firestore.");
+                            window.location.href = "Home.html";
+                        }
+                    } catch (err) {
+                        console.error("Error checking role:", err);
+                        window.location.href = "Home.html";
                     }
                 }, 1500);
 
