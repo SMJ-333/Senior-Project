@@ -6,6 +6,8 @@
     <title>Admin Dashboard - ATHAR Museum</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
         :root {
             --primary-dark: #305c68;     /* بني أسود */
@@ -486,6 +488,51 @@
             </div>
         </div>
 
+        <!-- Analytics Charts Section -->
+<div class="content-grid">
+    <div class="content-section">
+        <h2>
+            <span class="material-icons">show_chart</span>
+            Visitor Statistics
+        </h2>
+        <div style="height: 300px;">
+            <canvas id="visitorsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>
+            <span class="material-icons">pie_chart</span>
+            Events Distribution
+        </h2>
+        <div style="height: 300px;">
+            <canvas id="eventsChart"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="content-grid">
+    <div class="content-section">
+        <h2>
+            <span class="material-icons">bar_chart</span>
+            Weekly Ticket Sales
+        </h2>
+        <div style="height: 300px;">
+            <canvas id="ticketsChart"></canvas>
+        </div>
+    </div>
+
+    <div class="content-section">
+        <h2>
+            <span class="material-icons">trending_up</span>
+            New User Registrations
+        </h2>
+        <div style="height: 300px;">
+            <canvas id="usersChart"></canvas>
+        </div>
+    </div>
+</div>
+
         <div class="content-grid">
             <div class="content-section">
                 <h2>
@@ -578,8 +625,289 @@
             }
         });
 
+       function initCharts() {
+    // Visitors Chart
+    const visitorsCtx = document.getElementById('visitorsChart').getContext('2d');
+    new Chart(visitorsCtx, {
+        type: 'line',
+        data: {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
+            datasets: [{
+                label: 'Visitors',
+                data: [1200, 1900, 1500, 2100, 1800, 2400],
+                borderColor: '#8b1a1a',
+                backgroundColor: 'rgba(139, 26, 26, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Ticket Sales Chart
+    const ticketsCtx = document.getElementById('ticketsChart').getContext('2d');
+    new Chart(ticketsCtx, {
+        type: 'bar',
+        data: {
+            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+            datasets: [{
+                label: 'Tickets Sold',
+                data: [85, 120, 95, 140, 180, 220, 195],
+                backgroundColor: '#b08d57',
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+
+    // Events Distribution Chart
+    const eventsCtx = document.getElementById('eventsChart').getContext('2d');
+    new Chart(eventsCtx, {
+        type: 'doughnut',
+        data: {
+            labels: ['Workshops', 'Tours', 'Exhibitions', 'Lectures', 'Special Events'],
+            datasets: [{
+                data: [30, 25, 20, 15, 10],
+                backgroundColor: [
+                    '#8b1a1a',
+                    '#b08d57',
+                    '#48bb78',
+                    '#4299e1',
+                    '#ecc94b'
+                ]
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // User Registrations Chart
+    const usersCtx = document.getElementById('usersChart').getContext('2d');
+    new Chart(usersCtx, {
+        type: 'line',
+        data: {
+            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
+            datasets: [{
+                label: 'New Users',
+                data: [45, 62, 78, 156],
+                borderColor: '#48bb78',
+                backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                tension: 0.4,
+                fill: true
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    display: false
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+        }
+    });
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    loadNewsCount();
+    initCharts();
+});
+    </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('admin-email').textContent = user.email;
+            }
+        });
+
+        async function loadNewsCount() {
+            try {
+                const newsQuery = query(collection(db, 'News'), orderBy('publishedAt', 'desc'));
+                const snapshot = await getDocs(newsQuery);
+                const activeNews = snapshot.docs.filter(doc => !doc.data().isDeleted);
+                document.getElementById('total-news').textContent = activeNews.length;
+            } catch (error) {
+                console.error('Error loading news count:', error);
+            }
+        }
+
+        function initCharts() {
+            // Visitors Chart
+            const visitorsCtx = document.getElementById('visitorsChart').getContext('2d');
+            new Chart(visitorsCtx, {
+                type: 'line',
+                data: {
+                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN'],
+                    datasets: [{
+                        label: 'Visitors',
+                        data: [1200, 1900, 1500, 2100, 1800, 2400],
+                        borderColor: '#8b1a1a',
+                        backgroundColor: 'rgba(139, 26, 26, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Ticket Sales Chart
+            const ticketsCtx = document.getElementById('ticketsChart').getContext('2d');
+            new Chart(ticketsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['MON', 'TUE', 'WED', 'THE', 'FRI', 'SAT', 'SUN'],
+                    datasets: [{
+                        label: ' Tickets sold',
+                        data: [85, 120, 95, 140, 180, 220, 195],
+                        backgroundColor: '#b08d57',
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+
+            // Events Distribution Chart
+            const eventsCtx = document.getElementById('eventsChart').getContext('2d');
+            new Chart(eventsCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['ورش عمل', 'جولات', 'معارض', 'محاضرات', 'Spatial Events'],
+                    datasets: [{
+                        data: [30, 25, 20, 15, 10],
+                        backgroundColor: [
+                            '#8b1a1a',
+                            '#b08d57',
+                            '#48bb78',
+                            '#4299e1',
+                            '#ecc94b'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // User Registrations Chart
+            const usersCtx = document.getElementById('usersChart').getContext('2d');
+            new Chart(usersCtx, {
+                type: 'line',
+                data: {
+                    labels: ['week 1', 'week 2', 'week 3', 'week 4'],
+                    datasets: [{
+                        label: 'New Visitors',
+                        data: [45, 62, 78, 156],
+                        borderColor: '#48bb78',
+                        backgroundColor: 'rgba(72, 187, 120, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        document.getElementById('logout-btn').addEventListener('click', async () => {
+            if (confirm('Are you sure you want to logout?')) {
+                try {
+                    await signOut(auth);
+                    window.location.href = 'login.html';
+                } catch (error) {
+                    console.error('Error logging out:', error);
+                    alert('Error logging out. Please try again.');
+                }
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', () => {
             loadNewsCount();
+            initCharts();
         });
     </script>
 </body>
