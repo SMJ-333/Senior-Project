@@ -194,7 +194,7 @@
 
         .cta-button {
             background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-            color: var(--accent);
+            color: var(--white);
             padding: 1rem 2.5rem;
             font-size: 1.1rem;
             font-weight: 600;
@@ -442,7 +442,7 @@
         }
 
         .footer-section h3 {
-            color: var(--accent);
+            color: var(--accent-light);
             margin-bottom: 1.5rem;
             font-size: 1.3rem;
         }
@@ -624,28 +624,28 @@
                 <h2>Upcoming Events</h2>
 
                 <div class="event-item">
-                    <span class="event-date">March 25, 2025 • 6:30 PM</span>
+                    <span class="event-date">October 25, 2025 • 6:30 PM</span>
                     <h3>Ancient Egypt Night Tour</h3>
                     <p>Experience the mysteries of ancient Egypt in a special after-hours guided tour. Explore mummies,
                         sarcophagi, and treasures under atmospheric lighting.</p>
                 </div>
 
                 <div class="event-item">
-                    <span class="event-date">April 12, 2025 • 10:00 AM</span>
+                    <span class="event-date">November 12, 2025 • 10:00 AM</span>
                     <h3>Renaissance Art Workshop</h3>
                     <p>Learn traditional painting techniques from master artists. This hands-on workshop covers fresco
                         and oil painting methods used by the great Renaissance masters.</p>
                 </div>
 
                 <div class="event-item">
-                    <span class="event-date">April 28, 2025 • 11:00 AM</span>
+                    <span class="event-date">November 28, 2025 • 11:00 AM</span>
                     <h3>Family Discovery Day</h3>
                     <p>A special event designed for families with interactive exhibits, treasure hunts, and educational
                         activities that make history come alive for children.</p>
                 </div>
 
                 <div class="event-item">
-                    <span class="event-date">May 15, 2025 • 7:00 PM</span>
+                    <span class="event-date">December 15, 2025 • 7:00 PM</span>
                     <h3>Curator's Lecture Series</h3>
                     <p>Join our chief curator for an exclusive behind-the-scenes look at our newest acquisitions and
                         upcoming exhibition plans.</p>
@@ -658,7 +658,7 @@
 
                 <div class="exhibition-item">
                     <h3>Treasures of Ancient Rome</h3>
-                    <span class="event-date">Now through June 2025</span>
+                    <span class="event-date">Now through December 2025</span>
                     <p>Marvel at authentic Roman artifacts including sculptures, mosaics, and everyday objects that
                         reveal life in the Roman Empire. Features items never before displayed to the public.</p>
                 </div>
@@ -672,7 +672,7 @@
 
                 <div class="exhibition-item">
                     <h3>Lost Civilizations of the Americas</h3>
-                    <span class="event-date">Opening April 2025</span>
+                    <span class="event-date">Opening November 2025</span>
                     <p>Discover the sophisticated cultures of pre-Columbian America through artifacts from the Maya,
                         Aztec, and Inca civilizations. Interactive displays bring these cultures to life.</p>
                 </div>
@@ -719,6 +719,62 @@
     </footer>
 
     <script>
+        // Filter events by date
+        function filterEventsByDate() {
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            // Filter upcoming events
+            const eventItems = document.querySelectorAll('.event-item');
+            eventItems.forEach(item => {
+                const dateText = item.querySelector('.event-date').textContent;
+                const dateMatch = dateText.match(/([A-Za-z]+)\s+(\d+),\s+(\d{4})/);
+                
+                if (dateMatch) {
+                    const eventDate = new Date(dateMatch[0]);
+                    eventDate.setHours(0, 0, 0, 0);
+                    
+                    if (eventDate < today) {
+                        item.style.display = 'none';
+                    }
+                }
+            });
+
+            // Filter featured exhibitions
+            const exhibitionItems = document.querySelectorAll('.exhibition-item');
+            exhibitionItems.forEach(item => {
+                const dateText = item.querySelector('.event-date').textContent;
+                
+                // Handle "Now through" format
+                if (dateText.includes('Now through')) {
+                    const dateMatch = dateText.match(/through\s+([A-Za-z]+)\s+(\d{4})/);
+                    if (dateMatch) {
+                        const endDate = new Date(dateMatch[1] + ' 1, ' + dateMatch[2]);
+                        endDate.setMonth(endDate.getMonth() + 1);
+                        endDate.setDate(0);
+                        endDate.setHours(0, 0, 0, 0);
+                        
+                        if (endDate < today) {
+                            item.style.display = 'none';
+                        }
+                    }
+                }
+                // Handle "Opening" format
+                else if (dateText.includes('Opening')) {
+                    const dateMatch = dateText.match(/Opening\s+([A-Za-z]+)\s+(\d{4})/);
+                    if (dateMatch) {
+                        const openDate = new Date(dateMatch[1] + ' 1, ' + dateMatch[2]);
+                        openDate.setHours(0, 0, 0, 0);
+                        
+                        if (openDate < today) {
+                            item.style.display = 'none';
+                        }
+                    }
+                }
+                // "Permanent Collection" and "Ongoing" always show
+            });
+        }
+
         // Navigation scroll effect
         window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
@@ -733,6 +789,9 @@
 
         // Set active navigation link
         document.addEventListener('DOMContentLoaded', function () {
+            // Filter events on page load
+            filterEventsByDate();
+
             const currentPage = window.location.pathname.split('/').pop();
             const navLinks = document.querySelectorAll('.nav-links a');
 
