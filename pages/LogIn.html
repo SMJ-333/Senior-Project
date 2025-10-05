@@ -356,7 +356,9 @@
             collection,
             query,
             where,
-            getDocs
+            getDocs,
+            doc,
+            getDoc
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         const passwordToggle = document.getElementById('passwordToggle');
@@ -446,7 +448,7 @@
                         if (userDocSnap.exists()) {
                             const userData = userDocSnap.data();
 
-                            if (userData.role === "admin") {
+                            if (userData.role === "admin" || userData.role === "employee") {
                                 window.location.href = "AdminNews.html";
                             } else {
                                 window.location.href = "Home.html";
