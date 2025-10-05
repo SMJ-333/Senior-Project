@@ -247,7 +247,7 @@
             display: inline-block;
             padding: 0.8rem 1.8rem;
             background: var(--accent);
-            color: var(--primary-dark);
+            color: var(--white);
             font-weight: 600;
             border: none;
             border-radius: 6px;
@@ -269,7 +269,7 @@
 
         .btn-outline:hover {
             background: var(--accent);
-            color: var(--primary-dark);
+            color: var(--white);
         }
 
         /* Exhibitions Grid */
@@ -319,8 +319,8 @@
             position: absolute;
             top: 1rem;
             right: 1rem;
-            background: var(--accent);
-            color: var(--primary-dark);
+            background: var(--accent-light);
+            color: var(--text-dark);
             padding: 0.3rem 0.8rem;
             border-radius: 20px;
             font-size: 0.8rem;
@@ -479,7 +479,7 @@
         }
 
         .footer-section h3 {
-            color: var(--accent);
+            color: var(--accent-light);
             margin-bottom: 1.5rem;
             font-size: 1.3rem;
         }
@@ -553,7 +553,7 @@
                 <div class="filter-grid">
                     <div class="filter-group">
                         <label class="filter-label">Category</label>
-                        <select class="filter-select">
+                        <select class="filter-select" id="categoryFilter">
                             <option value="all">All Categories</option>
                             <option value="ancient">Ancient History</option>
                             <option value="modern">Modern Art</option>
@@ -564,7 +564,7 @@
                     </div>
                     <div class="filter-group">
                         <label class="filter-label">Time Period</label>
-                        <select class="filter-select">
+                        <select class="filter-select" id="periodFilter">
                             <option value="all">All Periods</option>
                             <option value="current">Current</option>
                             <option value="upcoming">Upcoming</option>
@@ -573,7 +573,7 @@
                     </div>
                     <div class="filter-group">
                         <label class="filter-label">Location</label>
-                        <select class="filter-select">
+                        <select class="filter-select" id="locationFilter">
                             <option value="all">All Locations</option>
                             <option value="main">Main Hall</option>
                             <option value="west">West Wing</option>
@@ -583,8 +583,8 @@
                     </div>
                 </div>
                 <div class="filter-buttons">
-                    <button class="btn">Apply Filters</button>
-                    <button class="btn btn-outline">Reset Filters</button>
+                    <button class="btn" onclick="applyFilters()">Apply Filters</button>
+                    <button class="btn btn-outline" onclick="resetFilters()">Reset Filters</button>
                 </div>
             </div>
         </section>
@@ -597,7 +597,7 @@
                     <p>Experience the grandeur of the Roman Empire through an unparalleled collection of artifacts, including rare sculptures, intricate mosaics, and everyday objects that reveal the fascinating details of Roman life.</p>
                     <p>This exclusive exhibition features items on loan from the Vatican Museums and the British Museum, many never before displayed to the public.</p>
                     <div class="exhibition-meta">
-                        <span class="exhibition-date">Through June 30, 2025</span>
+                        <span class="exhibition-date">Through December 30, 2025</span>
                         <span class="exhibition-location">Special Exhibits Hall</span>
                     </div>
                     <div class="exhibition-actions">
@@ -622,7 +622,7 @@
             
             <div class="exhibitions-grid">
                 <!-- Exhibition 1 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="modern" data-period="current" data-location="west">
                     <div class="exhibition-img">
                         <div>Modern Masters Collection</div>
                         <span class="exhibition-badge">Popular</span>
@@ -642,7 +642,7 @@
                 </div>
 
                 <!-- Exhibition 2 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="ancient" data-period="current" data-location="main">
                     <div class="exhibition-img">
                         <div>Egyptian Afterlife</div>
                         <span class="exhibition-badge">New</span>
@@ -650,7 +650,7 @@
                     <div class="exhibition-content">
                         <h3>Egyptian Afterlife: Mummies & Beyond</h3>
                         <div class="exhibition-meta">
-                            <span class="exhibition-date">Through Aug 15, 2025</span>
+                            <span class="exhibition-date">Through January 15, 2026</span>
                             <span class="exhibition-location">Hall of Ancient Civilizations</span>
                         </div>
                         <p>Discover the fascinating beliefs and practices surrounding death and the afterlife in ancient Egypt. Features well-preserved mummies, sarcophagi, and funerary artifacts.</p>
@@ -662,7 +662,7 @@
                 </div>
 
                 <!-- Exhibition 3 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="science" data-period="current" data-location="west">
                     <div class="exhibition-img">
                         <div>Nature's Wonders</div>
                     </div>
@@ -681,14 +681,14 @@
                 </div>
 
                 <!-- Exhibition 4 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="ancient" data-period="current" data-location="main">
                     <div class="exhibition-img">
                         <div>Medieval Times</div>
                     </div>
                     <div class="exhibition-content">
                         <h3>Medieval Times: Knights & Nobility</h3>
                         <div class="exhibition-meta">
-                            <span class="exhibition-date">Through Dec 20, 2025</span>
+                            <span class="exhibition-date">Through February 20, 2026</span>
                             <span class="exhibition-location">History Gallery</span>
                         </div>
                         <p>Step back into the Middle Ages with authentic armor, weaponry, and artifacts from European castles. Experience the life of knights, nobles, and common folk.</p>
@@ -700,7 +700,7 @@
                 </div>
 
                 <!-- Exhibition 5 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="science" data-period="current" data-location="special">
                     <div class="exhibition-img">
                         <div>Ocean Exploration</div>
                         <span class="exhibition-badge">Family Friendly</span>
@@ -708,7 +708,7 @@
                     <div class="exhibition-content">
                         <h3>Ocean Exploration: Deep Sea Discoveries</h3>
                         <div class="exhibition-meta">
-                            <span class="exhibition-date">Through Sep 10, 2025</span>
+                            <span class="exhibition-date">Through November 10, 2025</span>
                             <span class="exhibition-location">Science & Discovery Center</span>
                         </div>
                         <p>Dive into the mysteries of the deep ocean with rare specimens, interactive submarine simulations, and footage from recent deep-sea expeditions.</p>
@@ -720,7 +720,7 @@
                 </div>
 
                 <!-- Exhibition 6 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="sculpture" data-period="current" data-location="east">
                     <div class="exhibition-img">
                         <div>Asian Artistry</div>
                     </div>
@@ -749,21 +749,21 @@
             <div class="coming-soon-grid">
                 <div class="coming-card">
                     <h3>Lost Civilizations of the Americas</h3>
-                    <span class="coming-date">Opening April 12, 2025</span>
+                    <span class="coming-date">Opening November 12, 2025</span>
                     <p>Discover the sophisticated cultures of pre-Columbian America through artifacts from the Maya, Aztec, and Inca civilizations. Interactive displays bring these cultures to life.</p>
                     <a href="#">Notify Me</a>
                 </div>
                 
                 <div class="coming-card">
                     <h3>Renaissance Masters: Drawings & Sketches</h3>
-                    <span class="coming-date">Opening May 5, 2025</span>
+                    <span class="coming-date">Opening December 5, 2025</span>
                     <p>An intimate look at the creative process of Renaissance masters through their preliminary drawings and sketches. Features works by Leonardo, Michelangelo, and Raphael.</p>
                     <a href="#">Notify Me</a>
                 </div>
                 
                 <div class="coming-card">
                     <h3>Space Race: Journey to the Stars</h3>
-                    <span class="coming-date">Opening June 20, 2025</span>
+                    <span class="coming-date">Opening January 20, 2026</span>
                     <p>Experience the excitement of the space race with authentic artifacts, spacecraft models, and interactive exhibits that explore humanity's journey beyond Earth.</p>
                     <a href="#">Notify Me</a>
                 </div>
@@ -803,6 +803,79 @@
     </footer>
 
     <script>
+        // Filter functionality
+        function applyFilters() {
+            const category = document.getElementById('categoryFilter').value;
+            const period = document.getElementById('periodFilter').value;
+            const location = document.getElementById('locationFilter').value;
+            
+            const cards = document.querySelectorAll('.exhibition-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                const cardPeriod = card.getAttribute('data-period');
+                const cardLocation = card.getAttribute('data-location');
+                
+                const categoryMatch = category === 'all' || cardCategory === category;
+                const periodMatch = period === 'all' || cardPeriod === period;
+                const locationMatch = location === 'all' || cardLocation === location;
+                
+                if (categoryMatch && periodMatch && locationMatch) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show message if no results
+            let noResultsMsg = document.querySelector('.no-results-message');
+            const grid = document.querySelector('.exhibitions-grid');
+            
+            if (visibleCount === 0) {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('div');
+                    noResultsMsg.className = 'no-results-message';
+                    noResultsMsg.style.gridColumn = '1 / -1';
+                    noResultsMsg.style.textAlign = 'center';
+                    noResultsMsg.style.padding = '3rem';
+                    noResultsMsg.style.color = 'var(--text-light)';
+                    noResultsMsg.style.fontSize = '1.2rem';
+                    noResultsMsg.innerHTML = '<p>No exhibitions match your selected filters. Please try different criteria.</p>';
+                    grid.appendChild(noResultsMsg);
+                } else {
+                    noResultsMsg.style.display = 'block';
+                }
+            } else {
+                if (noResultsMsg) {
+                    noResultsMsg.style.display = 'none';
+                }
+            }
+            
+            // Scroll to results
+            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function resetFilters() {
+            // Reset all select elements
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('periodFilter').value = 'all';
+            document.getElementById('locationFilter').value = 'all';
+            
+            // Show all cards
+            const cards = document.querySelectorAll('.exhibition-card');
+            cards.forEach(card => {
+                card.style.display = 'block';
+            });
+            
+            // Hide no results message
+            const noResultsMsg = document.querySelector('.no-results-message');
+            if (noResultsMsg) {
+                noResultsMsg.style.display = 'none';
+            }
+        }
+
         // Navigation scroll effect
         window.addEventListener('scroll', function() {
             const nav = document.querySelector('nav');
@@ -822,7 +895,7 @@
                 const itemTop = item.getBoundingClientRect().top;
                 const itemVisible = 150;
                 
-                if (itemTop < window.innerHeight - itemVisible) {
+                if (itemTop < window.innerHeight - itemVisible && item.style.display !== 'none') {
                     item.style.opacity = '1';
                     item.style.transform = 'translateY(0)';
                 }
