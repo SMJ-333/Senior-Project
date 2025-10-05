@@ -553,7 +553,7 @@
                 <div class="filter-grid">
                     <div class="filter-group">
                         <label class="filter-label">Category</label>
-                        <select class="filter-select">
+                        <select class="filter-select" id="categoryFilter">
                             <option value="all">All Categories</option>
                             <option value="ancient">Ancient History</option>
                             <option value="modern">Modern Art</option>
@@ -564,7 +564,7 @@
                     </div>
                     <div class="filter-group">
                         <label class="filter-label">Time Period</label>
-                        <select class="filter-select">
+                        <select class="filter-select" id="periodFilter">
                             <option value="all">All Periods</option>
                             <option value="current">Current</option>
                             <option value="upcoming">Upcoming</option>
@@ -573,7 +573,7 @@
                     </div>
                     <div class="filter-group">
                         <label class="filter-label">Location</label>
-                        <select class="filter-select">
+                        <select class="filter-select" id="locationFilter">
                             <option value="all">All Locations</option>
                             <option value="main">Main Hall</option>
                             <option value="west">West Wing</option>
@@ -583,8 +583,8 @@
                     </div>
                 </div>
                 <div class="filter-buttons">
-                    <button class="btn">Apply Filters</button>
-                    <button class="btn btn-outline">Reset Filters</button>
+                    <button class="btn" onclick="applyFilters()">Apply Filters</button>
+                    <button class="btn btn-outline" onclick="resetFilters()">Reset Filters</button>
                 </div>
             </div>
         </section>
@@ -622,7 +622,7 @@
             
             <div class="exhibitions-grid">
                 <!-- Exhibition 1 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="modern" data-period="current" data-location="west">
                     <div class="exhibition-img">
                         <div>Modern Masters Collection</div>
                         <span class="exhibition-badge">Popular</span>
@@ -642,7 +642,7 @@
                 </div>
 
                 <!-- Exhibition 2 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="ancient" data-period="current" data-location="main">
                     <div class="exhibition-img">
                         <div>Egyptian Afterlife</div>
                         <span class="exhibition-badge">New</span>
@@ -662,7 +662,7 @@
                 </div>
 
                 <!-- Exhibition 3 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="science" data-period="current" data-location="west">
                     <div class="exhibition-img">
                         <div>Nature's Wonders</div>
                     </div>
@@ -681,7 +681,7 @@
                 </div>
 
                 <!-- Exhibition 4 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="ancient" data-period="current" data-location="main">
                     <div class="exhibition-img">
                         <div>Medieval Times</div>
                     </div>
@@ -700,7 +700,7 @@
                 </div>
 
                 <!-- Exhibition 5 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="science" data-period="current" data-location="special">
                     <div class="exhibition-img">
                         <div>Ocean Exploration</div>
                         <span class="exhibition-badge">Family Friendly</span>
@@ -720,7 +720,7 @@
                 </div>
 
                 <!-- Exhibition 6 -->
-                <div class="exhibition-card">
+                <div class="exhibition-card" data-category="sculpture" data-period="current" data-location="east">
                     <div class="exhibition-img">
                         <div>Asian Artistry</div>
                     </div>
@@ -803,6 +803,79 @@
     </footer>
 
     <script>
+        // Filter functionality
+        function applyFilters() {
+            const category = document.getElementById('categoryFilter').value;
+            const period = document.getElementById('periodFilter').value;
+            const location = document.getElementById('locationFilter').value;
+            
+            const cards = document.querySelectorAll('.exhibition-card');
+            let visibleCount = 0;
+            
+            cards.forEach(card => {
+                const cardCategory = card.getAttribute('data-category');
+                const cardPeriod = card.getAttribute('data-period');
+                const cardLocation = card.getAttribute('data-location');
+                
+                const categoryMatch = category === 'all' || cardCategory === category;
+                const periodMatch = period === 'all' || cardPeriod === period;
+                const locationMatch = location === 'all' || cardLocation === location;
+                
+                if (categoryMatch && periodMatch && locationMatch) {
+                    card.style.display = 'block';
+                    visibleCount++;
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Show message if no results
+            let noResultsMsg = document.querySelector('.no-results-message');
+            const grid = document.querySelector('.exhibitions-grid');
+            
+            if (visibleCount === 0) {
+                if (!noResultsMsg) {
+                    noResultsMsg = document.createElement('div');
+                    noResultsMsg.className = 'no-results-message';
+                    noResultsMsg.style.gridColumn = '1 / -1';
+                    noResultsMsg.style.textAlign = 'center';
+                    noResultsMsg.style.padding = '3rem';
+                    noResultsMsg.style.color = 'var(--text-light)';
+                    noResultsMsg.style.fontSize = '1.2rem';
+                    noResultsMsg.innerHTML = '<p>No exhibitions match your selected filters. Please try different criteria.</p>';
+                    grid.appendChild(noResultsMsg);
+                } else {
+                    noResultsMsg.style.display = 'block';
+                }
+            } else {
+                if (noResultsMsg) {
+                    noResultsMsg.style.display = 'none';
+                }
+            }
+            
+            // Scroll to results
+            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+        
+        function resetFilters() {
+            // Reset all select elements
+            document.getElementById('categoryFilter').value = 'all';
+            document.getElementById('periodFilter').value = 'all';
+            document.getElementById('locationFilter').value = 'all';
+            
+            // Show all cards
+            const cards = document.querySelectorAll('.exhibition-card');
+            cards.forEach(card => {
+                card.style.display = 'block';
+            });
+            
+            // Hide no results message
+            const noResultsMsg = document.querySelector('.no-results-message');
+            if (noResultsMsg) {
+                noResultsMsg.style.display = 'none';
+            }
+        }
+
         // Navigation scroll effect
         window.addEventListener('scroll', function() {
             const nav = document.querySelector('nav');
@@ -822,7 +895,7 @@
                 const itemTop = item.getBoundingClientRect().top;
                 const itemVisible = 150;
                 
-                if (itemTop < window.innerHeight - itemVisible) {
+                if (itemTop < window.innerHeight - itemVisible && item.style.display !== 'none') {
                     item.style.opacity = '1';
                     item.style.transform = 'translateY(0)';
                 }
