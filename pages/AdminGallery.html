@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Gallery - ATHAR Museum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    <style>
+        :root {
+            --primary-dark: #8b1a1a;     
+            --primary-light: #8d2e1d;    
+            --accent: #b08d57;           
+            --accent-light: #d4b483;     
+            --neutral-light: #f4f1e3;    
+            --neutral-dark: #4a3c2a;     
+            --text-dark: #3b2f23;        
+            --text-light: #7c6f57;       
+            --white: #fdfaf4;            
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
+            --info: #4299e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--neutral-light);
+        }
+
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .admin-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-btn {
+            background: rgba(255, 255, 255, 0.2);
+            color: var(--white);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: var(--transition);
+        }
+
+        .back-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .header-title h1 {
+            font-size: 1.8rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .header-subtitle {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .view-gallery-btn {
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            text-decoration: none;
+        }
+
+        .view-gallery-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+
+        .stats-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--text-light);
+            font-size: 0.95rem;
+        }
+
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .section {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-title {
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .add-btn {
+            background: var(--success);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .add-btn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .items-grid {
+            display: grid;
+            gap: 1rem;
+            max-height: 600px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .item-card {
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--neutral-light);
+            border-radius: 8px;
+            transition: var(--transition);
+        }
+
+        .item-card:hover {
+            background: #e8e4d5;
+        }
+
+        .item-image {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .item-info {
+            flex: 1;
+        }
+
+        .item-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .item-artist {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .item-category {
+            display: inline-block;
+            background: var(--accent);
+            color: var(--white);
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .icon-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: var(--transition);
+            color: var(--text-dark);
+        }
+
+        .icon-btn:hover {
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .icon-btn.edit:hover {
+            color: var(--info);
+        }
+
+        .icon-btn.delete:hover {
+            color: var(--danger);
+        }
+
+        .popular-items-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .popular-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--neutral-light);
+            border-radius: 8px;
+        }
+
+        .popular-rank {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            min-width: 40px;
+        }
+
+        .popular-image {
+            width: 60px;
+            height: 60px;
+            border-radius: 8px;
+            object-fit: cover;
+        }
+
+        .popular-info {
+            flex: 1;
+        }
+
+        .popular-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.2rem;
+        }
+
+        .popular-likes {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal.active {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .modal-title {
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            padding: 0.5rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .image-preview {
+            margin-top: 1rem;
+            max-width: 100%;
+            max-height: 200px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .image-preview.active {
+            display: block;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-primary {
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-light);
+        }
+
+        .btn-secondary {
+            background: var(--text-light);
+            color: var(--white);
+        }
+
+        .btn-secondary:hover {
+            background: var(--neutral-dark);
+        }
+
+        .chart-container {
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        @media (max-width: 992px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-header {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            .header-actions {
+                width: 100%;
+            }
+
+            .view-gallery-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header class="admin-header">
+        <div class="header-left">
+            <button class="back-btn" onclick="window.location.href='AdminDashboard.html'">
+                <span class="material-icons">arrow_back</span>
+            </button>
+            <div class="header-title">
+                <h1>Manage Gallery</h1>
+                <div class="header-subtitle">Add, edit, or remove artworks from the museum collection</div>
+            </div>
+        </div>
+        <div class="header-actions">
+            <a href="Gallery.html" target="_blank" class="view-gallery-btn">
+                <span class="material-icons">open_in_new</span>
+                View Gallery
+            </a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="stats-row">
+            <div class="stat-card">
+                <div class="stat-value" id="total-items">0</div>
+                <div class="stat-label">Total Artworks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="total-likes">0</div>
+                <div class="stat-label">Total Likes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="codices-count">0</div>
+                <div class="stat-label">Codices</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="arms-count">0</div>
+                <div class="stat-label">Arms</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="boxes-count">0</div>
+                <div class="stat-label">Boxes</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="bottles-count">0</div>
+                <div class="stat-label">Bottles</div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="material-icons">collections</span>
+                        All Artworks
+                    </h2>
+                    <button class="add-btn" onclick="openAddModal()">
+                        <span class="material-icons">add</span>
+                        Add Artwork
+                    </button>
+                </div>
+                <div class="items-grid" id="items-grid">
+                    <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                        Loading artworks...
+                    </div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <h2 class="section-title">
+                        <span class="material-icons">trending_up</span>
+                        Popular Artworks
+                    </h2>
+                </div>
+                <div class="popular-items-list" id="popular-items">
+                    <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                        Loading popular items...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2 class="section-title">
+                <span class="material-icons">bar_chart</span>
+                Category Distribution
+            </h2>
+            <div class="chart-container">
+                <canvas id="categoryChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div class="modal" id="artworkModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Add New Artwork</h2>
+                <button class="close-btn" onclick="closeModal()">
+                    <span class="material-icons">close</span>
+                </button>
+            </div>
+            <form id="artworkForm">
+                <input type="hidden" id="artwork-id">
+                
+                <div class="form-group">
+                    <label class="form-label">Title *</label>
+                    <input type="text" class="form-input" id="artwork-title" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Artist Name *</label>
+                    <input type="text" class="form-input" id="artwork-artist" required>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Category *</label>
+                    <select class="form-select" id="artwork-category" required>
+                        <option value="">Select Category</option>
+                        <option value="codices">Codices</option>
+                        <option value="arms">Arms</option>
+                        <option value="boxes">Boxes</option>
+                        <option value="bottles">Bottles</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Description</label>
+                    <textarea class="form-textarea" id="artwork-description"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Image URL *</label>
+                    <input type="url" class="form-input" id="artwork-image" required>
+                    <img id="image-preview" class="image-preview" alt="Preview">
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Artwork</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        let allArtworks = [];
+        let currentEditId = null;
+
+        // Load all artworks
+        function loadArtworks() {
+            const unsubscribe = onSnapshot(collection(db, "Museum_Collection"), (snapshot) => {
+                allArtworks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                renderArtworks();
+                updateStats();
+                renderPopularItems();
+                updateChart();
+            });
+        }
+
+        // Render artworks list
+        function renderArtworks() {
+            const grid = document.getElementById('items-grid');
+            if (allArtworks.length === 0) {
+                grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No artworks found</div>';
+                return;
+            }
+
+            grid.innerHTML = allArtworks.map(item => `
+                <div class="item-card">
+                    <img src="${item.imageURL || 'https://via.placeholder.com/80'}" alt="${item.title}" class="item-image">
+                    <div class="item-info">
+                        <div class="item-title">${item.title || 'Untitled'}</div>
+                        <div class="item-artist">${item.artist || item.artistName || 'Unknown'}</div>
+                        <span class="item-category">${item.classification || 'Uncategorized'}</span>
+                    </div>
+                    <div class="item-actions">
+                        <button class="icon-btn edit" onclick="editArtwork('${item.id}')" title="Edit">
+                            <span class="material-icons">edit</span>
+                        </button>
+                        <button class="icon-btn delete" onclick="deleteArtwork('${item.id}')" title="Delete">
+                            <span class="material-icons">delete</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('total-items').textContent = allArtworks.length;
+            
+            const totalLikes = allArtworks.reduce((sum, item) => sum + (item.likes || 0), 0);
+            document.getElementById('total-likes').textContent = totalLikes;
+
+            const counts = {
+                codices: 0,
+                arms: 0,
+                boxes: 0,
+                bottles: 0
+            };
+
+            allArtworks.forEach(item => {
+                const cat = (item.classification || '').toLowerCase();
+                if (counts.hasOwnProperty(cat)) {
+                    counts[cat]++;
+                }
+            });
+
+            document.getElementById('codices-count').textContent = counts.codices;
+            document.getElementById('arms-count').textContent = counts.arms;
+            document.getElementById('boxes-count').textContent = counts.boxes;
+            document.getElementById('bottles-count').textContent = counts.bottles;
+        }
+
+        // Render popular items
+        function renderPopularItems() {
+            const popular = [...allArtworks]
+                .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+                .slice(0, 5);
+
+            const container = document.getElementById('popular-items');
+            
+            if (popular.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No artworks yet</div>';
+                return;
+            }
+
+            container.innerHTML = popular.map((item, index) => `
+                <div class="popular-item">
+                    <div class="popular-rank">#${index + 1}</div>
+                    <img src="${item.imageURL || 'https://via.placeholder.com/60'}" alt="${item.title}" class="popular-image">
+                    <div class="popular-info">
+                        <div class="popular-title">${item.title || 'Untitled'}</div>
+                        <div class="popular-likes">
+                            <span class="material-icons" style="font-size: 1rem;">favorite</span>
+                            ${item.likes || 0} likes
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Update chart
+        let categoryChart = null;
+        function updateChart() {
+            const ctx = document.getElementById('categoryChart').getContext('2d');
+            
+            const counts = {
+                'Codices': 0,
+                'Arms': 0,
+                'Boxes': 0,
+                'Bottles': 0,
+                'Other': 0
+            };
+
+            allArtworks.forEach(item => {
+                const cat = (item.classification || '').toLowerCase().trim();
+                
+                console.log('Classification:', cat); // للتحقق
+                
+                if (cat === 'codices') {
+                    counts['Codices']++;
+                } else if (cat === 'arms') {
+                    counts['Arms']++;
+                } else if (cat === 'boxes') {
+                    counts['Boxes']++;
+                } else if (cat === 'bottles') {
+                    counts['Bottles']++;
+                } else if (cat !== '') {
+                    counts['Other']++;
+                }
+            });
+
+            // إزالة الفئات التي عددها 0
+            const labels = [];
+            const data = [];
+            const colors = {
+                'Codices': '#8b1a1a',
+                'Arms': '#b08d57',
+                'Boxes': '#48bb78',
+                'Bottles': '#4299e1',
+                'Other': '#ecc94b'
+            };
+            const backgroundColors = [];
+
+            Object.keys(counts).forEach(key => {
+                if (counts[key] > 0) {
+                    labels.push(key);
+                    data.push(counts[key]);
+                    backgroundColors.push(colors[key]);
+                }
+            });
+
+            if (categoryChart) {
+                categoryChart.destroy();
+            }
+
+            // إذا لم يكن هناك بيانات
+            if (data.length === 0) {
+                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+                const text = 'No data available';
+                ctx.font = '16px Inter';
+                ctx.fillStyle = '#7c6f57';
+                ctx.textAlign = 'center';
+                ctx.fillText(text, ctx.canvas.width / 2, ctx.canvas.height / 2);
+                return;
+            }
+
+            categoryChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: backgroundColors
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                                    const percentage = ((value / total) * 100).toFixed(1);
+                                    return `${label}: ${value} (${percentage}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Modal functions
+        window.openAddModal = function() {
+            currentEditId = null;
+            document.getElementById('modal-title').textContent = 'Add New Artwork';
+            document.getElementById('artworkForm').reset();
+            document.getElementById('artwork-id').value = '';
+            document.getElementById('image-preview').classList.remove('active');
+            document.getElementById('artworkModal').classList.add('active');
+        };
+
+        window.closeModal = function() {
+            document.getElementById('artworkModal').classList.remove('active');
+        };
+
+        window.editArtwork = function(id) {
+            const artwork = allArtworks.find(item => item.id === id);
+            if (!artwork) return;
+
+            currentEditId = id;
+            document.getElementById('modal-title').textContent = 'Edit Artwork';
+            document.getElementById('artwork-id').value = id;
+            document.getElementById('artwork-title').value = artwork.title || '';
+            document.getElementById('artwork-artist').value = artwork.artist || artwork.artistName || '';
+            document.getElementById('artwork-category').value = (artwork.classification || '').toLowerCase();
+            document.getElementById('artwork-description').value = artwork.description || '';
+            document.getElementById('artwork-image').value = artwork.imageURL || '';
+            
+            const preview = document.getElementById('image-preview');
+            if (artwork.imageURL) {
+                preview.src = artwork.imageURL;
+                preview.classList.add('active');
+            }
+
+            document.getElementById('artworkModal').classList.add('active');
+        };
+
+        window.deleteArtwork = async function(id) {
+            if (!confirm('Are you sure you want to delete this artwork?')) return;
+
+            try {
+                await deleteDoc(doc(db, "Museum_Collection", id));
+                alert('Artwork deleted successfully!');
+            } catch (error) {
+                console.error('Error deleting artwork:', error);
+                alert('Error deleting artwork: ' + error.message);
+            }
+        };
+
+        // Image preview
+        document.getElementById('artwork-image').addEventListener('input', function(e) {
+            const preview = document.getElementById('image-preview');
+            const url = e.target.value;
+            
+            if (url) {
+                preview.src = url;
+                preview.classList.add('active');
+                preview.onerror = function() {
+                    preview.classList.remove('active');
+                };
+            } else {
+                preview.classList.remove('active');
+            }
+        });
+
+        // Form submission
+        document.getElementById('artworkForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const artworkData = {
+                title: document.getElementById('artwork-title').value,
+                artist: document.getElementById('artwork-artist').value,
+                artistName: document.getElementById('artwork-artist').value,
+                classification: document.getElementById('artwork-category').value,
+                description: document.getElementById('artwork-description').value,
+                imageURL: document.getElementById('artwork-image').value,
+                likes: 0
+            };
+
+            try {
+                const id = document.getElementById('artwork-id').value;
+                
+                if (id) {
+                    // Update existing
+                    await updateDoc(doc(db, "Museum_Collection", id), artworkData);
+                    alert('Artwork updated successfully!');
+                } else {
+                    // Add new
+                    await addDoc(collection(db, "Museum_Collection"), artworkData);
+                    alert('Artwork added successfully!');
+                }
+
+                closeModal();
+            } catch (error) {
+                console.error('Error saving artwork:', error);
+                alert('Error saving artwork: ' + error.message);
+            }
+        });
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            loadArtworks();
+        });
+
+        // Close modal on outside click
+        document.getElementById('artworkModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
