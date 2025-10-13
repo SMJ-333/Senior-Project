@@ -119,7 +119,7 @@
 
         .stats-row {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            grid-template-columns: repeat(6, 1fr);
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -149,6 +149,10 @@
             grid-template-columns: 2fr 1fr;
             gap: 2rem;
             margin-bottom: 2rem;
+        }
+
+        .full-width-section {
+            grid-column: 1 / -1;
         }
 
         .section {
@@ -319,6 +323,66 @@
             gap: 0.3rem;
         }
 
+        .recommendation-card {
+            padding: 1rem;
+            background: var(--neutral-light);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            border-left: 4px solid var(--accent);
+        }
+
+        .recommendation-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .recommendation-desc {
+            color: var(--text-light);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendation-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .recommendation-stats span {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .insight-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .insight-badge.high {
+            background: rgba(72, 187, 120, 0.2);
+            color: var(--success);
+        }
+
+        .insight-badge.medium {
+            background: rgba(236, 201, 75, 0.2);
+            color: var(--warning);
+        }
+
+        .insight-badge.low {
+            background: rgba(66, 153, 225, 0.2);
+            color: var(--info);
+        }
+
         .modal {
             display: none;
             position: fixed;
@@ -449,7 +513,7 @@
 
         @media (max-width: 992px) {
             .content-grid {
-                grid-template-columns: 1fr;
+                grid-template-columns: 1fr !important;
             }
 
             .admin-header {
@@ -465,6 +529,22 @@
             .view-gallery-btn {
                 width: 100%;
                 justify-content: center;
+            }
+
+            .stats-row {
+                grid-template-columns: repeat(3, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-row {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-row {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -499,20 +579,20 @@
                 <div class="stat-label">Total Likes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="codices-count">0</div>
-                <div class="stat-label">Codices</div>
+                <div class="stat-value" id="codices-likes">0</div>
+                <div class="stat-label">Codices Likes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="arms-count">0</div>
-                <div class="stat-label">Arms</div>
+                <div class="stat-value" id="arms-likes">0</div>
+                <div class="stat-label">Arms Likes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="boxes-count">0</div>
-                <div class="stat-label">Boxes</div>
+                <div class="stat-value" id="boxes-likes">0</div>
+                <div class="stat-label">Boxes Likes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="bottles-count">0</div>
-                <div class="stat-label">Bottles</div>
+                <div class="stat-value" id="bottles-likes">0</div>
+                <div class="stat-label">Bottles Likes</div>
             </div>
         </div>
 
@@ -550,13 +630,37 @@
             </div>
         </div>
 
-        <div class="section">
-            <h2 class="section-title">
-                <span class="material-icons">bar_chart</span>
-                Category Distribution
-            </h2>
-            <div class="chart-container">
-                <canvas id="categoryChart"></canvas>
+        <div class="content-grid" style="grid-template-columns: repeat(3, 1fr);">
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="material-icons">bar_chart</span>
+                    Category Distribution
+                </h2>
+                <div class="chart-container">
+                    <canvas id="categoryChart"></canvas>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="material-icons">psychology</span>
+                    User Interests Analytics
+                </h2>
+                <div class="chart-container">
+                    <canvas id="userInterestsChart"></canvas>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="material-icons">lightbulb</span>
+                    Smart Recommendations
+                </h2>
+                <div id="recommendations-list" style="max-height: 400px; overflow-y: auto;">
+                    <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                        Loading recommendations...
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -618,6 +722,7 @@
         import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         let allArtworks = [];
+        let allUsers = [];
         let currentEditId = null;
 
         // Load all artworks
@@ -628,7 +733,20 @@
                 updateStats();
                 renderPopularItems();
                 updateChart();
+                updateRecommendations();
             });
+        }
+
+        // Load all users
+        async function loadUsers() {
+            try {
+                const usersSnapshot = await getDocs(collection(db, "Users"));
+                allUsers = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updateUserInterestsChart();
+                updateRecommendations();
+            } catch (error) {
+                console.error("Error loading users:", error);
+            }
         }
 
         // Render artworks list
@@ -663,10 +781,9 @@
         function updateStats() {
             document.getElementById('total-items').textContent = allArtworks.length;
             
-            const totalLikes = allArtworks.reduce((sum, item) => sum + (item.likes || 0), 0);
-            document.getElementById('total-likes').textContent = totalLikes;
-
-            const counts = {
+            // حساب مجموع الإعجابات - استخدام likesCount
+            let totalLikes = 0;
+            const categoryLikes = {
                 codices: 0,
                 arms: 0,
                 boxes: 0,
@@ -674,44 +791,64 @@
             };
 
             allArtworks.forEach(item => {
-                const cat = (item.classification || '').toLowerCase();
-                if (counts.hasOwnProperty(cat)) {
-                    counts[cat]++;
+                const likes = parseInt(item.likesCount || 0);
+                totalLikes += likes;
+
+                const cat = (item.classification || '').toLowerCase().trim();
+                if (categoryLikes.hasOwnProperty(cat)) {
+                    categoryLikes[cat] += likes;
                 }
             });
 
-            document.getElementById('codices-count').textContent = counts.codices;
-            document.getElementById('arms-count').textContent = counts.arms;
-            document.getElementById('boxes-count').textContent = counts.boxes;
-            document.getElementById('bottles-count').textContent = counts.bottles;
+            document.getElementById('total-likes').textContent = totalLikes;
+            document.getElementById('codices-likes').textContent = categoryLikes.codices;
+            document.getElementById('arms-likes').textContent = categoryLikes.arms;
+            document.getElementById('boxes-likes').textContent = categoryLikes.boxes;
+            document.getElementById('bottles-likes').textContent = categoryLikes.bottles;
         }
 
         // Render popular items
         function renderPopularItems() {
-            const popular = [...allArtworks]
-                .sort((a, b) => (b.likes || 0) - (a.likes || 0))
+            // فلترة القطع التي لها إعجابات فقط
+            const itemsWithLikes = allArtworks.filter(item => {
+                const likes = item.likesCount || 0;
+                return parseInt(likes) > 0;
+            });
+
+            const popular = itemsWithLikes
+                .sort((a, b) => {
+                    const likesA = parseInt(a.likesCount || 0);
+                    const likesB = parseInt(b.likesCount || 0);
+                    return likesB - likesA;
+                })
                 .slice(0, 5);
 
             const container = document.getElementById('popular-items');
             
             if (popular.length === 0) {
-                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No artworks yet</div>';
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No liked artworks yet</div>';
                 return;
             }
 
-            container.innerHTML = popular.map((item, index) => `
-                <div class="popular-item">
-                    <div class="popular-rank">#${index + 1}</div>
-                    <img src="${item.imageURL || 'https://via.placeholder.com/60'}" alt="${item.title}" class="popular-image">
-                    <div class="popular-info">
-                        <div class="popular-title">${item.title || 'Untitled'}</div>
-                        <div class="popular-likes">
-                            <span class="material-icons" style="font-size: 1rem;">favorite</span>
-                            ${item.likes || 0} likes
+            container.innerHTML = popular.map((item, index) => {
+                const likes = item.likesCount || 0;
+                return `
+                    <div class="popular-item">
+                        <div class="popular-rank">#${index + 1}</div>
+                        <img src="${item.imageURL || 'https://via.placeholder.com/60'}" 
+                             alt="${item.title}" 
+                             class="popular-image"
+                             onerror="this.src='https://via.placeholder.com/60?text=No+Image'">
+                        <div class="popular-info">
+                            <div class="popular-title">${item.title || 'Untitled'}</div>
+                            <div class="popular-likes">
+                                <span class="material-icons" style="font-size: 1rem; color: red;">favorite</span>
+                                ${likes} ${likes === 1 ? 'like' : 'likes'}
+                            </div>
                         </div>
                     </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         // Update chart
@@ -729,8 +866,6 @@
 
             allArtworks.forEach(item => {
                 const cat = (item.classification || '').toLowerCase().trim();
-                
-                console.log('Classification:', cat); // للتحقق
                 
                 if (cat === 'codices') {
                     counts['Codices']++;
@@ -812,6 +947,195 @@
             });
         }
 
+        // User Interests Chart
+        let userInterestsChart = null;
+        function updateUserInterestsChart() {
+            const ctx = document.getElementById('userInterestsChart').getContext('2d');
+            
+            // Map interests to categories
+            const interestMapping = {
+                'Decorative Arts': 'bottles',
+                'Fine Arts': 'codices',
+                'Cultural Anthropology': 'boxes',
+                'Military History': 'arms'
+            };
+
+            const interestCounts = {
+                'Codices': 0,
+                'Arms': 0,
+                'Boxes': 0,
+                'Bottles': 0
+            };
+
+            // Count users interested in each category
+            allUsers.forEach(user => {
+                if (user.Interests && Array.isArray(user.Interests)) {
+                    user.Interests.forEach(interest => {
+                        const category = interestMapping[interest];
+                        if (category === 'codices') interestCounts['Codices']++;
+                        else if (category === 'arms') interestCounts['Arms']++;
+                        else if (category === 'boxes') interestCounts['Boxes']++;
+                        else if (category === 'bottles') interestCounts['Bottles']++;
+                    });
+                }
+            });
+
+            if (userInterestsChart) {
+                userInterestsChart.destroy();
+            }
+
+            userInterestsChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(interestCounts),
+                    datasets: [{
+                        label: 'Users Interested',
+                        data: Object.values(interestCounts),
+                        backgroundColor: [
+                            '#8b1a1a',
+                            '#b08d57',
+                            '#48bb78',
+                            '#4299e1'
+                        ]
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Smart Recommendations
+        function updateRecommendations() {
+            const container = document.getElementById('recommendations-list');
+            
+            if (allUsers.length === 0 || allArtworks.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">Loading data...</div>';
+                return;
+            }
+
+            // Map interests to categories
+            const interestMapping = {
+                'Decorative Arts': 'bottles',
+                'Fine Arts': 'codices',
+                'Cultural Anthropology': 'boxes',
+                'Military History': 'arms'
+            };
+
+            // Count users interested in each category
+            const categoryInterests = {
+                'codices': 0,
+                'arms': 0,
+                'boxes': 0,
+                'bottles': 0
+            };
+
+            allUsers.forEach(user => {
+                if (user.Interests && Array.isArray(user.Interests)) {
+                    user.Interests.forEach(interest => {
+                        const category = interestMapping[interest];
+                        if (categoryInterests.hasOwnProperty(category)) {
+                            categoryInterests[category]++;
+                        }
+                    });
+                }
+            });
+
+            // Count artworks in each category
+            const categoryArtworks = {
+                'codices': 0,
+                'arms': 0,
+                'boxes': 0,
+                'bottles': 0
+            };
+
+            allArtworks.forEach(item => {
+                const cat = (item.classification || '').toLowerCase().trim();
+                if (categoryArtworks.hasOwnProperty(cat)) {
+                    categoryArtworks[cat]++;
+                }
+            });
+
+            // Generate recommendations
+            const recommendations = [];
+
+            Object.keys(categoryInterests).forEach(category => {
+                const interestedUsers = categoryInterests[category];
+                const artworkCount = categoryArtworks[category];
+                
+                if (interestedUsers > 0) {
+                    const ratio = artworkCount / interestedUsers;
+                    
+                    let recommendation = {
+                        category: category.charAt(0).toUpperCase() + category.slice(1),
+                        users: interestedUsers,
+                        artworks: artworkCount,
+                        ratio: ratio
+                    };
+
+                    if (ratio < 1) {
+                        recommendation.message = `High demand! ${interestedUsers} users interested but only ${artworkCount} artworks available.`;
+                        recommendation.action = 'Consider adding more artworks in this category';
+                        recommendation.priority = 'high';
+                    } else if (ratio < 2) {
+                        recommendation.message = `Good balance with ${interestedUsers} interested users and ${artworkCount} artworks.`;
+                        recommendation.action = 'Monitor and maintain collection';
+                        recommendation.priority = 'medium';
+                    } else {
+                        recommendation.message = `${artworkCount} artworks available for ${interestedUsers} interested users.`;
+                        recommendation.action = 'Well-stocked category';
+                        recommendation.priority = 'low';
+                    }
+
+                    recommendations.push(recommendation);
+                }
+            });
+
+            // Sort by priority
+            const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
+            recommendations.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
+
+            if (recommendations.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No recommendations available</div>';
+                return;
+            }
+
+            container.innerHTML = recommendations.map(rec => `
+                <div class="recommendation-card">
+                    <div class="recommendation-title">
+                        <span class="material-icons" style="font-size: 1.2rem;">${rec.priority === 'high' ? 'priority_high' : rec.priority === 'medium' ? 'info' : 'check_circle'}</span>
+                        ${rec.category}
+                    </div>
+                    <div class="recommendation-desc">${rec.message}</div>
+                    <div class="recommendation-stats">
+                        <span>
+                            <span class="material-icons" style="font-size: 1rem;">people</span>
+                            ${rec.users} users
+                        </span>
+                        <span>
+                            <span class="material-icons" style="font-size: 1rem;">collections</span>
+                            ${rec.artworks} artworks
+                        </span>
+                    </div>
+                    <div class="insight-badge ${rec.priority}">${rec.action}</div>
+                </div>
+            `).join('');
+        }
+
         // Modal functions
         window.openAddModal = function() {
             currentEditId = null;
@@ -886,15 +1210,19 @@
                 artistName: document.getElementById('artwork-artist').value,
                 classification: document.getElementById('artwork-category').value,
                 description: document.getElementById('artwork-description').value,
-                imageURL: document.getElementById('artwork-image').value,
-                likes: 0
+                imageURL: document.getElementById('artwork-image').value
             };
 
+            // عند الإضافة فقط، نضيف حقول الإعجابات
+            const id = document.getElementById('artwork-id').value;
+            if (!id) {
+                artworkData.likesCount = 0;
+                artworkData.likedBy = [];
+            }
+
             try {
-                const id = document.getElementById('artwork-id').value;
-                
                 if (id) {
-                    // Update existing
+                    // Update existing - لا نعدل حقول الإعجابات
                     await updateDoc(doc(db, "Museum_Collection", id), artworkData);
                     alert('Artwork updated successfully!');
                 } else {
@@ -913,6 +1241,7 @@
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadArtworks();
+            loadUsers();
         });
 
         // Close modal on outside click
