@@ -19,7 +19,6 @@
         --white: #fdfaf4;            
         --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
         --transition: all 0.3s ease;
-
             --success: #48bb78;
             --warning: #ecc94b;
             --danger: #f56565;
@@ -167,6 +166,90 @@
             padding: 2rem;
         }
 
+        .member-status-card {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .member-status-card.non-member {
+            background: linear-gradient(135deg, var(--text-light) 0%, #9a8b73 100%);
+        }
+
+        .member-info {
+            color: var(--primary-dark);
+        }
+
+        .member-info h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .member-badge {
+            background: var(--white);
+            color: var(--primary-dark);
+            padding: 0.5rem 1.5rem;
+            border-radius: 25px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .visit-type-selector {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
+        }
+
+        .visit-type-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .visit-type-card {
+            background: var(--neutral-light);
+            border: 3px solid transparent;
+            border-radius: 12px;
+            padding: 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .visit-type-card:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow);
+        }
+
+        .visit-type-card.selected {
+            border-color: var(--accent);
+            background: var(--white);
+        }
+
+        .visit-type-card h4 {
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .visit-type-card .price-tag {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin: 0.5rem 0;
+        }
+
+        .visit-type-card .price-tag.free {
+            color: var(--success);
+        }
+
         .section-title {
             text-align: center;
             margin-bottom: 3rem;
@@ -187,84 +270,6 @@
             height: 3px;
             background: var(--accent);
             margin: 0 auto;
-        }
-
-        .ticket-options {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin-bottom: 5rem;
-        }
-
-        .ticket-card {
-            background: var(--white);
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            cursor: pointer;
-            border: 3px solid transparent;
-        }
-
-        .ticket-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.1);
-        }
-
-        .ticket-card.selected {
-            border-color: var(--accent);
-            box-shadow: 0 15px 30px rgba(176, 141, 87, 0.3);
-        }
-
-        .ticket-header {
-            background: linear-gradient(45deg, var(--primary-light) 0%, var(--primary-dark) 100%);
-            padding: 1.5rem;
-            color: var(--white);
-            text-align: center;
-        }
-
-        .ticket-header h3 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .ticket-price {
-            font-size: 2.5rem;
-            font-weight: 700;
-            margin-bottom: 0.5rem;
-        }
-
-        .ticket-price span {
-            font-size: 1rem;
-            font-weight: 400;
-        }
-
-        .ticket-body {
-            padding: 1.5rem;
-        }
-
-        .ticket-features {
-            list-style: none;
-            margin-bottom: 0;
-        }
-
-        .ticket-features li {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #e2e8f0;
-            display: flex;
-            align-items: center;
-        }
-
-        .ticket-features li::before {
-            content: "✓";
-            color: var(--success);
-            margin-right: 0.5rem;
-            font-weight: bold;
-        }
-
-        .ticket-features li.disabled::before {
-            content: "✕";
-            color: var(--danger);
         }
 
         .booking-section {
@@ -490,6 +495,26 @@
             transform: none;
         }
 
+        .member-benefit-note {
+            background: linear-gradient(135deg, #e6f7ed 0%, #d4f4dd 100%);
+            border-left: 4px solid var(--success);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .member-benefit-note .material-icons {
+            color: var(--success);
+            font-size: 2rem;
+        }
+
+        .hidden {
+            display: none !important;
+        }
+
         .footer {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
             color: var(--white);
@@ -537,8 +562,10 @@
                 font-size: 2.5rem;
             }
 
-            .ticket-options {
-                grid-template-columns: 1fr;
+            .member-status-card {
+                flex-direction: column;
+                text-align: center;
+                gap: 1rem;
             }
         }
     </style>
@@ -550,7 +577,7 @@
             <ul class="nav-links">
                 <li><a href="Home.html">Home</a></li>
                 <li><a href="AboutUs.html">About Us</a></li>
-                <li><a href="Exhibits.html">Exhibits</a></li>
+                <li><a href="Events.html">Events</a></li>
                 <li><a href="Ticketing.html" class="active">Ticketing</a></li>
                 <li><a href="News.html">News</a></li>
                 <li><a href="Gallery.html">Gallery</a></li>
@@ -563,89 +590,70 @@
         <section class="page-hero">
             <div class="container">
                 <h1>Museum Tickets</h1>
-                <p>Plan your visit to the ATHAR Museum. Purchase tickets online to guarantee entry and enjoy special member benefits.</p>
+                <p>Plan your visit to the ATHAR Museum. Members enjoy free general admission!</p>
             </div>
         </section>
 
         <section class="container">
-            <div class="section-title">
-                <h2>Ticket Options</h2>
+            <!-- Member Status Card -->
+            <div id="member-status-card" class="member-status-card">
+                <div class="member-info">
+                    <h3 id="member-greeting">Welcome, Member!</h3>
+                    <p id="member-description">Enjoy free general admission as part of your membership benefits</p>
+                </div>
+                <div class="member-badge" id="member-badge">Member</div>
             </div>
-            
-            <div class="ticket-options">
-                <div class="ticket-card" data-type="general" data-price="15">
-                    <div class="ticket-header">
-                        <h3>General Admission</h3>
-                        <div class="ticket-price">$15<span>/person</span></div>
-                        <p>Standard museum access</p>
-                    </div>
-                    <div class="ticket-body">
-                        <ul class="ticket-features">
-                            <li>Access to all permanent exhibits</li>
-                            <li>Valid for one full day</li>
-                            <li>Free museum map</li>
-                            <li class="disabled">Special exhibitions</li>
-                            <li class="disabled">Audio guide</li>
-                        </ul>
-                    </div>
-                </div>
 
-                <div class="ticket-card" data-type="premium" data-price="25">
-                    <div class="ticket-header">
-                        <h3>Premium Pass</h3>
-                        <div class="ticket-price">$25<span>/person</span></div>
-                        <p>Full museum experience</p>
+            <!-- Visit Type Selection -->
+            <div class="visit-type-selector">
+                <h2 style="color: var(--primary-dark); margin-bottom: 0.5rem;">Select Visit Type</h2>
+                <p style="color: var(--text-light); margin-bottom: 1rem;">Choose between a general museum visit or a special event</p>
+                
+                <div class="visit-type-options">
+                    <div class="visit-type-card" data-type="general" data-price="0">
+                        <span class="material-icons" style="font-size: 3rem; color: var(--accent); margin-bottom: 0.5rem;">museum</span>
+                        <h4>General Visit</h4>
+                        <p class="price-tag free" id="general-price-display">FREE for Members</p>
+                        <p style="font-size: 0.9rem; color: var(--text-light);">Access all permanent exhibitions</p>
                     </div>
-                    <div class="ticket-body">
-                        <ul class="ticket-features">
-                            <li>Access to all permanent exhibits</li>
-                            <li>Access to special exhibitions</li>
-                            <li>Audio guide included</li>
-                            <li>Skip-the-line entry</li>
-                            <li>10% discount at museum shops</li>
-                        </ul>
-                    </div>
-                </div>
-
-                <div class="ticket-card" data-type="family" data-price="40">
-                    <div class="ticket-header">
-                        <h3>Family Package</h3>
-                        <div class="ticket-price">$40<span>/package</span></div>
-                        <p>Perfect for families</p>
-                    </div>
-                    <div class="ticket-body">
-                        <ul class="ticket-features">
-                            <li>2 adults + 2 children entry</li>
-                            <li>Access to all permanent exhibits</li>
-                            <li>Children's activity pack</li>
-                            <li>Family guide booklet</li>
-                            <li>Complimentary coat check</li>
-                        </ul>
+                    
+                    <div class="visit-type-card" data-type="event" data-price="20">
+                        <span class="material-icons" style="font-size: 3rem; color: var(--accent); margin-bottom: 0.5rem;">event</span>
+                        <h4>Special Event</h4>
+                        <p class="price-tag">$20 per person</p>
+                        <p style="font-size: 0.9rem; color: var(--text-light);">Exclusive tours and exhibitions</p>
                     </div>
                 </div>
             </div>
-        </section>
 
-        <section class="container">
-            <div class="section-title">
-                <h2>Book Your Visit</h2>
-            </div>
-            
-            <div class="booking-section">
+            <!-- Event Selection (hidden initially) -->
+            <div id="event-section" class="booking-section hidden">
+                <h3 style="margin-bottom: 1.5rem;">Select Event</h3>
                 <div class="form-group">
-                    <label class="form-label">Select Event or Exhibit</label>
+                    <label class="form-label">Choose an Event</label>
                     <select class="form-select" id="event-select">
-                        <option value="">General Museum Visit</option>
-                        <option value="egypt">Ancient Egypt Night Tour - March 25, 2025</option>
-                        <option value="renaissance">Renaissance Art Workshop - April 12, 2025</option>
-                        <option value="family">Family Discovery Day - April 28, 2025</option>
-                        <option value="rome">Treasures of Ancient Rome Exhibition</option>
-                        <option value="modern">Modern Masters: 20th Century Art</option>
-                        <option value="americas">Lost Civilizations of the Americas</option>
+                        <option value="">-- Select an Event --</option>
+                        <option value="egypt" data-price="20">Ancient Egypt Night Tour - March 25, 2025 ($20)</option>
+                        <option value="renaissance" data-price="25">Renaissance Art Workshop - April 12, 2025 ($25)</option>
+                        <option value="family" data-price="15">Family Discovery Day - April 28, 2025 ($15)</option>
+                        <option value="rome" data-price="20">Treasures of Ancient Rome Exhibition ($20)</option>
+                        <option value="modern" data-price="30">Modern Masters: 20th Century Art ($30)</option>
+                        <option value="americas" data-price="20">Lost Civilizations of the Americas ($20)</option>
                     </select>
                 </div>
+            </div>
 
-                <h3 style="margin-top: 2rem;">Select Date</h3>
+            <!-- Main Booking Section -->
+            <div id="booking-section" class="booking-section hidden">
+                <div id="member-benefit" class="member-benefit-note hidden">
+                    <span class="material-icons">card_giftcard</span>
+                    <div>
+                        <strong>Member Benefit Applied!</strong>
+                        <p style="margin: 0; font-size: 0.9rem;">Your general admission is free as a museum member.</p>
+                    </div>
+                </div>
+
+                <h3 style="margin-bottom: 1.5rem;">Select Date & Time</h3>
                 
                 <div class="calendar">
                     <div class="calendar-header">
@@ -656,46 +664,37 @@
                         </div>
                     </div>
                     
-                    <div class="calendar-grid" id="calendar-grid">
-                    </div>
+                    <div class="calendar-grid" id="calendar-grid"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Visit Time</label>
+                    <select class="form-select" id="time-select">
+                        <option value="">-- Select Time --</option>
+                        <option value="09:00">9:00 AM</option>
+                        <option value="10:00">10:00 AM</option>
+                        <option value="11:00">11:00 AM</option>
+                        <option value="12:00">12:00 PM</option>
+                        <option value="13:00">1:00 PM</option>
+                        <option value="14:00">2:00 PM</option>
+                        <option value="15:00">3:00 PM</option>
+                        <option value="16:00">4:00 PM</option>
+                        <option value="17:00">5:00 PM</option>
+                    </select>
                 </div>
                 
-                <h3 style="margin-top: 2rem;">Select Number of Visitors</h3>
+                <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Number of Visitors</h3>
                 
                 <div id="visitor-counters">
                     <div class="counter-group">
                         <div class="counter-info">
                             <div class="counter-label">Adults (18-64)</div>
-                            <div class="counter-price" id="adult-price">$15 per person</div>
+                            <div class="counter-price" id="adult-price">Free for members</div>
                         </div>
                         <div class="counter-controls">
                             <button class="counter-btn" onclick="decrementCounter('adults')">−</button>
-                            <span class="counter-value" id="adults-count">0</span>
+                            <span class="counter-value" id="adults-count">1</span>
                             <button class="counter-btn" onclick="incrementCounter('adults')">+</button>
-                        </div>
-                    </div>
-
-                    <div class="counter-group">
-                        <div class="counter-info">
-                            <div class="counter-label">Seniors (65+)</div>
-                            <div class="counter-price">$12 per person</div>
-                        </div>
-                        <div class="counter-controls">
-                            <button class="counter-btn" onclick="decrementCounter('seniors')">−</button>
-                            <span class="counter-value" id="seniors-count">0</span>
-                            <button class="counter-btn" onclick="incrementCounter('seniors')">+</button>
-                        </div>
-                    </div>
-
-                    <div class="counter-group">
-                        <div class="counter-info">
-                            <div class="counter-label">Students</div>
-                            <div class="counter-price">$12 per person (with valid ID)</div>
-                        </div>
-                        <div class="counter-controls">
-                            <button class="counter-btn" onclick="decrementCounter('students')">−</button>
-                            <span class="counter-value" id="students-count">0</span>
-                            <button class="counter-btn" onclick="incrementCounter('students')">+</button>
                         </div>
                     </div>
 
@@ -712,8 +711,8 @@
                     </div>
                 </div>
                 
-                <div class="summary-card" id="summary-card" style="display:none;">
-                    <h3>Order Summary</h3>
+                <div class="summary-card" id="summary-card">
+                    <h3>Booking Summary</h3>
                     <div id="summary-items"></div>
                     <div class="summary-total">
                         <span>Total</span>
@@ -744,10 +743,10 @@
                 </div>
                 <div class="footer-section">
                     <h3>Admission</h3>
-                    <p>Adults: $15</p>
-                    <p>Students/Seniors: $12</p>
-                    <p>Children under 12: Free</p>
                     <p>Members: Always Free</p>
+                    <p>Non-Members: $15</p>
+                    <p>Special Events: Starting at $15</p>
+                    <p>Children: Free</p>
                 </div>
             </div>
             <div class="footer-bottom">
@@ -757,59 +756,99 @@
     </footer>
 
     <script>
-        let selectedTicketType = null;
-        let selectedTicketPrice = 15;
+        // Simulated member check (replace with actual authentication)
+        let isMember = true; // Change to false to test non-member experience
+        let selectedVisitType = null;
         let selectedDate = null;
+        let selectedTime = null;
+        let selectedEvent = null;
         let currentMonth = new Date();
         let maxDate = new Date();
         maxDate.setMonth(maxDate.getMonth() + 3);
 
         const visitors = {
-            adults: 0,
-            seniors: 0,
-            students: 0,
+            adults: 1,
             children: 0
         };
 
-        const prices = {
-            general: { adults: 15, seniors: 12, students: 12, children: 0 },
-            premium: { adults: 25, seniors: 20, students: 20, children: 0 },
-            family: { package: 40 }
-        };
+        // Initialize member status
+        function initializeMemberStatus() {
+            const statusCard = document.getElementById('member-status-card');
+            const greeting = document.getElementById('member-greeting');
+            const description = document.getElementById('member-description');
+            const badge = document.getElementById('member-badge');
+            const generalPriceDisplay = document.getElementById('general-price-display');
 
-        // Ticket selection
-        document.querySelectorAll('.ticket-card').forEach(card => {
+            if (isMember) {
+                statusCard.classList.remove('non-member');
+                greeting.textContent = 'Welcome, Member!';
+                description.textContent = 'Enjoy free general admission as part of your membership benefits';
+                badge.textContent = 'Member';
+                generalPriceDisplay.textContent = 'FREE for Members';
+                generalPriceDisplay.classList.add('free');
+            } else {
+                statusCard.classList.add('non-member');
+                greeting.textContent = 'Welcome, Guest!';
+                description.textContent = 'Sign up for membership to enjoy free general admission';
+                badge.textContent = 'Guest';
+                generalPriceDisplay.textContent = '$15 per person';
+                generalPriceDisplay.classList.remove('free');
+            }
+        }
+
+        // Visit type selection
+        document.querySelectorAll('.visit-type-card').forEach(card => {
             card.addEventListener('click', function() {
-                document.querySelectorAll('.ticket-card').forEach(c => c.classList.remove('selected'));
+                document.querySelectorAll('.visit-type-card').forEach(c => c.classList.remove('selected'));
                 this.classList.add('selected');
-                selectedTicketType = this.dataset.type;
-                selectedTicketPrice = parseInt(this.dataset.price);
+                selectedVisitType = this.dataset.type;
                 
-                updatePriceDisplay();
-                calculateTotal();
+                const eventSection = document.getElementById('event-section');
+                const bookingSection = document.getElementById('booking-section');
+                const memberBenefit = document.getElementById('member-benefit');
+                
+                if (selectedVisitType === 'event') {
+                    eventSection.classList.remove('hidden');
+                    bookingSection.classList.add('hidden');
+                    memberBenefit.classList.add('hidden');
+                } else {
+                    eventSection.classList.add('hidden');
+                    bookingSection.classList.remove('hidden');
+                    if (isMember) {
+                        memberBenefit.classList.remove('hidden');
+                    }
+                    selectedEvent = null;
+                    updatePriceDisplay();
+                }
             });
         });
 
-        function updatePriceDisplay() {
-            if (selectedTicketType === 'family') {
-                document.getElementById('adult-price').textContent = 'Included in package';
-                document.querySelectorAll('.counter-price').forEach(el => {
-                    el.textContent = 'Included in package';
-                });
+        // Event selection
+        document.getElementById('event-select').addEventListener('change', function() {
+            selectedEvent = this.value;
+            if (selectedEvent) {
+                const selectedOption = this.options[this.selectedIndex];
+                const eventPrice = parseInt(selectedOption.dataset.price);
+                document.getElementById('booking-section').classList.remove('hidden');
+                document.getElementById('member-benefit').classList.add('hidden');
+                updatePriceDisplay(eventPrice);
             } else {
-                const currentPrices = prices[selectedTicketType || 'general'];
-                document.getElementById('adult-price').textContent = `$${currentPrices.adults} per person`;
-                document.querySelectorAll('.counter-group').forEach((group, index) => {
-                    const priceEl = group.querySelector('.counter-price');
-                    const types = ['adults', 'seniors', 'students', 'children'];
-                    const type = types[index];
-                    if (type === 'children') {
-                        priceEl.textContent = 'Free admission';
-                    } else {
-                        priceEl.textContent = `$${currentPrices[type]} per person`;
-                    }
-                });
+                document.getElementById('booking-section').classList.add('hidden');
             }
+        });
+
+        function updatePriceDisplay(eventPrice = null) {
+            const adultPrice = document.getElementById('adult-price');
+            
+            if (selectedVisitType === 'general' && isMember) {
+                adultPrice.textContent = 'Free for members';
+            } else if (selectedVisitType === 'event' && eventPrice) {
+                adultPrice.textContent = `$${eventPrice} per person`;
+            } else if (selectedVisitType === 'general' && !isMember) {
+                adultPrice.textContent = '$15 per person';
+            }
+            
+            calculateTotal();
         }
 
         // Counter functions
@@ -820,6 +859,7 @@
         }
 
         function decrementCounter(type) {
+            if (type === 'adults' && visitors[type] <= 1) return;
             if (visitors[type] > 0) {
                 visitors[type]--;
                 document.getElementById(`${type}-count`).textContent = visitors[type];
@@ -828,78 +868,78 @@
         }
 
         function calculateTotal() {
-            if (!selectedTicketType) {
-                document.querySelector('.ticket-card').click();
-                return;
-            }
-
             let total = 0;
             let items = [];
-            const serviceFee = 2.50;
 
-            if (selectedTicketType === 'family') {
-                const packages = Math.ceil((visitors.adults + visitors.seniors + visitors.students) / 4);
-                if (packages > 0) {
-                    total = packages * 40;
-                    items.push({ label: `${packages} x Family Package (2 adults + 2 children)`, price: packages * 40 });
-                }
-            } else {
-                const currentPrices = prices[selectedTicketType];
-                
-                if (visitors.adults > 0) {
-                    const cost = visitors.adults * currentPrices.adults;
-                    total += cost;
-                    items.push({ label: `${visitors.adults} x Adult ${selectedTicketType === 'premium' ? 'Premium' : 'General'} Admission`, price: cost });
-                }
-                
-                if (visitors.seniors > 0) {
-                    const cost = visitors.seniors * currentPrices.seniors;
-                    total += cost;
-                    items.push({ label: `${visitors.seniors} x Senior ${selectedTicketType === 'premium' ? 'Premium' : 'General'} Admission`, price: cost });
-                }
-                
-                if (visitors.students > 0) {
-                    const cost = visitors.students * currentPrices.students;
-                    total += cost;
-                    items.push({ label: `${visitors.students} x Student ${selectedTicketType === 'premium' ? 'Premium' : 'General'} Admission`, price: cost });
-                }
-                
-                if (visitors.children > 0) {
-                    items.push({ label: `${visitors.children} x Children (Free)`, price: 0 });
-                }
+            if (selectedVisitType === 'general' && isMember) {
+                // Free for members
+                items.push({ 
+                    label: `${visitors.adults} x Adult General Admission (Member Benefit)`, 
+                    price: 0 
+                });
+            } else if (selectedVisitType === 'general' && !isMember) {
+                // Non-member general visit
+                const cost = visitors.adults * 15;
+                total += cost;
+                items.push({ 
+                    label: `${visitors.adults} x Adult General Admission`, 
+                    price: cost 
+                });
+            } else if (selectedVisitType === 'event' && selectedEvent) {
+                // Event pricing
+                const eventSelect = document.getElementById('event-select');
+                const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+                const eventPrice = parseInt(selectedOption.dataset.price);
+                const cost = visitors.adults * eventPrice;
+                total += cost;
+                items.push({ 
+                    label: `${visitors.adults} x ${selectedOption.text.split(' - ')[0]} Ticket`, 
+                    price: cost 
+                });
+            }
+
+            if (visitors.children > 0) {
+                items.push({ 
+                    label: `${visitors.children} x Children (Free)`, 
+                    price: 0 
+                });
             }
 
             const summaryItems = document.getElementById('summary-items');
             summaryItems.innerHTML = '';
             
-            if (items.length > 0) {
-                items.forEach(item => {
-                    summaryItems.innerHTML += `
-                        <div class="summary-item">
-                            <span>${item.label}</span>
-                            <span>$${item.price.toFixed(2)}</span>
-                        </div>
-                    `;
-                });
+            items.forEach(item => {
+                summaryItems.innerHTML += `
+                    <div class="summary-item">
+                        <span>${item.label}</span>
+                        <span>${item.price.toFixed(2)}</span>
+                    </div>
+                `;
+            });
 
-                if (total > 0) {
-                    summaryItems.innerHTML += `
-                        <div class="summary-item">
-                            <span>Service Fee</span>
-                            <span>$${serviceFee.toFixed(2)}</span>
-                        </div>
-                    `;
-                    total += serviceFee;
-                }
-
-                document.getElementById('summary-card').style.display = 'block';
-                document.getElementById('total-price').textContent = `${total.toFixed(2)}`;
-                
-                document.getElementById('checkout-btn').disabled = false;
-            } else {
-                document.getElementById('summary-card').style.display = 'none';
-                document.getElementById('checkout-btn').disabled = true;
+            if (total > 0) {
+                const serviceFee = 2.50;
+                summaryItems.innerHTML += `
+                    <div class="summary-item">
+                        <span>Service Fee</span>
+                        <span>${serviceFee.toFixed(2)}</span>
+                    </div>
+                `;
+                total += serviceFee;
             }
+
+            document.getElementById('total-price').textContent = `${total.toFixed(2)}`;
+            updateCheckoutButton();
+        }
+
+        function updateCheckoutButton() {
+            const checkoutBtn = document.getElementById('checkout-btn');
+            const hasVisitType = selectedVisitType !== null;
+            const hasDate = selectedDate !== null;
+            const hasTime = document.getElementById('time-select').value !== '';
+            const hasValidEvent = selectedVisitType !== 'event' || (selectedVisitType === 'event' && selectedEvent);
+            
+            checkoutBtn.disabled = !(hasVisitType && hasDate && hasTime && hasValidEvent);
         }
 
         // Calendar functions
@@ -948,6 +988,7 @@
                         document.querySelectorAll('.calendar-date').forEach(d => d.classList.remove('selected'));
                         this.classList.add('selected');
                         selectedDate = new Date(year, month, day);
+                        updateCheckoutButton();
                     });
                 }
                 
@@ -976,18 +1017,13 @@
             }
         });
 
+        // Time selection
+        document.getElementById('time-select').addEventListener('change', function() {
+            selectedTime = this.value;
+            updateCheckoutButton();
+        });
+
         document.getElementById('checkout-btn').addEventListener('click', function() {
-            if (!selectedDate) {
-                alert('Please select a date for your visit.');
-                return;
-            }
-            
-            const totalVisitors = visitors.adults + visitors.seniors + visitors.students + visitors.children;
-            if (totalVisitors === 0) {
-                alert('Please select at least one visitor.');
-                return;
-            }
-            
             const dateStr = selectedDate.toLocaleDateString('en-US', { 
                 weekday: 'long', 
                 year: 'numeric', 
@@ -995,10 +1031,23 @@
                 day: 'numeric' 
             });
             
-            const event = document.getElementById('event-select').value;
-            const eventText = event ? document.getElementById('event-select').options[document.getElementById('event-select').selectedIndex].text : 'General Museum Visit';
+            const timeSelect = document.getElementById('time-select');
+            const timeStr = timeSelect.options[timeSelect.selectedIndex].text;
             
-            alert(`Booking Summary:\n\nEvent: ${eventText}\nDate: ${dateStr}\nVisitors: ${totalVisitors}\nTotal: ${document.getElementById('total-price').textContent}\n\nProceeding to secure checkout...`);
+            let visitInfo = '';
+            if (selectedVisitType === 'general') {
+                visitInfo = 'General Museum Visit';
+            } else {
+                const eventSelect = document.getElementById('event-select');
+                visitInfo = eventSelect.options[eventSelect.selectedIndex].text;
+            }
+            
+            const totalVisitors = visitors.adults + visitors.children;
+            const total = document.getElementById('total-price').textContent;
+            
+            const memberStatus = isMember ? '\nMembership: Active' : '\nMembership: Guest';
+            
+            alert(`Booking Summary:\n\nVisit Type: ${visitInfo}\nDate: ${dateStr}\nTime: ${timeStr}\nVisitors: ${totalVisitors}${memberStatus}\nTotal: ${total}\n\nProceeding to secure checkout...`);
         });
 
         // Navigation scroll effect
@@ -1015,8 +1064,8 @@
 
         // Initialize
         document.addEventListener('DOMContentLoaded', function() {
+            initializeMemberStatus();
             renderCalendar();
-            document.querySelector('.ticket-card').click();
         });
     </script>
 </body>
