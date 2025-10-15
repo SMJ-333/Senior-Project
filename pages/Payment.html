@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Payment - ATHAR Museum</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary-dark: #653025;
+        --primary-light: #8d2e1d;
+        --accent: #b08d57;
+        --accent-light: #d4b483;
+        --neutral-light: #f4f1e3;
+        --white: #fffaf4;
+        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+    }
+
+    body {
+        font-family: 'Inter', sans-serif;
+        background-color: var(--neutral-light);
+        color: var(--primary-dark);
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        min-height: 100vh;
+    }
+
+    nav {
+        background: var(--white);
+        box-shadow: var(--shadow);
+        padding: 1rem 2rem;
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--primary-dark);
+        position: fixed;
+        top: 0;
+        width: 100%;
+        z-index: 10;
+    }
+
+    main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        text-align: center;
+        padding: 6rem 1rem 2rem;
+    }
+
+    h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 2.5rem;
+        margin-bottom: 2rem;
+    }
+
+    button {
+        background: var(--accent);
+        color: var(--primary-dark);
+        border: none;
+        padding: 1rem 2rem;
+        font-size: 1.1rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: 0.3s;
+        font-weight: 600;
+    }
+
+    button:hover {
+        background: var(--accent-light);
+        transform: translateY(-2px);
+    }
+
+    .success {
+        display: none;
+        background: #e6f7ed;
+        border: 2px solid #48bb78;
+        border-radius: 12px;
+        padding: 2rem;
+        margin-top: 2rem;
+        max-width: 400px;
+        color: var(--primary-dark);
+    }
+
+    footer {
+        text-align: center;
+        padding: 1.5rem;
+        background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+        color: var(--white);
+        margin-top: auto;
+    }
+</style>
+</head>
+<body>
+
+<nav>ATHAR Museum</nav>
+
+<main>
+    <h1>Checkout</h1>
+    <button id="checkout-btn">Proceed to Payment</button>
+
+    <div id="success-box" class="success">
+        <h2>✅ Payment Successful!</h2>
+        <p>Thank you for booking your visit at the ATHAR Museum.</p>
+        <p>Your confirmation number: <strong>#ATHAR2025</strong></p>
+    </div>
+</main>
+
+<footer>
+    &copy; 2025 ATHAR Museum. All rights reserved.
+</footer>
+
+<script>
+    const btn = document.getElementById('checkout-btn');
+    const successBox = document.getElementById('success-box');
+
+    btn.addEventListener('click', () => {
+        btn.style.display = 'none';
+        successBox.style.display = 'block';
+    });
+</script>
+
+</body>
+</html>

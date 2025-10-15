@@ -1057,17 +1057,17 @@
         });
 
         // Checkout button
-        document.getElementById('checkout-btn').addEventListener('click', function () {
-            const dateStr = selectedDate.toLocaleDateString('en-US', {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric'
+document.getElementById('checkout-btn').addEventListener('click', function() {
+            const dateStr = selectedDate.toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
             });
-
+            
             const timeSelect = document.getElementById('time-select');
             const timeStr = timeSelect.options[timeSelect.selectedIndex].text;
-
+            
             let visitInfo = '';
             if (selectedVisitType === 'general') {
                 visitInfo = 'General Museum Visit';
@@ -1075,13 +1075,28 @@
                 const eventSelect = document.getElementById('event-select');
                 visitInfo = eventSelect.options[eventSelect.selectedIndex].text;
             }
-
+            
             const totalVisitors = visitors.adults + visitors.children;
             const total = document.getElementById('total-price').textContent;
-
-            const memberStatus = isMember ? `\nMembership: Active (${userName})` : '\nMembership: Guest (Not logged in)';
-
-            alert(`Booking Summary:\n\nVisit Type: ${visitInfo}\nDate: ${dateStr}\nTime: ${timeStr}\nVisitors: ${totalVisitors}${memberStatus}\nTotal: ${total}\n\nProceeding to secure checkout...`);
+            
+            // Store booking data in sessionStorage for the payment page
+            const bookingData = {
+                visitType: selectedVisitType,
+                visitInfo: visitInfo,
+                date: dateStr,
+                time: timeStr,
+                adults: visitors.adults,
+                children: visitors.children,
+                totalVisitors: totalVisitors,
+                total: total,
+                isMember: isMember,
+                selectedEvent: selectedEvent
+            };
+            
+            sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
+            
+            // Redirect to payment page
+            window.location.href = 'Payment.html';
         });
 
         // Navigation scroll effect
