@@ -510,21 +510,21 @@
         <div class="charts-grid">
             <div class="section">
                 <h2 class="section-title">
-                    <span class="material-icons">favorite</span>
-                    Most Liked by Age Group
+                    <span class="material-icons">pie_chart</span>
+                    Category Preferences by Age Group
                 </h2>
                 <div class="chart-container">
-                    <canvas id="agePreferencesChart"></canvas>
+                    <canvas id="categoryPreferencesChart"></canvas>
                 </div>
             </div>
 
             <div class="section">
                 <h2 class="section-title">
-                    <span class="material-icons">interests</span>
-                    User Interests Distribution
+                    <span class="material-icons">timeline</span>
+                    Engagement by Age Group
                 </h2>
                 <div class="chart-container">
-                    <canvas id="interestsChart"></canvas>
+                    <canvas id="engagementChart"></canvas>
                 </div>
             </div>
         </div>
@@ -692,66 +692,69 @@
         }
 
         function updateCharts() {
-            updateAgePreferencesChart();
-            updateInterestsChart();
+            updateCategoryPreferencesChart();
+            updateEngagementChart();
         }
 
-        function updateAgePreferencesChart() {
-            const ctx = document.getElementById('agePreferencesChart').getContext('2d');
+        // Category preferences by age group
+        function updateCategoryPreferencesChart() {
+            const ctx = document.getElementById('categoryPreferencesChart').getContext('2d');
 
-            const preferences = {
-                youth: {},
-                adult: {},
-                senior: {}
+            // حساب عدد الإعجابات لكل فئة (Codices, Arms, Boxes, Bottles) حسب الفئة العمرية
+            const categoryLikes = {
+                youth: { codices: 0, arms: 0, boxes: 0, bottles: 0 },
+                adult: { codices: 0, arms: 0, boxes: 0, bottles: 0 },
+                senior: { codices: 0, arms: 0, boxes: 0, bottles: 0 }
             };
 
             allArtworks.forEach(artwork => {
                 if (artwork.likedBy && artwork.likedBy.length > 0) {
-                    artwork.likedBy.forEach(userId => {
-                        const user = allUsers.find(u => u.uid === userId);
-                        if (user && user.ageGroup && preferences[user.ageGroup]) {
-                            const title = artwork.title || 'Untitled';
-                            preferences[user.ageGroup][title] = (preferences[user.ageGroup][title] || 0) + 1;
-                        }
-                    });
+                    const category = (artwork.classification || '').toLowerCase().trim();
+                    
+                    if (['codices', 'arms', 'boxes', 'bottles'].includes(category)) {
+                        artwork.likedBy.forEach(userId => {
+                            const user = allUsers.find(u => u.uid === userId);
+                            if (user && user.ageGroup && categoryLikes[user.ageGroup]) {
+                                categoryLikes[user.ageGroup][category]++;
+                            }
+                        });
+                    }
                 }
             });
-
-            const getTopArtworks = (group) => {
-                return Object.entries(group)
-                    .sort((a, b) => b[1] - a[1])
-                    .slice(0, 5)
-                    .reduce((obj, [key, val]) => ({ ...obj, [key]: val }), {});
-            };
-
-            const topYouth = getTopArtworks(preferences.youth);
-            const topAdult = getTopArtworks(preferences.adult);
-            const topSenior = getTopArtworks(preferences.senior);
-
-            const allArtworkNames = new Set([
-                ...Object.keys(topYouth),
-                ...Object.keys(topAdult),
-                ...Object.keys(topSenior)
-            ]);
 
             new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: Array.from(allArtworkNames),
+                    labels: ['Codices', 'Arms', 'Boxes', 'Bottles'],
                     datasets: [
                         {
                             label: 'Youth (13-25)',
-                            data: Array.from(allArtworkNames).map(name => topYouth[name] || 0),
+                            data: [
+                                categoryLikes.youth.codices,
+                                categoryLikes.youth.arms,
+                                categoryLikes.youth.boxes,
+                                categoryLikes.youth.bottles
+                            ],
                             backgroundColor: '#4299e1'
                         },
                         {
                             label: 'Adults (26-59)',
-                            data: Array.from(allArtworkNames).map(name => topAdult[name] || 0),
+                            data: [
+                                categoryLikes.adult.codices,
+                                categoryLikes.adult.arms,
+                                categoryLikes.adult.boxes,
+                                categoryLikes.adult.bottles
+                            ],
                             backgroundColor: '#b08d57'
                         },
                         {
                             label: 'Seniors (60+)',
-                            data: Array.from(allArtworkNames).map(name => topSenior[name] || 0),
+                            data: [
+                                categoryLikes.senior.codices,
+                                categoryLikes.senior.arms,
+                                categoryLikes.senior.boxes,
+                                categoryLikes.senior.bottles
+                            ],
                             backgroundColor: '#8b1a1a'
                         }
                     ]
@@ -762,6 +765,10 @@
                     plugins: {
                         legend: {
                             position: 'bottom'
+                        },
+                        title: {
+                            display: true,
+                            text: 'Which categories each age group prefers'
                         }
                     },
                     scales: {
@@ -776,30 +783,54 @@
             });
         }
 
-        function updateInterestsChart() {
-            const ctx = document.getElementById('interestsChart').getContext('2d');
+        // Engagement chart - average likes per user by age group
+        function updateEngagementChart() {
+            const ctx = document.getElementById('engagementChart').getContext('2d');
 
-            const interestCounts = {};
+            // حساب متوسط الإعجابات لكل مستخدم حسب الفئة العمرية
+            const engagement = {
+                youth: { totalLikes: 0, userCount: 0 },
+                adult: { totalLikes: 0, userCount: 0 },
+                senior: { totalLikes: 0, userCount: 0 }
+            };
+
             allUsers.forEach(user => {
-                if (user.Interests && Array.isArray(user.Interests)) {
-                    user.Interests.forEach(interest => {
-                        interestCounts[interest] = (interestCounts[interest] || 0) + 1;
+                if (user.ageGroup && engagement[user.ageGroup]) {
+                    engagement[user.ageGroup].userCount++;
+                    
+                    // عد كم قطعة أعجب بها هذا المستخدم
+                    let userLikes = 0;
+                    allArtworks.forEach(artwork => {
+                        if (artwork.likedBy && artwork.likedBy.includes(user.uid)) {
+                            userLikes++;
+                        }
                     });
+                    
+                    engagement[user.ageGroup].totalLikes += userLikes;
                 }
             });
 
+            // حساب المتوسط
+            const avgYouth = engagement.youth.userCount > 0 ? 
+                (engagement.youth.totalLikes / engagement.youth.userCount).toFixed(1) : 0;
+            const avgAdult = engagement.adult.userCount > 0 ? 
+                (engagement.adult.totalLikes / engagement.adult.userCount).toFixed(1) : 0;
+            const avgSenior = engagement.senior.userCount > 0 ? 
+                (engagement.senior.totalLikes / engagement.senior.userCount).toFixed(1) : 0;
+
             new Chart(ctx, {
-                type: 'doughnut',
+                type: 'line',
                 data: {
-                    labels: Object.keys(interestCounts),
+                    labels: ['Youth (13-25)', 'Adults (26-59)', 'Seniors (60+)'],
                     datasets: [{
-                        data: Object.values(interestCounts),
-                        backgroundColor: [
-                            '#8b1a1a',
-                            '#b08d57',
-                            '#48bb78',
-                            '#4299e1'
-                        ]
+                        label: 'Average Likes per User',
+                        data: [avgYouth, avgAdult, avgSenior],
+                        borderColor: '#b08d57',
+                        backgroundColor: 'rgba(176, 141, 87, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 6,
+                        pointHoverRadius: 8
                     }]
                 },
                 options: {
@@ -807,7 +838,19 @@
                     maintainAspectRatio: false,
                     plugins: {
                         legend: {
-                            position: 'bottom'
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Average engagement level by age group'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
                         }
                     }
                 }
@@ -815,34 +858,59 @@
         }
 
         function updateInsights() {
-            const getMostLiked = (ageGroup) => {
-                const likeCounts = {};
+            const getMostLikedByCategory = (ageGroup) => {
+                const categoryLikes = {
+                    codices: { count: 0, artworks: {} },
+                    arms: { count: 0, artworks: {} },
+                    boxes: { count: 0, artworks: {} },
+                    bottles: { count: 0, artworks: {} }
+                };
                 
                 allArtworks.forEach(artwork => {
                     if (artwork.likedBy && artwork.likedBy.length > 0) {
-                        let count = 0;
-                        artwork.likedBy.forEach(userId => {
-                            const user = allUsers.find(u => u.uid === userId);
-                            if (user && user.ageGroup === ageGroup) {
-                                count++;
+                        const category = (artwork.classification || '').toLowerCase().trim();
+                        
+                        if (categoryLikes[category]) {
+                            let count = 0;
+                            artwork.likedBy.forEach(userId => {
+                                const user = allUsers.find(u => u.uid === userId);
+                                if (user && user.ageGroup === ageGroup) {
+                                    count++;
+                                }
+                            });
+                            
+                            if (count > 0) {
+                                categoryLikes[category].count += count;
+                                categoryLikes[category].artworks[artwork.title || 'Untitled'] = count;
                             }
-                        });
-                        if (count > 0) {
-                            likeCounts[artwork.title || 'Untitled'] = count;
                         }
                     }
                 });
 
-                const entries = Object.entries(likeCounts);
-                if (entries.length === 0) return 'No data';
+                // إيجاد الفئة الأكثر إعجاباً
+                let mostLikedCategory = null;
+                let maxLikes = 0;
                 
-                const top = entries.sort((a, b) => b[1] - a[1])[0];
-                return top[0];
+                Object.keys(categoryLikes).forEach(cat => {
+                    if (categoryLikes[cat].count > maxLikes) {
+                        maxLikes = categoryLikes[cat].count;
+                        mostLikedCategory = cat;
+                    }
+                });
+
+                if (!mostLikedCategory || maxLikes === 0) return 'No data';
+
+                // إيجاد القطعة الأكثر إعجاباً في تلك الفئة
+                const artworks = categoryLikes[mostLikedCategory].artworks;
+                const topArtwork = Object.entries(artworks)
+                    .sort((a, b) => b[1] - a[1])[0];
+
+                return topArtwork ? topArtwork[0] : 'No data';
             };
 
-            document.getElementById('youth-favorite').textContent = getMostLiked('youth');
-            document.getElementById('adult-favorite').textContent = getMostLiked('adult');
-            document.getElementById('senior-favorite').textContent = getMostLiked('senior');
+            document.getElementById('youth-favorite').textContent = getMostLikedByCategory('youth');
+            document.getElementById('adult-favorite').textContent = getMostLikedByCategory('adult');
+            document.getElementById('senior-favorite').textContent = getMostLikedByCategory('senior');
         }
 
         function renderUsers() {

@@ -4,28 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATHAR Museum - Discover History</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-    
-
     <style>
-       :root {
- --primary-dark: #653025;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
-
-}
-
+        :root {
+            --primary-dark: #653025;     
+            --primary-light: #8d2e1d;    
+            --accent: #b08d57;           
+            --accent-light: #d4b483;     
+            --neutral-light: #f4f1e3;    
+            --neutral-dark: #4a3c2a;     
+            --text-dark: #3b2f23;        
+            --text-light: #7c6f57;       
+            --white: #fdfaf4;            
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
 
         * {
             margin: 0;
@@ -39,8 +33,6 @@
             color: var(--text-dark);
             background-color: var(--neutral-light);
             overflow-x: hidden;
-
-            
         }
 
         h1, h2, h3, h4 {
@@ -49,7 +41,6 @@
             line-height: 1.2;
         }
 
-        /* Navigation */
         nav {
             background: var(--white);
             padding: 1rem 0;
@@ -147,18 +138,16 @@
             border-color: var(--accent-light);
         }
 
-        /* Hero Section */
         .hero {
-        height: 100vh;
-        position: relative;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        text-align: center;
-        color: #d9d4be;
-
-        background: url("../images/RedRug.jpg") no-repeat top right;
-        background-size: cover;
+            height: 100vh;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            color: #d9d4be;
+            background: url("../images/RedRug.jpg") no-repeat top right;
+            background-size: cover;
         }
 
         .hero::before {
@@ -213,7 +202,6 @@
             box-shadow: 0 8px 20px rgba(212, 175, 55, 0.4);
         }
 
-        /* Main Content */
         .container {
             max-width: 1200px;
             margin: 0 auto;
@@ -242,7 +230,184 @@
             margin: 0 auto;
         }
 
-        /* Museum Info Section */
+        .section-title .subtitle {
+            color: var(--text-light);
+            font-size: 1.1rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            margin-top: 0.5rem;
+        }
+
+        /* Recommendations Section */
+        .recommendations-section {
+            background: var(--white);
+            padding: 4rem 0;
+            margin: 3rem 0;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .recommendations-header {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .recommendations-header h2 {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--primary-dark);
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommendations-header .material-icons {
+            font-size: 2.5rem;
+            color: var(--accent);
+        }
+
+        .personalized-badge {
+            display: inline-block;
+            background: var(--neutral-light);
+            color: var(--accent);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            border: 2px solid var(--accent);
+        }
+
+        .recommendations-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            font-weight: 400;
+            text-align: center;
+            margin: 1rem 0 2.5rem;
+        }
+
+        .recommendations-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 2rem;
+            padding: 0 2rem;
+        }
+
+        .recommendation-card {
+            background: var(--neutral-light);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
+
+        .recommendation-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .recommendation-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            position: relative;
+        }
+
+        .recommendation-image.no-image {
+            background: linear-gradient(135deg, var(--primary-light) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1rem;
+        }
+
+        .recommendation-image.no-image::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><rect fill="%23ffffff" width="200" height="200"/><path d="M40,40 C60,20 80,40 100,30 C120,20 140,40 160,30 C180,20 200,40 200,40 L200,200 L40,200 Z" fill="%23d4af37"/></svg>');
+            background-size: cover;
+        }
+
+        .recommendation-badge {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            backdrop-filter: blur(10px);
+        }
+
+        .badge-trending {
+            background: rgba(255, 99, 71, 0.9);
+            color: white;
+        }
+
+        .badge-interest {
+            background: rgba(176, 141, 87, 0.9);
+            color: white;
+        }
+
+        .badge-popular {
+            background: rgba(72, 187, 120, 0.9);
+            color: white;
+        }
+
+        .recommendation-content {
+            padding: 1.5rem;
+        }
+
+        .recommendation-title {
+            font-size: 1.2rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+
+        .recommendation-reason {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+        }
+
+        .recommendation-description {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            line-height: 1.5;
+        }
+
+        .loading-recommendations {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .no-recommendations {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .no-recommendations .material-icons {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        /* Museum Info */
         .museum-info {
             background: var(--white);
             padding: 5rem 0;
@@ -460,27 +625,26 @@
             opacity: 0.8;
         }
 
-        /* Animations */
         @keyframes fadeIn {
             from {
                 opacity: 0;
                 transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
 
-        /* Responsive Design */
         @media (max-width: 992px) {
             .hero-content h1 {
                 font-size: 2.8rem;
             }
-
             .info-grid {
                 gap: 3rem;
+            }
+            .recommendations-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
         }
 
@@ -488,30 +652,27 @@
             .nav-links {
                 display: none;
             }
-
             .hero-content h1 {
                 font-size: 2.3rem;
             }
-
             .hero-content p {
                 font-size: 1.1rem;
             }
-
             .info-grid {
                 grid-template-columns: 1fr;
             }
-
             .events-exhibitions {
                 grid-template-columns: 1fr;
                 gap: 2.5rem;
             }
-
             .info-stats {
                 grid-template-columns: 1fr;
             }
-
             .section {
                 padding: 2rem;
+            }
+            .recommendations-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -519,32 +680,19 @@
             .hero-content h1 {
                 font-size: 2rem;
             }
-
             .container {
                 padding: 4rem 1.5rem;
             }
-
             .info-image {
                 height: 350px;
             }
-
             .stat-box {
                 padding: 1.5rem;
             }
         }
-        .seal {
-            width: 100px;       
-            height: auto;
-            margin-left: 10px; 
-            vertical-align: middle; 
-            transform: rotate(15deg);
-            }
-
     </style>
 </head>
-
 <body>
-    <!-- Navigation -->
     <nav>
         <div class="nav-container">
             <a href="Home.html" class="logo">ATHAR Museum</a>
@@ -557,33 +705,50 @@
                 <li><a href="Gallery.html">Gallery</a></li>
             </ul>
             <a href="Account.html" class="account-icon" title="My Account"><span class="material-icons">person</span></a>
+        </div>
     </nav>
 
-    <!-- Hero Section -->
-       <section class="hero" id="home">
-  <div class="hero-content">
-    <h1>Discover Timeless ATHAR</h1>
-    <p>Experience centuries of art, culture, and history through our world-class collections and immersive exhibitions.</p>
-    <a href="Events.html" class="cta-button">Explore Exhibitions</a>
-  </div>
-</section>
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h1>Discover Timeless ATHAR</h1>
+            <p>Experience centuries of art, culture, and history through our world-class collections and immersive exhibitions.</p>
+            <a href="Events.html" class="cta-button">Explore Exhibitions</a>
+        </div>
+    </section>
 
+    <!-- Personalized Recommendations -->
+    <section class="recommendations-section" id="recommendations-section" style="display: none;">
+        <div class="container">
+            <div class="recommendations-header">
+                <h2>
+                    <span class="material-icons">auto_awesome</span>
+                    Recommended for You
+                </h2>
+                <br>
+                <span class="personalized-badge">✨ Personalized</span>
+            </div>
+            <p class="recommendations-subtitle">Based on your interests and preferences</p>
+            
+            <div id="recommendations-loading" class="loading-recommendations">
+                <span class="material-icons" style="font-size: 3rem; animation: spin 2s linear infinite;">explore</span>
+                <p>Finding perfect recommendations for you...</p>
+            </div>
+            <div id="recommendations-container" class="recommendations-grid" style="display: none;"></div>
+            <div id="no-recommendations" class="no-recommendations" style="display: none;">
+                <span class="material-icons">explore_off</span>
+                <h3>No Recommendations Yet</h3>
+                <p>Start exploring our gallery and liking artworks to get personalized recommendations!</p>
+            </div>
+        </div>
+    </section>
 
-
-
-    <!-- Museum Information -->
     <section class="museum-info">
         <div class="container">
             <div class="info-grid">
                 <div class="info-text">
-                    <h2>About Our Museum </h2>
-                    <p>Established in 1892, the ATHAR Museum stands as a beacon of cultural preservation and
-                        education. Our mission is to inspire curiosity and understanding of our shared human story
-                        through carefully curated collections and engaging programs.</p>
-                    <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an
-                        unparalleled journey through time. Our expertly designed galleries provide context and meaning
-                        to the objects that have shaped our world.</p>
-
+                    <h2>About Our Museum</h2>
+                    <p>Established in 1892, the ATHAR Museum stands as a beacon of cultural preservation and education. Our mission is to inspire curiosity and understanding of our shared human story through carefully curated collections and engaging programs.</p>
+                    <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an unparalleled journey through time. Our expertly designed galleries provide context and meaning to the objects that have shaped our world.</p>
                     <div class="info-stats">
                         <div class="stat-box">
                             <h3>50K+</h3>
@@ -613,82 +778,50 @@
         </div>
     </section>
 
-    <!-- Events and Exhibitions -->
     <div class="container">
         <div class="section-title">
             <h2>What's On</h2>
         </div>
-
         <div class="events-exhibitions">
-            <!-- Upcoming Events -->
             <div class="section">
                 <h2>Upcoming Events</h2>
-
                 <div class="event-item">
                     <span class="event-date">October 25, 2025 • 6:30 PM</span>
                     <h3>Ancient Egypt Night Tour</h3>
-                    <p>Experience the mysteries of ancient Egypt in a special after-hours guided tour. Explore mummies,
-                        sarcophagi, and treasures under atmospheric lighting.</p>
+                    <p>Experience the mysteries of ancient Egypt in a special after-hours guided tour.</p>
                 </div>
-
                 <div class="event-item">
                     <span class="event-date">November 12, 2025 • 10:00 AM</span>
                     <h3>Renaissance Art Workshop</h3>
-                    <p>Learn traditional painting techniques from master artists. This hands-on workshop covers fresco
-                        and oil painting methods used by the great Renaissance masters.</p>
+                    <p>Learn traditional painting techniques from master artists.</p>
                 </div>
-
                 <div class="event-item">
                     <span class="event-date">November 28, 2025 • 11:00 AM</span>
                     <h3>Family Discovery Day</h3>
-                    <p>A special event designed for families with interactive exhibits, treasure hunts, and educational
-                        activities that make history come alive for children.</p>
-                </div>
-
-                <div class="event-item">
-                    <span class="event-date">December 15, 2025 • 7:00 PM</span>
-                    <h3>Curator's Lecture Series</h3>
-                    <p>Join our chief curator for an exclusive behind-the-scenes look at our newest acquisitions and
-                        upcoming exhibition plans.</p>
+                    <p>A special event designed for families with interactive exhibits.</p>
                 </div>
             </div>
-
-            <!-- Featured Exhibitions -->
             <div class="section">
                 <h2>Featured Exhibitions</h2>
-
                 <div class="exhibition-item">
                     <h3>Treasures of Ancient Rome</h3>
                     <span class="event-date">Now through December 2025</span>
-                    <p>Marvel at authentic Roman artifacts including sculptures, mosaics, and everyday objects that
-                        reveal life in the Roman Empire. Features items never before displayed to the public.</p>
+                    <p>Marvel at authentic Roman artifacts including sculptures, mosaics, and everyday objects.</p>
                 </div>
-
                 <div class="exhibition-item">
                     <h3>Modern Masters: 20th Century Art</h3>
                     <span class="event-date">Permanent Collection</span>
-                    <p>Explore works by Picasso, Van Gogh, and other influential artists who shaped modern art. This
-                        exhibition traces the evolution of artistic expression through turbulent times.</p>
+                    <p>Explore works by Picasso, Van Gogh, and other influential artists.</p>
                 </div>
-
                 <div class="exhibition-item">
                     <h3>Lost Civilizations of the Americas</h3>
                     <span class="event-date">Opening November 2025</span>
-                    <p>Discover the sophisticated cultures of pre-Columbian America through artifacts from the Maya,
-                        Aztec, and Inca civilizations. Interactive displays bring these cultures to life.</p>
-                </div>
-
-                <div class="exhibition-item">
-                    <h3>Innovation Through the Ages</h3>
-                    <span class="event-date">Ongoing</span>
-                    <p>From the wheel to the smartphone, explore humanity's greatest inventions and their impact on
-                        society. Features working replicas and hands-on demonstrations.</p>
+                    <p>Discover the sophisticated cultures of pre-Columbian America.</p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-info">
@@ -719,62 +852,258 @@
         </div>
     </footer>
 
-    <script>
-        // Filter events by date
-        function filterEventsByDate() {
+    <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        let currentUser = null;
+        let userData = null;
+        let allArtworks = [];
+        let allUsers = [];
+
+        // Interest to Category Mapping
+        const interestToCategoryMap = {
+            'Manuscripts': 'codices',
+            'Weapons': 'arms',
+            'Boxes': 'boxes',
+            'Bottles': 'bottles'
+        };
+
+        const interestToExhibitionMap = {
+            'Arab Heritage': 'Arab Heritage',
+            'Persian Heritage': 'Persian Heritage',
+            'Indian Heritage': 'Indian Heritage',
+            'Andalusian Heritage': 'Andalusian Heritage',
+            'Turkish Heritage': 'Turkish Heritage',
+            'Echoes of Islamic Civilization': 'Others'
+        };
+
+        function calculateAge(dateOfBirth) {
+            if (!dateOfBirth) return null;
+            const birthDate = dateOfBirth.toDate ? dateOfBirth.toDate() : new Date(dateOfBirth);
             const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            // Filter upcoming events
-            const eventItems = document.querySelectorAll('.event-item');
-            eventItems.forEach(item => {
-                const dateText = item.querySelector('.event-date').textContent;
-                const dateMatch = dateText.match(/([A-Za-z]+)\s+(\d+),\s+(\d{4})/);
-                
-                if (dateMatch) {
-                    const eventDate = new Date(dateMatch[0]);
-                    eventDate.setHours(0, 0, 0, 0);
-                    
-                    if (eventDate < today) {
-                        item.style.display = 'none';
-                    }
-                }
-            });
-
-            // Filter featured exhibitions
-            const exhibitionItems = document.querySelectorAll('.exhibition-item');
-            exhibitionItems.forEach(item => {
-                const dateText = item.querySelector('.event-date').textContent;
-                
-                // Handle "Now through" format
-                if (dateText.includes('Now through')) {
-                    const dateMatch = dateText.match(/through\s+([A-Za-z]+)\s+(\d{4})/);
-                    if (dateMatch) {
-                        const endDate = new Date(dateMatch[1] + ' 1, ' + dateMatch[2]);
-                        endDate.setMonth(endDate.getMonth() + 1);
-                        endDate.setDate(0);
-                        endDate.setHours(0, 0, 0, 0);
-                        
-                        if (endDate < today) {
-                            item.style.display = 'none';
-                        }
-                    }
-                }
-                // Handle "Opening" format
-                else if (dateText.includes('Opening')) {
-                    const dateMatch = dateText.match(/Opening\s+([A-Za-z]+)\s+(\d{4})/);
-                    if (dateMatch) {
-                        const openDate = new Date(dateMatch[1] + ' 1, ' + dateMatch[2]);
-                        openDate.setHours(0, 0, 0, 0);
-                        
-                        if (openDate < today) {
-                            item.style.display = 'none';
-                        }
-                    }
-                }
-                // "Permanent Collection" and "Ongoing" always show
-            });
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
         }
+
+        function getAgeGroup(age) {
+            if (age < 13) return 'child';
+            if (age <= 25) return 'youth';
+            if (age <= 59) return 'adult';
+            return 'senior';
+        }
+
+        async function loadData() {
+            try {
+                const [artworksSnap, usersSnap] = await Promise.all([
+                    getDocs(collection(db, "Museum_Collection")),
+                    getDocs(collection(db, "Users"))
+                ]);
+
+                allArtworks = artworksSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                allUsers = usersSnap.docs.map(doc => {
+                    const data = doc.data();
+                    const age = calculateAge(data['Date of Birth']);
+                    return {
+                        id: doc.id,
+                        ...data,
+                        age: age,
+                        ageGroup: age ? getAgeGroup(age) : 'unknown'
+                    };
+                });
+            } catch (error) {
+                console.error('Error loading data:', error);
+            }
+        }
+
+        function generateRecommendations() {
+            if (!userData || !userData.Interests || allArtworks.length === 0) {
+                return [];
+            }
+
+            const recommendations = [];
+            const userInterests = userData.Interests || [];
+            const userAge = calculateAge(userData['Date of Birth']);
+            const userAgeGroup = userAge ? getAgeGroup(userAge) : null;
+            const userCountry = userData.Country || null;
+            const userLikedArtworks = userData.likedArtworks || [];
+
+            // Score each artwork
+            allArtworks.forEach(artwork => {
+                let score = 0;
+                let reasons = [];
+
+                // 1. Interest Match (Exhibition + Category) - Weight: 3
+                userInterests.forEach(interest => {
+                    // Check Exhibition match
+                    if (interestToExhibitionMap[interest] && artwork.Exhibition === interestToExhibitionMap[interest]) {
+                        score += 3;
+                        reasons.push(`Matches your interest in ${interest}`);
+                    }
+                    // Check Category match
+                    if (interestToCategoryMap[interest] && artwork.classification === interestToCategoryMap[interest]) {
+                        score += 3;
+                        reasons.push(`You like ${interest}`);
+                    }
+                });
+
+                // 2. Popular in Age Group - Weight: 2
+                if (userAgeGroup && artwork.likedBy && artwork.likedBy.length > 0) {
+                    const ageGroupLikes = artwork.likedBy.filter(userId => {
+                        const user = allUsers.find(u => u.uid === userId);
+                        return user && user.ageGroup === userAgeGroup;
+                    }).length;
+
+                    if (ageGroupLikes >= 2) {
+                        score += 2;
+                        reasons.push(`Popular with your age group`);
+                    }
+                }
+
+                // 3. Popular in Country - Weight: 2
+                if (userCountry && artwork.likedBy && artwork.likedBy.length > 0) {
+                    const countryLikes = artwork.likedBy.filter(userId => {
+                        const user = allUsers.find(u => u.uid === userId);
+                        return user && user.Country === userCountry;
+                    }).length;
+
+                    if (countryLikes >= 2) {
+                        score += 2;
+                        reasons.push(`Popular in ${userCountry}`);
+                    }
+                }
+
+                // 4. Trending (High likes overall) - Weight: 1
+                if (artwork.likesCount && artwork.likesCount >= 5) {
+                    score += 1;
+                    reasons.push(`Trending artwork`);
+                }
+
+                // 5. Not already liked by user
+                if (userLikedArtworks.includes(artwork.id)) {
+                    score = 0; // Don't recommend already liked items
+                }
+
+                if (score > 0) {
+                    recommendations.push({
+                        ...artwork,
+                        score: score,
+                        reasons: reasons
+                    });
+                }
+            });
+
+            // Sort by score and get top 6
+            return recommendations
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 6);
+        }
+
+        function getBadgeType(reasons) {
+            if (reasons.some(r => r.includes('Trending'))) return 'trending';
+            if (reasons.some(r => r.includes('interest'))) return 'interest';
+            return 'popular';
+        }
+
+        function displayRecommendations(recommendations) {
+            const loading = document.getElementById('recommendations-loading');
+            const container = document.getElementById('recommendations-container');
+            const noRecs = document.getElementById('no-recommendations');
+            const section = document.getElementById('recommendations-section');
+
+            loading.style.display = 'none';
+
+            if (recommendations.length === 0) {
+                noRecs.style.display = 'block';
+                section.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            section.style.display = 'block';
+
+            console.log('Recommendations:', recommendations); // للتحقق
+
+            container.innerHTML = recommendations.map(rec => {
+                // تحقق من جميع احتمالات اسم حقل الصورة
+                const imageURL = rec.imageURL || rec.ImageURL || rec.image || rec.Image || '';
+                
+                console.log('Artwork:', rec.title, 'Image URL:', imageURL); // للتحقق
+
+                const badgeType = getBadgeType(rec.reasons);
+                const badgeText = badgeType === 'trending' ? '🔥 Trending' : 
+                                 badgeType === 'interest' ? '✨ For You' : 
+                                 '⭐ Popular';
+                
+                // Check if image exists
+                const hasImage = imageURL && imageURL.trim() !== '';
+
+                return `
+                    <div class="recommendation-card" onclick="window.location.href='ArtDetails.html?id=${rec.id}'">
+                        <div class="recommendation-image ${!hasImage ? 'no-image' : ''}" 
+                             style="${hasImage ? `background-image: url('${imageURL}');` : ''}">
+                            ${!hasImage ? '<div style="position: relative; z-index: 1;">🎨 Artwork</div>' : ''}
+                            <span class="recommendation-badge badge-${badgeType}">${badgeText}</span>
+                        </div>
+                        <div class="recommendation-content">
+                            <h3 class="recommendation-title">${rec.title || 'Untitled'}</h3>
+                            <p class="recommendation-reason">
+                                <span class="material-icons" style="font-size: 1rem;">info</span>
+                                ${rec.reasons[0]}
+                            </p>
+                            <p class="recommendation-description">
+                                ${rec.artist || rec.artistName || rec.Artist || 'Unknown Artist'} • ${rec.Exhibition || rec.exhibition || 'Museum Collection'}
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            // Add error handling for images
+            setTimeout(() => {
+                const images = container.querySelectorAll('.recommendation-image');
+                images.forEach(img => {
+                    const bgImage = img.style.backgroundImage;
+                    if (bgImage && bgImage !== 'none') {
+                        // Create a test image to check if URL is valid
+                        const testImg = new Image();
+                        const url = bgImage.slice(5, -2); // Remove url(" and ")
+                        testImg.onerror = function() {
+                            console.error('Failed to load image:', url);
+                            img.classList.add('no-image');
+                            img.style.backgroundImage = '';
+                            img.innerHTML = '<div style="position: relative; z-index: 1;">🎨 Artwork</div>' + img.innerHTML;
+                        };
+                        testImg.src = url;
+                    }
+                });
+            }, 100);
+        }
+
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                try {
+                    const userDoc = await getDoc(doc(db, "Users", user.uid));
+                    if (userDoc.exists()) {
+                        userData = userDoc.data();
+                        await loadData();
+                        const recommendations = generateRecommendations();
+                        displayRecommendations(recommendations);
+                    }
+                } catch (error) {
+                    console.error('Error loading user data:', error);
+                }
+            } else {
+                // User not logged in - hide recommendations section
+                document.getElementById('recommendations-section').style.display = 'none';
+            }
+        });
 
         // Navigation scroll effect
         window.addEventListener('scroll', function () {
@@ -790,15 +1119,11 @@
 
         // Set active navigation link
         document.addEventListener('DOMContentLoaded', function () {
-            // Filter events on page load
-            filterEventsByDate();
-
             const currentPage = window.location.pathname.split('/').pop();
             const navLinks = document.querySelectorAll('.nav-links a');
 
             navLinks.forEach(link => {
                 link.classList.remove('active');
-
                 if (link.getAttribute('href') === currentPage) {
                     link.classList.add('active');
                 }
@@ -835,7 +1160,6 @@
                 item.style.transition = 'all 0.6s ease';
             });
 
-            // Trigger initial animation check
             setTimeout(animateOnScroll, 100);
         });
 
@@ -852,8 +1176,16 @@
                 this.style.background = 'linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%)';
             });
         }
+
+        // Add spin animation for loading icon
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes spin {
+                0% { transform: rotate(0deg); }
+                100% { transform: rotate(360deg); }
+            }
+        `;
+        document.head.appendChild(style);
     </script>
-
 </body>
-
 </html>
