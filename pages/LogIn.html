@@ -10,17 +10,17 @@
         rel="stylesheet">
     <style>
         :root {
-            --primary-dark: #653025;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
+            --primary-dark: #653025;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
             --error: #e53e3e;
             --success: #38a169;
         }
@@ -448,6 +448,12 @@
                         if (userDocSnap.exists()) {
                             const userData = userDocSnap.data();
 
+                            // Store user authentication and data in sessionStorage
+                            sessionStorage.setItem('isLoggedIn', 'true');
+                            sessionStorage.setItem('userName', userData.Username || 'Member'); // Get username from Firebase
+                            sessionStorage.setItem('userEmail', userData["Email Address"] || user.email);
+                            sessionStorage.setItem('userId', user.uid);
+
                             if (userData.role === "admin") {
                                 window.location.href = "AdminDashboard.html";
                             } else {
@@ -455,10 +461,24 @@
                             }
                         } else {
                             console.error("User document not found in Firestore.");
+
+                            // Fallback: store basic info even if document not found
+                            sessionStorage.setItem('isLoggedIn', 'true');
+                            sessionStorage.setItem('userName', user.email.split('@')[0]); // Use email prefix as fallback
+                            sessionStorage.setItem('userEmail', user.email);
+                            sessionStorage.setItem('userId', user.uid);
+
                             window.location.href = "Home.html";
                         }
                     } catch (err) {
                         console.error("Error checking role:", err);
+
+                        // Fallback on error
+                        sessionStorage.setItem('isLoggedIn', 'true');
+                        sessionStorage.setItem('userName', user.email.split('@')[0]);
+                        sessionStorage.setItem('userEmail', user.email);
+                        sessionStorage.setItem('userId', user.uid);
+
                         window.location.href = "Home.html";
                     }
                 }, 1500);

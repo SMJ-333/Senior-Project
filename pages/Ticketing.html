@@ -1,24 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ticketing - ATHAR Museum</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-           --primary-dark: #653025;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
+            --primary-dark: #653025;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
             --success: #48bb78;
             --warning: #ecc94b;
             --danger: #f56565;
@@ -38,7 +41,10 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4 {
+        h1,
+        h2,
+        h3,
+        h4 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             line-height: 1.2;
@@ -549,7 +555,7 @@
         .footer-bottom {
             text-align: center;
             padding-top: 2rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             opacity: 0.8;
         }
 
@@ -570,6 +576,7 @@
         }
     </style>
 </head>
+
 <body>
     <nav>
         <div class="nav-container">
@@ -582,7 +589,8 @@
                 <li><a href="News.html">News</a></li>
                 <li><a href="Gallery.html">Gallery</a></li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account"><span class="material-icons">person</span></a>
+            <a href="Account.html" class="account-icon" title="My Account"><span
+                    class="material-icons">person</span></a>
         </div>
     </nav>
 
@@ -607,20 +615,23 @@
             <!-- Visit Type Selection -->
             <div class="visit-type-selector">
                 <h2 style="color: var(--primary-dark); margin-bottom: 0.5rem;">Select Visit Type</h2>
-                <p style="color: var(--text-light); margin-bottom: 1rem;">Choose between a general museum visit or a special event</p>
-                
+                <p style="color: var(--text-light); margin-bottom: 1rem;">Choose between a general museum visit or a
+                    special event</p>
+
                 <div class="visit-type-options">
                     <div class="visit-type-card" data-type="general" data-price="0">
-                        <span class="material-icons" style="font-size: 3rem; color: var(--accent); margin-bottom: 0.5rem;">museum</span>
+                        <span class="material-icons"
+                            style="font-size: 3rem; color: var(--accent); margin-bottom: 0.5rem;">museum</span>
                         <h4>General Visit</h4>
                         <p class="price-tag free" id="general-price-display">FREE for Members</p>
                         <p style="font-size: 0.9rem; color: var(--text-light);">Access all permanent exhibitions</p>
                     </div>
-                    
+
                     <div class="visit-type-card" data-type="event" data-price="20">
-                        <span class="material-icons" style="font-size: 3rem; color: var(--accent); margin-bottom: 0.5rem;">event</span>
+                        <span class="material-icons"
+                            style="font-size: 3rem; color: var(--accent); margin-bottom: 0.5rem;">event</span>
                         <h4>Special Event</h4>
-                        <p class="price-tag">$20 per person</p>
+                        <p class="price-tag">Starting from $15</p>
                         <p style="font-size: 0.9rem; color: var(--text-light);">Exclusive tours and exhibitions</p>
                     </div>
                 </div>
@@ -634,7 +645,8 @@
                     <select class="form-select" id="event-select">
                         <option value="">-- Select an Event --</option>
                         <option value="egypt" data-price="20">Ancient Egypt Night Tour - March 25, 2025 ($20)</option>
-                        <option value="renaissance" data-price="25">Renaissance Art Workshop - April 12, 2025 ($25)</option>
+                        <option value="renaissance" data-price="25">Renaissance Art Workshop - April 12, 2025 ($25)
+                        </option>
                         <option value="family" data-price="15">Family Discovery Day - April 28, 2025 ($15)</option>
                         <option value="rome" data-price="20">Treasures of Ancient Rome Exhibition ($20)</option>
                         <option value="modern" data-price="30">Modern Masters: 20th Century Art ($30)</option>
@@ -654,7 +666,7 @@
                 </div>
 
                 <h3 style="margin-bottom: 1.5rem;">Select Date & Time</h3>
-                
+
                 <div class="calendar">
                     <div class="calendar-header">
                         <h4 id="calendar-month"></h4>
@@ -663,7 +675,7 @@
                             <button class="calendar-btn" id="next-month">→</button>
                         </div>
                     </div>
-                    
+
                     <div class="calendar-grid" id="calendar-grid"></div>
                 </div>
 
@@ -682,9 +694,9 @@
                         <option value="17:00">5:00 PM</option>
                     </select>
                 </div>
-                
+
                 <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Number of Visitors</h3>
-                
+
                 <div id="visitor-counters">
                     <div class="counter-group">
                         <div class="counter-info">
@@ -693,7 +705,7 @@
                         </div>
                         <div class="counter-controls">
                             <button class="counter-btn" onclick="decrementCounter('adults')">−</button>
-                            <span class="counter-value" id="adults-count">1</span>
+                            <span class="counter-value" id="adults-count">0</span>
                             <button class="counter-btn" onclick="incrementCounter('adults')">+</button>
                         </div>
                     </div>
@@ -710,7 +722,7 @@
                         </div>
                     </div>
                 </div>
-                
+
                 <div class="summary-card" id="summary-card">
                     <h3>Booking Summary</h3>
                     <div id="summary-items"></div>
@@ -719,7 +731,7 @@
                         <span id="total-price">$0.00</span>
                     </div>
                 </div>
-                
+
                 <button class="btn" id="checkout-btn" disabled style="margin-top: 2rem;">Continue to Checkout</button>
             </div>
         </section>
@@ -756,8 +768,9 @@
     </footer>
 
     <script>
-        // Simulated member check (replace with actual authentication)
-        let isMember = true; // Change to false to test non-member experience
+        // Check if user is logged in (checks sessionStorage from login page)
+        let isMember = sessionStorage.getItem('isLoggedIn') === 'true';
+        let userName = sessionStorage.getItem('userName') || 'Guest';
         let selectedVisitType = null;
         let selectedDate = null;
         let selectedTime = null;
@@ -767,11 +780,11 @@
         maxDate.setMonth(maxDate.getMonth() + 3);
 
         const visitors = {
-            adults: 1,
+            adults: 0,
             children: 0
         };
 
-        // Initialize member status
+        // Initialize member status based on authentication
         function initializeMemberStatus() {
             const statusCard = document.getElementById('member-status-card');
             const greeting = document.getElementById('member-greeting');
@@ -780,17 +793,21 @@
             const generalPriceDisplay = document.getElementById('general-price-display');
 
             if (isMember) {
+                // Logged in user
                 statusCard.classList.remove('non-member');
-                greeting.textContent = 'Welcome, Member!';
+                greeting.textContent = `Welcome, ${userName}!`;
                 description.textContent = 'Enjoy free general admission as part of your membership benefits';
                 badge.textContent = 'Member';
                 generalPriceDisplay.textContent = 'FREE for Members';
                 generalPriceDisplay.classList.add('free');
             } else {
+                // Not logged in
                 statusCard.classList.add('non-member');
                 greeting.textContent = 'Welcome, Guest!';
-                description.textContent = 'Sign up for membership to enjoy free general admission';
+                description.textContent = 'Sign in or sign up for membership to enjoy free general admission';
                 badge.textContent = 'Guest';
+                badge.style.cursor = 'pointer';
+                badge.onclick = () => window.location.href = 'Account.html';
                 generalPriceDisplay.textContent = '$15 per person';
                 generalPriceDisplay.classList.remove('free');
             }
@@ -798,25 +815,32 @@
 
         // Visit type selection
         document.querySelectorAll('.visit-type-card').forEach(card => {
-            card.addEventListener('click', function() {
+            card.addEventListener('click', function () {
                 document.querySelectorAll('.visit-type-card').forEach(c => c.classList.remove('selected'));
                 this.classList.add('selected');
                 selectedVisitType = this.dataset.type;
-                
+
                 const eventSection = document.getElementById('event-section');
                 const bookingSection = document.getElementById('booking-section');
                 const memberBenefit = document.getElementById('member-benefit');
-                
+
                 if (selectedVisitType === 'event') {
+                    // Event selected - everyone pays
                     eventSection.classList.remove('hidden');
                     bookingSection.classList.add('hidden');
                     memberBenefit.classList.add('hidden');
                 } else {
+                    // General visit selected
                     eventSection.classList.add('hidden');
                     bookingSection.classList.remove('hidden');
+
+                    // Show member benefit only for logged-in users on general visits
                     if (isMember) {
                         memberBenefit.classList.remove('hidden');
+                    } else {
+                        memberBenefit.classList.add('hidden');
                     }
+
                     selectedEvent = null;
                     updatePriceDisplay();
                 }
@@ -824,7 +848,7 @@
         });
 
         // Event selection
-        document.getElementById('event-select').addEventListener('change', function() {
+        document.getElementById('event-select').addEventListener('change', function () {
             selectedEvent = this.value;
             if (selectedEvent) {
                 const selectedOption = this.options[this.selectedIndex];
@@ -839,15 +863,18 @@
 
         function updatePriceDisplay(eventPrice = null) {
             const adultPrice = document.getElementById('adult-price');
-            
+
             if (selectedVisitType === 'general' && isMember) {
+                // Logged-in user: General visit is FREE
                 adultPrice.textContent = 'Free for members';
-            } else if (selectedVisitType === 'event' && eventPrice) {
-                adultPrice.textContent = `$${eventPrice} per person`;
             } else if (selectedVisitType === 'general' && !isMember) {
+                // Not logged-in user: General visit costs $15
                 adultPrice.textContent = '$15 per person';
+            } else if (selectedVisitType === 'event' && eventPrice) {
+                // Events: Everyone pays (logged-in or not)
+                adultPrice.textContent = `$${eventPrice} per person`;
             }
-            
+
             calculateTotal();
         }
 
@@ -859,7 +886,6 @@
         }
 
         function decrementCounter(type) {
-            if (type === 'adults' && visitors[type] <= 1) return;
             if (visitors[type] > 0) {
                 visitors[type]--;
                 document.getElementById(`${type}-count`).textContent = visitors[type];
@@ -871,64 +897,70 @@
             let total = 0;
             let items = [];
 
-            if (selectedVisitType === 'general' && isMember) {
-                // Free for members
-                items.push({ 
-                    label: `${visitors.adults} x Adult General Admission (Member Benefit)`, 
-                    price: 0 
-                });
-            } else if (selectedVisitType === 'general' && !isMember) {
-                // Non-member general visit
-                const cost = visitors.adults * 15;
-                total += cost;
-                items.push({ 
-                    label: `${visitors.adults} x Adult General Admission`, 
-                    price: cost 
-                });
-            } else if (selectedVisitType === 'event' && selectedEvent) {
-                // Event pricing
-                const eventSelect = document.getElementById('event-select');
-                const selectedOption = eventSelect.options[eventSelect.selectedIndex];
-                const eventPrice = parseInt(selectedOption.dataset.price);
-                const cost = visitors.adults * eventPrice;
-                total += cost;
-                items.push({ 
-                    label: `${visitors.adults} x ${selectedOption.text.split(' - ')[0]} Ticket`, 
-                    price: cost 
-                });
+            if (visitors.adults > 0) {
+                if (selectedVisitType === 'general' && isMember) {
+                    // Logged-in user: Free general admission
+                    items.push({
+                        label: `${visitors.adults} × Adult General Admission (Member Benefit)`,
+                        price: 0
+                    });
+                } else if (selectedVisitType === 'general' && !isMember) {
+                    // Guest: $15 per adult for general admission
+                    const cost = visitors.adults * 15;
+                    total += cost;
+                    items.push({
+                        label: `${visitors.adults} × Adult General Admission`,
+                        price: cost
+                    });
+                } else if (selectedVisitType === 'event' && selectedEvent) {
+                    // Event pricing: Everyone pays (member or guest)
+                    const eventSelect = document.getElementById('event-select');
+                    const selectedOption = eventSelect.options[eventSelect.selectedIndex];
+                    const eventPrice = parseInt(selectedOption.dataset.price);
+                    const cost = visitors.adults * eventPrice;
+                    total += cost;
+
+                    const eventName = selectedOption.text.split(' - ')[0];
+                    items.push({
+                        label: `${visitors.adults} × ${eventName} Ticket`,
+                        price: cost
+                    });
+                }
             }
 
+            // Children are always free
             if (visitors.children > 0) {
-                items.push({ 
-                    label: `${visitors.children} x Children (Free)`, 
-                    price: 0 
+                items.push({
+                    label: `${visitors.children} × Children (Free)`,
+                    price: 0
                 });
             }
 
             const summaryItems = document.getElementById('summary-items');
             summaryItems.innerHTML = '';
-            
+
             items.forEach(item => {
                 summaryItems.innerHTML += `
-                    <div class="summary-item">
-                        <span>${item.label}</span>
-                        <span>${item.price.toFixed(2)}</span>
-                    </div>
-                `;
+            <div class="summary-item">
+                <span>${item.label}</span>
+                <span>$${item.price.toFixed(2)}</span>
+            </div>
+        `;
             });
 
+            // Add service fee only if there's a charge
             if (total > 0) {
                 const serviceFee = 2.50;
                 summaryItems.innerHTML += `
-                    <div class="summary-item">
-                        <span>Service Fee</span>
-                        <span>${serviceFee.toFixed(2)}</span>
-                    </div>
-                `;
+            <div class="summary-item">
+                <span>Service Fee</span>
+                <span>$${serviceFee.toFixed(2)}</span>
+            </div>
+        `;
                 total += serviceFee;
             }
 
-            document.getElementById('total-price').textContent = `${total.toFixed(2)}`;
+            document.getElementById('total-price').textContent = `$${total.toFixed(2)}`;
             updateCheckoutButton();
         }
 
@@ -938,7 +970,8 @@
             const hasDate = selectedDate !== null;
             const hasTime = document.getElementById('time-select').value !== '';
             const hasValidEvent = selectedVisitType !== 'event' || (selectedVisitType === 'event' && selectedEvent);
-            
+            const hasVisitors = (visitors.adults + visitors.children) > 0; // At least 1 visitor required
+
             checkoutBtn.disabled = !(hasVisitType && hasDate && hasTime && hasValidEvent);
         }
 
@@ -946,60 +979,60 @@
         function renderCalendar() {
             const year = currentMonth.getFullYear();
             const month = currentMonth.getMonth();
-            
+
             const monthNames = ["January", "February", "March", "April", "May", "June",
                 "July", "August", "September", "October", "November", "December"];
             document.getElementById('calendar-month').textContent = `${monthNames[month]} ${year}`;
-            
+
             const firstDay = new Date(year, month, 1).getDay();
             const daysInMonth = new Date(year, month + 1, 0).getDate();
-            
+
             const calendarGrid = document.getElementById('calendar-grid');
             calendarGrid.innerHTML = `
-                <div class="calendar-day">Sun</div>
-                <div class="calendar-day">Mon</div>
-                <div class="calendar-day">Tue</div>
-                <div class="calendar-day">Wed</div>
-                <div class="calendar-day">Thu</div>
-                <div class="calendar-day">Fri</div>
-                <div class="calendar-day">Sat</div>
-            `;
-            
+        <div class="calendar-day">Sun</div>
+        <div class="calendar-day">Mon</div>
+        <div class="calendar-day">Tue</div>
+        <div class="calendar-day">Wed</div>
+        <div class="calendar-day">Thu</div>
+        <div class="calendar-day">Fri</div>
+        <div class="calendar-day">Sat</div>
+    `;
+
             for (let i = 0; i < firstDay; i++) {
                 const emptyDiv = document.createElement('div');
                 emptyDiv.className = 'calendar-date empty';
                 calendarGrid.appendChild(emptyDiv);
             }
-            
+
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateDiv = document.createElement('div');
                 dateDiv.className = 'calendar-date';
                 dateDiv.textContent = day;
-                
+
                 const currentDate = new Date(year, month, day);
-                
+
                 if (currentDate < today || currentDate > maxDate) {
                     dateDiv.classList.add('unavailable');
                 } else {
-                    dateDiv.addEventListener('click', function() {
+                    dateDiv.addEventListener('click', function () {
                         document.querySelectorAll('.calendar-date').forEach(d => d.classList.remove('selected'));
                         this.classList.add('selected');
                         selectedDate = new Date(year, month, day);
                         updateCheckoutButton();
                     });
                 }
-                
+
                 calendarGrid.appendChild(dateDiv);
             }
         }
 
-        document.getElementById('prev-month').addEventListener('click', function() {
+        document.getElementById('prev-month').addEventListener('click', function () {
             const newMonth = new Date(currentMonth);
             newMonth.setMonth(newMonth.getMonth() - 1);
-            
+
             const today = new Date();
             if (newMonth >= new Date(today.getFullYear(), today.getMonth(), 1)) {
                 currentMonth = newMonth;
@@ -1007,10 +1040,10 @@
             }
         });
 
-        document.getElementById('next-month').addEventListener('click', function() {
+        document.getElementById('next-month').addEventListener('click', function () {
             const newMonth = new Date(currentMonth);
             newMonth.setMonth(newMonth.getMonth() + 1);
-            
+
             if (newMonth <= maxDate) {
                 currentMonth = newMonth;
                 renderCalendar();
@@ -1018,22 +1051,23 @@
         });
 
         // Time selection
-        document.getElementById('time-select').addEventListener('change', function() {
+        document.getElementById('time-select').addEventListener('change', function () {
             selectedTime = this.value;
             updateCheckoutButton();
         });
 
-        document.getElementById('checkout-btn').addEventListener('click', function() {
-            const dateStr = selectedDate.toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+        // Checkout button
+        document.getElementById('checkout-btn').addEventListener('click', function () {
+            const dateStr = selectedDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
-            
+
             const timeSelect = document.getElementById('time-select');
             const timeStr = timeSelect.options[timeSelect.selectedIndex].text;
-            
+
             let visitInfo = '';
             if (selectedVisitType === 'general') {
                 visitInfo = 'General Museum Visit';
@@ -1041,17 +1075,17 @@
                 const eventSelect = document.getElementById('event-select');
                 visitInfo = eventSelect.options[eventSelect.selectedIndex].text;
             }
-            
+
             const totalVisitors = visitors.adults + visitors.children;
             const total = document.getElementById('total-price').textContent;
-            
-            const memberStatus = isMember ? '\nMembership: Active' : '\nMembership: Guest';
-            
+
+            const memberStatus = isMember ? `\nMembership: Active (${userName})` : '\nMembership: Guest (Not logged in)';
+
             alert(`Booking Summary:\n\nVisit Type: ${visitInfo}\nDate: ${dateStr}\nTime: ${timeStr}\nVisitors: ${totalVisitors}${memberStatus}\nTotal: ${total}\n\nProceeding to secure checkout...`);
         });
 
         // Navigation scroll effect
-        window.addEventListener('scroll', function() {
+        window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
                 nav.style.padding = '0.7rem 0';
@@ -1062,11 +1096,16 @@
             }
         });
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', function() {
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function () {
             initializeMemberStatus();
             renderCalendar();
         });
+
+        // Make functions global so they can be called from HTML onclick attributes
+        window.incrementCounter = incrementCounter;
+        window.decrementCounter = decrementCounter;
     </script>
 </body>
+
 </html>

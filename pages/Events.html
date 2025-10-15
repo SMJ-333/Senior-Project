@@ -179,8 +179,8 @@
 
         .section-title {
             text-align: center;
-            /* margin-bottom: 3rem; */
             position: relative;
+            margin-bottom: 3rem;
         }
 
         .section-title h2 {
@@ -199,86 +199,41 @@
             margin: 0 auto;
         }
 
-        /* Filter Section */
-        .filter-section {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            margin-bottom: 3rem;
-        }
-
-        .filter-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1.5rem;
-        }
-
-        .filter-group {
-            margin-bottom: 1rem;
-        }
-
-        .filter-label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 500;
-            color: var(--text-dark);
-        }
-
-        .filter-select {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 6px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            transition: var(--transition);
-            background-color: var(--neutral-light);
-        }
-
-        .filter-select:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-        }
-
-        .filter-buttons {
+        /* Loading Spinner */
+        .loading-spinner {
             display: flex;
-            gap: 1rem;
+            flex-direction: column;
             justify-content: center;
-            margin-top: 1.5rem;
+            align-items: center;
+            padding: 4rem;
+            gap: 1rem;
         }
 
-        .btn {
-            display: inline-block;
-            padding: 0.8rem 1.8rem;
-            background: var(--accent);
-            color: var(--white);
-            font-weight: 600;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-decoration: none;
+        .spinner {
+            border: 4px solid var(--neutral-light);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
         }
 
-        .btn:hover {
-            background: var(--accent-light);
-            transform: translateY(-2px);
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
-        .btn-outline {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
+        .loading-text {
+            color: var(--text-light);
+            font-size: 1rem;
         }
 
-        .btn-outline:hover {
-            background: var(--accent);
-            color: var(--white);
-        }
-
-        /* events Grid */
+        /* Events Grid */
         .events-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -292,6 +247,13 @@
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .event-card.show {
+            opacity: 1;
+            transform: translateY(0);
         }
 
         .event-card:hover {
@@ -319,6 +281,14 @@
             height: 100%;
             background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><rect fill="%23ffffff" width="200" height="200"/><path d="M40,40 C60,20 80,40 100,30 C120,20 140,40 160,30 C180,20 200,40 200,40 L200,200 L40,200 Z" fill="%23d4af37"/></svg>');
             background-size: cover;
+            z-index: 0;
+        }
+
+        .event-img>div {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 1rem;
         }
 
         .event-badge {
@@ -331,6 +301,32 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            z-index: 2;
+        }
+
+        .event-badge.current {
+            background: #27ae60;
+            color: white;
+        }
+
+        .event-badge.upcoming {
+            background: #3498db;
+            color: white;
+        }
+
+        .event-badge.past {
+            background: #95a5a6;
+            color: white;
+        }
+
+        .event-badge.full {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .event-badge.almost-full {
+            background: #f39c12;
+            color: white;
         }
 
         .event-content {
@@ -348,6 +344,8 @@
             justify-content: space-between;
             margin-bottom: 1rem;
             font-size: 0.9rem;
+            flex-wrap: wrap;
+            gap: 0.5rem;
         }
 
         .event-date {
@@ -363,12 +361,75 @@
             color: var(--text-light);
             font-size: 0.95rem;
             line-height: 1.6;
-            margin-bottom: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .event-capacity {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .capacity-bar {
+            flex: 1;
+            height: 8px;
+            background: var(--neutral-light);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .capacity-fill {
+            height: 100%;
+            background: var(--accent);
+            transition: width 0.3s ease;
+        }
+
+        .capacity-fill.high {
+            background: #f39c12;
+        }
+
+        .capacity-fill.full {
+            background: #e74c3c;
         }
 
         .event-actions {
             display: flex;
             justify-content: space-between;
+            gap: 1rem;
+        }
+
+        .event-actions button,
+        .event-actions a {
+            flex: 1;
+            text-align: center;
+            padding: 0.7rem 1rem;
+            background: var(--accent);
+            color: var(--white);
+            text-decoration: none;
+            border: none;
+            border-radius: 6px;
+            transition: var(--transition);
+            font-weight: 500;
+            font-family: 'Inter', sans-serif;
+            cursor: pointer;
+            font-size: 0.95rem;
+        }
+
+        .event-actions button:hover,
+        .event-actions a:hover {
+            background: var(--accent-light);
+        }
+
+        .event-actions button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .event-actions button.registered {
+            background: #27ae60;
         }
 
         /* Featured Event */
@@ -402,6 +463,30 @@
             line-height: 1.7;
         }
 
+        .featured-content .event-meta {
+            margin-bottom: 2rem;
+        }
+
+        .featured-content .event-actions {
+            gap: 1rem;
+        }
+
+        .featured-content .event-actions .btn,
+        .featured-content .event-actions .btn-outline {
+            padding: 0.8rem 1.8rem;
+        }
+
+        .featured-content .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .featured-content .btn-outline:hover {
+            background: var(--accent);
+            color: var(--white);
+        }
+
         .featured-image {
             flex: 1;
             min-height: 400px;
@@ -426,41 +511,20 @@
             background-size: cover;
         }
 
-        /* Coming Soon Section */
-        .coming-soon {
-            margin-bottom: 5rem;
+        .featured-image > div {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 1rem;
         }
 
-        .coming-soon-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-        }
-
-        .coming-card {
-            background: var(--white);
-            border-radius: 12px;
-            padding: 2rem;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border-left: 4px solid var(--accent);
-        }
-
-        .coming-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-
-        .coming-card h3 {
-            color: var(--primary-dark);
-            margin-bottom: 1rem;
-        }
-
-        .coming-date {
-            color: var(--accent);
-            font-weight: 600;
-            margin-bottom: 1rem;
-            display: block;
+        /* No Results Message */
+        .no-results-message {
+            grid-column: 1 / -1;
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            font-size: 1.2rem;
         }
 
         /* Footer */
@@ -523,6 +587,10 @@
             .events-grid {
                 grid-template-columns: 1fr;
             }
+
+            .event-meta {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -540,8 +608,9 @@
                 <li><a href="News.html">News</a></li>
                 <li><a href="Gallery.html">Gallery</a></li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account"><span
-                    class="material-icons">person</span></a>
+            <a href="Account.html" class="account-icon" title="My Account">
+                <span class="material-icons">person</span>
+            </a>
         </div>
     </nav>
 
@@ -550,243 +619,47 @@
         <!-- Page Hero -->
         <section class="page-hero">
             <div class="container">
-                <h1>Current Events</h1>
-                <p>Explore our diverse collection of events that showcase art, history, and culture from around the
-                    world and across centuries.</p>
+                <h1>Museum Events</h1>
+                <p>Explore our diverse collection of events, workshops, and exhibitions that showcase art, history, and
+                    culture.</p>
             </div>
         </section>
 
-        <!-- Featured event -->
+        <!-- Featured Event -->
         <section class="container">
-            <div class="featured-event">
-                <div class="featured-content">
-                    <h2>Treasures of Ancient Rome</h2>
-                    <p>Experience the grandeur of the Roman Empire through an unparalleled collection of artifacts,
-                        including rare sculptures, intricate mosaics, and everyday objects that reveal the fascinating
-                        details of Roman life.</p>
-                    <p>This exclusive event features items on loan from the Vatican Museums and the British Museum,
-                        many never before displayed to the public.</p>
-                    <div class="event-meta">
-                        <span class="event-date">Through December 30, 2025</span>
-                        <span class="event-location">Special Exhibits Hall</span>
-                    </div>
-                    <div class="event-actions">
-                        <a href="" class="btn">Learn More</a>
-                        <a href="Ticketing.html" class="btn btn-outline">Book Tickets</a>
-                    </div>
-                </div>
-                <div class="featured-image">
-                    <div>
-                        <h3>Featured event</h3>
-                        <p>Marble statue of Emperor Augustus</p>
-                    </div>
+            <div id="featuredEventSection" class="featured-event">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Loading featured event...</div>
                 </div>
             </div>
         </section>
 
-        <!-- Current Events -->
+        <!-- Events Grid -->
         <section class="container">
             <div class="section-title">
                 <h2>Current Events</h2>
             </div>
 
-            <!-- Filter Section -->
-            <section class="container">
-                <div class="filter-section">
-                    <div class="filter-grid">
-                        <div class="filter-group">
-                            <label class="filter-label">Category</label>
-                            <select class="filter-select" id="categoryFilter">
-                                <option value="all">All Categories</option>
-                                <option value="ancient">Ancient History</option>
-                                <option value="modern">Modern Art</option>
-                                <option value="sculpture">Sculpture</option>
-                                <option value="photography">Photography</option>
-                                <option value="science">Science & Technology</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label class="filter-label">Time Period</label>
-                            <select class="filter-select" id="periodFilter">
-                                <option value="all">All Periods</option>
-                                <option value="current">Current</option>
-                                <option value="upcoming">Upcoming</option>
-                                <option value="past">Past Events</option>
-                            </select>
-                        </div>
-                        <div class="filter-group">
-                            <label class="filter-label">Location</label>
-                            <select class="filter-select" id="locationFilter">
-                                <option value="all">All Locations</option>
-                                <option value="main">Main Hall</option>
-                                <option value="west">West Wing</option>
-                                <option value="east">East Gallery</option>
-                                <option value="special">Special Exhibits Hall</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="filter-buttons">
-                        <button class="btn" onclick="applyFilters()">Apply Filters</button>
-                        <button class="btn btn-outline" onclick="resetFilters()">Reset Filters</button>
-                    </div>
-                </div>
-            </section>
-
-            <div class="events-grid">
-                <!-- Event 1 -->
-                <div class="event-card" data-category="modern" data-period="current" data-location="west">
-                    <div class="event-img">
-                        <div>Modern Masters Collection</div>
-                        <span class="event-badge">Popular</span>
-                    </div>
-                    <div class="event-content">
-                        <h3>Modern Masters: 20th Century Art</h3>
-                        <div class="event-meta">
-                            <span class="event-date">Permanent</span>
-                            <span class="event-location">West Wing</span>
-                        </div>
-                        <p>Explore works by Picasso, Van Gogh, and other influential artists who shaped modern art. This
-                            event traces the evolution of artistic expression through turbulent times.</p>
-                        <div class="event-actions">
-                            <a href="#">Details</a>
-                            <a href="#">Tickets</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Event 2 -->
-                <div class="event-card" data-category="ancient" data-period="current" data-location="main">
-                    <div class="event-img">
-                        <div>Egyptian Afterlife</div>
-                        <span class="event-badge">New</span>
-                    </div>
-                    <div class="event-content">
-                        <h3>Egyptian Afterlife: Mummies & Beyond</h3>
-                        <div class="event-meta">
-                            <span class="event-date">Through January 15, 2026</span>
-                            <span class="event-location">Hall of Ancient Civilizations</span>
-                        </div>
-                        <p>Discover the fascinating beliefs and practices surrounding death and the afterlife in ancient
-                            Egypt. Features well-preserved mummies, sarcophagi, and funerary artifacts.</p>
-                        <div class="event-actions">
-                            <a href="#">Details</a>
-                            <a href="#">Tickets</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Event 3 -->
-                <div class="event-card" data-category="science" data-period="current" data-location="west">
-                    <div class="event-img">
-                        <div>Nature's Wonders</div>
-                    </div>
-                    <div class="event-content">
-                        <h3>Nature's Wonders: Biodiversity Gallery</h3>
-                        <div class="event-meta">
-                            <span class="event-date">Permanent</span>
-                            <span class="event-location">Natural History Wing</span>
-                        </div>
-                        <p>Journey through diverse ecosystems and discover the incredible variety of life on Earth.
-                            Interactive displays and rare specimens from our natural history collection.</p>
-                        <div class="event-actions">
-                            <a href="#">Details</a>
-                            <a href="#">Tickets</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Event 4 -->
-                <div class="event-card" data-category="ancient" data-period="current" data-location="main">
-                    <div class="event-img">
-                        <div>Medieval Times</div>
-                    </div>
-                    <div class="event-content">
-                        <h3>Medieval Times: Knights & Nobility</h3>
-                        <div class="event-meta">
-                            <span class="event-date">Through February 20, 2026</span>
-                            <span class="event-location">History Gallery</span>
-                        </div>
-                        <p>Step back into the Middle Ages with authentic armor, weaponry, and artifacts from European
-                            castles. Experience the life of knights, nobles, and common folk.</p>
-                        <div class="event-actions">
-                            <a href="#">Details</a>
-                            <a href="#">Tickets</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Event 5 -->
-                <div class="event-card" data-category="science" data-period="current" data-location="special">
-                    <div class="event-img">
-                        <div>Ocean Exploration</div>
-                        <span class="event-badge">Family Friendly</span>
-                    </div>
-                    <div class="event-content">
-                        <h3>Ocean Exploration: Deep Sea Discoveries</h3>
-                        <div class="event-meta">
-                            <span class="event-date">Through November 10, 2025</span>
-                            <span class="event-location">Science & Discovery Center</span>
-                        </div>
-                        <p>Dive into the mysteries of the deep ocean with rare specimens, interactive submarine
-                            simulations, and footage from recent deep-sea expeditions.</p>
-                        <div class="event-actions">
-                            <a href="#">Details</a>
-                            <a href="#">Tickets</a>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Event 6 -->
-                <div class="event-card" data-category="sculpture" data-period="current" data-location="east">
-                    <div class="event-img">
-                        <div>Asian Artistry</div>
-                    </div>
-                    <div class="event-content">
-                        <h3>Asian Artistry: Ceramics & Silk</h3>
-                        <div class="event-meta">
-                            <span class="event-date">Permanent</span>
-                            <span class="event-location">East Gallery</span>
-                        </div>
-                        <p>Celebrate the rich artistic traditions of Asia with exquisite ceramics, silk textiles, and
-                            decorative arts from China, Japan, Korea, and Southeast Asia.</p>
-                        <div class="event-actions">
-                            <a href="#">Details</a>
-                            <a href="#">Tickets</a>
-                        </div>
-                    </div>
+            <div id="currentEventsGrid" class="events-grid">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Loading current events...</div>
                 </div>
             </div>
         </section>
 
-        <!-- Coming Soon Section -->
+        <!-- Upcoming Events Section -->
         <section class="container coming-soon">
             <div class="section-title">
-                <h2>Coming Soon</h2>
+                <h2>Upcoming Events</h2>
             </div>
 
-            <div class="coming-soon-grid">
-                <div class="coming-card">
-                    <h3>Lost Civilizations of the Americas</h3>
-                    <span class="coming-date">Opening November 12, 2025</span>
-                    <p>Discover the sophisticated cultures of pre-Columbian America through artifacts from the Maya,
-                        Aztec, and Inca civilizations. Interactive displays bring these cultures to life.</p>
-                    <a href="#">Notify Me</a>
-                </div>
-
-                <div class="coming-card">
-                    <h3>Renaissance Masters: Drawings & Sketches</h3>
-                    <span class="coming-date">Opening December 5, 2025</span>
-                    <p>An intimate look at the creative process of Renaissance masters through their preliminary
-                        drawings and sketches. Features works by Leonardo, Michelangelo, and Raphael.</p>
-                    <a href="#">Notify Me</a>
-                </div>
-
-                <div class="coming-card">
-                    <h3>Space Race: Journey to the Stars</h3>
-                    <span class="coming-date">Opening January 20, 2026</span>
-                    <p>Experience the excitement of the space race with authentic artifacts, spacecraft models, and
-                        interactive exhibits that explore humanity's journey beyond Earth.</p>
-                    <a href="#">Notify Me</a>
+            <div id="upcomingEventsGrid" class="coming-soon-grid"
+                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    <div class="loading-text">Loading upcoming events...</div>
                 </div>
             </div>
         </section>
@@ -823,81 +696,399 @@
         </div>
     </footer>
 
-    <script>
-        // Filter functionality
-        function applyFilters() {
-            const category = document.getElementById('categoryFilter').value;
-            const period = document.getElementById('periodFilter').value;
-            const location = document.getElementById('locationFilter').value;
+    <!-- Firebase Integration -->
+    <script type="module">
+        import { db, auth } from './firebase-config.js';
+        import {
+            collection,
+            getDocs,
+            doc,
+            updateDoc,
+            onSnapshot
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-            const cards = document.querySelectorAll('.event-card');
-            let visibleCount = 0;
+        let allEvents = [];
+        let currentUser = null;
 
-            cards.forEach(card => {
-                const cardCategory = card.getAttribute('data-category');
-                const cardPeriod = card.getAttribute('data-period');
-                const cardLocation = card.getAttribute('data-location');
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            console.log('Current user:', currentUser?.email || 'Not logged in');
+        });
 
-                const categoryMatch = category === 'all' || cardCategory === category;
-                const periodMatch = period === 'all' || cardPeriod === period;
-                const locationMatch = location === 'all' || cardLocation === location;
-
-                if (categoryMatch && periodMatch && locationMatch) {
-                    card.style.display = 'block';
-                    visibleCount++;
-                } else {
-                    card.style.display = 'none';
-                }
+        function formatDate(timestamp) {
+            if (!timestamp || !timestamp.toDate) return 'Date TBA';
+            const date = timestamp.toDate();
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
             });
-
-            // Show message if no results
-            let noResultsMsg = document.querySelector('.no-results-message');
-            const grid = document.querySelector('.events-grid');
-
-            if (visibleCount === 0) {
-                if (!noResultsMsg) {
-                    noResultsMsg = document.createElement('div');
-                    noResultsMsg.className = 'no-results-message';
-                    noResultsMsg.style.gridColumn = '1 / -1';
-                    noResultsMsg.style.textAlign = 'center';
-                    noResultsMsg.style.padding = '3rem';
-                    noResultsMsg.style.color = 'var(--text-light)';
-                    noResultsMsg.style.fontSize = '1.2rem';
-                    noResultsMsg.innerHTML = '<p>No events match your selected filters. Please try different criteria.</p>';
-                    grid.appendChild(noResultsMsg);
-                } else {
-                    noResultsMsg.style.display = 'block';
-                }
-            } else {
-                if (noResultsMsg) {
-                    noResultsMsg.style.display = 'none';
-                }
-            }
-
-            // Scroll to results
-            grid.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
 
-        function resetFilters() {
-            // Reset all select elements
-            document.getElementById('categoryFilter').value = 'all';
-            document.getElementById('periodFilter').value = 'all';
-            document.getElementById('locationFilter').value = 'all';
+        function getEventStatus(startDate, endDate) {
+            const now = new Date();
+            const start = startDate?.toDate();
+            const end = endDate?.toDate();
 
-            // Show all cards
-            const cards = document.querySelectorAll('.event-card');
-            cards.forEach(card => {
-                card.style.display = 'block';
-            });
+            if (!start || !end) return 'upcoming';
+            if (now < start) return 'upcoming';
+            if (now >= start && now <= end) return 'current';
+            return 'past';
+        }
 
-            // Hide no results message
-            const noResultsMsg = document.querySelector('.no-results-message');
-            if (noResultsMsg) {
-                noResultsMsg.style.display = 'none';
+        function getRegisteredCount(registeredUsers) {
+            if (!registeredUsers || registeredUsers === '') return 0;
+            return registeredUsers.split(',').filter(id => id.trim() !== '').length;
+        }
+
+        function isUserRegistered(registeredUsers) {
+            if (!currentUser || !registeredUsers) return false;
+            return registeredUsers.includes(currentUser.uid);
+        }
+
+        async function loadEvents() {
+            const grid = document.getElementById('eventsGrid');
+
+            try {
+                console.log('Fetching events from Firestore...');
+                console.log('Database instance:', db);
+
+                const eventsCol = collection(db, 'Events');
+                const snapshot = await getDocs(eventsCol);
+
+                if (snapshot.empty) {
+                    console.warn('No events found in the "Events" collection');
+                    const featuredSection = document.getElementById('featuredEventSection');
+                    featuredSection.style.display = 'none';
+                    
+                    const currentGrid = document.getElementById('currentEventsGrid');
+                    currentGrid.innerHTML = `
+                        <p class="no-results-message">
+                            No events available at this time.<br>
+                            <small>Check console for details or verify your Firestore collection name.</small>
+                        </p>`;
+                    return;
+                }
+
+                console.log(`Found ${snapshot.size} events in 'Events' collection`);
+                console.log('Event documents found! Processing...');
+
+                allEvents = [];
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    console.log('Event document:', docSnap.id, data);
+
+                    const registeredCount = getRegisteredCount(data.registeredUsers);
+
+                    allEvents.push({
+                        id: docSnap.id,
+                        ...data,
+                        status: getEventStatus(data.startDate, data.endDate),
+                        registeredCount: registeredCount,
+                        spotsLeft: (data.maxAttendees || 0) - registeredCount,
+                        isRegistered: isUserRegistered(data.registeredUsers)
+                    });
+                });
+
+                console.log('Processed events:', allEvents);
+                console.log('Total events:', allEvents.length);
+
+                allEvents.sort((a, b) => {
+                    if (!a.startDate || !b.startDate) return 0;
+                    return b.startDate.toMillis() - a.startDate.toMillis();
+                });
+
+                displayEvents(allEvents);
+
+                console.log('Events loaded successfully');
+            } catch (error) {
+                console.error('Error loading events:', error);
+                const featuredSection = document.getElementById('featuredEventSection');
+                featuredSection.innerHTML = `
+                    <p class="no-results-message">
+                        Error loading events: ${error.message}<br>
+                        Please check the console for details.
+                    </p>`;
             }
         }
 
-        // Navigation scroll effect
+        function displayFeaturedEvent(event) {
+            const featuredSection = document.getElementById('featuredEventSection');
+            
+            if (!event) {
+                featuredSection.style.display = 'none';
+                return;
+            }
+
+            const isFull = event.spotsLeft <= 0;
+            const startDate = formatDate(event.startDate);
+            const endDate = event.endDate ? formatDate(event.endDate) : null;
+            const dateRange = endDate ? `${startDate} - ${endDate}` : startDate;
+
+            featuredSection.innerHTML = `
+                <div class="featured-content">
+                    <h2>${event.title}</h2>
+                    <p>${event.description}</p>
+                    ${event.additionalInfo ? `<p>${event.additionalInfo}</p>` : ''}
+                    <div class="event-meta">
+                        <span class="event-date">${dateRange}</span>
+                        <span class="event-location">${event.location}</span>
+                    </div>
+                    <div class="event-capacity" style="margin-bottom: 2rem;">
+                        <span style="color: var(--accent-light); font-weight: 600;">${event.spotsLeft} spots remaining</span>
+                        <div class="capacity-bar">
+                            <div class="capacity-fill ${event.registeredCount >= event.maxAttendees * 0.8 ? 'high' : ''} ${isFull ? 'full' : ''}" 
+                                 style="width: ${Math.min((event.registeredCount / event.maxAttendees) * 100, 100)}%"></div>
+                        </div>
+                        <span style="color: var(--accent-light); font-weight: 600;">${event.registeredCount}/${event.maxAttendees} registered</span>
+                    </div>
+                    <div class="event-actions">
+                        <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="btn">Learn More</a>
+                        ${event.isRegistered ? 
+                            `<button class="btn" style="background: #27ae60; cursor: not-allowed;" disabled>✓ Already Registered</button>` :
+                            `<a href="#" onclick="window.registerForEvent('${event.id}'); return false;" class="btn btn-outline" ${isFull ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
+                                ${isFull ? 'Fully Booked' : 'Register Now'}
+                            </a>`
+                        }
+                    </div>
+                </div>
+                <div class="featured-image">
+                    <div>
+                        <h3>Featured Event</h3>
+                        <p>${event.title}</p>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${event.location}</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function displayCurrentEvents(events) {
+            const grid = document.getElementById('currentEventsGrid');
+
+            if (events.length === 0) {
+                grid.innerHTML = '<p class="no-results-message">No current events at this time.</p>';
+                return;
+            }
+
+            grid.innerHTML = events.map(event => {
+                const isFull = event.spotsLeft <= 0;
+                const isAlmostFull = event.registeredCount >= event.maxAttendees * 0.8;
+                const capacityPercent = Math.min((event.registeredCount / event.maxAttendees) * 100, 100);
+
+                let statusBadge = '';
+                if (isFull) {
+                    statusBadge = '<span class="event-badge full">Fully Booked</span>';
+                } else if (isAlmostFull) {
+                    statusBadge = '<span class="event-badge almost-full">Almost Full</span>';
+                } else {
+                    statusBadge = '<span class="event-badge current">Happening Now</span>';
+                }
+
+                return `
+                    <div class="event-card">
+                        <div class="event-img">
+                            <div>
+                                <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${event.title}</h3>
+                                <p style="font-size: 0.9rem; opacity: 0.9;">${event.location}</p>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        <div class="event-content">
+                            <h3>${event.title}</h3>
+                            <div class="event-meta">
+                                <span class="event-date">${formatDate(event.startDate)}</span>
+                                <span class="event-location">${event.location}</span>
+                            </div>
+                            <p>${event.description}</p>
+                            
+                            <div class="event-capacity">
+                                <span>${event.spotsLeft} spots left</span>
+                                <div class="capacity-bar">
+                                    <div class="capacity-fill ${isAlmostFull ? 'high' : ''} ${isFull ? 'full' : ''}" 
+                                         style="width: ${capacityPercent}%"></div>
+                                </div>
+                                <span>${event.registeredCount}/${event.maxAttendees}</span>
+                            </div>
+
+                            <div class="event-actions">
+                                ${event.isRegistered ?
+                        `<button class="registered" disabled>✓ Registered</button>` :
+                        `<button onclick="window.registerForEvent('${event.id}')" ${isFull ? 'disabled' : ''}>
+                                        ${isFull ? 'Fully Booked' : 'Register Now'}
+                                    </button>`
+                    }
+                                <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;">View Details</a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            setTimeout(() => {
+                document.querySelectorAll('#currentEventsGrid .event-card').forEach((card, index) => {
+                    setTimeout(() => card.classList.add('show'), index * 100);
+                });
+            }, 100);
+        }
+
+        function displayUpcomingEvents(events) {
+            const grid = document.getElementById('upcomingEventsGrid');
+
+            if (events.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: var(--text-light); grid-column: 1 / -1; padding: 3rem;">No upcoming events at this time.</p>';
+                return;
+            }
+
+            const cards = events.map(event => {
+                return `
+                    <div class="coming-card" style="background: var(--white); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); border-left: 4px solid var(--accent); transition: all 0.3s ease;">
+                        <h3 style="color: var(--primary-dark); margin-bottom: 1rem; font-size: 1.4rem; font-family: 'Playfair Display', serif; font-weight: 700;">${event.title}</h3>
+                        <span class="coming-date" style="color: var(--accent); font-weight: 600; margin-bottom: 1rem; display: block; font-size: 0.95rem;">Opening ${formatDate(event.startDate)}</span>
+                        <p style="color: var(--text-light); margin-bottom: 1rem; line-height: 1.6; font-size: 0.95rem;">${event.description}</p>
+                        <a href="#" onclick="window.notifyMe('${event.id}'); return false;" style="color: var(--accent); text-decoration: underline; font-weight: 600; transition: color 0.3s ease;">Notify Me</a>
+                    </div>
+                `;
+            });
+
+            grid.innerHTML = cards.join('');
+
+            setTimeout(() => {
+                const allCards = document.querySelectorAll('#upcomingEventsGrid .coming-card');
+                allCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+
+                    card.addEventListener('mouseenter', function () {
+                        this.style.transform = 'translateY(-5px)';
+                        this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.1)';
+                    });
+
+                    card.addEventListener('mouseleave', function () {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = 'var(--shadow)';
+                    });
+
+                    const link = card.querySelector('a');
+                    if (link) {
+                        link.addEventListener('mouseenter', function () {
+                            this.style.color = 'var(--primary-dark)';
+                        });
+                        link.addEventListener('mouseleave', function () {
+                            this.style.color = 'var(--accent)';
+                        });
+                    }
+                });
+            }, 150);
+        }
+
+        function displayEvents(events) {
+            const filteredEvents = events.filter(e => e.status !== 'past');
+
+            // Get the most recent event for featured section
+            const mostRecentEvent = filteredEvents.length > 0 ? filteredEvents[0] : null;
+            displayFeaturedEvent(mostRecentEvent);
+
+            const currentEvents = filteredEvents.filter(e => e.status === 'current');
+            const upcomingEvents = filteredEvents.filter(e => e.status === 'upcoming');
+
+            displayCurrentEvents(currentEvents);
+            displayUpcomingEvents(upcomingEvents);
+        }
+
+        window.notifyMe = async function (eventId) {
+            if (!currentUser) {
+                alert('Please sign in to receive notifications about upcoming events.');
+                window.location.href = 'Account.html';
+                return;
+            }
+
+            try {
+                const event = allEvents.find(e => e.id === eventId);
+                if (!event) return;
+
+                alert(`You will be notified when "${event.title}" opens!\n\nWe'll send a reminder to ${currentUser.email}`);
+            } catch (error) {
+                console.error('Error setting up notification:', error);
+                alert('Unable to set up notification. Please try again.');
+            }
+        }
+
+        window.registerForEvent = async function (eventId) {
+            if (!currentUser) {
+                alert('Please sign in to register for events.');
+                window.location.href = 'Account.html';
+                return;
+            }
+
+            try {
+                const event = allEvents.find(e => e.id === eventId);
+                if (!event) return;
+
+                if (event.spotsLeft <= 0) {
+                    alert('Sorry, this event is fully booked.');
+                    return;
+                }
+
+                if (event.isRegistered) {
+                    alert('You are already registered for this event.');
+                    return;
+                }
+
+                const eventRef = doc(db, 'Events', eventId);
+                const currentRegistered = event.registeredUsers || '';
+                const newRegistered = currentRegistered === '' ?
+                    currentUser.uid :
+                    `${currentRegistered},${currentUser.uid}`;
+
+                await updateDoc(eventRef, {
+                    registeredUsers: newRegistered
+                });
+
+                alert(`Successfully registered for "${event.title}"!\nCheck your email for confirmation.`);
+                loadEvents();
+            } catch (error) {
+                console.error('Error registering:', error);
+                alert('Unable to register. Please try again.');
+            }
+        }
+
+        window.viewEventDetails = function (eventId) {
+            const event = allEvents.find(e => e.id === eventId);
+            if (!event) return;
+
+            const startDate = formatDate(event.startDate);
+            const endDate = formatDate(event.endDate);
+
+            const details = `
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+EVENT DETAILS
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📅 ${event.title}
+
+📍 Location: ${event.location}
+
+📝 Description:
+${event.description}
+
+🕐 Start: ${startDate}
+🕐 End: ${endDate}
+
+👥 Capacity: ${event.registeredCount}/${event.maxAttendees}
+💺 Available Spots: ${event.spotsLeft}
+
+Status: ${event.status.toUpperCase()}
+            `.trim();
+
+            alert(details);
+        }
+
         window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
@@ -909,34 +1100,14 @@
             }
         });
 
-        // Animation for elements on scroll
-        function animateOnScroll() {
-            const items = document.querySelectorAll('.event-card, .coming-card');
-            items.forEach(item => {
-                const itemTop = item.getBoundingClientRect().top;
-                const itemVisible = 150;
-
-                if (itemTop < window.innerHeight - itemVisible && item.style.display !== 'none') {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateY(0)';
-                }
-            });
-        }
-
-        // Initialize animations
         document.addEventListener('DOMContentLoaded', function () {
-            const items = document.querySelectorAll('.event-card, .coming-card');
-            items.forEach(item => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(20px)';
-                item.style.transition = 'all 0.6s ease';
-            });
-
-            // Trigger initial animation check
-            setTimeout(animateOnScroll, 100);
+            console.log('Page loaded, initializing...');
+            loadEvents();
         });
 
-        window.addEventListener('scroll', animateOnScroll);
+        onSnapshot(collection(db, 'Events'), (snapshot) => {
+            console.log('Events updated in database');
+        });
     </script>
 </body>
 
