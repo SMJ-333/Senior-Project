@@ -346,6 +346,12 @@
             background: var(--accent-light);
         }
 
+        .calendar-btn:disabled {
+            background: #e2e8f0;
+            color: var(--text-light);
+            cursor: not-allowed;
+        }
+
         .calendar-grid {
             display: grid;
             grid-template-columns: repeat(7, 1fr);
@@ -384,6 +390,7 @@
             color: var(--text-light);
             cursor: not-allowed;
             text-decoration: line-through;
+            opacity: 0.4;
         }
 
         .calendar-date.empty {
@@ -517,6 +524,33 @@
             font-size: 2rem;
         }
 
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            gap: 1rem;
+        }
+
+        .spinner {
+            border: 4px solid var(--neutral-light);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
         .hidden {
             display: none !important;
         }
@@ -603,7 +637,6 @@
         </section>
 
         <section class="container">
-            <!-- Member Status Card -->
             <div id="member-status-card" class="member-status-card">
                 <div class="member-info">
                     <h3 id="member-greeting">Welcome, Member!</h3>
@@ -612,7 +645,6 @@
                 <div class="member-badge" id="member-badge">Member</div>
             </div>
 
-            <!-- Visit Type Selection -->
             <div class="visit-type-selector">
                 <h2 style="color: var(--primary-dark); margin-bottom: 0.5rem;">Select Visit Type</h2>
                 <p style="color: var(--text-light); margin-bottom: 1rem;">Choose between a general museum visit or a
@@ -637,25 +669,16 @@
                 </div>
             </div>
 
-            <!-- Event Selection (hidden initially) -->
             <div id="event-section" class="booking-section hidden">
                 <h3 style="margin-bottom: 1.5rem;">Select Event</h3>
                 <div class="form-group">
                     <label class="form-label">Choose an Event</label>
                     <select class="form-select" id="event-select">
-                        <option value="">-- Select an Event --</option>
-                        <option value="egypt" data-price="20">Ancient Egypt Night Tour - March 25, 2025 ($20)</option>
-                        <option value="renaissance" data-price="25">Renaissance Art Workshop - April 12, 2025 ($25)
-                        </option>
-                        <option value="family" data-price="15">Family Discovery Day - April 28, 2025 ($15)</option>
-                        <option value="rome" data-price="20">Treasures of Ancient Rome Exhibition ($20)</option>
-                        <option value="modern" data-price="30">Modern Masters: 20th Century Art ($30)</option>
-                        <option value="americas" data-price="20">Lost Civilizations of the Americas ($20)</option>
+                        <option value="">-- Loading events... --</option>
                     </select>
                 </div>
             </div>
 
-            <!-- Main Booking Section -->
             <div id="booking-section" class="booking-section hidden">
                 <div id="member-benefit" class="member-benefit-note hidden">
                     <span class="material-icons">card_giftcard</span>
@@ -683,15 +706,6 @@
                     <label class="form-label">Visit Time</label>
                     <select class="form-select" id="time-select">
                         <option value="">-- Select Time --</option>
-                        <option value="09:00">9:00 AM</option>
-                        <option value="10:00">10:00 AM</option>
-                        <option value="11:00">11:00 AM</option>
-                        <option value="12:00">12:00 PM</option>
-                        <option value="13:00">1:00 PM</option>
-                        <option value="14:00">2:00 PM</option>
-                        <option value="15:00">3:00 PM</option>
-                        <option value="16:00">4:00 PM</option>
-                        <option value="17:00">5:00 PM</option>
                     </select>
                 </div>
 
@@ -767,24 +781,108 @@
         </div>
     </footer>
 
-    <script>
-        // Check if user is logged in (checks sessionStorage from login page)
-        let isMember = sessionStorage.getItem('isLoggedIn') === 'true';
-        let userName = sessionStorage.getItem('userName') || 'Guest';
+    <script type="module">
+        import { db, auth } from './firebase-config.js';
+        import {
+            collection,
+            getDocs
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        let isMember = false;
+        let userName = 'Guest';
+        let currentUser = null;
         let selectedVisitType = null;
         let selectedDate = null;
         let selectedTime = null;
         let selectedEvent = null;
+        let selectedEventData = null;
         let currentMonth = new Date();
         let maxDate = new Date();
         maxDate.setMonth(maxDate.getMonth() + 3);
+        let allEvents = [];
 
         const visitors = {
             adults: 0,
             children: 0
         };
 
-        // Initialize member status based on authentication
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            isMember = !!user;
+            userName = user?.displayName || user?.email?.split('@')[0] || 'Guest';
+            initializeMemberStatus();
+        });
+
+        function formatDate(timestamp) {
+            if (!timestamp || !timestamp.toDate) return 'Date TBA';
+            const date = timestamp.toDate();
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+        }
+
+        function getEventStatus(startDate, endDate) {
+            const now = new Date();
+            const start = startDate?.toDate();
+            const end = endDate?.toDate();
+
+            if (!start || !end) return 'upcoming';
+            if (now < start) return 'upcoming';
+            if (now >= start && now <= end) return 'current';
+            return 'past';
+        }
+
+        async function loadCurrentEvents() {
+            const eventSelect = document.getElementById('event-select');
+            eventSelect.innerHTML = '<option value="">-- Loading events... --</option>';
+
+            try {
+                const eventsCol = collection(db, 'Events');
+                const snapshot = await getDocs(eventsCol);
+
+                allEvents = [];
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const status = getEventStatus(data.startDate, data.endDate);
+
+                    // Include both current and upcoming events
+                    if (status === 'current' || status === 'upcoming') {
+                        allEvents.push({
+                            id: docSnap.id,
+                            ...data
+                        });
+                    }
+                });
+
+                if (allEvents.length === 0) {
+                    eventSelect.innerHTML = '<option value="">-- No current or upcoming events available --</option>';
+                    return;
+                }
+
+                // Sort by start date so the soonest events appear first
+                allEvents.sort((a, b) => a.startDate.toDate() - b.startDate.toDate());
+
+                eventSelect.innerHTML = '<option value="">-- Select an Event --</option>';
+                allEvents.forEach(event => {
+                    const option = document.createElement('option');
+                    option.value = event.id;
+                    option.textContent = `${event.title} - ${formatDate(event.startDate)} ($${event.price || 20})`;
+                    option.dataset.price = event.price || 20;
+                    option.dataset.title = event.title;
+                    option.dataset.location = event.location || 'Museum';
+                    eventSelect.appendChild(option);
+                });
+
+            } catch (error) {
+                console.error('Error loading events:', error);
+                eventSelect.innerHTML = '<option value="">-- Error loading events --</option>';
+            }
+        }
+
         function initializeMemberStatus() {
             const statusCard = document.getElementById('member-status-card');
             const greeting = document.getElementById('member-greeting');
@@ -793,7 +891,6 @@
             const generalPriceDisplay = document.getElementById('general-price-display');
 
             if (isMember) {
-                // Logged in user
                 statusCard.classList.remove('non-member');
                 greeting.textContent = `Welcome, ${userName}!`;
                 description.textContent = 'Enjoy free general admission as part of your membership benefits';
@@ -801,7 +898,6 @@
                 generalPriceDisplay.textContent = 'FREE for Members';
                 generalPriceDisplay.classList.add('free');
             } else {
-                // Not logged in
                 statusCard.classList.add('non-member');
                 greeting.textContent = 'Welcome, Guest!';
                 description.textContent = 'Sign in or sign up for membership to enjoy free general admission';
@@ -813,7 +909,6 @@
             }
         }
 
-        // Visit type selection
         document.querySelectorAll('.visit-type-card').forEach(card => {
             card.addEventListener('click', function () {
                 document.querySelectorAll('.visit-type-card').forEach(c => c.classList.remove('selected'));
@@ -825,16 +920,13 @@
                 const memberBenefit = document.getElementById('member-benefit');
 
                 if (selectedVisitType === 'event') {
-                    // Event selected - everyone pays
                     eventSection.classList.remove('hidden');
                     bookingSection.classList.add('hidden');
                     memberBenefit.classList.add('hidden');
                 } else {
-                    // General visit selected
                     eventSection.classList.add('hidden');
                     bookingSection.classList.remove('hidden');
 
-                    // Show member benefit only for logged-in users on general visits
                     if (isMember) {
                         memberBenefit.classList.remove('hidden');
                     } else {
@@ -842,50 +934,195 @@
                     }
 
                     selectedEvent = null;
+                    selectedEventData = null;
                     updatePriceDisplay();
+                    updateTimeOptions();
+                    renderCalendar();
                 }
             });
         });
 
-        // Event selection
         document.getElementById('event-select').addEventListener('change', function () {
             selectedEvent = this.value;
             if (selectedEvent) {
                 const selectedOption = this.options[this.selectedIndex];
                 const eventPrice = parseInt(selectedOption.dataset.price);
+                const event = allEvents.find(e => e.id === selectedEvent);
+
+                selectedEventData = {
+                    id: selectedEvent,
+                    title: selectedOption.dataset.title,
+                    location: selectedOption.dataset.location,
+                    price: eventPrice,
+                    startDate: event.startDate,
+                    endDate: event.endDate,
+                    startTime: event.startTime,
+                    endTime: event.endTime
+                };
+
                 document.getElementById('booking-section').classList.remove('hidden');
                 document.getElementById('member-benefit').classList.add('hidden');
                 updatePriceDisplay(eventPrice);
+                updateTimeOptions();
+                renderCalendar();
             } else {
                 document.getElementById('booking-section').classList.add('hidden');
+                selectedEventData = null;
             }
         });
+
+        function toDateSafe(ts) {
+            // Firestore Timestamp (has toDate)
+            if (ts && typeof ts.toDate === 'function') {
+                return ts.toDate();
+            }
+            // Already a JS Date
+            if (ts instanceof Date) {
+                return ts;
+            }
+            // ISO string
+            if (typeof ts === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(ts)) {
+                return new Date(ts);
+            }
+            // Custom human-readable string: "October 13, 2025 at 10:00:00 AM UTC+3"
+            if (typeof ts === 'string') {
+                return parseCustomStringToDate(ts);
+            }
+            // Number epoch ms
+            if (typeof ts === 'number') {
+                return new Date(ts);
+            }
+
+            console.error('Unsupported timestamp type:', ts);
+            return new Date(NaN);
+        }
+
+        function parseCustomStringToDate(ts) {
+            // Expect: "October 13, 2025 at 10:00:00 AM UTC+3"
+            const cleaned = ts.replace(' at ', ' ');
+            const parts = cleaned.split(' ');
+            // ["October","13,","2025","10:00:00","AM","UTC+3"]
+            if (parts.length < 6) return new Date(NaN);
+
+            const monthName = parts[0];
+            const day = parts[1].replace(',', '');
+            const year = parts[2];
+            const time = parts[3]; // "10:00:00"
+            const ampm = parts[4]; // "AM" or "PM"
+            const offsetRaw = parts[5]; // "UTC+3"
+
+            const monthMap = {
+                January: '01', February: '02', March: '03', April: '04',
+                May: '05', June: '06', July: '07', August: '08',
+                September: '09', October: '10', November: '11', December: '12'
+            };
+            const month = monthMap[monthName];
+            if (!month) return new Date(NaN);
+
+            let [hh, mm, ss] = time.split(':');
+            let hour = parseInt(hh, 10);
+            if (ampm && ampm.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+            if (ampm && ampm.toUpperCase() === 'AM' && hour === 12) hour = 0;
+            const hh24 = hour.toString().padStart(2, '0');
+
+            // "UTC+3" -> "+03:00"
+            const tz = offsetRaw.replace('UTC', ''); // "+3"
+            const tzSign = tz.startsWith('+') || tz.startsWith('-') ? '' : '+';
+            const tzNum = tzSign + tz;
+            const tzFormatted = tzNum.includes(':') ? tzNum : `${tzNum}:00`;
+
+            const iso = `${year}-${month}-${day}T${hh24}:${mm}:${ss}${tzFormatted}`;
+            return new Date(iso);
+        }
+
+        function updateTimeOptions() {
+            const timeSelect = document.getElementById('time-select');
+            timeSelect.innerHTML = '';
+
+            const now = new Date();
+            const currentHour = now.getHours();
+
+            const isToday = selectedDate &&
+                selectedDate.getDate() === now.getDate() &&
+                selectedDate.getMonth() === now.getMonth() &&
+                selectedDate.getFullYear() === now.getFullYear();
+
+            let start, end;
+
+            if (selectedVisitType === 'event' && selectedEventData) {
+                const startDate = toDateSafe(selectedEventData.startDate);
+                const endDate = toDateSafe(selectedEventData.endDate);
+
+                if (isNaN(startDate) || isNaN(endDate)) {
+                    console.error('Invalid event dates:', selectedEventData);
+                    timeSelect.innerHTML = '<option value="" disabled>-- No available times --</option>';
+                    return;
+                }
+
+                start = startDate.getHours();
+                end = endDate.getHours();
+            } else {
+                start = 9;
+                end = 17;
+            }
+
+            timeSelect.innerHTML = '<option value="">-- Select Time --</option>';
+
+            for (let hour = start; hour < end; hour++) {
+                if (isToday && hour <= currentHour) continue;
+
+                const time24 = `${hour.toString().padStart(2, '0')}:00`;
+                const hour12 = hour > 12 ? hour - 12 : (hour === 0 ? 12 : hour);
+                const ampm = hour >= 12 ? 'PM' : 'AM';
+                const timeLabel = `${hour12}:00 ${ampm}`;
+
+                const option = document.createElement('option');
+                option.value = time24;
+                option.textContent = timeLabel;
+                timeSelect.appendChild(option);
+            }
+
+            if (timeSelect.options.length === 1) {
+                timeSelect.innerHTML += '<option value="" disabled>-- No available times --</option>';
+            }
+        }
+
+        function parseTimeString(timeStr) {
+            const match = timeStr.match(/(\d+):?(\d*)\s*(AM|PM)?/i);
+            if (!match) return 9;
+
+            let hour = parseInt(match[1]);
+            const ampm = match[3];
+
+            if (ampm) {
+                if (ampm.toUpperCase() === 'PM' && hour !== 12) hour += 12;
+                if (ampm.toUpperCase() === 'AM' && hour === 12) hour = 0;
+            }
+
+            return hour;
+        }
 
         function updatePriceDisplay(eventPrice = null) {
             const adultPrice = document.getElementById('adult-price');
 
             if (selectedVisitType === 'general' && isMember) {
-                // Logged-in user: General visit is FREE
                 adultPrice.textContent = 'Free for members';
             } else if (selectedVisitType === 'general' && !isMember) {
-                // Not logged-in user: General visit costs $15
                 adultPrice.textContent = '$15 per person';
             } else if (selectedVisitType === 'event' && eventPrice) {
-                // Events: Everyone pays (logged-in or not)
-                adultPrice.textContent = `$${eventPrice} per person`;
+                adultPrice.textContent = `${eventPrice} per person`;
             }
 
             calculateTotal();
         }
 
-        // Counter functions
-        function incrementCounter(type) {
+        window.incrementCounter = function (type) {
             visitors[type]++;
             document.getElementById(`${type}-count`).textContent = visitors[type];
             calculateTotal();
         }
 
-        function decrementCounter(type) {
+        window.decrementCounter = function (type) {
             if (visitors[type] > 0) {
                 visitors[type]--;
                 document.getElementById(`${type}-count`).textContent = visitors[type];
@@ -899,36 +1136,27 @@
 
             if (visitors.adults > 0) {
                 if (selectedVisitType === 'general' && isMember) {
-                    // Logged-in user: Free general admission
                     items.push({
                         label: `${visitors.adults} × Adult General Admission (Member Benefit)`,
                         price: 0
                     });
                 } else if (selectedVisitType === 'general' && !isMember) {
-                    // Guest: $15 per adult for general admission
                     const cost = visitors.adults * 15;
                     total += cost;
                     items.push({
                         label: `${visitors.adults} × Adult General Admission`,
                         price: cost
                     });
-                } else if (selectedVisitType === 'event' && selectedEvent) {
-                    // Event pricing: Everyone pays (member or guest)
-                    const eventSelect = document.getElementById('event-select');
-                    const selectedOption = eventSelect.options[eventSelect.selectedIndex];
-                    const eventPrice = parseInt(selectedOption.dataset.price);
-                    const cost = visitors.adults * eventPrice;
+                } else if (selectedVisitType === 'event' && selectedEventData) {
+                    const cost = visitors.adults * selectedEventData.price;
                     total += cost;
-
-                    const eventName = selectedOption.text.split(' - ')[0];
                     items.push({
-                        label: `${visitors.adults} × ${eventName} Ticket`,
+                        label: `${visitors.adults} × ${selectedEventData.title} Ticket`,
                         price: cost
                     });
                 }
             }
 
-            // Children are always free
             if (visitors.children > 0) {
                 items.push({
                     label: `${visitors.children} × Children (Free)`,
@@ -941,26 +1169,25 @@
 
             items.forEach(item => {
                 summaryItems.innerHTML += `
-            <div class="summary-item">
-                <span>${item.label}</span>
-                <span>$${item.price.toFixed(2)}</span>
-            </div>
-        `;
+                    <div class="summary-item">
+                        <span>${item.label}</span>
+                        <span>${item.price.toFixed(2)}</span>
+                    </div>
+                `;
             });
 
-            // Add service fee only if there's a charge
             if (total > 0) {
                 const serviceFee = 2.50;
                 summaryItems.innerHTML += `
-            <div class="summary-item">
-                <span>Service Fee</span>
-                <span>$${serviceFee.toFixed(2)}</span>
-            </div>
-        `;
+                    <div class="summary-item">
+                        <span>Service Fee</span>
+                        <span>${serviceFee.toFixed(2)}</span>
+                    </div>
+                `;
                 total += serviceFee;
             }
 
-            document.getElementById('total-price').textContent = `$${total.toFixed(2)}`;
+            document.getElementById('total-price').textContent = `${total.toFixed(2)}`;
             updateCheckoutButton();
         }
 
@@ -970,12 +1197,11 @@
             const hasDate = selectedDate !== null;
             const hasTime = document.getElementById('time-select').value !== '';
             const hasValidEvent = selectedVisitType !== 'event' || (selectedVisitType === 'event' && selectedEvent);
-            const hasVisitors = (visitors.adults + visitors.children) > 0; // At least 1 visitor required
+            const hasVisitors = visitors.adults > 0 || visitors.children > 0;
 
-            checkoutBtn.disabled = !(hasVisitType && hasDate && hasTime && hasValidEvent);
+            checkoutBtn.disabled = !(hasVisitType && hasDate && hasTime && hasValidEvent && hasVisitors);
         }
 
-        // Calendar functions
         function renderCalendar() {
             const year = currentMonth.getFullYear();
             const month = currentMonth.getMonth();
@@ -989,14 +1215,14 @@
 
             const calendarGrid = document.getElementById('calendar-grid');
             calendarGrid.innerHTML = `
-        <div class="calendar-day">Sun</div>
-        <div class="calendar-day">Mon</div>
-        <div class="calendar-day">Tue</div>
-        <div class="calendar-day">Wed</div>
-        <div class="calendar-day">Thu</div>
-        <div class="calendar-day">Fri</div>
-        <div class="calendar-day">Sat</div>
-    `;
+                <div class="calendar-day">Sun</div>
+                <div class="calendar-day">Mon</div>
+                <div class="calendar-day">Tue</div>
+                <div class="calendar-day">Wed</div>
+                <div class="calendar-day">Thu</div>
+                <div class="calendar-day">Fri</div>
+                <div class="calendar-day">Sat</div>
+            `;
 
             for (let i = 0; i < firstDay; i++) {
                 const emptyDiv = document.createElement('div');
@@ -1007,25 +1233,69 @@
             const today = new Date();
             today.setHours(0, 0, 0, 0);
 
+            let minDate = today;
+            let maxDateLimit = new Date(maxDate);
+
+            if (selectedVisitType === 'event' && selectedEventData) {
+                minDate = selectedEventData.startDate?.toDate() || today;
+                minDate.setHours(0, 0, 0, 0);
+
+                if (minDate < today) {
+                    minDate = today;
+                }
+
+                maxDateLimit = selectedEventData.endDate?.toDate() || maxDate;
+                maxDateLimit.setHours(23, 59, 59, 999);
+            }
+
             for (let day = 1; day <= daysInMonth; day++) {
                 const dateDiv = document.createElement('div');
                 dateDiv.className = 'calendar-date';
                 dateDiv.textContent = day;
 
                 const currentDate = new Date(year, month, day);
+                currentDate.setHours(0, 0, 0, 0);
 
-                if (currentDate < today || currentDate > maxDate) {
+                if (currentDate < minDate || currentDate > maxDateLimit) {
                     dateDiv.classList.add('unavailable');
                 } else {
                     dateDiv.addEventListener('click', function () {
                         document.querySelectorAll('.calendar-date').forEach(d => d.classList.remove('selected'));
                         this.classList.add('selected');
                         selectedDate = new Date(year, month, day);
+                        updateTimeOptions();
                         updateCheckoutButton();
                     });
                 }
 
                 calendarGrid.appendChild(dateDiv);
+            }
+
+            updateNavigationButtons();
+        }
+
+        function updateNavigationButtons() {
+            const prevBtn = document.getElementById('prev-month');
+            const nextBtn = document.getElementById('next-month');
+
+            const today = new Date();
+            const firstDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            const prevMonthDate = new Date(currentMonth);
+            prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
+
+            if (prevMonthDate < firstDayOfCurrentMonth) {
+                prevBtn.disabled = true;
+            } else {
+                prevBtn.disabled = false;
+            }
+
+            const nextMonthDate = new Date(currentMonth);
+            nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
+
+            if (nextMonthDate > maxDate) {
+                nextBtn.disabled = true;
+            } else {
+                nextBtn.disabled = false;
             }
         }
 
@@ -1034,7 +1304,9 @@
             newMonth.setMonth(newMonth.getMonth() - 1);
 
             const today = new Date();
-            if (newMonth >= new Date(today.getFullYear(), today.getMonth(), 1)) {
+            const firstDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+
+            if (newMonth >= firstDayOfCurrentMonth) {
                 currentMonth = newMonth;
                 renderCalendar();
             }
@@ -1050,36 +1322,32 @@
             }
         });
 
-        // Time selection
         document.getElementById('time-select').addEventListener('change', function () {
             selectedTime = this.value;
             updateCheckoutButton();
         });
 
-        // Checkout button
-document.getElementById('checkout-btn').addEventListener('click', function() {
-            const dateStr = selectedDate.toLocaleDateString('en-US', { 
-                weekday: 'long', 
-                year: 'numeric', 
-                month: 'long', 
-                day: 'numeric' 
+        document.getElementById('checkout-btn').addEventListener('click', function () {
+            const dateStr = selectedDate.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
             });
-            
+
             const timeSelect = document.getElementById('time-select');
             const timeStr = timeSelect.options[timeSelect.selectedIndex].text;
-            
+
             let visitInfo = '';
             if (selectedVisitType === 'general') {
                 visitInfo = 'General Museum Visit';
-            } else {
-                const eventSelect = document.getElementById('event-select');
-                visitInfo = eventSelect.options[eventSelect.selectedIndex].text;
+            } else if (selectedEventData) {
+                visitInfo = selectedEventData.title;
             }
-            
+
             const totalVisitors = visitors.adults + visitors.children;
             const total = document.getElementById('total-price').textContent;
-            
-            // Store booking data in sessionStorage for the payment page
+
             const bookingData = {
                 visitType: selectedVisitType,
                 visitInfo: visitInfo,
@@ -1090,16 +1358,14 @@ document.getElementById('checkout-btn').addEventListener('click', function() {
                 totalVisitors: totalVisitors,
                 total: total,
                 isMember: isMember,
-                selectedEvent: selectedEvent
+                selectedEvent: selectedEvent,
+                selectedEventData: selectedEventData
             };
-            
+
             sessionStorage.setItem('bookingData', JSON.stringify(bookingData));
-            
-            // Redirect to payment page
             window.location.href = 'Payment.html';
         });
 
-        // Navigation scroll effect
         window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
@@ -1111,15 +1377,10 @@ document.getElementById('checkout-btn').addEventListener('click', function() {
             }
         });
 
-        // Initialize on page load
         document.addEventListener('DOMContentLoaded', function () {
-            initializeMemberStatus();
+            loadCurrentEvents();
             renderCalendar();
         });
-
-        // Make functions global so they can be called from HTML onclick attributes
-        window.incrementCounter = incrementCounter;
-        window.decrementCounter = decrementCounter;
     </script>
 </body>
 
