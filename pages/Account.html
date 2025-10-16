@@ -22,7 +22,6 @@
             --white: #fdfaf4;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
             --transition: all 0.3s ease;
-
             --error: #e53e3e;
             --success: #38a169;
         }
@@ -53,19 +52,21 @@
         nav {
             background: var(--white);
             padding: 1rem 0;
-            box-shadow: var(--shadow);
-            position: sticky;
+            position: fixed;
+            width: 100%;
             top: 0;
             z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
         }
 
         .nav-container {
-            max-width: 1200px;
+            max-width: 1300px;
             margin: 0 auto;
-            padding: 0 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 1rem;
         }
 
         .logo {
@@ -82,36 +83,30 @@
             content: "◈";
             color: var(--accent);
             margin-right: 0.5rem;
-            font-size: 1.4rem;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
+            font-size: 1.5rem;
         }
 
         .nav-links {
             display: flex;
-            gap: 1.5rem;
             list-style: none;
-            align-items: center;
+            gap: 1.5rem;
         }
 
         .nav-links a {
-            position: relative;
+            color: var(--text-dark);
             text-decoration: none;
             font-weight: 500;
-            color: var(--text-dark);
-            padding: 0.5rem 0.75rem;
             transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            position: relative;
         }
 
         .nav-links a::after {
-            content: "";
+            content: '';
             position: absolute;
-            left: 50%;
             bottom: 0;
+            left: 50%;
             width: 0;
             height: 2px;
             background: var(--accent);
@@ -119,14 +114,14 @@
             transform: translateX(-50%);
         }
 
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary-dark);
-        }
-
         .nav-links a:hover::after,
         .nav-links a.active::after {
             width: 80%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-dark);
         }
 
         .account-icon {
@@ -136,8 +131,10 @@
             display: flex;
             justify-content: center;
             align-items: center;
+            background: var(--white);
             color: var(--primary-dark);
             font-size: 1.2rem;
+            border: 2px solid var(--accent);
             cursor: pointer;
             text-decoration: none;
             transition: var(--transition);
@@ -146,11 +143,17 @@
         .account-icon:hover {
             transform: scale(1.08);
             box-shadow: 0 6px 15px rgba(26, 54, 93, 0.25);
+            border-color: var(--accent-light);
         }
 
         .account-icon.active {
             background: linear-gradient(135deg, var(--accent), var(--accent-light));
             color: var(--primary-dark);
+        }
+
+        .page-content {
+            padding-top: 6rem;
+            min-height: 100vh;
         }
 
         .logout-btn {
@@ -259,38 +262,23 @@
             padding: 2rem;
         }
 
-        .page-header {
+        .page-hero {
+            background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            padding: 8rem 0 5rem;
             text-align: center;
-            padding: 3rem 2rem;
-            height: 40vh;
-            margin-bottom: 3rem;
             color: var(--white);
-            background: linear-gradient(120deg, var(--primary-dark), var(--primary-light));
-            position: relative;
-            overflow: hidden;
-            box-shadow: var(--shadow);
+            margin-bottom: 3rem;
         }
 
-        .page-header::before {
-            content: "";
-            position: absolute;
-            inset: 0;
-            opacity: 0.08;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 400"><path d="M0,100 C150,50 350,150 500,100 C650,50 850,25 1000,75 C1150,125 1200,75 1200,75 L1200,400 L0,400 Z" fill="%23d4af37"/></svg>');
-            background-size: cover;
+        .page-hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
         }
 
-        .page-header h1 {
-            position: relative;
-            z-index: 1;
-            font-size: 2.5rem;
-        }
-
-        .page-header p {
-            position: relative;
-            z-index: 1;
-            margin-top: 0.5rem;
-            font-size: 1.1rem;
+        .page-hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
             opacity: 0.9;
         }
 
@@ -494,12 +482,8 @@
                 display: none;
             }
 
-            .page-header {
-                padding: 2rem 1rem;
-            }
-
-            .page-header h1 {
-                font-size: 2rem;
+            .page-hero h1 {
+                font-size: 2.5rem;
             }
 
             .profile-section {
@@ -514,135 +498,137 @@
     <nav>
         <div class="nav-container">
             <a href="Home.html" class="logo">ATHAR Museum</a>
-            <div class="nav-right">
-                <ul class="nav-links">
-                    <li><a href="Home.html">Home</a></li>
-                    <li><a href="AboutUs.html">About Us</a></li>
-                    <li><a href="Exhibits.html">Exhibits</a></li>
-                    <li><a href="Ticketing.html">Ticketing</a></li>
-                    <li><a href="News.html">News</a></li>
-                    <li><a href="Gallery.html">Gallery</a></li>
-                </ul>
-                <a href="Account.html" class="account-icon active" title="My Account"><span
-                        class="material-icons">person</span></a>
-            </div>
+            <ul class="nav-links">
+                <li><a href="Home.html">Home</a></li>
+                <li><a href="AboutUs.html">About Us</a></li>
+                <li><a href="Events.html">Events</a></li>
+                <li><a href="Ticketing.html">Ticketing</a></li>
+                <li><a href="News.html">News</a></li>
+                <li><a href="Exhibitions.html">Exhibitions</a></li>
+                <li><a href="Gallery.html">Gallery</a></li>
+            </ul>
+            <a href="Account.html" class="account-icon active" title="My Account">
+                <span class="material-icons">person</span>
+            </a>
         </div>
     </nav>
 
-    <div class="page-header">
-        <h1>My Account</h1>
-        <p>Manage your profile information and account settings</p>
-    </div>
+    <div class="page-content">
+        <section class="page-hero">
+            <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
+                <h1>My Account</h1>
+                <p>Manage your profile information and account settings</p>
+            </div>
+        </section>
 
-    <div class="account-container">
-        <div id="loadingState" class="loading">
-            Loading your account information...
-        </div>
+        <div class="account-container">
+            <div id="loadingState" class="loading">
+                Loading your account information...
+            </div>
 
-        <div id="accountContent" style="display: none;">
-            <div class="account-card">
-                <div class="card-header">
-                    <div class="profile-section">
-                        <div class="profile-image-container">
-                            <!-- container that will hold either the icon (default) or an <img> -->
-                            <div id="profileImageContainer" class="profile-image profile-placeholder"
-                                aria-hidden="false">
-                                <span class="material-icons" aria-hidden="true">person</span>
-                            </div>
-                        </div>
-
-                        <div class="profile-info">
-                            <h2 id="profileName">Loading...</h2>
-                            <p id="profileEmail">Loading...</p>
-                            <p style="color: var(--accent); font-weight: 500; margin-top: 0.5rem;">Museum Member</p>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="card-body">
-                    <div class="section">
-                        <h3 class="section-title">Personal Information</h3>
-
-                        <form id="profileForm">
-                            <div class="form-grid">
-                                <div class="form-group">
-                                    <label class="form-label" for="username">Username</label>
-                                    <input type="text" id="username" class="form-input" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label" for="email">Email Address</label>
-                                    <input type="email" id="email" class="form-input" disabled>
-                                    <small style="color: var(--text-light); font-size: 0.8rem;">Email cannot be
-                                        changed</small>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label" for="phone">Phone Number</label>
-                                    <input type="tel" id="phone" class="form-input" required>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label" for="dateOfBirth">Date of Birth</label>
-                                    <input type="date" id="dateOfBirth" class="form-input" disabled>
-                                </div>
-
-                                <div class="form-group">
-                                    <label class="form-label" for="memberSince">Member Since</label>
-                                    <input type="text" id="memberSince" class="form-input" disabled>
+            <div id="accountContent" style="display: none;">
+                <div class="account-card">
+                    <div class="card-header">
+                        <div class="profile-section">
+                            <div class="profile-image-container">
+                                <div id="profileImageContainer" class="profile-image profile-placeholder"
+                                    aria-hidden="false">
+                                    <span class="material-icons" aria-hidden="true">person</span>
                                 </div>
                             </div>
 
-                            <div class="btn-group">
-                                <button type="submit" class="btn btn-primary">Save Changes</button>
-                                <button type="button" class="btn btn-secondary" onclick="loadUserData()">Reset</button>
-                            </div>
-                        </form>
-                    </div>
-
-                    <div class="section">
-                        <h3 class="section-title">Password & Security</h3>
-
-                        <div class="password-section">
-                            <button class="password-toggle" onclick="togglePasswordSection()">
-                                Change Password
-                                <span id="passwordToggleIcon">▶</span>
-                            </button>
-
-                            <div class="password-form" id="passwordForm">
-                                <form id="passwordChangeForm">
-                                    <div class="form-group">
-                                        <label class="form-label" for="currentPassword">Current Password</label>
-                                        <input type="password" id="currentPassword" class="form-input" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="newPassword">New Password</label>
-                                        <input type="password" id="newPassword" class="form-input" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="confirmPassword">Confirm New Password</label>
-                                        <input type="password" id="confirmPassword" class="form-input" required>
-                                    </div>
-
-                                    <div class="btn-group">
-                                        <button type="submit" class="btn btn-primary">Update Password</button>
-                                        <button type="button" class="btn btn-secondary"
-                                            onclick="resetPasswordForm()">Cancel</button>
-                                    </div>
-                                </form>
+                            <div class="profile-info">
+                                <h2 id="profileName">Loading...</h2>
+                                <p id="profileEmail">Loading...</p>
+                                <p style="color: var(--accent); font-weight: 500; margin-top: 0.5rem;">Museum Member</p>
                             </div>
                         </div>
                     </div>
 
-                    <button class="logout-btn" id="logoutBtn">Logout</button>
+                    <div class="card-body">
+                        <div class="section">
+                            <h3 class="section-title">Personal Information</h3>
+
+                            <form id="profileForm">
+                                <div class="form-grid">
+                                    <div class="form-group">
+                                        <label class="form-label" for="username">Username</label>
+                                        <input type="text" id="username" class="form-input" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="email">Email Address</label>
+                                        <input type="email" id="email" class="form-input" disabled>
+                                        <small style="color: var(--text-light); font-size: 0.8rem;">Email cannot be
+                                            changed</small>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="phone">Phone Number</label>
+                                        <input type="tel" id="phone" class="form-input" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                                        <input type="date" id="dateOfBirth" class="form-input" disabled>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label class="form-label" for="memberSince">Member Since</label>
+                                        <input type="text" id="memberSince" class="form-input" disabled>
+                                    </div>
+                                </div>
+
+                                <div class="btn-group">
+                                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                                    <button type="button" class="btn btn-secondary" onclick="loadUserData()">Reset</button>
+                                </div>
+                            </form>
+                        </div>
+
+                        <div class="section">
+                            <h3 class="section-title">Password & Security</h3>
+
+                            <div class="password-section">
+                                <button class="password-toggle" onclick="togglePasswordSection()">
+                                    Change Password
+                                    <span id="passwordToggleIcon">▶</span>
+                                </button>
+
+                                <div class="password-form" id="passwordForm">
+                                    <form id="passwordChangeForm">
+                                        <div class="form-group">
+                                            <label class="form-label" for="currentPassword">Current Password</label>
+                                            <input type="password" id="currentPassword" class="form-input" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="newPassword">New Password</label>
+                                            <input type="password" id="newPassword" class="form-input" required>
+                                        </div>
+
+                                        <div class="form-group">
+                                            <label class="form-label" for="confirmPassword">Confirm New Password</label>
+                                            <input type="password" id="confirmPassword" class="form-input" required>
+                                        </div>
+
+                                        <div class="btn-group">
+                                            <button type="submit" class="btn btn-primary">Update Password</button>
+                                            <button type="button" class="btn btn-secondary"
+                                                onclick="resetPasswordForm()">Cancel</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button class="logout-btn" id="logoutBtn">Logout</button>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- Logout Confirmation Modal -->
     <div id="logoutModal" class="logout-modal">
         <div class="logout-modal-content">
             <h3>Confirm Logout</h3>
@@ -687,24 +673,10 @@
             return requirements;
         }
 
-        function updatePasswordChecklist(password) {
-            const requirements = validatePassword(password);
-
-            const lengthCheck = document.getElementById('check-length');
-            const uppercaseCheck = document.getElementById('check-uppercase');
-
-            lengthCheck.className = requirements.length ? 'valid' : 'invalid';
-            uppercaseCheck.className = requirements.uppercase ? 'valid' : 'invalid';
-        }
-
         function isPasswordValid(password) {
             const requirements = validatePassword(password);
             return requirements.length && requirements.uppercase;
         }
-
-        document.getElementById('newPassword').addEventListener('input', (e) => {
-            updatePasswordChecklist(e.target.value);
-        });
 
         async function checkUsernameExists(username, currentUserId) {
             try {
@@ -881,26 +853,35 @@
             }
         });
 
-        // document.getElementById('logoutBtn').addEventListener('click', async () => {
-        //     try {
-        //         await signOut(auth);
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            document.getElementById('logoutModal').classList.add('active');
+        });
 
-        //         // Clear all session storage
-        //         sessionStorage.clear();
+        window.closeLogoutModal = function () {
+            document.getElementById('logoutModal').classList.remove('active');
+        };
 
-        //         // Clear specific localStorage items if any
-        //         localStorage.removeItem('isLoggedIn');
-        //         localStorage.removeItem('userName');
-        //         localStorage.removeItem('userEmail');
-        //         localStorage.removeItem('userId');
+        window.confirmLogout = async function () {
+            try {
+                await signOut(auth);
+                sessionStorage.clear();
+                localStorage.removeItem('isLoggedIn');
+                localStorage.removeItem('userName');
+                localStorage.removeItem('userEmail');
+                localStorage.removeItem('userId');
+                window.location.href = 'Home.html';
+            } catch (error) {
+                console.error('Error logging out:', error);
+                showAlert('Failed to log out. Please try again.', 'error');
+                closeLogoutModal();
+            }
+        };
 
-        //         // Redirect to login page
-        //         window.location.href = 'Home.html';
-        //     } catch (error) {
-        //         console.error('Error logging out:', error);
-        //         showAlert('Failed to log out. Please try again.', 'error');
-        //     }
-        // });
+        document.getElementById('logoutModal').addEventListener('click', (e) => {
+            if (e.target.id === 'logoutModal') {
+                closeLogoutModal();
+            }
+        });
 
         window.togglePasswordSection = function () {
             const passwordForm = document.getElementById('passwordForm');
@@ -918,8 +899,6 @@
 
         window.resetPasswordForm = function () {
             document.getElementById('passwordChangeForm').reset();
-            document.getElementById('check-length').className = '';
-            document.getElementById('check-uppercase').className = '';
         };
 
         window.loadUserData = loadUserData;
@@ -933,44 +912,14 @@
             }
         });
 
-        // Show logout modal
-        document.getElementById('logoutBtn').addEventListener('click', () => {
-            document.getElementById('logoutModal').classList.add('active');
-        });
-
-        // Close modal function
-        window.closeLogoutModal = function () {
-            document.getElementById('logoutModal').classList.remove('active');
-        };
-
-        // Confirm logout function
-        window.confirmLogout = async function () {
-            try {
-                // Sign out from Firebase
-                await signOut(auth);
-
-                // Clear all session storage
-                sessionStorage.clear();
-
-                // Clear specific localStorage items if any
-                localStorage.removeItem('isLoggedIn');
-                localStorage.removeItem('userName');
-                localStorage.removeItem('userEmail');
-                localStorage.removeItem('userId');
-
-                // Redirect to login page
-                window.location.href = 'Home.html';
-            } catch (error) {
-                console.error('Error logging out:', error);
-                showAlert('Failed to log out. Please try again.', 'error');
-                closeLogoutModal();
-            }
-        };
-
-        // Close modal when clicking outside
-        document.getElementById('logoutModal').addEventListener('click', (e) => {
-            if (e.target.id === 'logoutModal') {
-                closeLogoutModal();
+        window.addEventListener('scroll', function () {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.7rem 0';
+                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                nav.style.padding = '1rem 0';
+                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
             }
         });
     </script>
