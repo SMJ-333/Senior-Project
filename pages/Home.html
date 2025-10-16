@@ -716,32 +716,6 @@
         </div>
     </section>
 
-    <!-- Personalized Recommendations -->
-    <section class="recommendations-section" id="recommendations-section" style="display: none;">
-        <div class="container">
-            <div class="recommendations-header">
-                <h2>
-                    <span class="material-icons">auto_awesome</span>
-                    Recommended for You
-                </h2>
-                <br>
-                <span class="personalized-badge">✨ Personalized</span>
-            </div>
-            <p class="recommendations-subtitle">Based on your interests and preferences</p>
-            
-            <div id="recommendations-loading" class="loading-recommendations">
-                <span class="material-icons" style="font-size: 3rem; animation: spin 2s linear infinite;">explore</span>
-                <p>Finding perfect recommendations for you...</p>
-            </div>
-            <div id="recommendations-container" class="recommendations-grid" style="display: none;"></div>
-            <div id="no-recommendations" class="no-recommendations" style="display: none;">
-                <span class="material-icons">explore_off</span>
-                <h3>No Recommendations Yet</h3>
-                <p>Start exploring our gallery and liking artworks to get personalized recommendations!</p>
-            </div>
-        </div>
-    </section>
-
     <section class="museum-info">
         <div class="container">
             <div class="info-grid">
@@ -774,6 +748,32 @@
                         <p>Our beautifully restored building combines historic charm with modern amenities</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Personalized Recommendations -->
+    <section class="recommendations-section" id="recommendations-section" style="display: none;">
+        <div class="container">
+            <div class="recommendations-header">
+                <h2>
+                    <span class="material-icons">auto_awesome</span>
+                    Recommended for You
+                </h2>
+                <br>
+                <span class="personalized-badge">✨ Personalized</span>
+            </div>
+            <p class="recommendations-subtitle">Based on your interests and preferences</p>
+            
+            <div id="recommendations-loading" class="loading-recommendations">
+                <span class="material-icons" style="font-size: 3rem; animation: spin 2s linear infinite;">explore</span>
+                <p>Finding perfect recommendations for you...</p>
+            </div>
+            <div id="recommendations-container" class="recommendations-grid" style="display: none;"></div>
+            <div id="no-recommendations" class="no-recommendations" style="display: none;">
+                <span class="material-icons">explore_off</span>
+                <h3>No Recommendations Yet</h3>
+                <p>Start exploring our gallery and liking artworks to get personalized recommendations!</p>
             </div>
         </div>
     </section>
@@ -905,7 +905,19 @@
                     getDocs(collection(db, "Users"))
                 ]);
 
-                allArtworks = artworksSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                allArtworks = artworksSnap.docs.map(doc => {
+                    const data = doc.data();
+                    // Clean imageURL by removing newlines and extra spaces
+                    let cleanImageURL = (data.imageURL || data.ImageURL || '').trim();
+                    cleanImageURL = cleanImageURL.replace(/\n/g, '').replace(/\r/g, '');
+                    
+                    return { 
+                        id: doc.id, 
+                        ...data,
+                        imageURL: cleanImageURL
+                    };
+                });
+                
                 allUsers = usersSnap.docs.map(doc => {
                     const data = doc.data();
                     const age = calculateAge(data['Date of Birth']);
@@ -916,6 +928,11 @@
                         ageGroup: age ? getAgeGroup(age) : 'unknown'
                     };
                 });
+
+                console.log('Loaded artworks:', allArtworks.length);
+                console.log('Sample artwork:', allArtworks[0]);
+                console.log('First artwork imageURL:', allArtworks[0]?.imageURL);
+                console.log('First artwork full data:', JSON.stringify(allArtworks[0], null, 2));
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -1027,29 +1044,38 @@
             container.style.display = 'grid';
             section.style.display = 'block';
 
-            console.log('Recommendations:', recommendations); // للتحقق
-
             container.innerHTML = recommendations.map(rec => {
-                // تحقق من جميع احتمالات اسم حقل الصورة
-                const imageURL = rec.imageURL || rec.ImageURL || rec.image || rec.Image || '';
-                
-                console.log('Artwork:', rec.title, 'Image URL:', imageURL); // للتحقق
-
                 const badgeType = getBadgeType(rec.reasons);
                 const badgeText = badgeType === 'trending' ? '🔥 Trending' : 
                                  badgeType === 'interest' ? '✨ For You' : 
                                  '⭐ Popular';
                 
-                // Check if image exists
+                // Get image URL
+                const imageURL = rec.imageURL || '';
+                console.log('Rendering card for:', rec.title, 'with imageURL:', imageURL);
+                
                 const hasImage = imageURL && imageURL.trim() !== '';
+
+                // Create image element or placeholder
+                let imageHTML = '';
+                if (hasImage) {
+                    imageHTML = `
+                        <div class="recommendation-image" style="background-image: url('${imageURL}'); background-size: cover; background-position: center;">
+                            <span class="recommendation-badge badge-${badgeType}">${badgeText}</span>
+                        </div>
+                    `;
+                } else {
+                    imageHTML = `
+                        <div class="recommendation-image no-image">
+                            <div style="position: relative; z-index: 1;">🎨 No Image</div>
+                            <span class="recommendation-badge badge-${badgeType}">${badgeText}</span>
+                        </div>
+                    `;
+                }
 
                 return `
                     <div class="recommendation-card" onclick="window.location.href='ArtDetails.html?id=${rec.id}'">
-                        <div class="recommendation-image ${!hasImage ? 'no-image' : ''}" 
-                             style="${hasImage ? `background-image: url('${imageURL}');` : ''}">
-                            ${!hasImage ? '<div style="position: relative; z-index: 1;">🎨 Artwork</div>' : ''}
-                            <span class="recommendation-badge badge-${badgeType}">${badgeText}</span>
-                        </div>
+                        ${imageHTML}
                         <div class="recommendation-content">
                             <h3 class="recommendation-title">${rec.title || 'Untitled'}</h3>
                             <p class="recommendation-reason">
@@ -1057,47 +1083,43 @@
                                 ${rec.reasons[0]}
                             </p>
                             <p class="recommendation-description">
-                                ${rec.artist || rec.artistName || rec.Artist || 'Unknown Artist'} • ${rec.Exhibition || rec.exhibition || 'Museum Collection'}
+                                ${rec.artist || rec.artistName || 'Unknown Artist'} • ${rec.Exhibition || 'Museum Collection'}
                             </p>
                         </div>
                     </div>
                 `;
             }).join('');
-
-            // Add error handling for images
-            setTimeout(() => {
-                const images = container.querySelectorAll('.recommendation-image');
-                images.forEach(img => {
-                    const bgImage = img.style.backgroundImage;
-                    if (bgImage && bgImage !== 'none') {
-                        // Create a test image to check if URL is valid
-                        const testImg = new Image();
-                        const url = bgImage.slice(5, -2); // Remove url(" and ")
-                        testImg.onerror = function() {
-                            console.error('Failed to load image:', url);
-                            img.classList.add('no-image');
-                            img.style.backgroundImage = '';
-                            img.innerHTML = '<div style="position: relative; z-index: 1;">🎨 Artwork</div>' + img.innerHTML;
-                        };
-                        testImg.src = url;
-                    }
-                });
-            }, 100);
         }
 
         onAuthStateChanged(auth, async (user) => {
             if (user) {
                 currentUser = user;
                 try {
+                    // Load user data first
                     const userDoc = await getDoc(doc(db, "Users", user.uid));
                     if (userDoc.exists()) {
                         userData = userDoc.data();
+                        
+                        // Then load all data
                         await loadData();
-                        const recommendations = generateRecommendations();
-                        displayRecommendations(recommendations);
+                        
+                        // Wait a bit to ensure data is loaded
+                        setTimeout(() => {
+                            const recommendations = generateRecommendations();
+                            console.log('Generated recommendations:', recommendations);
+                            
+                            // Check first recommendation
+                            if (recommendations.length > 0) {
+                                console.log('First recommendation title:', recommendations[0].title);
+                                console.log('First recommendation imageURL:', recommendations[0].imageURL);
+                            }
+                            
+                            displayRecommendations(recommendations);
+                        }, 500);
                     }
                 } catch (error) {
                     console.error('Error loading user data:', error);
+                    document.getElementById('recommendations-section').style.display = 'none';
                 }
             } else {
                 // User not logged in - hide recommendations section
