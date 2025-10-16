@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhibition Details - ATHAR Museum</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #653025;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--neutral-light);
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3,
+        h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+        nav {
+            background: var(--white);
+            padding: 1rem 0;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+        }
+
+        .nav-container {
+            max-width: 1300px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 1rem;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo::before {
+            content: "◈";
+            color: var(--accent);
+            margin-right: 0.5rem;
+            font-size: 1.5rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-dark);
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            position: relative;
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+            transform: translateX(-50%);
+        }
+
+        .nav-links a:hover::after,
+        .nav-links a.active::after {
+            width: 80%;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary-dark);
+        }
+
+        .account-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: var(--white);
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            border: 2px solid var(--accent);
+            cursor: pointer;
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .account-icon:hover {
+            transform: scale(1.08);
+            box-shadow: 0 6px 15px rgba(26, 54, 93, 0.25);
+            border-color: var(--accent-light);
+        }
+
+        .page-content {
+            padding-top: 6rem;
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            padding: 8rem 0 5rem;
+            text-align: center;
+            color: var(--white);
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" opacity="0.03"><rect fill="%23ffffff" width="1200" height="600"/><path d="M0,150 C150,100 350,200 500,150 C650,100 850,50 1000,100 C1150,150 1200,100 1200,100 L1200,600 L0,600 Z" fill="%23d4af37"/></svg>');
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-content h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            margin-bottom: 0;
+            font-weight: 300;
+            opacity: 0.9;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            color: var(--primary-dark);
+            display: inline-block;
+            margin-bottom: 1rem;
+        }
+
+        .section-title::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 3px;
+            background: var(--accent);
+            margin: 0 auto;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+            font-size: 1.1rem;
+        }
+
+        .spinner {
+            border: 4px solid var(--neutral-light);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .error {
+            text-align: center;
+            padding: 3rem;
+            color: #e53e3e;
+            background: #fff5f5;
+            border-radius: 12px;
+            margin: 2rem 0;
+        }
+
+        .collections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 2.5rem;
+        }
+
+        .collection-item {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .collection-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+        }
+
+        .collection-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .collection-info {
+            padding: 1.5rem;
+        }
+
+        .collection-title {
+            color: var(--primary-dark);
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .collection-artist {
+            color: var(--accent);
+            font-size: 0.95rem;
+            font-weight: 500;
+            margin-bottom: 0.8rem;
+            text-align: center;
+        }
+
+        .collection-meta {
+            display: flex;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 0.8rem;
+        }
+
+        .collection-badge {
+            color: var(--text-light);
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            padding: 0.3rem 0.8rem;
+            background: var(--neutral-light);
+            border-radius: 15px;
+            display: inline-block;
+        }
+
+        .no-results {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .no-results .material-icons {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        footer {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 4rem 0 2rem;
+            margin-top: 5rem;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .footer-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 3rem;
+            margin-bottom: 3rem;
+        }
+
+        .footer-section h3 {
+            color: var(--accent);
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+
+        .footer-section p {
+            margin-bottom: 0.8rem;
+            opacity: 0.9;
+        }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            opacity: 0.8;
+        }
+
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .page-content {
+                padding-top: 4.5rem;
+            }
+
+            .hero {
+                padding: 4rem 0 3rem;
+            }
+
+            .hero-content h1 {
+                font-size: 2.3rem;
+            }
+
+            .collections-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+
+            .container {
+                padding: 2rem 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-container">
+            <a href="Home.html" class="logo">ATHAR Museum</a>
+            <ul class="nav-links">
+                <li><a href="Home.html">Home</a></li>
+                <li><a href="AboutUs.html">About Us</a></li>
+                <li><a href="Events.html">Events</a></li>
+                <li><a href="Ticketing.html">Ticketing</a></li>
+                <li><a href="News.html">News</a></li>
+                <li><a href="Exhibitions.html" class="active">Exhibitions</a></li>
+                <li><a href="Gallery.html">Gallery</a></li>
+            </ul>
+            <a href="Account.html" class="account-icon" title="My Account">
+                <span class="material-icons">person</span>
+            </a>
+        </div>
+    </nav>
+
+    <div class="page-content">
+        <section class="hero">
+            <div class="hero-content">
+                <h1 id="exhibition-title">Loading...</h1>
+                <p id="exhibition-description">Exploring the collection...</p>
+            </div>
+        </section>
+
+        <div class="container">
+            <div class="section-title">
+                <h2>Collection Gallery</h2>
+            </div>
+
+            <div id="loading" class="loading">
+                <div class="spinner"></div>
+                Loading collection...
+            </div>
+
+            <div id="error" class="error" style="display: none;">
+                <h3>Unable to Load Collection</h3>
+                <p id="error-message"></p>
+            </div>
+
+            <div id="no-results" class="no-results" style="display: none;">
+                <div class="material-icons">inventory_2</div>
+                <h3>No Artifacts Found</h3>
+                <p>This exhibition currently has no artifacts on display.</p>
+            </div>
+
+            <div class="collections-grid" id="collections-grid"></div>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-content">
+            <div class="footer-info">
+                <div class="footer-section">
+                    <h3>Visit Us</h3>
+                    <p>123 Museum Boulevard</p>
+                    <p>Cultural District</p>
+                    <p>City, State 12345</p>
+                    <p>Phone: (555) 123-4567</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Hours</h3>
+                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p>Saturday - Sunday: 10:00 AM - 8:00 PM</p>
+                    <p>Closed on major holidays</p>
+                </div>
+                <div class="footer-section">
+                    <h3>Admission</h3>
+                    <p>Adults: $15</p>
+                    <p>Students/Seniors: $12</p>
+                    <p>Children under 12: Free</p>
+                    <p>Members: Always Free</p>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 ATHAR Museum. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        const exhibitionDescriptions = {
+            'Arab Heritage': 'Discover the golden age of Islamic civilization through calligraphy, manuscripts, and architectural elements that showcase the Arab world\'s contributions to science, literature, and art.',
+            'Persian Heritage': 'Journey through the splendor of ancient Persia with exquisite miniature paintings, intricate tilework, and legendary poetry manuscripts from one of history\'s greatest empires.',
+            'Indian Heritage': 'Experience the vibrant colors and spiritual depth of Indian art, from Mughal miniatures to sacred sculptures, textiles, and ceremonial objects spanning millennia.',
+            'Andalusian Heritage': 'Step into Al-Andalus, where Islamic, Christian, and Jewish cultures merged to create a unique civilization of tolerance, innovation, and artistic brilliance.',
+            'Turkish Heritage': 'Witness the grandeur of the Ottoman Empire through imperial treasures, ceramics from Iznik, elaborate textiles, and military regalia that defined an era.',
+            'Others': 'Explore diverse collections from cultures across Asia, Africa, and beyond. From ancient trade routes to contemporary cultural exchanges that connect our world.'
+        };
+
+        const urlParams = new URLSearchParams(window.location.search);
+        let exhibitionName = urlParams.get('exhibition');
+        
+        // Trim any whitespace from the exhibition name
+        if (exhibitionName) {
+            exhibitionName = exhibitionName.trim();
+        }
+
+        const loading = document.getElementById('loading');
+        const errorDiv = document.getElementById('error');
+        const noResults = document.getElementById('no-results');
+        const collectionsGrid = document.getElementById('collections-grid');
+
+        function showError(message) {
+            loading.style.display = 'none';
+            errorDiv.style.display = 'block';
+            document.getElementById('error-message').textContent = message;
+        }
+
+        function updatePageHeader() {
+            document.getElementById('exhibition-title').textContent = exhibitionName || 'Exhibition';
+            document.getElementById('exhibition-description').textContent = exhibitionDescriptions[exhibitionName] || 'Explore our curated collection of artifacts.';
+            document.title = `${exhibitionName} - ATHAR Museum`;
+        }
+
+        async function loadExhibitionCollection() {
+            if (!exhibitionName) {
+                showError('No exhibition specified. Please select an exhibition from the Exhibitions page.');
+                return;
+            }
+
+            updatePageHeader();
+
+            try {
+                console.log(`Fetching artifacts for exhibition: ${exhibitionName}`);
+                
+                // Get all documents from the collection
+                const collectionRef = collection(db, "Museum_Collection");
+                const querySnapshot = await getDocs(collectionRef);
+                
+                const artifacts = [];
+
+                // Filter locally to handle whitespace issues
+                querySnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const exhibitionField = data.Exhibition ? data.Exhibition.trim() : '';
+                    
+                    if (exhibitionField === exhibitionName) {
+                        artifacts.push({ id: doc.id, ...data });
+                    }
+                });
+                
+                console.log(`Found ${artifacts.length} artifacts`);
+
+                if (artifacts.length === 0) {
+                    loading.style.display = 'none';
+                    noResults.style.display = 'block';
+                    return;
+                }
+
+                renderCollection(artifacts);
+
+            } catch (error) {
+                console.error('Error loading exhibition:', error);
+                showError(`Failed to load exhibition: ${error.message}`);
+            }
+        }
+
+        function renderCollection(artifacts) {
+            loading.style.display = 'none';
+            collectionsGrid.innerHTML = '';
+
+            artifacts.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'collection-item';
+
+                const imageURL = item.imageURL || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="280" height="250" viewBox="0 0 280 250"%3E%3Crect fill="%23e2e8f0" width="280" height="250"/%3E%3Ctext x="140" y="125" text-anchor="middle" fill="%23718096" font-size="18"%3ENo Image%3C/text%3E%3C/svg%3E';
+                const title = item.title || 'Untitled';
+                const artist = item.artist || 'Unknown Artist';
+                const category = item.classification || '';
+
+                div.innerHTML = `
+                    <img src="${imageURL}" alt="${title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"280\\" height=\\"250\\" viewBox=\\"0 0 280 250\\"%3E%3Crect fill=\\"%23e2e8f0\\" width=\\"280\\" height=\\"250\\"/%3E%3Ctext x=\\"140\\" y=\\"125\\" text-anchor=\\"middle\\" fill=\\"%23718096\\" font-size=\\"18\\"%3EImage Error%3C/text%3E%3C/svg%3E'">
+                    <div class="collection-info">
+                        <h3 class="collection-title">${title}</h3>
+                        <p class="collection-artist">${artist}</p>
+                        <div class="collection-meta">
+                            ${category ? `<span class="collection-badge">${category}</span>` : ''}
+                        </div>
+                    </div>
+                `;
+
+                div.addEventListener('click', () => {
+                    window.location.href = `ArtDetails.html?id=${item.id}`;
+                });
+
+                collectionsGrid.appendChild(div);
+            });
+        }
+
+        window.addEventListener('scroll', function () {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.7rem 0';
+                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                nav.style.padding = '1rem 0';
+                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
+            }
+        });
+
+        document.addEventListener('DOMContentLoaded', loadExhibitionCollection);
+    </script>
+</body>
+
+</html>
