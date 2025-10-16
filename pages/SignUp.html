@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <title>ATHAR Museum - Sign Up</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
@@ -22,11 +22,7 @@
             --success: #38a169;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin:0; padding:0; box-sizing:border-box; }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -47,10 +43,7 @@
             transition: var(--transition);
         }
 
-        .back-arrow:hover {
-            color: var(--accent);
-            transform: translateX(-3px);
-        }
+        .back-arrow:hover { color: var(--accent); transform: translateX(-3px); }
 
         .signup-card {
             background: var(--white);
@@ -58,7 +51,7 @@
             border-radius: 20px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
             width: 100%;
-            max-width: 700px;
+            max-width: 900px;
             position: relative;
             animation: slideUp 0.6s ease-out;
         }
@@ -74,23 +67,10 @@
             border-radius: 20px 20px 0 0;
         }
 
-        .signup-header {
-            text-align: center;
-        }
+        .signup-header { text-align:center; }
+        .logo-icon { font-size: 3rem; color: var(--accent); margin-bottom: 1rem; display:block; }
 
-        .logo-icon {
-            font-size: 3rem;
-            color: var(--accent);
-            margin-bottom: 1rem;
-            display: block;
-        }
-
-        h1 {
-            font-size: 2rem;
-            color: var(--primary-dark);
-            font-family: 'Playfair Display', serif;
-            margin-bottom: 0.5rem;
-        }
+        h1 { font-size: 2rem; color: var(--primary-dark); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; }
 
         .password-toggle {
             position: absolute;
@@ -103,15 +83,9 @@
             transition: var(--transition);
         }
 
-        .password-toggle:hover {
-            color: var(--primary-dark);
-        }
+        .password-toggle:hover { color: var(--primary-dark); }
 
-        .form-group {
-            margin-bottom: 1.5rem;
-            position: relative;
-        }
-
+        .form-group { margin-bottom: 1.5rem; position: relative; }
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
@@ -140,11 +114,7 @@
             outline: none;
         }
 
-        .phone-group {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 1rem;
-        }
+        .phone-group { display: grid; grid-template-columns: 1fr; gap: 1rem; }
 
         input:-webkit-autofill {
             -webkit-box-shadow: 0 0 0px 1000px var(--neutral-light) inset;
@@ -241,53 +211,18 @@
             animation: checkmarkBounce 0.3s ease;
         }
 
-        @keyframes checkmarkBounce {
-            0% { transform: scale(0.5); }
-            50% { transform: scale(1.2); }
-            100% { transform: scale(1); }
-        }
+        @keyframes checkmarkBounce { 0% { transform: scale(0.5); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
 
-        .category-icon {
-            font-size: 2rem;
-            margin-bottom: 0.8rem;
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-        }
+        .category-icon { font-size: 2rem; margin-bottom: 0.8rem; display: block; margin-left: auto; margin-right: auto; }
+        .category-title { font-weight: 700; font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 0.3rem; }
+        .category-desc { font-size: 0.9rem; color: var(--text-light); }
 
-        .category-title {
-            font-weight: 700;
-            font-size: 1.1rem;
-            color: var(--primary-dark);
-            margin-bottom: 0.3rem;
-        }
+        .button-row { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 2rem; }
 
-        .category-desc {
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
+        .select-all-button { background: var(--white); color: var(--accent); border: 2px solid var(--accent); }
+        .select-all-button.selected { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); color: var(--primary-dark); }
 
-        .button-row {
-            display: flex;
-            flex-direction: column;
-            gap: 0.8rem;
-            margin-top: 2rem;
-        }
-
-        .select-all-button {
-            background: var(--white);
-            color: var(--accent);
-            border: 2px solid var(--accent);
-        }
-
-        .select-all-button.selected {
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-            color: var(--primary-dark);
-        }
-
-        .hidden {
-            display: none;
-        }
+        .hidden { display: none; }
 
         .selection-info {
             display: grid;
@@ -300,61 +235,74 @@
             border-radius: 10px;
         }
 
-        .selection-info p {
-            margin: 0;
-            text-align: center;
-            font-weight: 400;
-            line-height: 1.4;
+        .selection-info p { margin: 0; text-align: center; font-weight: 400; line-height: 1.4; }
+        .selection-info p:first-child { color: var(--text-light); margin-bottom: 0.5rem; }
+        .selection-info p strong .number { color: var(--accent); }
+
+        .message { padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; display: none; text-align: center; }
+        .message.error { background: #fff5f5; color: var(--error); border: 1px solid #feb2b2; display: block; }
+        .message.success { background: #f0fff4; color: var(--success); border: 1px solid #9ae6b4; display: block; }
+
+        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* country select arrow: moved to right with minimal padding */
+        select#country {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23653025" height="20" width="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 7l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            background-size: 1rem;
+            padding-right: 2.6rem; /* small padding for arrow */
         }
 
-        .selection-info p:first-child {
-            color: var(--text-light);
-            margin-bottom: 0.5rem;
+        /* ===== Gender select arrow : نسخة من country arrow ===== */
+        select#gender {
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;utf8,<svg fill="%23653025" height="20" width="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M5 7l5 5 5-5z"/></svg>');
+            background-repeat: no-repeat;
+            background-position: right 0.8rem center;
+            background-size: 1rem;
+            padding-right: 2.6rem;
         }
 
-        .selection-info p strong {
-            font-weight: 700;
-        }
-
-        .selection-info p strong .number {
-            color: var(--accent);
-        }
-
-        .message {
-            padding: 1rem;
+        /* ===== Success bar (slide down) ===== */
+        .success-bar {
+            position: relative;
+            width: 100%;
             border-radius: 10px;
-            margin-bottom: 1.5rem;
-            display: none;
-            text-align: center;
+            padding: 0.9rem 1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.6rem;
+            font-weight: 600;
+            color: #064e3b; /* dark green text */
+            background: linear-gradient(90deg, #bbf7d0, #86efac); /* soft green */
+            border: 1px solid #86efac;
+            transform: translateY(-20px);
+            opacity: 0;
+            transition: transform 280ms ease, opacity 280ms ease;
+            box-shadow: 0 6px 18px rgba(16, 185, 129, 0.12);
         }
-
-        .message.error {
-            background: #fff5f5;
-            color: var(--error);
-            border: 1px solid #feb2b2;
-            display: block;
+        .success-bar.show {
+            transform: translateY(0);
+            opacity: 1;
         }
+        .success-bar.hidden { display: none; }
 
-        .message.success {
-            background: #f0fff4;
-            color: var(--success);
-            border: 1px solid #9ae6b4;
-            display: block;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
+        @media (max-width: 720px) {
+            .categories-grid { grid-template-columns: 1fr; }
+            .signup-card { padding: 2rem; }
         }
     </style>
-</head><body>
+</head>
+<body>
     <div class="signup-card">
+        <!-- back arrow for navigation (kept as in original) -->
         <div id="step2Arrow" class="hidden">
             <div class="back-arrow" id="backArrow">←</div>
         </div>
@@ -366,7 +314,7 @@
 
         <div id="message" class="message"></div>
 
-        <!-- Step 1 -->
+        <!-- STEP 1: ORIGINAL USER DATA CARD -->
         <form id="step1">
             <div class="form-group">
                 <label for="username">Username</label>
@@ -376,7 +324,7 @@
                 <label for="email">Email Address</label>
                 <input type="email" id="email" required>
             </div>
-            <div class="form-group">
+            <div class="form-group" style="position:relative;">
                 <label for="password">Password</label>
                 <input type="password" id="password" minlength="6" required>
                 <span class="password-toggle" id="passwordToggle">👁</span>
@@ -385,46 +333,111 @@
                 <label for="dob">Date of Birth</label>
                 <input type="date" id="dob" required>
             </div>
+
+            <!-- NEW: Gender field (added but IDs/names kept simple) -->
+            <div class="form-group">
+                <label for="gender">Gender</label>
+                <select id="gender" required>
+                    <option value="">Select your gender</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
             <div class="form-group">
                 <label for="country">Country</label>
                 <select id="country" required>
                     <option value="">Select your country</option>
-                    <option value="BH" data-code="+973">🇧🇭 Bahrain (+973)</option>
-                    <option value="SA" data-code="+966">🇸🇦 Saudi Arabia (+966)</option>
-                    <option value="AE" data-code="+971">🇦🇪 United Arab Emirates (+971)</option>
-                    <option value="KW" data-code="+965">🇰🇼 Kuwait (+965)</option>
-                    <option value="OM" data-code="+968">🇴🇲 Oman (+968)</option>
-                    <option value="QA" data-code="+974">🇶🇦 Qatar (+974)</option>
-                    <option value="EG" data-code="+20">🇪🇬 Egypt (+20)</option>
-                    <option value="JO" data-code="+962">🇯🇴 Jordan (+962)</option>
-                    <option value="LB" data-code="+961">🇱🇧 Lebanon (+961)</option>
-                    <option value="IQ" data-code="+964">🇮🇶 Iraq (+964)</option>
-                    <option value="SY" data-code="+963">🇸🇾 Syria (+963)</option>
-                    <option value="YE" data-code="+967">🇾🇪 Yemen (+967)</option>
-                    <option value="MA" data-code="+212">🇲🇦 Morocco (+212)</option>
+                    <!-- expanded country list (more countries added) -->
+                    <option value="AF" data-code="+93">🇦🇫 Afghanistan (+93)</option>
+                    <option value="AL" data-code="+355">🇦🇱 Albania (+355)</option>
                     <option value="DZ" data-code="+213">🇩🇿 Algeria (+213)</option>
-                    <option value="TN" data-code="+216">🇹🇳 Tunisia (+216)</option>
-                    <option value="LY" data-code="+218">🇱🇾 Libya (+218)</option>
-                    <option value="SD" data-code="+249">🇸🇩 Sudan (+249)</option>
-                    <option value="TR" data-code="+90">🇹🇷 Turkey (+90)</option>
-                    <option value="IR" data-code="+98">🇮🇷 Iran (+98)</option>
-                    <option value="PK" data-code="+92">🇵🇰 Pakistan (+92)</option>
+                    <option value="BH" data-code="+973">🇧🇭 Bahrain (+973)</option>
+                    <option value="BD" data-code="+880">🇧🇩 Bangladesh (+880)</option>
+                    <option value="EG" data-code="+20">🇪🇬 Egypt (+20)</option>
+                    <option value="FR" data-code="+33">🇫🇷 France (+33)</option>
+                    <option value="DE" data-code="+49">🇩🇪 Germany (+49)</option>
                     <option value="IN" data-code="+91">🇮🇳 India (+91)</option>
-                    <option value="US" data-code="+1">🇺🇸 United States (+1)</option>
+                    <option value="ID" data-code="+62">🇮🇩 Indonesia (+62)</option>
+                    <option value="IQ" data-code="+964">🇮🇶 Iraq (+964)</option>
+                    <option value="IR" data-code="+98">🇮🇷 Iran (+98)</option>
+                    <option value="IT" data-code="+39">🇮🇹 Italy (+39)</option>
+                    <option value="JP" data-code="+81">🇯🇵 Japan (+81)</option>
+                    <option value="JO" data-code="+962">🇯🇴 Jordan (+962)</option>
+                    <option value="KW" data-code="+965">🇰🇼 Kuwait (+965)</option>
+                    <option value="LB" data-code="+961">🇱🇧 Lebanon (+961)</option>
+                    <option value="LY" data-code="+218">🇱🇾 Libya (+218)</option>
+                    <option value="MY" data-code="+60">🇲🇾 Malaysia (+60)</option>
+                    <option value="MA" data-code="+212">🇲🇦 Morocco (+212)</option>
+                    <option value="OM" data-code="+968">🇴🇲 Oman (+968)</option>
+                    <option value="PK" data-code="+92">🇵🇰 Pakistan (+92)</option>
+                    <option value="PH" data-code="+63">🇵🇭 Philippines (+63)</option>
+                    <option value="QA" data-code="+974">🇶🇦 Qatar (+974)</option>
+                    <option value="SA" data-code="+966">🇸🇦 Saudi Arabia (+966)</option>
+                    <option value="ES" data-code="+34">🇪🇸 Spain (+34)</option>
+                    <option value="SD" data-code="+249">🇸🇩 Sudan (+249)</option>
+                    <option value="SY" data-code="+963">🇸🇾 Syria (+963)</option>
+                    <option value="TN" data-code="+216">🇹🇳 Tunisia (+216)</option>
+                    <option value="TR" data-code="+90">🇹🇷 Turkey (+90)</option>
+                    <option value="AE" data-code="+971">🇦🇪 United Arab Emirates (+971)</option>
                     <option value="GB" data-code="+44">🇬🇧 United Kingdom (+44)</option>
+                    <option value="US" data-code="+1">🇺🇸 United States (+1)</option>
+                    <option value="YE" data-code="+967">🇾🇪 Yemen (+967)</option>
                     <option value="OTHER" data-code="">🌍 Other</option>
                 </select>
             </div>
+
             <div class="form-group phone-group">
                 <div>
                     <label for="phone">Phone Number</label>
                     <input type="tel" id="phone" placeholder="Enter phone number" required>
                 </div>
             </div>
+
             <button type="submit" class="signup-button">Continue</button>
         </form>
 
-        <!-- Step 2 -->
+        <!-- STEP (NEW) : PAYMENT CARD (SEPARATE CARD) -->
+        <div id="paymentStep" class="hidden">
+            <h2 style="text-align:center; color: var(--primary-dark); font-family:'Playfair Display',serif;">Membership Payment</h2>
+
+            <!-- Success bar (hidden by default) -->
+            <div id="paymentSuccess" class="success-bar hidden" role="status" aria-live="polite">
+                ✅ Payment successful! Please select your preferences to continue.
+            </div>
+
+            <p style="text-align:center; color: var(--text-light); margin-bottom:1rem;">
+                To activate your museum membership, please complete the fake payment below (for testing).
+            </p>
+
+            <div class="form-group">
+                <label for="cardName">Cardholder Name</label>
+                <input type="text" id="cardName" placeholder="Name on card" required>
+            </div>
+
+            <div class="form-group">
+                <label for="cardNumber">Card Number</label>
+                <input type="text" id="cardNumber" maxlength="23" placeholder="1111 2222 3333 4444" required>
+            </div>
+
+            <div style="display:flex; gap:10px;">
+                <div style="flex:1;" class="form-group">
+                    <label for="expiry">Expiry Date</label>
+                    <input type="month" id="expiry" required>
+                </div>
+                <div style="width:120px;" class="form-group">
+                    <label for="cvv">CVV</label>
+                    <input type="text" id="cvv" maxlength="4" placeholder="123" required>
+                </div>
+            </div>
+
+            <div class="button-row" style="margin-top:1rem;">
+                <button id="fakePayBtn" class="signup-button">Pay & Continue</button>
+                <button id="backToInfoBtn" class="select-all-button" style="background:var(--white); border:2px solid #e2e8f0;">Back to Info</button>
+            </div>
+        </div>
+
+        <!-- STEP 2: PREFERENCES (ORIGINAL SECTION, id kept as step2 in your original code was "step2") -->
         <div id="step2" class="hidden">
             <div class="step-description">
                 Help us personalize your museum experience by selecting your areas of interest.
@@ -511,10 +524,14 @@
         import { createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import { doc, setDoc, Timestamp, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // Elements (kept same names as original to avoid breaking other code)
         const step1 = document.getElementById('step1');
-        const step2 = document.getElementById('step2');
+        const step2 = document.getElementById('step2'); // preferences (original id)
         const step2Arrow = document.getElementById('step2Arrow');
         const backArrow = document.getElementById('backArrow');
+
+        const paymentStep = document.getElementById('paymentStep'); // NEW payment card
+
         const finishBtn = document.getElementById('finishBtn');
         const selectAllBtn = document.getElementById('selectAllBtn');
         const counter = document.getElementById('counter');
@@ -571,10 +588,11 @@
             }
         }
 
+        // STEP1 submit -> validate username then show payment card
         step1.addEventListener('submit', async function (e) {
             e.preventDefault();
             hideMessage();
-            
+
             const continueBtn = e.target.querySelector('button[type="submit"]');
             const originalText = continueBtn.textContent;
             continueBtn.disabled = true;
@@ -590,6 +608,7 @@
                 email: document.getElementById('email').value.trim(),
                 password: document.getElementById('password').value,
                 dob: document.getElementById('dob').value,
+                gender: document.getElementById('gender').value,
                 country: countryName,
                 countryCode: countryCode,
                 phoneCode: phoneCode || '',
@@ -605,12 +624,13 @@
                     return;
                 }
 
+                // proceed: hide step1 card, show payment card (separate)
                 continueBtn.disabled = false;
                 continueBtn.textContent = originalText;
                 step1.classList.add('hidden');
-                step2.classList.remove('hidden');
-                step2Arrow.classList.remove('hidden');
-                mainHeader.textContent = 'What Are You Interested In?';
+                paymentStep.classList.remove('hidden'); // show payment card
+                step2Arrow.classList.remove('hidden'); // keep back arrow visible so user can go back
+                mainHeader.textContent = 'Payment Details';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             } catch (error) {
                 console.error('Error checking username:', error);
@@ -620,13 +640,122 @@
             }
         });
 
+        // back arrow should take user to previous visible card
         backArrow.addEventListener('click', () => {
             hideMessage();
-            step2.classList.add('hidden');
+            // if payment is visible -> go back to step1
+            if (!paymentStep.classList.contains('hidden')) {
+                paymentStep.classList.add('hidden');
+                step1.classList.remove('hidden');
+                mainHeader.textContent = 'Create Your Account';
+            } else if (!step2.classList.contains('hidden')) {
+                // if preferences visible -> go back to payment
+                step2.classList.add('hidden');
+                paymentStep.classList.remove('hidden');
+                mainHeader.textContent = 'Payment Details';
+            } else {
+                // default
+                step1.classList.remove('hidden');
+                paymentStep.classList.add('hidden');
+                step2.classList.add('hidden');
+                mainHeader.textContent = 'Create Your Account';
+            }
             step2Arrow.classList.add('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // Payment actions
+        const fakePayBtn = document.getElementById('fakePayBtn');
+        const backToInfoBtn = document.getElementById('backToInfoBtn');
+
+        backToInfoBtn.addEventListener('click', () => {
+            hideMessage();
+            paymentStep.classList.add('hidden');
             step1.classList.remove('hidden');
             mainHeader.textContent = 'Create Your Account';
+            step2Arrow.classList.add('hidden');
             window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        // ===== Card number auto-format (groups of 4 digits) =====
+        const cardNumberInput = document.getElementById('cardNumber');
+        if (cardNumberInput) {
+            cardNumberInput.addEventListener('input', (e) => {
+                let value = e.target.value.replace(/\D/g, ''); // remove non-digits
+                value = value.slice(0, 16); // limit to 16 digits
+                const parts = [];
+                for (let i = 0; i < value.length; i += 4) {
+                    parts.push(value.substring(i, i + 4));
+                }
+                e.target.value = parts.join(' ');
+            });
+
+            cardNumberInput.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text');
+                const digits = text.replace(/\D/g, '').slice(0,16);
+                const parts = [];
+                for (let i = 0; i < digits.length; i += 4) parts.push(digits.substring(i, i + 4));
+                cardNumberInput.value = parts.join(' ');
+            });
+        }
+
+        fakePayBtn.addEventListener('click', (e) => {
+            e.preventDefault();
+            hideMessage();
+
+            const cardName = document.getElementById('cardName').value.trim();
+            const cardNumber = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+            const expiry = document.getElementById('expiry').value;
+            const cvv = document.getElementById('cvv').value.trim();
+
+            if (!cardName || cardNumber.length < 12 || !expiry || (cvv.length < 3)) {
+                showMessage('Please enter valid fake payment details (for testing).', 'error');
+                return;
+            }
+
+            fakePayBtn.disabled = true;
+            fakePayBtn.textContent = 'Processing...';
+
+            setTimeout(() => {
+                // simulate success
+                fakePayBtn.disabled = false;
+                fakePayBtn.textContent = 'Pay & Continue';
+
+                // show success bar then after short delay hide it and show preferences
+                const paymentSuccess = document.getElementById('paymentSuccess');
+                if (paymentSuccess) {
+                    // ensure hidden -> remove hidden so element can animate
+                    paymentSuccess.classList.remove('hidden');
+                    // force reflow then add show to trigger transition
+                    void paymentSuccess.offsetWidth;
+                    paymentSuccess.classList.add('show');
+
+                    // keep success bar visible for 1200ms, then hide it and show preferences
+                    setTimeout(() => {
+                        paymentSuccess.classList.remove('show');
+                        // after transition time, remove from flow and show preferences
+                        setTimeout(() => {
+                            paymentSuccess.classList.add('hidden');
+
+                            // now show preferences step (original step2)
+                            paymentStep.classList.add('hidden');
+                            step2.classList.remove('hidden');
+                            step2Arrow.classList.remove('hidden');
+                            mainHeader.textContent = 'What Are You Interested In?';
+                            window.scrollTo({ top: 0, behavior: 'smooth' });
+                        }, 320); // slightly larger than CSS transition (280ms)
+                    }, 1200);
+
+                } else {
+                    // fallback if element missing: directly show preferences
+                    paymentStep.classList.add('hidden');
+                    step2.classList.remove('hidden');
+                    step2Arrow.classList.remove('hidden');
+                    mainHeader.textContent = 'What Are You Interested In?';
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                }
+            }, 1000);
         });
 
         function updateCounter() {
@@ -660,6 +789,7 @@
             updateCounter();
         });
 
+        // FINISH: create the user in Firebase AFTER preferences selected
         finishBtn.addEventListener('click', async () => {
             hideMessage();
             finishBtn.disabled = true;
@@ -684,6 +814,7 @@
                     "Country Code": userData.countryCode,
                     "Date of Birth": dobTimestamp,
                     "Interests": selectedCategories,
+                    "Gender": userData.gender || '',
                     "Created At": Timestamp.now(),
                     "Is Active": true,
                     "uid": user.uid
@@ -696,12 +827,12 @@
                     } else {
                         window.location.href = 'Home.html';
                     }
-                }, 2000);
+                }, 1400);
 
             } catch (error) {
                 console.error('Registration error:', error);
                 let errorMessage = 'Failed to create account. Please try again.';
-                
+
                 if (error.code === 'auth/email-already-in-use') {
                     errorMessage = 'This email is already registered.';
                 } else if (error.code === 'auth/invalid-email') {
@@ -709,12 +840,14 @@
                 } else if (error.code === 'auth/weak-password') {
                     errorMessage = 'Password must be at least 6 characters.';
                 }
-                
+
                 showMessage(errorMessage, 'error');
                 finishBtn.disabled = false;
                 finishBtn.textContent = 'Complete Registration';
             }
         });
+
         updateCounter();
     </script>
-</body></html>
+</body>
+</html>
