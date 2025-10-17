@@ -81,14 +81,15 @@
             color: var(--text-light);
             font-size: 1.2rem;
             transition: var(--transition);
+            user-select: none;
         }
 
         .password-toggle:hover { color: var(--primary-dark); }
 
-        .form-group { margin-bottom: 1.5rem; position: relative; }
+        .form-group { margin-bottom: 1.2rem; position: relative; }
         .form-group label {
             display: block;
-            margin-bottom: 0.5rem;
+            margin-bottom: 0.4rem;
             font-weight: 600;
             color: var(--text-dark);
             font-size: 0.9rem;
@@ -98,7 +99,7 @@
         .form-group input,
         .form-group select {
             width: 100%;
-            padding: 1rem 1.2rem;
+            padding: 0.95rem 1.1rem;
             border: 2px solid #e2e8f0;
             border-radius: 10px;
             font-size: 1rem;
@@ -110,11 +111,18 @@
         .form-group select:focus {
             border-color: var(--accent);
             background: var(--white);
-            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.1);
+            box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.08);
             outline: none;
         }
 
-        .phone-group { display: grid; grid-template-columns: 1fr; gap: 1rem; }
+        .field-error {
+            margin-top: 0.35rem;
+            font-size: 0.85rem;
+            color: var(--error);
+            min-height: 1em;
+        }
+
+        .phone-group { display: grid; grid-template-columns: 1fr; gap: 0.8rem; }
 
         input:-webkit-autofill {
             -webkit-box-shadow: 0 0 0px 1000px var(--neutral-light) inset;
@@ -130,8 +138,8 @@
         .signup-button,
         .continue-button,
         .select-all-button {
-            padding: 1.2rem;
-            font-size: 1.1rem;
+            padding: 1.05rem;
+            font-size: 1.05rem;
             font-weight: 600;
             border-radius: 10px;
             cursor: pointer;
@@ -148,11 +156,6 @@
         .signup-button:disabled {
             opacity: 0.6;
             cursor: not-allowed;
-        }
-
-        .signup-button:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(212, 175, 55, 0.3);
         }
 
         .step-description {
@@ -217,7 +220,7 @@
         .category-title { font-weight: 700; font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 0.3rem; }
         .category-desc { font-size: 0.9rem; color: var(--text-light); }
 
-        .button-row { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 2rem; }
+        .button-row { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.2rem; }
 
         .select-all-button { background: var(--white); color: var(--accent); border: 2px solid var(--accent); }
         .select-all-button.selected { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); color: var(--primary-dark); }
@@ -315,23 +318,36 @@
         <div id="message" class="message"></div>
 
         <!-- STEP 1: ORIGINAL USER DATA CARD -->
-        <form id="step1">
+        <form id="step1" novalidate>
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" required>
+                <div id="err-username" class="field-error" aria-live="polite"></div>
             </div>
             <div class="form-group">
                 <label for="email">Email Address</label>
                 <input type="email" id="email" required>
+                <div id="err-email" class="field-error" aria-live="polite"></div>
             </div>
             <div class="form-group" style="position:relative;">
                 <label for="password">Password</label>
-                <input type="password" id="password" minlength="6" required>
-                <span class="password-toggle" id="passwordToggle">👁</span>
+                <input type="password" id="password" minlength="8" required>
+                <span class="password-toggle" id="passwordToggle" role="button" aria-label="Toggle password visibility">👁</span>
+                <div id="err-password" class="field-error" aria-live="polite"></div>
             </div>
+
+            <!-- Confirm Password (new) -->
+            <div class="form-group" style="position:relative;">
+                <label for="confirmPassword">Confirm Password</label>
+                <input type="password" id="confirmPassword" minlength="8" required>
+                <span class="password-toggle" id="confirmPasswordToggle" role="button" aria-label="Toggle confirm password visibility">👁</span>
+                <div id="err-confirmPassword" class="field-error" aria-live="polite"></div>
+            </div>
+
             <div class="form-group">
                 <label for="dob">Date of Birth</label>
                 <input type="date" id="dob" required>
+                <div id="err-dob" class="field-error" aria-live="polite"></div>
             </div>
 
             <!-- NEW: Gender field (added but IDs/names kept simple) -->
@@ -342,6 +358,7 @@
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                 </select>
+                <div id="err-gender" class="field-error" aria-live="polite"></div>
             </div>
 
             <div class="form-group">
@@ -385,12 +402,14 @@
                     <option value="YE" data-code="+967">🇾🇪 Yemen (+967)</option>
                     <option value="OTHER" data-code="">🌍 Other</option>
                 </select>
+                <div id="err-country" class="field-error" aria-live="polite"></div>
             </div>
 
             <div class="form-group phone-group">
                 <div>
                     <label for="phone">Phone Number</label>
                     <input type="tel" id="phone" placeholder="Enter phone number" required>
+                    <div id="err-phone" class="field-error" aria-live="polite"></div>
                 </div>
             </div>
 
@@ -399,7 +418,7 @@
 
         <!-- STEP (NEW) : PAYMENT CARD (SEPARATE CARD) -->
         <div id="paymentStep" class="hidden">
-            <h2 style="text-align:center; color: var(--primary-dark); font-family:'Playfair Display',serif;">Membership Payment</h2>
+            <!--<h2 style="text-align:center; color: var(--primary-dark); font-family:'Playfair Display',serif;">Membership Payment</h2>-->
 
             <!-- Success bar (hidden by default) -->
             <div id="paymentSuccess" class="success-bar hidden" role="status" aria-live="polite">
@@ -407,29 +426,37 @@
             </div>
 
             <p style="text-align:center; color: var(--text-light); margin-bottom:1rem;">
-                To activate your museum membership, please complete the fake payment below (for testing).
+                To activate your museum membership, please complete the payment below.
             </p>
+
+            <!-- Payment amount (determined by selected country) -->
+            <div id="paymentAmount" style="text-align:center; margin-bottom:0.8rem; font-weight:700;"></div>
 
             <div class="form-group">
                 <label for="cardName">Cardholder Name</label>
                 <input type="text" id="cardName" placeholder="Name on card" required>
+                <div id="err-cardName" class="field-error" aria-live="polite"></div>
             </div>
 
             <div class="form-group">
                 <label for="cardNumber">Card Number</label>
                 <input type="text" id="cardNumber" maxlength="23" placeholder="1111 2222 3333 4444" required>
+                <div id="err-cardNumber" class="field-error" aria-live="polite"></div>
             </div>
 
             <div style="display:flex; gap:10px;">
                 <div style="flex:1;" class="form-group">
                     <label for="expiry">Expiry Date</label>
                     <input type="month" id="expiry" required>
+                    <div id="err-expiry" class="field-error" aria-live="polite"></div>
                 </div>
                 <div style="width:120px;" class="form-group">
                     <label for="cvv">CVV</label>
                     <input type="text" id="cvv" maxlength="4" placeholder="123" required>
+                    <div id="err-cvv" class="field-error" aria-live="polite"></div>
                 </div>
             </div>
+         
 
             <div class="button-row" style="margin-top:1rem;">
                 <button id="fakePayBtn" class="signup-button">Pay & Continue</button>
@@ -539,6 +566,10 @@
         const messageDiv = document.getElementById('message');
         const countrySelect = document.getElementById('country');
         const phoneInput = document.getElementById('phone');
+        const paymentAmountEl = document.getElementById('paymentAmount');
+
+    
+
 
         let selectedCategories = [];
         const allCards = document.querySelectorAll('.category-card');
@@ -547,6 +578,11 @@
 
         const passwordInput = document.getElementById('password');
         const passwordToggle = document.getElementById('passwordToggle');
+        const confirmPasswordInput = document.getElementById('confirmPassword');
+        const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
+
+       
+
 
         function showMessage(message, type) {
             messageDiv.textContent = message;
@@ -559,16 +595,42 @@
             messageDiv.style.display = 'none';
         }
 
+        // helper: show inline field error
+        function setFieldError(elemId, msg='') {
+            const el = document.getElementById('err-' + elemId);
+            if (!el) return;
+            el.textContent = msg;
+        }
+        function clearFieldError(elemId) {
+            setFieldError(elemId, '');
+        }
+
+        // wire up clearing inline errors on input/change
+        ['username','email','password','confirmPassword','dob','gender','country','phone','cardName','cardNumber','expiry','cvv'].forEach(id => {
+            const el = document.getElementById(id);
+            if (el) {
+                el.addEventListener('input', () => clearFieldError(id));
+                el.addEventListener('change', () => clearFieldError(id));
+            }
+        });
+
+        // password toggle
         passwordToggle.addEventListener('click', () => {
             const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
             passwordInput.setAttribute('type', type);
             passwordToggle.textContent = type === 'password' ? '👁' : '🙈';
         });
+        // confirm password toggle
+        confirmPasswordToggle.addEventListener('click', () => {
+            const type = confirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            confirmPasswordInput.setAttribute('type', type);
+            confirmPasswordToggle.textContent = type === 'password' ? '👁' : '🙈';
+        });
 
         // Update phone placeholder with country code
         countrySelect.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
-            const countryCode = selectedOption.getAttribute('data-code');
+            const countryCode = selectedOption ? selectedOption.getAttribute('data-code') : '';
             if (countryCode) {
                 phoneInput.placeholder = `${countryCode} `;
             } else {
@@ -576,6 +638,7 @@
             }
         });
 
+        /* ---------- Firestore uniqueness checks (username & phone) ---------- */
         async function checkUsernameExists(username) {
             try {
                 const usersRef = collection(db, "Users");
@@ -587,74 +650,387 @@
                 throw error;
             }
         }
+        async function checkPhoneExists(fullPhoneNumber) {
+            try {
+                const usersRef = collection(db, "Users");
+                const q = query(usersRef, where("Phone Number", "==", fullPhoneNumber));
+                const querySnapshot = await getDocs(q);
+                return !querySnapshot.empty;
+            } catch (error) {
+                console.error("Error checking phone:", error);
+                throw error;
+            }
+        }
 
-        // STEP1 submit -> validate username then show payment card
+        /* ---------- Password strength ---------- */
+        function isPasswordStrong(pwd) {
+            return /(?=.{8,})(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(pwd);
+        }
+
+        /* ---------- Payment amount mapping by country ---------- */
+        const paymentMap = {
+    'AF': { text: '1500 AFN' },  // Afghanistan
+    'AL': { text: '2000 ALL' },  // Albania
+    'DZ': { text: '2800 DZD' },  // Algeria
+    'BH': { text: '20 BD' },     // Bahrain
+    'BD': { text: '2000 BDT' },  // Bangladesh
+    'EG': { text: '600 EGP' },   // Egypt
+    'FR': { text: '20 EUR' },    // France
+    'DE': { text: '20 EUR' },    // Germany
+    'IN': { text: '1500 INR' },  // India
+    'ID': { text: '300000 IDR' },// Indonesia
+    'IQ': { text: '30000 IQD' }, // Iraq
+    'IR': { text: '800000 IRR' },// Iran
+    'IT': { text: '20 EUR' },    // Italy
+    'JP': { text: '3000 JPY' },  // Japan
+    'JO': { text: '14 JOD' },    // Jordan
+    'KW': { text: '20 KWD' },    // Kuwait
+    'LB': { text: '30 LBP' },    // Lebanon
+    'LY': { text: '60 LYD' },    // Libya
+    'MY': { text: '100 MYR' },   // Malaysia
+    'MA': { text: '200 MAD' },   // Morocco
+    'OM': { text: '200 OMR' },   // Oman
+    'PK': { text: '5000 PKR' },  // Pakistan
+    'PH': { text: '1000 PHP' },  // Philippines
+    'QA': { text: '200 QAR' },   // Qatar
+    'SA': { text: '200 SAR' },   // Saudi Arabia
+    'ES': { text: '20 EUR' },    // Spain
+    'SD': { text: '6000 SDG' },  // Sudan
+    'SY': { text: '5000 SYP' },  // Syria
+    'TN': { text: '60 TND' },    // Tunisia
+    'TR': { text: '400 TRY' },   // Turkey
+    'AE': { text: '200 AED' },   // United Arab Emirates
+    'GB': { text: '20 GBP' },    // United Kingdom
+    'US': { text: '20 USD' },    // United States
+    'YE': { text: '5000 YER' },  // Yemen
+    'OTHER': { text: '20 USD' }, // Other / fallback
+    
+};
+
+
+
+        function getPaymentTextForCountry(countryValue) {
+            if (!countryValue) return paymentMap.DEFAULT.text;
+            return (paymentMap[countryValue] || paymentMap.DEFAULT).text;
+        }
+
+        /* ---------- helper: scroll to element center ---------- */
+        function scrollToElem(el) {
+            if (!el) return;
+            el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+
+        /* ---------- On-blur validation handlers (user info & payment) ---------- */
+        // Validation functions (return boolean)
+        function validateUsernameField() {
+            const v = document.getElementById('username').value.trim();
+            if (!v || v.length < 2) {
+                setFieldError('username', 'Username is required and must be at least 2 characters.');
+                return false;
+            }
+            clearFieldError('username');
+            return true;
+        }
+        function validateEmailField() {
+            const v = document.getElementById('email').value.trim();
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!v || !re.test(v)) {
+                setFieldError('email', 'Please enter a valid email address.');
+                return false;
+            }
+            clearFieldError('email');
+            return true;
+        }
+        function validatePasswordField() {
+            const v = document.getElementById('password').value;
+            if (!v || !isPasswordStrong(v)) {
+                setFieldError('password', 'Password must be at least 8 chars and include uppercase, lowercase and a number.');
+                return false;
+            }
+            clearFieldError('password');
+            return true;
+        }
+        function validateConfirmPasswordField() {
+            const p = document.getElementById('password').value;
+            const v = document.getElementById('confirmPassword').value;
+            if (p !== v) {
+                setFieldError('confirmPassword', 'Passwords do not match.');
+                return false;
+            }
+            clearFieldError('confirmPassword');
+            return true;
+        }
+        function validateDobField() {
+            const v = document.getElementById('dob').value;
+            if (!v) {
+                setFieldError('dob', 'Please enter your date of birth.');
+                return false;
+            }
+            const d = new Date(v);
+            const now = new Date();
+            d.setHours(0,0,0,0); now.setHours(0,0,0,0);
+            if (d > now) {
+                setFieldError('dob', 'Date of birth cannot be in the future.');
+                return false;
+            }
+            clearFieldError('dob');
+            return true;
+        }
+        function validateGenderField() {
+            const v = document.getElementById('gender').value;
+            if (!v) {
+                setFieldError('gender', 'Please select your gender.');
+                return false;
+            }
+            clearFieldError('gender');
+            return true;
+        }
+        function validateCountryField() {
+            const sel = document.getElementById('country');
+            if (!sel || !sel.value) {
+                setFieldError('country', 'Please select your country.');
+                return false;
+            }
+            clearFieldError('country');
+            return true;
+        }
+        function validatePhoneField() {
+            const raw = document.getElementById('phone').value.trim();
+            const digits = raw.replace(/\D/g, '');
+            if (!digits || digits.length !== 8) {
+                setFieldError('phone', 'Phone must be exactly 8 digits.');
+                return false;
+            }
+            clearFieldError('phone');
+            return true;
+        }
+
+        // Payment validations (individual)
+        function validateCardNameField() {
+            const v = document.getElementById('cardName').value.trim();
+            if (!v) {
+                setFieldError('cardName', 'Cardholder name is required.');
+                return false;
+            }
+            if (/\d/.test(v)) {
+                setFieldError('cardName', 'Cardholder name cannot contain numbers.');
+                return false;
+            }
+            clearFieldError('cardName');
+            return true;
+        }
+        function validateCardNumberField() {
+            const raw = document.getElementById('cardNumber').value.replace(/\s+/g, '');
+            if (!raw || raw.length !== 16 || /\D/.test(raw)) {
+                setFieldError('cardNumber', 'Card number must be 16 digits.');
+                return false;
+            }
+            clearFieldError('cardNumber');
+            return true;
+        }
+        function validateExpiryField() {
+            const expiry = document.getElementById('expiry').value;
+            if (!expiry) {
+                setFieldError('expiry', 'Expiry date is required.');
+                return false;
+            }
+            try {
+                const [y,m] = expiry.split('-').map(Number);
+                const now = new Date();
+                const cy = now.getFullYear(), cm = now.getMonth() + 1;
+                if (y < cy || (y === cy && m < cm)) {
+                    setFieldError('expiry', 'Expiry must be in the future.');
+                    return false;
+                }
+            } catch (e) {
+                setFieldError('expiry', 'Invalid expiry date.');
+                return false;
+            }
+            clearFieldError('expiry');
+            return true;
+        }
+        function validateCvvField() {
+            const v = document.getElementById('cvv').value.trim();
+            if (!v || v.length < 3 || v.length > 4 || /\D/.test(v)) {
+                setFieldError('cvv', 'CVV must be 3 or 4 digits.');
+                return false;
+            }
+            clearFieldError('cvv');
+            return true;
+        }
+
+        // attach blur listeners to run per-field validation when user leaves field
+        const blurMap = {
+            username: validateUsernameField,
+            email: validateEmailField,
+            password: validatePasswordField,
+            confirmPassword: validateConfirmPasswordField,
+            dob: validateDobField,
+            gender: validateGenderField,
+            country: validateCountryField,
+            phone: validatePhoneField,
+            cardName: validateCardNameField,
+            cardNumber: validateCardNumberField,
+            expiry: validateExpiryField,
+            cvv: validateCvvField
+        };
+
+        Object.keys(blurMap).forEach(id => {
+            const el = document.getElementById(id);
+            if (!el) return;
+            el.addEventListener('blur', async (ev) => {
+                // run sync validation
+                const ok = blurMap[id]();
+                // if phone or username blur and passed basic validation, optionally check DB uniqueness (async)
+                if (ok && (id === 'username' || id === 'phone')) {
+                    if (id === 'username') {
+                        const usernameVal = document.getElementById('username').value.trim();
+                        if (usernameVal.length >= 2) {
+                            try {
+                                const exists = await checkUsernameExists(usernameVal);
+                                if (exists) setFieldError('username', 'This username is already taken.');
+                            } catch (e) {
+                                // ignore firestore errors on blur; main submit will recheck
+                            }
+                        }
+                    }
+                    if (id === 'phone') {
+                        const sel = document.getElementById('country');
+                        const countryCode = sel ? sel.value : '';
+                        const phoneDigits = document.getElementById('phone').value.replace(/\D/g, '');
+                        if (phoneDigits.length === 8) {
+                            const fullPhone = (sel && sel.getAttribute('data-code')) ? `${sel.getAttribute('data-code')}${phoneDigits}` : phoneDigits;
+                            try {
+                                const exists = await checkPhoneExists(fullPhone);
+                                if (exists) setFieldError('phone', 'This phone number is already registered.');
+                            } catch (e) {
+                                // ignore for blur
+                            }
+                        }
+                    }
+                }
+                // if validation failed, keep user in view so they can fix (no forced scroll on blur)
+            });
+        });
+
+        /* ---------- Step1 submit (final validations + uniqueness checks) ---------- */
         step1.addEventListener('submit', async function (e) {
             e.preventDefault();
             hideMessage();
 
+            // clear inline errors
+            ['username','email','password','confirmPassword','dob','gender','country','phone'].forEach(clearFieldError);
+
             const continueBtn = e.target.querySelector('button[type="submit"]');
-            const originalText = continueBtn.textContent;
+            const origText = continueBtn.textContent;
             continueBtn.disabled = true;
             continueBtn.textContent = 'Checking...';
 
+            // run all sync validations
+            const validators = [
+                validateUsernameField,
+                validateEmailField,
+                validatePasswordField,
+                validateConfirmPasswordField,
+                validateDobField,
+                validateGenderField,
+                validateCountryField,
+                validatePhoneField
+            ];
+            for (const fn of validators) {
+                const ok = fn();
+                if (!ok) {
+                    // scroll to first invalid field
+                    const id = fn.name.replace('validate','').replace('Field','').replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+                    const fieldEl = document.getElementById(id);
+                    if (fieldEl) scrollToElem(fieldEl);
+                    continueBtn.disabled = false;
+                    continueBtn.textContent = origText;
+                    return;
+                }
+            }
+
+            // gather values
             const selectedCountry = countrySelect.options[countrySelect.selectedIndex];
-            const countryCode = selectedCountry.value;
-            const countryName = selectedCountry.text.split('(')[0].trim().replace(/^🇦🇪|🇧🇭|🇸🇦|🇰🇼|🇴🇲|🇶🇦|🇪🇬|🇯🇴|🇱🇧|🇮🇶|🇸🇾|🇾🇪|🇲🇦|🇩🇿|🇹🇳|🇱🇾|🇸🇩|🇹🇷|🇮🇷|🇵🇰|🇮🇳|🇺🇸|🇬🇧|🌍\s*/, '');
-            const phoneCode = selectedCountry.getAttribute('data-code');
+            const countryCode = selectedCountry ? selectedCountry.value : '';
+            const countryName = selectedCountry ? selectedCountry.text.split('(')[0].trim().replace(/^🇦🇪|🇧🇭|🇸🇦|🇰🇼|🇴🇲|🇶🇦|🇪🇬|🇯🇴|🇱🇧|🇮🇶|🇸🇾|🇾🇪|🇲🇦|🇩🇿|🇹🇳|🇱🇾|🇸🇩|🇹🇷|🇮🇷|🇵🇰|🇮🇳|🇺🇸|🇬🇧|🌍\s*/, '') : '';
+            const phoneCallingCode = selectedCountry ? selectedCountry.getAttribute('data-code') : '';
+
+            const usernameVal = document.getElementById('username').value.trim();
+            const emailVal = document.getElementById('email').value.trim();
+            const pwdVal = document.getElementById('password').value;
+            const dobVal = document.getElementById('dob').value;
+            const genderVal = document.getElementById('gender').value;
+            const phoneDigits = document.getElementById('phone').value.replace(/\D/g, '');
+
+            const fullPhoneNumber = phoneCallingCode ? `${phoneCallingCode}${phoneDigits}` : phoneDigits;
 
             userData = {
-                username: document.getElementById('username').value.trim(),
-                email: document.getElementById('email').value.trim(),
-                password: document.getElementById('password').value,
-                dob: document.getElementById('dob').value,
-                gender: document.getElementById('gender').value,
+                username: usernameVal,
+                email: emailVal,
+                password: pwdVal,
+                dob: dobVal,
+                gender: genderVal,
                 country: countryName,
                 countryCode: countryCode,
-                phoneCode: phoneCode || '',
-                phone: document.getElementById('phone').value.trim()
+                phoneCode: phoneCallingCode || '',
+                phone: phoneDigits
             };
 
             try {
+                // uniqueness checks
                 const usernameExists = await checkUsernameExists(userData.username);
                 if (usernameExists) {
-                    showMessage('This username is already taken. Please choose another one.', 'error');
+                    setFieldError('username', 'This username is already taken.');
+                    scrollToElem(document.getElementById('username'));
                     continueBtn.disabled = false;
-                    continueBtn.textContent = originalText;
+                    continueBtn.textContent = origText;
                     return;
                 }
 
-                // proceed: hide step1 card, show payment card (separate)
+                const phoneExists = await checkPhoneExists(fullPhoneNumber);
+                if (phoneExists) {
+                    setFieldError('phone', 'This phone number is already registered.');
+                    scrollToElem(document.getElementById('phone'));
+                    continueBtn.disabled = false;
+                    continueBtn.textContent = origText;
+                    return;
+                }
+
+                // all good -> show payment card and populate amount
                 continueBtn.disabled = false;
-                continueBtn.textContent = originalText;
+                continueBtn.textContent = origText;
+
+                // set payment amount text according to saved country code (userData.countryCode holds select value)
+                const amountText = getPaymentTextForCountry(userData.countryCode);
+                paymentAmountEl.textContent = ` Amount due: ${amountText}`;
+
                 step1.classList.add('hidden');
-                paymentStep.classList.remove('hidden'); // show payment card
-                step2Arrow.classList.remove('hidden'); // keep back arrow visible so user can go back
+                paymentStep.classList.remove('hidden');
+                step2Arrow.classList.remove('hidden');
                 mainHeader.textContent = 'Payment Details';
                 window.scrollTo({ top: 0, behavior: 'smooth' });
-            } catch (error) {
-                console.error('Error checking username:', error);
-                showMessage('Error validating username. Please try again.', 'error');
+
+            } catch (err) {
+                console.error('Error validating signup info:', err);
+                showMessage('Error validating data. Please try again.', 'error');
                 continueBtn.disabled = false;
-                continueBtn.textContent = originalText;
+                continueBtn.textContent = origText;
             }
         });
 
-        // back arrow should take user to previous visible card
+        // back arrow navigation
         backArrow.addEventListener('click', () => {
             hideMessage();
-            // if payment is visible -> go back to step1
             if (!paymentStep.classList.contains('hidden')) {
                 paymentStep.classList.add('hidden');
                 step1.classList.remove('hidden');
                 mainHeader.textContent = 'Create Your Account';
             } else if (!step2.classList.contains('hidden')) {
-                // if preferences visible -> go back to payment
                 step2.classList.add('hidden');
                 paymentStep.classList.remove('hidden');
                 mainHeader.textContent = 'Payment Details';
             } else {
-                // default
                 step1.classList.remove('hidden');
                 paymentStep.classList.add('hidden');
                 step2.classList.add('hidden');
@@ -664,7 +1040,7 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // Payment actions
+        // Payment actions & formatters
         const fakePayBtn = document.getElementById('fakePayBtn');
         const backToInfoBtn = document.getElementById('backToInfoBtn');
 
@@ -677,19 +1053,16 @@
             window.scrollTo({ top: 0, behavior: 'smooth' });
         });
 
-        // ===== Card number auto-format (groups of 4 digits) =====
+        // Card number auto-format
         const cardNumberInput = document.getElementById('cardNumber');
         if (cardNumberInput) {
             cardNumberInput.addEventListener('input', (e) => {
-                let value = e.target.value.replace(/\D/g, ''); // remove non-digits
-                value = value.slice(0, 16); // limit to 16 digits
+                let value = e.target.value.replace(/\D/g, '');
+                value = value.slice(0, 16);
                 const parts = [];
-                for (let i = 0; i < value.length; i += 4) {
-                    parts.push(value.substring(i, i + 4));
-                }
+                for (let i = 0; i < value.length; i += 4) parts.push(value.substring(i, i + 4));
                 e.target.value = parts.join(' ');
             });
-
             cardNumberInput.addEventListener('paste', (e) => {
                 e.preventDefault();
                 const text = (e.clipboardData || window.clipboardData).getData('text');
@@ -700,55 +1073,95 @@
             });
         }
 
+        // Cardholder name uppercase, prevent digits
+        const cardNameInput = document.getElementById('cardName');
+        if (cardNameInput) {
+            cardNameInput.addEventListener('input', (e) => {
+                const start = e.target.selectionStart;
+                e.target.value = e.target.value.replace(/\d/g, '').toUpperCase();
+                e.target.selectionStart = e.target.selectionEnd = start;
+            });
+            cardNameInput.addEventListener('paste', (e) => {
+                e.preventDefault();
+                const text = (e.clipboardData || window.clipboardData).getData('text');
+                const cleaned = text.replace(/\d/g, '').toUpperCase().slice(0, 80);
+                cardNameInput.value = cleaned;
+            });
+        }
+
+        // CVV numeric only
+        const cvvInput = document.getElementById('cvv');
+        if (cvvInput) {
+            cvvInput.addEventListener('input', (e) => {
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0,4);
+            });
+        }
+
+        // when paymentStep is shown via other flows (if needed), update amount display
+        function updatePaymentAmountFromSelectedCountry() {
+            const sel = document.getElementById('country');
+            const code = sel ? sel.value : '';
+            paymentAmountEl.textContent = `Amount due: ${getPaymentTextForCountry(code)}`;
+        }
+
+        // Also update amount if country select changes and payment card visible
+        countrySelect.addEventListener('change', () => {
+            if (!paymentStep.classList.contains('hidden')) {
+                updatePaymentAmountFromSelectedCountry();
+            }
+        });
+
         fakePayBtn.addEventListener('click', (e) => {
             e.preventDefault();
             hideMessage();
 
-            const cardName = document.getElementById('cardName').value.trim();
-            const cardNumber = document.getElementById('cardNumber').value.replace(/\s+/g, '');
-            const expiry = document.getElementById('expiry').value;
-            const cvv = document.getElementById('cvv').value.trim();
+            // clear inline errors
+            ['cardName','cardNumber','expiry','cvv'].forEach(clearFieldError);
 
-            if (!cardName || cardNumber.length < 12 || !expiry || (cvv.length < 3)) {
-                showMessage('Please enter valid fake payment details (for testing).', 'error');
-                return;
+            // run per-field validators and focus/scroll to first error
+            const payValidators = [
+                { fn: validateCardNameField, id: 'cardName' },
+                { fn: validateCardNumberField, id: 'cardNumber' },
+                { fn: validateExpiryField, id: 'expiry' },
+                { fn: validateCvvField, id: 'cvv' }
+            ];
+            for (const {fn, id} of payValidators) {
+                const ok = fn();
+                if (!ok) {
+                    const el = document.getElementById(id);
+                    if (el) scrollToElem(el);
+                    return;
+                }
             }
 
             fakePayBtn.disabled = true;
             fakePayBtn.textContent = 'Processing...';
 
             setTimeout(() => {
-                // simulate success
                 fakePayBtn.disabled = false;
                 fakePayBtn.textContent = 'Pay & Continue';
 
-                // show success bar then after short delay hide it and show preferences
                 const paymentSuccess = document.getElementById('paymentSuccess');
                 if (paymentSuccess) {
-                    // ensure hidden -> remove hidden so element can animate
                     paymentSuccess.classList.remove('hidden');
-                    // force reflow then add show to trigger transition
                     void paymentSuccess.offsetWidth;
                     paymentSuccess.classList.add('show');
 
-                    // keep success bar visible for 1200ms, then hide it and show preferences
                     setTimeout(() => {
                         paymentSuccess.classList.remove('show');
-                        // after transition time, remove from flow and show preferences
                         setTimeout(() => {
                             paymentSuccess.classList.add('hidden');
 
-                            // now show preferences step (original step2)
+                            // after success, show preferences
                             paymentStep.classList.add('hidden');
                             step2.classList.remove('hidden');
                             step2Arrow.classList.remove('hidden');
                             mainHeader.textContent = 'What Are You Interested In?';
                             window.scrollTo({ top: 0, behavior: 'smooth' });
-                        }, 320); // slightly larger than CSS transition (280ms)
+                        }, 320);
                     }, 1200);
 
                 } else {
-                    // fallback if element missing: directly show preferences
                     paymentStep.classList.add('hidden');
                     step2.classList.remove('hidden');
                     step2Arrow.classList.remove('hidden');
@@ -758,6 +1171,7 @@
             }, 1000);
         });
 
+        // Categories selection logic
         function updateCounter() {
             counter.textContent = selectedCategories.length;
             finishBtn.disabled = selectedCategories.length < 3;
@@ -767,11 +1181,8 @@
             card.addEventListener('click', () => {
                 const cat = card.dataset.category;
                 card.classList.toggle('selected');
-                if (card.classList.contains('selected')) {
-                    selectedCategories.push(cat);
-                } else {
-                    selectedCategories = selectedCategories.filter(c => c !== cat);
-                }
+                if (card.classList.contains('selected')) selectedCategories.push(cat);
+                else selectedCategories = selectedCategories.filter(c => c !== cat);
                 updateCounter();
             });
         });
@@ -847,7 +1258,10 @@
             }
         });
 
+        // initial counter
         updateCounter();
+
+        
     </script>
 </body>
 </html>
