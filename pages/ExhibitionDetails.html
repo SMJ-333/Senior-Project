@@ -117,11 +117,6 @@
             width: 80%;
         }
 
-        .nav-links a:hover,
-        .nav-links a.active {
-            color: var(--primary-dark);
-        }
-
         .account-icon {
             width: 42px;
             height: 42px;
@@ -141,7 +136,6 @@
         .account-icon:hover {
             transform: scale(1.08);
             box-shadow: 0 6px 15px rgba(26, 54, 93, 0.25);
-            border-color: var(--accent-light);
         }
 
         .page-content {
@@ -151,29 +145,15 @@
 
         .hero {
             background: linear-gradient(120deg, var(--primary-dark) 0%, var(--primary-light) 100%);
-            padding: 8rem 0 5rem;
+            padding: 6rem 0 4rem;
             text-align: center;
             color: var(--white);
-            background-size: cover;
-            background-position: center;
             position: relative;
             overflow: hidden;
         }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" opacity="0.03"><rect fill="%23ffffff" width="1200" height="600"/><path d="M0,150 C150,100 350,200 500,150 C650,100 850,50 1000,100 C1150,150 1200,100 1200,100 L1200,600 L0,600 Z" fill="%23d4af37"/></svg>');
-            background-size: cover;
-            background-position: center;
-        }
-
         .hero-content {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             padding: 2rem;
             position: relative;
@@ -181,43 +161,279 @@
         }
 
         .hero-content h1 {
-            font-size: 3rem;
+            font-size: 3.5rem;
             margin-bottom: 1rem;
         }
 
         .hero-content p {
-            font-size: 1.2rem;
-            margin-bottom: 0;
+            font-size: 1.3rem;
             font-weight: 300;
-            opacity: 0.9;
+            opacity: 0.95;
+            line-height: 1.8;
         }
 
         .container {
-            max-width: 1200px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 3rem 2rem;
         }
 
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
+        .exhibition-overview {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-bottom: 4rem;
         }
 
-        .section-title h2 {
-            font-size: 2.5rem;
+        .overview-content {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+        }
+
+        .overview-content h2 {
             color: var(--primary-dark);
-            display: inline-block;
-            margin-bottom: 1rem;
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
         }
 
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background: var(--accent);
-            margin: 0 auto;
+        .overview-content h2 .material-icons {
+            color: var(--accent);
+            font-size: 2rem;
+        }
+
+        .timeline-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--primary-dark);
+            padding: 0.6rem 1.2rem;
+            border-radius: 25px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .overview-text {
+            color: var(--text-dark);
+            font-size: 1.05rem;
+            line-height: 1.8;
+            margin-bottom: 1.5rem;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .stat-box {
+            background: var(--neutral-light);
+            padding: 1.2rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-box:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            margin-top: 0.3rem;
+        }
+
+        .featured-images {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .featured-images h3 {
+            color: var(--primary-dark);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .featured-images h3 .material-icons {
+            color: var(--accent);
+        }
+
+        .featured-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .featured-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: var(--transition);
+            aspect-ratio: 1;
+        }
+
+        .featured-item:hover {
+            transform: scale(1.03);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .featured-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .featured-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+            padding: 1rem;
+            color: white;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .featured-action {
+            margin-top: 1.5rem;
+            text-align: center;
+        }
+
+        .themes-section {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            box-shadow: var(--shadow);
+        }
+
+        .themes-section h2 {
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        .themes-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .theme-card {
+            background: linear-gradient(135deg, var(--neutral-light) 0%, #ede8db 100%);
+            padding: 1.5rem 1rem;
+            border-radius: 12px;
+            text-align: center;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .theme-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+        }
+
+        .theme-title {
+            color: var(--primary-dark);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .theme-count {
+            color: var(--accent);
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-top: 0.5rem;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .curator-section {
+            background: linear-gradient(135deg, #f7f3e9 0%, #ede8db 100%);
+            border-radius: 16px;
+            padding: 3rem;
+            margin-bottom: 3rem;
+            border-left: 6px solid var(--accent);
+            box-shadow: var(--shadow);
+        }
+
+        .curator-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .curator-header .material-icons {
+            font-size: 3rem;
+            color: var(--accent);
+        }
+
+        .curator-header h2 {
+            color: var(--primary-dark);
+            font-size: 2rem;
+        }
+
+        .curator-text {
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            line-height: 1.9;
+            font-style: italic;
+            padding-left: 2rem;
+            border-left: 3px solid var(--accent-light);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            padding: 1rem 2rem;
+            border-radius: 10px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 1.05rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--primary-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
 
         .loading {
@@ -238,94 +454,25 @@
         }
 
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+            0% {
+                transform: rotate(0deg);
+            }
 
-        .error {
-            text-align: center;
-            padding: 3rem;
-            color: #e53e3e;
-            background: #fff5f5;
-            border-radius: 12px;
-            margin: 2rem 0;
-        }
-
-        .collections-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2.5rem;
-        }
-
-        .collection-item {
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            overflow: hidden;
-            cursor: pointer;
-        }
-
-        .collection-item:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
-        }
-
-        .collection-item img {
-            width: 100%;
-            height: 250px;
-            object-fit: cover;
-            display: block;
-        }
-
-        .collection-info {
-            padding: 1.5rem;
-        }
-
-        .collection-title {
-            color: var(--primary-dark);
-            font-size: 1.3rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            text-align: center;
-        }
-
-        .collection-artist {
-            color: var(--accent);
-            font-size: 0.95rem;
-            font-weight: 500;
-            margin-bottom: 0.8rem;
-            text-align: center;
-        }
-
-        .collection-meta {
-            display: flex;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin-top: 0.8rem;
-        }
-
-        .collection-badge {
-            color: var(--text-light);
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            padding: 0.3rem 0.8rem;
-            background: var(--neutral-light);
-            border-radius: 15px;
-            display: inline-block;
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .no-results {
             text-align: center;
-            padding: 4rem 2rem;
+            padding: 5rem 2rem;
             color: var(--text-light);
         }
 
         .no-results .material-icons {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            opacity: 0.5;
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            opacity: 0.4;
         }
 
         footer {
@@ -366,30 +513,42 @@
             opacity: 0.8;
         }
 
+        @media (max-width: 1024px) {
+            .exhibition-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .featured-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
             }
 
-            .page-content {
-                padding-top: 4.5rem;
-            }
-
-            .hero {
-                padding: 4rem 0 3rem;
-            }
-
             .hero-content h1 {
-                font-size: 2.3rem;
+                font-size: 2.5rem;
             }
 
-            .collections-grid {
-                grid-template-columns: 1fr;
+            .exhibition-overview {
                 gap: 2rem;
             }
 
-            .container {
-                padding: 2rem 1rem;
+            .overview-content,
+            .themes-section,
+            .curator-section,
+            .featured-images {
+                padding: 2rem;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .themes-grid {
+                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
             }
         }
     </style>
@@ -423,27 +582,66 @@
         </section>
 
         <div class="container">
-            <div class="section-title">
-                <h2>Collection Gallery</h2>
+            <div class="exhibition-overview">
+                <div class="overview-content">
+                    <h2>
+                        <span class="material-icons">info</span>
+                        About This Exhibition
+                    </h2>
+                    <div class="timeline-badge">
+                        <span class="material-icons" style="font-size: 1.2rem;">schedule</span>
+                        <span id="timeline-text">Loading...</span>
+                    </div>
+                    <p class="overview-text" id="detailed-description">Loading exhibition details...</p>
+
+                    <div class="stats-grid">
+                        <div class="stat-box">
+                            <div class="stat-number" id="artifact-count">0</div>
+                            <div class="stat-label">Artifacts</div>
+                        </div>
+                        <div class="stat-box">
+                            <div class="stat-number" id="classification-count">0</div>
+                            <div class="stat-label">Categories</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="featured-images">
+                    <h3>
+                        <span class="material-icons">collections</span>
+                        Featured Pieces
+                    </h3>
+                    <div class="featured-grid" id="featured-grid">
+                        <div class="loading" style="grid-column: 1 / -1;">
+                            <div class="spinner"></div>
+                            Loading featured items...
+                        </div>
+                    </div>
+                    <div class="featured-action">
+                        <a href="Gallery.html" class="btn btn-primary" id="gallery-link">
+                            <span class="material-icons">view_module</span>
+                            Explore Full Gallery
+                        </a>
+                    </div>
+                </div>
             </div>
 
-            <div id="loading" class="loading">
-                <div class="spinner"></div>
-                Loading collection...
+            <div class="themes-section">
+                <h2>Artifact Classifications</h2>
+                <div id="classifications-loading" class="loading">
+                    <div class="spinner"></div>
+                    Loading classifications...
+                </div>
+                <div class="themes-grid" id="themes-grid"></div>
             </div>
 
-            <div id="error" class="error" style="display: none;">
-                <h3>Unable to Load Collection</h3>
-                <p id="error-message"></p>
+            <div class="curator-section">
+                <div class="curator-header">
+                    <span class="material-icons">format_quote</span>
+                    <h2>Curator's Perspective</h2>
+                </div>
+                <p class="curator-text" id="curator-text">Loading curator's note...</p>
             </div>
-
-            <div id="no-results" class="no-results" style="display: none;">
-                <div class="material-icons">inventory_2</div>
-                <h3>No Artifacts Found</h3>
-                <p>This exhibition currently has no artifacts on display.</p>
-            </div>
-
-            <div class="collections-grid" id="collections-grid"></div>
         </div>
     </div>
 
@@ -474,134 +672,181 @@
             <div class="footer-bottom">
                 <p>&copy; 2025 ATHAR Museum. All rights reserved.</p>
             </div>
-        </div>
     </footer>
+    </div>
 
     <script type="module">
         import { db } from './firebase-config.js';
-        import { collection, getDocs, query, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        const exhibitionDescriptions = {
-            'Arab Heritage': 'Discover the golden age of Islamic civilization through calligraphy, manuscripts, and architectural elements that showcase the Arab world\'s contributions to science, literature, and art.',
-            'Persian Heritage': 'Journey through the splendor of ancient Persia with exquisite miniature paintings, intricate tilework, and legendary poetry manuscripts from one of history\'s greatest empires.',
-            'Indian Heritage': 'Experience the vibrant colors and spiritual depth of Indian art, from Mughal miniatures to sacred sculptures, textiles, and ceremonial objects spanning millennia.',
-            'Andalusian Heritage': 'Step into Al-Andalus, where Islamic, Christian, and Jewish cultures merged to create a unique civilization of tolerance, innovation, and artistic brilliance.',
-            'Turkish Heritage': 'Witness the grandeur of the Ottoman Empire through imperial treasures, ceramics from Iznik, elaborate textiles, and military regalia that defined an era.',
-            'Others': 'Explore diverse collections from cultures across Asia, Africa, and beyond. From ancient trade routes to contemporary cultural exchanges that connect our world.'
+        const exhibitionData = {
+            'Arab Heritage': {
+                description: 'Discover the golden age of Islamic civilization through calligraphy, manuscripts, and architectural elements that showcase the Arab world\'s contributions to science, literature, and art.',
+                detailedDescription: 'The Arab Heritage collection spans over a millennium of cultural achievement, from the early Islamic period through the golden age of the Abbasid Caliphate. These artifacts illuminate the profound impact of Arab scholars, artists, and thinkers on world civilization. From the House of Wisdom in Baghdad to the grand mosques of Damascus and Cairo, Arab culture has been a beacon of learning and artistic excellence.',
+                timeline: '7th - 19th Century CE',
+                curatorNote: 'This collection showcases the remarkable intellectual and artistic achievements of Arab civilization. From intricate geometric patterns to profound literary works, these pieces remind us that beauty and knowledge have always been intertwined in Islamic culture. The sophistication of Arabic calligraphy, the precision of astronomical instruments, and the elegance of architectural designs all speak to a civilization that valued both aesthetics and intellect.'
+            },
+            'Persian Heritage': {
+                description: 'Journey through the splendor of ancient Persia with exquisite miniature paintings, intricate tilework, and legendary poetry manuscripts from one of history\'s greatest empires.',
+                detailedDescription: 'The Persian collection celebrates one of the world\'s oldest continuous civilizations, spanning from the mighty Achaemenid Empire through the artistic zenith of the Safavid dynasty. Persian culture has profoundly influenced art, poetry, and philosophy across vast regions. The miniature paintings reveal stories of legendary heroes and mystical romances, while the tilework demonstrates unparalleled technical mastery.',
+                timeline: '550 BCE - 18th Century CE',
+                curatorNote: 'Persian art speaks to the soul with its delicate miniatures and profound poetry. Each piece in this collection reflects the Persian devotion to beauty, wisdom, and the celebration of human experience through artistic expression. The works of masters like Rumi and Hafez continue to inspire, while the visual arts demonstrate a culture that saw no separation between the material and the spiritual.'
+            },
+            'Indian Heritage': {
+                description: 'Experience the vibrant colors and spiritual depth of Indian art, from Mughal miniatures to sacred sculptures, textiles, and ceremonial objects spanning millennia.',
+                detailedDescription: 'The Indian Heritage collection encompasses the incredible diversity of the subcontinent\'s artistic traditions. From ancient temple sculptures carved in stone to the refined court paintings of the Mughal era, these works reflect India\'s rich spiritual and cultural heritage. The collection includes sacred texts, ceremonial objects, intricate textiles, and devotional art that showcase the region\'s deep philosophical traditions.',
+                timeline: '3rd Century BCE - 19th Century CE',
+                curatorNote: 'Indian art is characterized by its spiritual depth and vibrant expression. These pieces demonstrate how art and devotion merge seamlessly in Indian culture, creating works that are both beautiful and deeply meaningful. Whether in the serene face of a Buddha statue or the dynamic energy of Hindu deities, Indian art invites contemplation and celebrates the divine in all forms.'
+            },
+            'Andalusian Heritage': {
+                description: 'Step into Al-Andalus, where Islamic, Christian, and Jewish cultures merged to create a unique civilization of tolerance, innovation, and artistic brilliance.',
+                detailedDescription: 'The Andalusian collection represents a golden age of cultural synthesis in medieval Iberia. For nearly 800 years, Al-Andalus was a beacon of learning, religious tolerance, and artistic innovation that influenced all of Europe. This period saw remarkable achievements in architecture, philosophy, music, and the sciences. The Great Mosque of Córdoba and the Alhambra palace stand as testaments to this era\'s artistic genius.',
+                timeline: '711 - 1492 CE',
+                curatorNote: 'Andalusian art represents a unique moment in history when different cultures coexisted and enriched one another. These pieces remind us of the power of cultural exchange and the beauty that emerges from diversity. The geometric patterns, arabesque designs, and muqarnas vaulting showcase a civilization that achieved harmony through difference.'
+            },
+            'Turkish Heritage': {
+                description: 'Witness the grandeur of the Ottoman Empire through imperial treasures, ceramics from Iznik, elaborate textiles, and military regalia that defined an era.',
+                detailedDescription: 'The Turkish collection showcases the magnificence of the Ottoman Empire, which ruled for over six centuries as a bridge between East and West. These artifacts reflect the empire\'s sophisticated court culture and artistic patronage. The famous Iznik ceramics, with their vibrant blue and white designs, represent the peak of Ottoman artistic achievement, while elaborate textiles and imperial treasures reveal the wealth and power of the sultans.',
+                timeline: '1299 - 1922 CE',
+                curatorNote: 'Ottoman art reflects an empire that valued both martial prowess and refined aesthetics. From the famous Iznik ceramics to elaborate textiles, these pieces show how the Ottomans synthesized influences from across their vast territories—Persian, Arab, Byzantine, and European—creating a unique and instantly recognizable artistic tradition.'
+            },
+            'Others': {
+                description: 'Explore diverse collections from cultures across Asia, Africa, and beyond. From ancient trade routes to contemporary cultural exchanges that connect our world.',
+                detailedDescription: 'This collection celebrates the diversity of human creativity across regions and time periods. These artifacts demonstrate the interconnectedness of world cultures through trade, migration, and cultural exchange. From the Silk Road to maritime trade routes, these pieces tell stories of how ideas, techniques, and artistic traditions traveled and transformed across continents.',
+                timeline: 'Various Periods',
+                curatorNote: 'These diverse pieces remind us that every culture has contributed to the rich tapestry of human civilization. Together, they tell stories of connection, innovation, and the universal human impulse to create beauty. Each artifact bridges geographical and temporal distances, revealing our shared humanity.'
+            }
         };
 
         const urlParams = new URLSearchParams(window.location.search);
         let exhibitionName = urlParams.get('exhibition');
-        
-        // Trim any whitespace from the exhibition name
+
         if (exhibitionName) {
             exhibitionName = exhibitionName.trim();
         }
 
-        const loading = document.getElementById('loading');
-        const errorDiv = document.getElementById('error');
-        const noResults = document.getElementById('no-results');
-        const collectionsGrid = document.getElementById('collections-grid');
-
-        function showError(message) {
-            loading.style.display = 'none';
-            errorDiv.style.display = 'block';
-            document.getElementById('error-message').textContent = message;
-        }
-
         function updatePageHeader() {
+            const data = exhibitionData[exhibitionName] || {};
+
             document.getElementById('exhibition-title').textContent = exhibitionName || 'Exhibition';
-            document.getElementById('exhibition-description').textContent = exhibitionDescriptions[exhibitionName] || 'Explore our curated collection of artifacts.';
+            document.getElementById('exhibition-description').textContent = data.description || 'Explore our curated collection of artifacts.';
+            document.getElementById('detailed-description').textContent = data.detailedDescription || data.description || 'Explore our curated collection of artifacts.';
+            document.getElementById('timeline-text').textContent = data.timeline || 'Various Periods';
+            document.getElementById('curator-text').textContent = data.curatorNote || 'Each piece in this collection has been carefully selected to tell the story of this remarkable culture.';
             document.title = `${exhibitionName} - ATHAR Museum`;
+
+            // Update gallery link
+            const galleryLink = document.getElementById('gallery-link');
+            galleryLink.href = `Gallery.html?exhibition=${encodeURIComponent(exhibitionName)}&from=ExhibitionDetails`;
         }
 
-        async function loadExhibitionCollection() {
-            if (!exhibitionName) {
-                showError('No exhibition specified. Please select an exhibition from the Exhibitions page.');
+        function updateFeaturedImages(artifacts) {
+            const featuredGrid = document.getElementById('featured-grid');
+
+            if (artifacts.length === 0) {
+                featuredGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-light);">No featured items available</p>';
                 return;
             }
 
-            updatePageHeader();
+            // Get up to 4 random artifacts for featured display
+            const shuffled = [...artifacts].sort(() => 0.5 - Math.random());
+            const featured = shuffled.slice(0, 4);
 
-            try {
-                console.log(`Fetching artifacts for exhibition: ${exhibitionName}`);
-                
-                // Get all documents from the collection
-                const collectionRef = collection(db, "Museum_Collection");
-                const querySnapshot = await getDocs(collectionRef);
-                
-                const artifacts = [];
-
-                // Filter locally to handle whitespace issues
-                querySnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const exhibitionField = data.Exhibition ? data.Exhibition.trim() : '';
-                    
-                    if (exhibitionField === exhibitionName) {
-                        artifacts.push({ id: doc.id, ...data });
-                    }
-                });
-                
-                console.log(`Found ${artifacts.length} artifacts`);
-
-                if (artifacts.length === 0) {
-                    loading.style.display = 'none';
-                    noResults.style.display = 'block';
-                    return;
-                }
-
-                renderCollection(artifacts);
-
-            } catch (error) {
-                console.error('Error loading exhibition:', error);
-                showError(`Failed to load exhibition: ${error.message}`);
-            }
-        }
-
-        function renderCollection(artifacts) {
-            loading.style.display = 'none';
-            collectionsGrid.innerHTML = '';
-
-            artifacts.forEach(item => {
-                const div = document.createElement('div');
-                div.className = 'collection-item';
-
-                const imageURL = item.imageURL || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="280" height="250" viewBox="0 0 280 250"%3E%3Crect fill="%23e2e8f0" width="280" height="250"/%3E%3Ctext x="140" y="125" text-anchor="middle" fill="%23718096" font-size="18"%3ENo Image%3C/text%3E%3C/svg%3E';
+            featuredGrid.innerHTML = featured.map(item => {
+                const imageURL = item.imageURL || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect fill="%23e2e8f0" width="200" height="200"/%3E%3Ctext x="100" y="100" text-anchor="middle" fill="%23718096" font-size="16"%3ENo Image%3C/text%3E%3C/svg%3E';
                 const title = item.title || 'Untitled';
-                const artist = item.artist || 'Unknown Artist';
-                const category = item.classification || '';
+                const currentPage = window.location.pathname.split('/').pop();
 
-                div.innerHTML = `
-                    <img src="${imageURL}" alt="${title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"280\\" height=\\"250\\" viewBox=\\"0 0 280 250\\"%3E%3Crect fill=\\"%23e2e8f0\\" width=\\"280\\" height=\\"250\\"/%3E%3Ctext x=\\"140\\" y=\\"125\\" text-anchor=\\"middle\\" fill=\\"%23718096\\" font-size=\\"18\\"%3EImage Error%3C/text%3E%3C/svg%3E'">
-                    <div class="collection-info">
-                        <h3 class="collection-title">${title}</h3>
-                        <p class="collection-artist">${artist}</p>
-                        <div class="collection-meta">
-                            ${category ? `<span class="collection-badge">${category}</span>` : ''}
-                        </div>
+                return `
+                    <div class="featured-item" onclick="window.location.href='ArtDetails.html?id=${item.id}&from=ExhibitionDetails.html&exhibition=${encodeURIComponent(exhibitionName)}'">
+                        <img src="${imageURL}" alt="${title}" onerror="...">
+                        <div class="featured-overlay">${title}</div>
                     </div>
                 `;
-
-                div.addEventListener('click', () => {
-                    window.location.href = `ArtDetails.html?id=${item.id}`;
-                });
-
-                collectionsGrid.appendChild(div);
-            });
+            }).join('');
         }
 
-        window.addEventListener('scroll', function () {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                nav.style.padding = '0.7rem 0';
-                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
-            } else {
-                nav.style.padding = '1rem 0';
-                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
-            }
-        });
+        function updateClassifications(artifacts) {
+            const themesGrid = document.getElementById('themes-grid');
+            const classificationsLoading = document.getElementById('classifications-loading');
 
-        document.addEventListener('DOMContentLoaded', loadExhibitionCollection);
+            // Count artifacts by classification
+            const classificationCounts = {};
+            artifacts.forEach(item => {
+                const classification = item.classification ? item.classification.trim() : 'Unclassified';
+                classificationCounts[classification] = (classificationCounts[classification] || 0) + 1;
+            });
+
+            // Sort by count (descending)
+            const sortedClassifications = Object.entries(classificationCounts)
+                .sort((a, b) => b[1] - a[1]);
+
+            classificationsLoading.style.display = 'none';
+
+            if (sortedClassifications.length === 0) {
+                themesGrid.innerHTML = '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-light);">No classifications available</p>';
+                return;
+            }
+
+            themesGrid.innerHTML = sortedClassifications.map(([classification, count]) => `
+                <div class="theme-card">
+                    <div class="theme-title">${classification}</div>
+                    <div class="theme-count">${count}</div>
+                </div>
+            `).join('');
+
+            // Update classification count in stats
+            document.getElementById('classification-count').textContent = sortedClassifications.length;
+        }
+
+        async function loadExhibitionData() {
+            if (!exhibitionName) {
+                console.error('No exhibition specified');
+                document.getElementById('exhibition-title').textContent = 'Exhibition Not Found';
+                return;
+            }
+
+            try {
+                updatePageHeader();
+
+                // Load artifacts from the database
+                const artifactsCollection = collection(db, 'Museum_Collection');
+                const querySnapshot = await getDocs(artifactsCollection);
+
+                const artifacts = [];
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+
+                    // ✅ Normalize both sides: trim spaces and compare case‑insensitively
+                    if (
+                        data.Exhibition &&
+                        data.Exhibition.trim().toLowerCase() === exhibitionName.trim().toLowerCase()
+                    ) {
+                        artifacts.push({
+                            id: doc.id,
+                            ...data
+                        });
+                    }
+                });
+
+                // Update artifact count
+                document.getElementById('artifact-count').textContent = artifacts.length;
+
+                // Update featured images
+                updateFeaturedImages(artifacts);
+
+                // Update classifications
+                updateClassifications(artifacts);
+
+            } catch (error) {
+                console.error('Error loading exhibition data:', error);
+                document.getElementById('featured-grid').innerHTML =
+                    '<p style="grid-column: 1 / -1; text-align: center; color: var(--text-light);">Error loading data</p>';
+            }
+        }
+
+        // Load data when page loads
+        loadExhibitionData()
     </script>
 </body>
 

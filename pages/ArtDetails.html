@@ -11,17 +11,17 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-            --primary-dark: #653025;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
+            --primary-dark: #653025;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
         }
 
         * {
@@ -511,7 +511,6 @@
 
     <script type="module">
         import { db } from './firebase-config.js';
-        // import { doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { doc, getDoc, updateDoc, arrayUnion, arrayRemove, increment }
             from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged }
@@ -602,12 +601,50 @@
             }
         });
 
+        const params = new URLSearchParams(window.location.search);
+        const fromPage = params.get('from') || document.referrer || 'Gallery.html';
+        const exhibitionParam = params.get('exhibition');
+
+        // Store exhibition if provided
+        if (exhibitionParam) {
+            sessionStorage.setItem('currentExhibition', exhibitionParam);
+        }
+
         document.querySelector('.back-button').addEventListener('click', function (e) {
             e.preventDefault();
+
+            // Save current artwork ID to scroll back to it if needed
             if (currentArtworkId) {
                 sessionStorage.setItem('scrollToArtwork', currentArtworkId);
             }
-            window.location.href = 'Gallery.html';
+
+            // Determine where to navigate back to
+            if (fromPage.includes('ExhibitionDetails.html')) {
+                // Coming from Exhibition Details
+                const exhibitionName = exhibitionParam || sessionStorage.getItem('currentExhibition');
+
+                if (exhibitionName) {
+                    window.location.href = `ExhibitionDetails.html?exhibition=${encodeURIComponent(exhibitionName)}`;
+                } else {
+                    // Fallback if no exhibition name is available
+                    window.location.href = 'Exhibitions.html';
+                }
+            } else if (fromPage.includes('Gallery.html')) {
+                // Coming from Gallery
+                const galleryFilter = sessionStorage.getItem('galleryExhibitionFilter') || exhibitionParam;
+
+                if (galleryFilter) {
+                    window.location.href = `Gallery.html?exhibition=${encodeURIComponent(galleryFilter)}`;
+                } else {
+                    window.location.href = 'Gallery.html';
+                }
+            } else if (document.referrer && document.referrer.includes(window.location.hostname)) {
+                // Use browser back if from same site and source is unclear
+                window.history.back();
+            } else {
+                // Default fallback
+                window.location.href = 'Gallery.html';
+            }
         });
 
         window.addEventListener('scroll', function () {
@@ -621,6 +658,7 @@
             }
         });
 
+        // ===== LIKE FUNCTIONALITY =====
         const likeBtn = document.getElementById("likeBtn");
         const likeCountEl = document.getElementById("likeCount");
         let currentUser = null;
@@ -641,13 +679,12 @@
                 likeCountEl.textContent = data.likesCount || 0;
 
                 if (data.likedBy && data.likedBy.includes(currentUser.uid)) {
-                    likeBtn.textContent = "favorite"; // filled heart
+                    likeBtn.textContent = "favorite";
                     likeBtn.classList.add("liked");
                 } else {
-                    likeBtn.textContent = "favorite_border"; // outlined heart
+                    likeBtn.textContent = "favorite_border";
                     likeBtn.classList.remove("liked");
                 }
-
             }
         }
 
@@ -676,7 +713,6 @@
                 likeCountEl.textContent = (data.likesCount || 0) + 1;
             }
         });
-
     </script>
 </body>
 
