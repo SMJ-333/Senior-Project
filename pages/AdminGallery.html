@@ -698,6 +698,7 @@
                     </select>
                 </div>
 
+
                 <div class="form-group">
                     <label class="form-label">Description</label>
                     <textarea class="form-textarea" id="artwork-description"></textarea>
@@ -708,6 +709,19 @@
                     <input type="url" class="form-input" id="artwork-image" required>
                     <img id="image-preview" class="image-preview" alt="Preview">
                 </div>
+
+                 <div class="form-group">
+                <label class="form-label">Exhibition *</label>
+                <select class="form-select" id="artwork-exhibition" required>
+                    <option value="">Select Exhibition</option>
+                    <option value="Arab Heritage">Arab Heritage</option>
+                    <option value="Persian Heritage">Persian Heritage</option>
+                    <option value="Indian Heritage">Indian Heritage</option>
+                    <option value="Andalusian Heritage">Andalusian Heritage</option>
+                    <option value="Turkish Heritage">Turkish Heritage</option>
+                    <option value="Others">Others</option>
+                </select>
+            </div>
 
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
@@ -1162,6 +1176,7 @@
             document.getElementById('artwork-category').value = (artwork.classification || '').toLowerCase();
             document.getElementById('artwork-description').value = artwork.description || '';
             document.getElementById('artwork-image').value = artwork.imageURL || '';
+            document.getElementById('artwork-exhibition').value = (artwork.Exhibition || '').toLowerCase();
             
             const preview = document.getElementById('image-preview');
             if (artwork.imageURL) {
@@ -1210,7 +1225,8 @@
                 artistName: document.getElementById('artwork-artist').value,
                 classification: document.getElementById('artwork-category').value,
                 description: document.getElementById('artwork-description').value,
-                imageURL: document.getElementById('artwork-image').value
+                imageURL: document.getElementById('artwork-image').value,
+                Exhibition: document.getElementById('artwork-exhibition').value
             };
 
             // عند الإضافة فقط، نضيف حقول الإعجابات

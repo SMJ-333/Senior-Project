@@ -138,6 +138,7 @@
             cursor: pointer;
             text-decoration: none;
             transition: var(--transition);
+            position: relative;
         }
 
         .account-icon:hover {
@@ -149,6 +150,34 @@
         .account-icon.active {
             background: linear-gradient(135deg, var(--accent), var(--accent-light));
             color: var(--primary-dark);
+        }
+
+        /* Notification Badge on Account Icon */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 2px solid var(--white);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .page-content {
@@ -337,6 +366,9 @@
             margin-bottom: 1rem;
             border-bottom: 2px solid var(--neutral-light);
             padding-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .form-grid {
@@ -368,32 +400,6 @@
             outline: none;
             border-color: var(--accent);
             box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.2);
-        }
-
-        .password-requirements {
-            margin-top: 0.5rem;
-            padding: 0.75rem;
-            background: #f7fafc;
-            border-radius: 6px;
-            font-size: 0.85rem;
-        }
-
-        .password-requirements ul {
-            margin: 0.5rem 0 0 1.5rem;
-            padding: 0;
-        }
-
-        .password-requirements li {
-            margin: 0.25rem 0;
-            color: var(--text-light);
-        }
-
-        .password-requirements li.valid {
-            color: var(--success);
-        }
-
-        .password-requirements li.invalid {
-            color: var(--error);
         }
 
         .btn-group {
@@ -477,6 +483,133 @@
             color: var(--text-light);
         }
 
+        /* Notifications Section */
+        .notifications-section {
+            margin-bottom: 2.5rem;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .mark-all-read-btn {
+            background: var(--accent-light);
+            color: var(--primary-dark);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .mark-all-read-btn:hover {
+            background: var(--accent);
+        }
+
+        .notifications-list {
+            max-height: 500px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .notification-item {
+            background: var(--neutral-light);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid var(--accent);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .notification-item:hover {
+            background: #e8e4d5;
+            transform: translateX(5px);
+        }
+
+        .notification-item.unread {
+            background: #fff9e6;
+            border-left-color: #f39c12;
+        }
+
+        .notification-item.unread::before {
+            content: '';
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            background: #f39c12;
+            border-radius: 50%;
+            margin-right: 0.5rem;
+        }
+
+        .notification-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .notification-date {
+            font-size: 0.8rem;
+            color: var(--text-light);
+        }
+
+        .notification-message {
+            color: var(--text-dark);
+            line-height: 1.5;
+            margin-bottom: 0.5rem;
+        }
+
+        .notification-type-badge {
+            display: inline-block;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .badge-news {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .badge-event {
+            background: #f3e5f5;
+            color: #7b1fa2;
+        }
+
+        .badge-reminder {
+            background: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .no-notifications {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .no-notifications .material-icons {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
         @media (max-width: 768px) {
             .nav-links {
                 display: none;
@@ -509,6 +642,7 @@
             </ul>
             <a href="Account.html" class="account-icon active" title="My Account">
                 <span class="material-icons">person</span>
+                <span class="notification-badge" id="navNotificationBadge" style="display: none;">0</span>
             </a>
         </div>
     </nav>
@@ -517,7 +651,7 @@
         <section class="page-hero">
             <div class="container" style="max-width: 1200px; margin: 0 auto; padding: 0 2rem;">
                 <h1>My Account</h1>
-                <p>Manage your profile information and account settings</p>
+                <p>Manage your profile information and notifications</p>
             </div>
         </section>
 
@@ -527,6 +661,35 @@
             </div>
 
             <div id="accountContent" style="display: none;">
+                <!-- Notifications Section -->
+                <div class="account-card notifications-section">
+                    <div class="section-title">
+                        <span class="material-icons">notifications</span>
+                        Notifications
+                        <span id="unreadCount" style="margin-left: auto; color: var(--accent); font-size: 0.9rem;"></span>
+                    </div>
+
+                    <div class="notifications-header">
+                        <button class="mark-all-read-btn" id="markAllReadBtn" onclick="markAllNotificationsRead()">
+                            Mark All as Read
+                        </button>
+                    </div>
+
+                    <div id="notificationsLoading" class="loading" style="padding: 2rem;">
+                        Loading notifications...
+                    </div>
+
+                    <div id="notificationsList" class="notifications-list" style="display: none;">
+                        <!-- Notifications will be loaded here -->
+                    </div>
+
+                    <div id="noNotifications" class="no-notifications" style="display: none;">
+                        <span class="material-icons">notifications_none</span>
+                        <h3>No Notifications</h3>
+                        <p>You don't have any notifications yet</p>
+                    </div>
+                </div>
+
                 <div class="account-card">
                     <div class="card-header">
                         <div class="profile-section">
@@ -653,48 +816,24 @@
             doc,
             getDoc,
             updateDoc,
-            Timestamp,
             collection,
             query,
             where,
             getDocs
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        
+        import { 
+            listenToNotifications, 
+            markAsRead, 
+            markAllAsRead,
+            getUnreadCount,
+            startNotificationScheduler
+        } from './notification-system.js';
 
         let currentUser = null;
         let userData = null;
         let originalUsername = '';
-
-        function validatePassword(password) {
-            const requirements = {
-                length: password.length >= 6,
-                uppercase: /[A-Z]/.test(password)
-            };
-
-            return requirements;
-        }
-
-        function isPasswordValid(password) {
-            const requirements = validatePassword(password);
-            return requirements.length && requirements.uppercase;
-        }
-
-        async function checkUsernameExists(username, currentUserId) {
-            try {
-                const usersRef = collection(db, "Users");
-                const q = query(usersRef, where("Username", "==", username));
-                const querySnapshot = await getDocs(q);
-
-                if (querySnapshot.empty) {
-                    return false;
-                }
-
-                const existingDoc = querySnapshot.docs[0];
-                return existingDoc.id !== currentUserId;
-            } catch (error) {
-                console.error("Error checking username:", error);
-                throw error;
-            }
-        }
+        let notificationsUnsubscribe = null;
 
         function showAlert(message, type) {
             const existingAlerts = document.querySelectorAll('.alert');
@@ -728,6 +867,113 @@
             return date.toISOString().split('T')[0];
         }
 
+        function formatNotificationDate(timestamp) {
+            if (!timestamp) return '';
+            const date = timestamp.toDate ? timestamp.toDate() : new Date(timestamp);
+            const now = new Date();
+            const diffMs = now - date;
+            const diffMins = Math.floor(diffMs / 60000);
+            const diffHours = Math.floor(diffMs / 3600000);
+            const diffDays = Math.floor(diffMs / 86400000);
+
+            if (diffMins < 1) return 'Just now';
+            if (diffMins < 60) return `${diffMins} min ago`;
+            if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
+            if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        function getNotificationIcon(type) {
+            switch(type) {
+                case 'news': return 'article';
+                case 'event_registration': return 'event_available';
+                case 'event_reminder': return 'notification_important';
+                case 'event_upcoming': return 'event';
+                default: return 'notifications';
+            }
+        }
+
+        function getNotificationBadgeClass(type) {
+            if (type === 'news') return 'badge-news';
+            if (type.includes('event')) return 'badge-event';
+            return 'badge-reminder';
+        }
+
+        function renderNotifications(notifications) {
+            const loading = document.getElementById('notificationsLoading');
+            const list = document.getElementById('notificationsList');
+            const noNotifs = document.getElementById('noNotifications');
+            const unreadCountEl = document.getElementById('unreadCount');
+            const navBadge = document.getElementById('navNotificationBadge');
+
+            loading.style.display = 'none';
+
+            const unreadCount = notifications.filter(n => !n.isRead).length;
+            
+            if (unreadCount > 0) {
+                unreadCountEl.textContent = `${unreadCount} unread`;
+                navBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                navBadge.style.display = 'flex';
+            } else {
+                unreadCountEl.textContent = '';
+                navBadge.style.display = 'none';
+            }
+
+            if (notifications.length === 0) {
+                list.style.display = 'none';
+                noNotifs.style.display = 'block';
+                return;
+            }
+
+            noNotifs.style.display = 'none';
+            list.style.display = 'flex';
+            
+            list.innerHTML = notifications.map(notif => `
+                <div class="notification-item ${notif.isRead ? '' : 'unread'}" 
+                     onclick="handleNotificationClick('${notif.id}', ${notif.isRead})">
+                    <div class="notification-header">
+                        <div class="notification-title">
+                            <span class="material-icons" style="font-size: 1.2rem; color: var(--accent);">
+                                ${getNotificationIcon(notif.type)}
+                            </span>
+                            ${notif.title}
+                        </div>
+                        <div class="notification-date">${formatNotificationDate(notif.createdAt)}</div>
+                    </div>
+                    <div class="notification-message">${notif.message}</div>
+                    <span class="notification-type-badge ${getNotificationBadgeClass(notif.type)}">
+                        ${notif.type.replace('_', ' ')}
+                    </span>
+                </div>
+            `).join('');
+        }
+
+        window.handleNotificationClick = async function(notificationId, isRead) {
+            if (!isRead) {
+                await markAsRead(notificationId);
+            }
+        }
+
+        window.markAllNotificationsRead = async function() {
+            if (!currentUser) return;
+            
+            const result = await markAllAsRead(currentUser.uid);
+            if (result) {
+                showAlert('All notifications marked as read!', 'success');
+            }
+        }
+
+        function loadNotifications() {
+            if (!currentUser) return;
+
+            const loading = document.getElementById('notificationsLoading');
+            loading.style.display = 'block';
+
+            notificationsUnsubscribe = listenToNotifications(currentUser.uid, (notifications) => {
+                renderNotifications(notifications);
+            });
+        }
+
         async function loadUserData() {
             if (!currentUser) return;
 
@@ -749,12 +995,32 @@
 
                     document.getElementById('loadingState').style.display = 'none';
                     document.getElementById('accountContent').style.display = 'block';
+
+                    loadNotifications();
                 } else {
                     showAlert('User data not found. Please contact support.', 'error');
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
                 showAlert('Failed to load user data. Please try again.', 'error');
+            }
+        }
+
+        async function checkUsernameExists(username, currentUserId) {
+            try {
+                const usersRef = collection(db, "Users");
+                const q = query(usersRef, where("Username", "==", username));
+                const querySnapshot = await getDocs(q);
+
+                if (querySnapshot.empty) {
+                    return false;
+                }
+
+                const existingDoc = querySnapshot.docs[0];
+                return existingDoc.id !== currentUserId;
+            } catch (error) {
+                console.error("Error checking username:", error);
+                throw error;
             }
         }
 
@@ -813,8 +1079,8 @@
                 return;
             }
 
-            if (!isPasswordValid(newPassword)) {
-                showAlert('Password must be at least 6 characters and contain at least one uppercase letter.', 'error');
+            if (newPassword.length < 6) {
+                showAlert('Password must be at least 6 characters.', 'error');
                 return;
             }
 
@@ -863,6 +1129,10 @@
 
         window.confirmLogout = async function () {
             try {
+                if (notificationsUnsubscribe) {
+                    notificationsUnsubscribe();
+                }
+                
                 await signOut(auth);
                 sessionStorage.clear();
                 localStorage.removeItem('isLoggedIn');
@@ -907,6 +1177,7 @@
             if (user) {
                 currentUser = user;
                 loadUserData();
+                startNotificationScheduler();
             } else {
                 window.location.href = 'LogIn.html';
             }

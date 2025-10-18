@@ -814,6 +814,7 @@
     </div>
 
     <script type="module">
+        import { sendNewsNotificationToUsers } from './notification-system.js';
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
@@ -844,11 +845,15 @@
         const deletedTbody = document.getElementById('deleted-tbody');
 
         onAuthStateChanged(auth, (user) => {
-            if (user) {
-                currentUser = user;
-                document.getElementById('admin-email').textContent = user.email;
-            }
-        });
+    if (user) {
+        currentUser = user;
+        // تحقق من وجود العنصر قبل تعيين القيمة
+        const adminEmailElement = document.getElementById('admin-email');
+        if (adminEmailElement) {
+            adminEmailElement.textContent = user.email;
+        }
+    }
+});
 
         function formatDate(timestamp) {
             if (!timestamp) return 'Unknown';
@@ -1049,54 +1054,63 @@
             imagePreview.style.display = 'none';
         }
 
-        async function handleSubmit(e) {
-            e.preventDefault();
+       async function handleSubmit(e) {
+    e.preventDefault();
 
-            const title = document.getElementById('news-title').value.trim();
-            const category = document.getElementById('news-category').value;
-            const excerpt = document.getElementById('news-excerpt').value.trim();
-            const content = document.getElementById('news-content').value.trim();
-            const imageURL = document.getElementById('news-image').value.trim();
-            const isFeatured = document.getElementById('news-featured').checked;
-            const isNew = document.getElementById('news-new').checked;
+    const title = document.getElementById('news-title').value.trim();
+    const category = document.getElementById('news-category').value;
+    const excerpt = document.getElementById('news-excerpt').value.trim();
+    const content = document.getElementById('news-content').value.trim();
+    const imageURL = document.getElementById('news-image').value.trim();
+    const isFeatured = document.getElementById('news-featured').checked;
+    const isNew = document.getElementById('news-new').checked;
 
-            if (!title || !category || !content || !imageURL) {
-                alert('Please fill in all required fields');
-                return;
-            }
+    if (!title || !category || !content || !imageURL) {
+        alert('Please fill in all required fields');
+        return;
+    }
 
-            submitBtn.disabled = true;
-            submitBtn.textContent = currentEditId ? 'Updating...' : 'Publishing...';
+    submitBtn.disabled = true;
+    submitBtn.textContent = currentEditId ? 'Updating...' : 'Publishing...';
 
-            try {
-                const newsData = {
-                    title,
-                    category,
-                    excerpt: excerpt || content.substring(0, 150),
-                    content,
-                    imageURL,
-                    isFeatured,
-                    isNew
-                };
+    try {
+        const newsData = {
+            title,
+            category,
+            excerpt: excerpt || content.substring(0, 150),
+            content,
+            imageURL,
+            isFeatured,
+            isNew
+        };
 
-                if (currentEditId) {
-                    await updateDoc(doc(db, "News", currentEditId), newsData);
-                    alert('News article updated successfully!');
-                } else {
-                    newsData.publishedAt = Timestamp.now();
-                    await addDoc(collection(db, "News"), newsData);
-                    alert('News article published successfully!');
-                }
-
-                closeModalFn();
-            } catch (error) {
-                console.error("Error saving news:", error);
-                alert('Error saving news: ' + error.message);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = currentEditId ? 'Update Article' : 'Publish Article';
-            }
+        if (currentEditId) {
+            await updateDoc(doc(db, "News", currentEditId), newsData);
+            alert('News article updated successfully!');
+        } else {
+            newsData.publishedAt = Timestamp.now();
+            const docRef = await addDoc(collection(db, "News"), newsData);
+            
+            // 🔔 إرسال الإشعارات للمستخدمين المهتمين
+            submitBtn.textContent = 'Sending notifications...';
+            const notificationCount = await sendNewsNotificationToUsers(
+                docRef.id,
+                title,
+                category
+            );
+            
+            alert(`News article published successfully!\n${notificationCount} notifications sent to interested users.`);
         }
+
+        closeModalFn();
+    } catch (error) {
+        console.error("Error saving news:", error);
+        alert('Error saving news: ' + error.message);
+    } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = currentEditId ? 'Update Article' : 'Publish Article';
+    }
+}
 
         function handleEdit(e) {
             const newsId = e.currentTarget.getAttribute('data-id');

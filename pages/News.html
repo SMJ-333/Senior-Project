@@ -1,31 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>News - ATHAR Museum</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-        --primary-dark: #653025;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
-        --success: #48bb78;
-        --warning: #ecc94b;
-        --danger: #f56565;
+            --primary-dark: #653025;     
+            --primary-light: #8d2e1d;    
+            --accent: #b08d57;           
+            --accent-light: #d4b483;     
+            --neutral-light: #f4f1e3;    
+            --neutral-dark: #4a3c2a;     
+            --text-dark: #3b2f23;        
+            --text-light: #7c6f57;       
+            --white: #fdfaf4;            
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --success: #48bb78;
+            --warning: #ecc94b;
+            --danger: #f56565;
         }
 
         * {
@@ -42,10 +39,7 @@
             overflow-x: hidden;
         }
 
-        h1,
-        h2,
-        h3,
-        h4 {
+        h1, h2, h3, h4 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             line-height: 1.2;
@@ -63,12 +57,12 @@
         }
 
         .nav-container {
-            max-width: 1300px;
+            max-width: 1200px;
             margin: 0 auto;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 1rem;
+            padding: 0 2rem;
         }
 
         .logo {
@@ -201,6 +195,59 @@
             margin: 0 auto;
         }
 
+        /* Recommended News Section */
+        .recommended-news-section {
+            background: var(--white);
+            padding: 3rem 0;
+            margin-bottom: 3rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .recommended-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .recommended-header h2 {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.8rem;
+            color: var(--primary-dark);
+            font-size: 2.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .recommended-header .material-icons {
+            font-size: 2.2rem;
+            color: var(--accent);
+        }
+
+        .for-you-badge {
+            display: inline-block;
+            background: var(--neutral-light);
+            color: var(--accent);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+            border: 2px solid var(--accent);
+        }
+
+        .recommended-subtitle {
+            color: var(--text-light);
+            font-size: 1rem;
+            text-align: center;
+            margin: 1rem 0 2rem;
+        }
+
+        .recommended-news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
         .filter-section {
             background: var(--white);
             padding: 2rem;
@@ -292,6 +339,7 @@
             overflow: hidden;
             box-shadow: var(--shadow);
             transition: var(--transition);
+            cursor: pointer;
         }
 
         .news-card:hover {
@@ -308,6 +356,8 @@
             color: var(--white);
             position: relative;
             overflow: hidden;
+            background-size: cover;
+            background-position: center;
         }
 
         .news-img::before {
@@ -331,6 +381,20 @@
             border-radius: 20px;
             font-size: 0.8rem;
             font-weight: 600;
+            z-index: 2;
+        }
+
+        .recommended-badge {
+            position: absolute;
+            top: 1rem;
+            left: 1rem;
+            background: rgba(72, 187, 120, 0.95);
+            color: white;
+            padding: 0.3rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            z-index: 2;
         }
 
         .news-content {
@@ -430,6 +494,8 @@
             font-size: 1.2rem;
             position: relative;
             overflow: hidden;
+            background-size: cover;
+            background-position: center;
         }
 
         .featured-image::before {
@@ -581,7 +647,7 @@
                 min-height: 300px;
             }
 
-            .news-grid {
+            .news-grid, .recommended-news-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -598,9 +664,13 @@
                 border-radius: 6px;
             }
         }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
     </style>
 </head>
-
 <body>
     <nav>
         <div class="nav-container">
@@ -611,11 +681,9 @@
                 <li><a href="Events.html">Events</a></li>
                 <li><a href="Ticketing.html">Ticketing</a></li>
                 <li><a href="News.html" class="active">News</a></li>
-                <li><a href="Exhibitions.html">Exhibitions</a></li>
                 <li><a href="Gallery.html">Gallery</a></li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account"><span
-                    class="material-icons">person</span></a>
+            <a href="Account.html" class="account-icon" title="My Account"><span class="material-icons">person</span></a>
         </div>
     </nav>
 
@@ -627,24 +695,30 @@
             </div>
         </section>
 
-        <section class="container">
-            <div class="featured-news">
-                <div class="featured-content">
-                    <h2>Loading Featured News...</h2>
-                    <p>Please wait while we fetch the latest featured article.</p>
-                    <div class="news-meta">
-                        <span class="news-date"></span>
-                        <span class="news-category"></span>
-                    </div>
-                    <div class="news-actions">
-                        <a href="#" class="btn">Read More</a>
-                    </div>
+        <!-- Recommended News Section -->
+        <section class="recommended-news-section" id="recommended-news-section" style="display: none;">
+            <div class="container">
+                <div class="recommended-header">
+                    <h2>
+                        <span class="material-icons">recommend</span>
+                        Recommended News for You
+                    </h2>
+                    <br>
+                    <span class="for-you-badge">✨ Based on Your Interests</span>
                 </div>
-                <div class="featured-image">
-                    <div>
-                        <h3>Featured Story</h3>
-                        <p>Latest museum updates</p>
-                    </div>
+                <p class="recommended-subtitle">News articles matched to your preferences</p>
+                
+                <div id="recommended-news-loading" style="text-align: center; padding: 2rem; color: var(--text-light);">
+                    <span class="material-icons" style="font-size: 3rem; animation: spin 2s linear infinite;">explore</span>
+                    <p>Finding news you'll love...</p>
+                </div>
+                
+                <div id="recommended-news-container" class="recommended-news-grid" style="display: none;"></div>
+                
+                <div id="no-recommended-news" style="display: none; text-align: center; padding: 2rem; color: var(--text-light);">
+                    <span class="material-icons" style="font-size: 3rem;">explore_off</span>
+                    <h3>No Personalized News Yet</h3>
+                    <p>We'll recommend news based on your interests as new articles are published!</p>
                 </div>
             </div>
         </section>
@@ -688,15 +762,37 @@
         </section>
 
         <section class="container">
+            <div class="featured-news">
+                <div class="featured-content">
+                    <h2>Loading Featured News...</h2>
+                    <p>Please wait while we fetch the latest featured article.</p>
+                    <div class="news-meta">
+                        <span class="news-date"></span>
+                        <span class="news-category"></span>
+                    </div>
+                    <div class="news-actions">
+                        <a href="#" class="btn">Read More</a>
+                    </div>
+                </div>
+                <div class="featured-image">
+                    <div>
+                        <h3>Featured Story</h3>
+                        <p>Latest museum updates</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section class="container">
             <div class="section-title">
                 <h2>Latest News</h2>
             </div>
 
-            <div class="news-grid">
+            <div class="news-grid" id="news-grid">
             </div>
         </section>
 
-        <!-- <section class="container">
+        <section class="container">
             <div class="pagination">
                 <a href="#" class="pagination-item"><i class="fas fa-chevron-left"></i></a>
                 <a href="#" class="pagination-item active">1</a>
@@ -705,13 +801,12 @@
                 <a href="#" class="pagination-item">4</a>
                 <a href="#" class="pagination-item"><i class="fas fa-chevron-right"></i></a>
             </div>
-        </section> -->
+        </section>
 
         <section class="container">
             <div class="newsletter-section">
                 <h2>Stay Updated</h2>
-                <p>Subscribe to our newsletter to receive the latest news, event invitations, and exclusive content
-                    directly to your inbox.</p>
+                <p>Subscribe to our newsletter to receive the latest news, event invitations, and exclusive content directly to your inbox.</p>
                 <form class="newsletter-form">
                     <input type="email" class="newsletter-input" placeholder="Your email address" required>
                     <button type="submit" class="newsletter-btn">Subscribe</button>
@@ -751,10 +846,22 @@
     </footer>
 
     <script type="module">
-        import { db } from './firebase-config.js';
-        import { collection, getDocs, query, orderBy, limit, where } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { auth, db } from './firebase-config.js';
+        import { collection, getDocs, query, orderBy, where, doc, getDoc } from 'https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js';
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         let allNews = [];
+        let currentUser = null;
+        let userData = null;
+
+        // Category to Interest Mapping
+        const categoryToInterestMap = {
+            'Exhibitions': ['Arab Heritage', 'Persian Heritage', 'Indian Heritage', 'Andalusian Heritage', 'Turkish Heritage', 'Echoes of Islamic Civilization'],
+            'Events': ['Arab Heritage', 'Persian Heritage', 'Indian Heritage', 'Andalusian Heritage', 'Turkish Heritage'],
+            'Collections': ['Manuscripts', 'Weapons', 'Boxes', 'Bottles'],
+            'Research': ['Manuscripts', 'Weapons', 'Boxes', 'Bottles'],
+            'Announcements': [] // General for all
+        };
 
         function formatDate(timestamp) {
             if (!timestamp) return 'Date not available';
@@ -763,18 +870,23 @@
             return date.toLocaleDateString('en-US', options);
         }
 
-        function createNewsCard(newsItem) {
+        function createNewsCard(newsItem, isRecommended = false) {
             const excerpt = newsItem.excerpt || (newsItem.content ? newsItem.content.substring(0, 150) + '...' : 'No description available');
             const category = newsItem.category || 'News';
             const isNew = newsItem.isNew ? '<span class="news-badge">New</span>' : '';
-            const imageStyle = newsItem.imageURL ?
-                `background-image: url('${newsItem.imageURL}'); background-size: cover; background-position: center;` :
-                '';
+            
+            // Clean image URL
+            let imageURL = newsItem.imageURL || '';
+            imageURL = imageURL.trim().replace(/\n/g, '').replace(/\r/g, '');
+            
+            const imageStyle = imageURL ? `background-image: url('${imageURL}'); background-size: cover; background-position: center;` : '';
+            const recommendedBadge = isRecommended ? '<span class="recommended-badge">✨ For You</span>' : '';
 
             return `
                 <div class="news-card" style="opacity: 0; transform: translateY(20px); transition: all 0.6s ease;">
                     <div class="news-img" style="${imageStyle}">
-                        ${!newsItem.imageURL ? '<div>News Article</div>' : ''}
+                        ${!imageURL ? '<div style="position: relative; z-index: 1;">News Article</div>' : ''}
+                        ${recommendedBadge}
                         ${isNew}
                     </div>
                     <div class="news-content">
@@ -785,7 +897,7 @@
                         </div>
                         <p>${excerpt}</p>
                         <div class="news-actions">
-                            <a href="#" onclick="showNewsDetails('${newsItem.id}')">Read More</a>
+                            <a href="#" onclick="showNewsDetails('${newsItem.id}'); return false;">Read More</a>
                             <div class="news-share">
                                 <a href="#"><i class="fab fa-facebook"></i></a>
                                 <a href="#"><i class="fab fa-twitter"></i></a>
@@ -795,6 +907,79 @@
                     </div>
                 </div>
             `;
+        }
+
+        function generateNewsRecommendations() {
+            if (!userData || !userData.Interests || allNews.length === 0) {
+                return [];
+            }
+
+            const recommendations = [];
+            const userInterests = userData.Interests || [];
+
+            allNews.forEach(news => {
+                let score = 0;
+                const category = news.category || '';
+
+                // Check if news category matches user interests
+                if (categoryToInterestMap[category]) {
+                    const categoryInterests = categoryToInterestMap[category];
+                    
+                    userInterests.forEach(interest => {
+                        if (categoryInterests.includes(interest) || categoryInterests.length === 0) {
+                            score += 1;
+                        }
+                    });
+                }
+
+                // Boost new articles
+                if (news.isNew) {
+                    score += 0.5;
+                }
+
+                if (score > 0) {
+                    recommendations.push({
+                        ...news,
+                        score: score
+                    });
+                }
+            });
+
+            // Sort by score and get top 3
+            return recommendations
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 3);
+        }
+
+        function displayRecommendedNews(recommendations) {
+            const loading = document.getElementById('recommended-news-loading');
+            const container = document.getElementById('recommended-news-container');
+            const noRecs = document.getElementById('no-recommended-news');
+            const section = document.getElementById('recommended-news-section');
+
+            loading.style.display = 'none';
+
+            if (recommendations.length === 0) {
+                noRecs.style.display = 'block';
+                section.style.display = 'block';
+                return;
+            }
+
+            container.style.display = 'grid';
+            section.style.display = 'block';
+
+            container.innerHTML = recommendations.map(rec => createNewsCard(rec, true)).join('');
+
+            // Animate cards
+            setTimeout(() => {
+                const cards = container.querySelectorAll('.news-card');
+                cards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
+                });
+            }, 50);
         }
 
         async function loadFeaturedNews() {
@@ -807,7 +992,6 @@
                 const querySnapshot = await getDocs(newsQuery);
 
                 if (!querySnapshot.empty) {
-                    // Find first non-deleted featured article
                     let featuredArticle = null;
                     for (const doc of querySnapshot.docs) {
                         const data = doc.data();
@@ -835,23 +1019,21 @@
             const featuredSection = document.querySelector('.featured-news');
             const contentExcerpt = featured.content ? featured.content.substring(0, 200) + '...' : 'Check out our latest featured news article.';
 
-            // Update the content text
             featuredSection.querySelector('.featured-content h2').textContent = featured.title;
             featuredSection.querySelector('.featured-content p').textContent = contentExcerpt;
             featuredSection.querySelector('.news-date').textContent = formatDate(featured.publishedAt);
             featuredSection.querySelector('.news-category').textContent = featured.category || 'Featured';
 
-            // Update the featured image only if present
             const imageDiv = featuredSection.querySelector('.featured-image');
-            if (featured.imageURL) {
-                imageDiv.style.backgroundImage = `url('${featured.imageURL}')`;
+            let cleanImageURL = (featured.imageURL || '').trim().replace(/\n/g, '').replace(/\r/g, '');
+            
+            if (cleanImageURL) {
+                imageDiv.style.backgroundImage = `url('${cleanImageURL}')`;
                 imageDiv.style.backgroundSize = 'cover';
                 imageDiv.style.backgroundPosition = 'center';
-                // Hide the placeholder text inside the image div
                 const placeholderDiv = imageDiv.querySelector('div');
                 if (placeholderDiv) placeholderDiv.style.display = 'none';
             } else {
-                // Show the placeholder if no image
                 imageDiv.style.backgroundImage = 'linear-gradient(45deg, var(--accent) 0%, var(--accent-light) 100%)';
                 const placeholderDiv = imageDiv.querySelector('div');
                 if (placeholderDiv) placeholderDiv.style.display = 'flex';
@@ -862,13 +1044,11 @@
             try {
                 const recentQuery = query(
                     collection(db, 'News'),
-                    orderBy('publishedAt', 'desc'),
-                    limit(10)
+                    orderBy('publishedAt', 'desc')
                 );
                 const recentSnapshot = await getDocs(recentQuery);
 
                 if (!recentSnapshot.empty) {
-                    // Find first non-deleted article
                     for (const doc of recentSnapshot.docs) {
                         const data = doc.data();
                         if (!data.isDeleted) {
@@ -890,7 +1070,7 @@
                 );
 
                 const querySnapshot = await getDocs(newsQuery);
-                const newsGrid = document.querySelector('.news-grid');
+                const newsGrid = document.getElementById('news-grid');
                 newsGrid.innerHTML = '';
 
                 if (querySnapshot.empty) {
@@ -901,22 +1081,27 @@
                 allNews = [];
                 querySnapshot.forEach((doc) => {
                     const newsData = doc.data();
-                    // Only add non-deleted articles
                     if (!newsData.isDeleted) {
                         allNews.push({ id: doc.id, ...newsData });
                     }
                 });
 
                 displayNews(allNews);
+
+                // Generate recommendations if user is logged in
+                if (userData) {
+                    const recommendations = generateNewsRecommendations();
+                    displayRecommendedNews(recommendations);
+                }
             } catch (error) {
                 console.error('Error loading news:', error);
-                const newsGrid = document.querySelector('.news-grid');
+                const newsGrid = document.getElementById('news-grid');
                 newsGrid.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: var(--danger);">Error loading news. Please try again later.</p>';
             }
         }
 
         function displayNews(newsArray) {
-            const newsGrid = document.querySelector('.news-grid');
+            const newsGrid = document.getElementById('news-grid');
             newsGrid.innerHTML = '';
 
             if (newsArray.length === 0) {
@@ -925,11 +1110,11 @@
             }
 
             newsArray.forEach((newsItem) => {
-                newsGrid.innerHTML += createNewsCard(newsItem);
+                newsGrid.innerHTML += createNewsCard(newsItem, false);
             });
 
             setTimeout(() => {
-                const cards = document.querySelectorAll('.news-card');
+                const cards = document.querySelectorAll('#news-grid .news-card');
                 cards.forEach((card, index) => {
                     setTimeout(() => {
                         card.style.opacity = '1';
@@ -1002,6 +1187,23 @@
             displayNews(allNews);
         });
 
+        // Auth state listener
+        onAuthStateChanged(auth, async (user) => {
+            if (user) {
+                currentUser = user;
+                try {
+                    const userDoc = await getDoc(doc(db, "Users", user.uid));
+                    if (userDoc.exists()) {
+                        userData = userDoc.data();
+                    }
+                } catch (error) {
+                    console.error('Error loading user data:', error);
+                }
+            } else {
+                document.getElementById('recommended-news-section').style.display = 'none';
+            }
+        });
+
         document.addEventListener('DOMContentLoaded', async function () {
             await loadFeaturedNews();
             await loadNews();
@@ -1027,5 +1229,4 @@
         });
     </script>
 </body>
-
 </html>

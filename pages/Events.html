@@ -699,378 +699,387 @@
 
     <!-- Firebase Integration -->
     <script type="module">
-        import { db, auth } from './firebase-config.js';
-        import {
-            collection,
-            getDocs,
-            doc,
-            updateDoc,
-            onSnapshot
-        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        // في ملف Events.html، استبدل قسم <script type="module"> بهذا الكود المحدث:
 
-        let allEvents = [];
-        let currentUser = null;
+import { db, auth } from './firebase-config.js';
+import {
+    collection,
+    getDocs,
+    doc,
+    updateDoc,
+    onSnapshot
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { 
+    sendEventRegistrationNotification, 
+    saveNotifyMeRequest,
+    sendEventReminderNotification
+} from './notification-system.js';
 
-        onAuthStateChanged(auth, (user) => {
-            currentUser = user;
-            console.log('Current user:', currentUser?.email || 'Not logged in');
+let allEvents = [];
+let currentUser = null;
+
+onAuthStateChanged(auth, (user) => {
+    currentUser = user;
+    console.log('Current user:', currentUser?.email || 'Not logged in');
+});
+
+function formatDate(timestamp) {
+    if (!timestamp || !timestamp.toDate) return 'Date TBA';
+    const date = timestamp.toDate();
+    return date.toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+}
+
+function getEventStatus(startDate, endDate) {
+    const now = new Date();
+    const start = startDate?.toDate();
+    const end = endDate?.toDate();
+
+    if (!start || !end) return 'upcoming';
+    if (now < start) return 'upcoming';
+    if (now >= start && now <= end) return 'current';
+    return 'past';
+}
+
+function getRegisteredCount(registeredUsers) {
+    if (!registeredUsers || registeredUsers === '') return 0;
+    return registeredUsers.split(',').filter(id => id.trim() !== '').length;
+}
+
+function isUserRegistered(registeredUsers) {
+    if (!currentUser || !registeredUsers) return false;
+    return registeredUsers.includes(currentUser.uid);
+}
+
+async function loadEvents() {
+    try {
+        console.log('Fetching events from Firestore...');
+
+        const eventsCol = collection(db, 'Events');
+        const snapshot = await getDocs(eventsCol);
+
+        if (snapshot.empty) {
+            console.warn('No events found in the "Events" collection');
+            const featuredSection = document.getElementById('featuredEventSection');
+            featuredSection.style.display = 'none';
+            
+            const currentGrid = document.getElementById('currentEventsGrid');
+            currentGrid.innerHTML = `
+                <p class="no-results-message">
+                    No events available at this time.<br>
+                    <small>Check console for details or verify your Firestore collection name.</small>
+                </p>`;
+            return;
+        }
+
+        console.log(`Found ${snapshot.size} events in 'Events' collection`);
+
+        allEvents = [];
+
+        snapshot.forEach((docSnap) => {
+            const data = docSnap.data();
+            const registeredCount = getRegisteredCount(data.registeredUsers);
+
+            allEvents.push({
+                id: docSnap.id,
+                ...data,
+                status: getEventStatus(data.startDate, data.endDate),
+                registeredCount: registeredCount,
+                spotsLeft: (data.maxAttendees || 0) - registeredCount,
+                isRegistered: isUserRegistered(data.registeredUsers)
+            });
         });
 
-        function formatDate(timestamp) {
-            if (!timestamp || !timestamp.toDate) return 'Date TBA';
-            const date = timestamp.toDate();
-            return date.toLocaleDateString('en-US', {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
+        allEvents.sort((a, b) => {
+            if (!a.startDate || !b.startDate) return 0;
+            return b.startDate.toMillis() - a.startDate.toMillis();
+        });
 
-        function getEventStatus(startDate, endDate) {
-            const now = new Date();
-            const start = startDate?.toDate();
-            const end = endDate?.toDate();
+        displayEvents(allEvents);
+        console.log('Events loaded successfully');
+    } catch (error) {
+        console.error('Error loading events:', error);
+        const featuredSection = document.getElementById('featuredEventSection');
+        featuredSection.innerHTML = `
+            <p class="no-results-message">
+                Error loading events: ${error.message}<br>
+                Please check the console for details.
+            </p>`;
+    }
+}
 
-            if (!start || !end) return 'upcoming';
-            if (now < start) return 'upcoming';
-            if (now >= start && now <= end) return 'current';
-            return 'past';
-        }
+function displayFeaturedEvent(event) {
+    const featuredSection = document.getElementById('featuredEventSection');
+    
+    if (!event) {
+        featuredSection.style.display = 'none';
+        return;
+    }
 
-        function getRegisteredCount(registeredUsers) {
-            if (!registeredUsers || registeredUsers === '') return 0;
-            return registeredUsers.split(',').filter(id => id.trim() !== '').length;
-        }
+    const isFull = event.spotsLeft <= 0;
+    const startDate = formatDate(event.startDate);
+    const endDate = event.endDate ? formatDate(event.endDate) : null;
+    const dateRange = endDate ? `${startDate} - ${endDate}` : startDate;
 
-        function isUserRegistered(registeredUsers) {
-            if (!currentUser || !registeredUsers) return false;
-            return registeredUsers.includes(currentUser.uid);
-        }
-
-        async function loadEvents() {
-            const grid = document.getElementById('eventsGrid');
-
-            try {
-                console.log('Fetching events from Firestore...');
-                console.log('Database instance:', db);
-
-                const eventsCol = collection(db, 'Events');
-                const snapshot = await getDocs(eventsCol);
-
-                if (snapshot.empty) {
-                    console.warn('No events found in the "Events" collection');
-                    const featuredSection = document.getElementById('featuredEventSection');
-                    featuredSection.style.display = 'none';
-                    
-                    const currentGrid = document.getElementById('currentEventsGrid');
-                    currentGrid.innerHTML = `
-                        <p class="no-results-message">
-                            No events available at this time.<br>
-                            <small>Check console for details or verify your Firestore collection name.</small>
-                        </p>`;
-                    return;
+    featuredSection.innerHTML = `
+        <div class="featured-content">
+            <h2>${event.title}</h2>
+            <p>${event.description}</p>
+            ${event.additionalInfo ? `<p>${event.additionalInfo}</p>` : ''}
+            <div class="event-meta">
+                <span class="event-date">${dateRange}</span>
+                <span class="event-location">${event.location}</span>
+            </div>
+            <div class="event-capacity" style="margin-bottom: 2rem;">
+                <span style="color: var(--accent-light); font-weight: 600;">${event.spotsLeft} spots remaining</span>
+                <div class="capacity-bar">
+                    <div class="capacity-fill ${event.registeredCount >= event.maxAttendees * 0.8 ? 'high' : ''} ${isFull ? 'full' : ''}" 
+                         style="width: ${Math.min((event.registeredCount / event.maxAttendees) * 100, 100)}%"></div>
+                </div>
+                <span style="color: var(--accent-light); font-weight: 600;">${event.registeredCount}/${event.maxAttendees} registered</span>
+            </div>
+            <div class="event-actions">
+                <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="btn">Learn More</a>
+                ${event.isRegistered ? 
+                    `<button class="btn" style="background: #27ae60; cursor: not-allowed;" disabled>✓ Already Registered</button>` :
+                    `<a href="#" onclick="window.registerForEvent('${event.id}'); return false;" class="btn btn-outline" ${isFull ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
+                        ${isFull ? 'Fully Booked' : 'Register Now'}
+                    </a>`
                 }
+            </div>
+        </div>
+        <div class="featured-image">
+            <div>
+                <h3>Featured Event</h3>
+                <p>${event.title}</p>
+                <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${event.location}</p>
+            </div>
+        </div>
+    `;
+}
 
-                console.log(`Found ${snapshot.size} events in 'Events' collection`);
-                console.log('Event documents found! Processing...');
+function displayCurrentEvents(events) {
+    const grid = document.getElementById('currentEventsGrid');
 
-                allEvents = [];
+    if (events.length === 0) {
+        grid.innerHTML = '<p class="no-results-message">No current events at this time.</p>';
+        return;
+    }
 
-                snapshot.forEach((docSnap) => {
-                    const data = docSnap.data();
-                    console.log('Event document:', docSnap.id, data);
+    grid.innerHTML = events.map(event => {
+        const isFull = event.spotsLeft <= 0;
+        const isAlmostFull = event.registeredCount >= event.maxAttendees * 0.8;
+        const capacityPercent = Math.min((event.registeredCount / event.maxAttendees) * 100, 100);
 
-                    const registeredCount = getRegisteredCount(data.registeredUsers);
-
-                    allEvents.push({
-                        id: docSnap.id,
-                        ...data,
-                        status: getEventStatus(data.startDate, data.endDate),
-                        registeredCount: registeredCount,
-                        spotsLeft: (data.maxAttendees || 0) - registeredCount,
-                        isRegistered: isUserRegistered(data.registeredUsers)
-                    });
-                });
-
-                console.log('Processed events:', allEvents);
-                console.log('Total events:', allEvents.length);
-
-                allEvents.sort((a, b) => {
-                    if (!a.startDate || !b.startDate) return 0;
-                    return b.startDate.toMillis() - a.startDate.toMillis();
-                });
-
-                displayEvents(allEvents);
-
-                console.log('Events loaded successfully');
-            } catch (error) {
-                console.error('Error loading events:', error);
-                const featuredSection = document.getElementById('featuredEventSection');
-                featuredSection.innerHTML = `
-                    <p class="no-results-message">
-                        Error loading events: ${error.message}<br>
-                        Please check the console for details.
-                    </p>`;
-            }
+        let statusBadge = '';
+        if (isFull) {
+            statusBadge = '<span class="event-badge full">Fully Booked</span>';
+        } else if (isAlmostFull) {
+            statusBadge = '<span class="event-badge almost-full">Almost Full</span>';
         }
 
-        function displayFeaturedEvent(event) {
-            const featuredSection = document.getElementById('featuredEventSection');
-            
-            if (!event) {
-                featuredSection.style.display = 'none';
-                return;
-            }
-
-            const isFull = event.spotsLeft <= 0;
-            const startDate = formatDate(event.startDate);
-            const endDate = event.endDate ? formatDate(event.endDate) : null;
-            const dateRange = endDate ? `${startDate} - ${endDate}` : startDate;
-
-            featuredSection.innerHTML = `
-                <div class="featured-content">
-                    <h2>${event.title}</h2>
-                    <p>${event.description}</p>
-                    ${event.additionalInfo ? `<p>${event.additionalInfo}</p>` : ''}
+        return `
+            <div class="event-card">
+                <div class="event-img">
+                    <div>
+                        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${event.title}</h3>
+                        <p style="font-size: 0.9rem; opacity: 0.9;">${event.location}</p>
+                    </div>
+                    ${statusBadge}
+                </div>
+                <div class="event-content">
+                    <h3>${event.title}</h3>
                     <div class="event-meta">
-                        <span class="event-date">${dateRange}</span>
+                        <span class="event-date">${formatDate(event.startDate)}</span>
                         <span class="event-location">${event.location}</span>
                     </div>
-                    <div class="event-capacity" style="margin-bottom: 2rem;">
-                        <span style="color: var(--accent-light); font-weight: 600;">${event.spotsLeft} spots remaining</span>
+                    <p>${event.description}</p>
+                    
+                    <div class="event-capacity">
+                        <span>${event.spotsLeft} spots left</span>
                         <div class="capacity-bar">
-                            <div class="capacity-fill ${event.registeredCount >= event.maxAttendees * 0.8 ? 'high' : ''} ${isFull ? 'full' : ''}" 
-                                 style="width: ${Math.min((event.registeredCount / event.maxAttendees) * 100, 100)}%"></div>
+                            <div class="capacity-fill ${isAlmostFull ? 'high' : ''} ${isFull ? 'full' : ''}" 
+                                 style="width: ${capacityPercent}%"></div>
                         </div>
-                        <span style="color: var(--accent-light); font-weight: 600;">${event.registeredCount}/${event.maxAttendees} registered</span>
+                        <span>${event.registeredCount}/${event.maxAttendees}</span>
                     </div>
+
                     <div class="event-actions">
-                        <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="btn">Learn More</a>
-                        ${event.isRegistered ? 
-                            `<button class="btn" style="background: #27ae60; cursor: not-allowed;" disabled>✓ Already Registered</button>` :
-                            `<a href="#" onclick="window.registerForEvent('${event.id}'); return false;" class="btn btn-outline" ${isFull ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
+                        ${event.isRegistered ?
+                `<button class="registered" disabled>✓ Registered</button>` :
+                `<button onclick="window.registerForEvent('${event.id}')" ${isFull ? 'disabled' : ''}>
                                 ${isFull ? 'Fully Booked' : 'Register Now'}
-                            </a>`
-                        }
-                    </div>
-                </div>
-                <div class="featured-image">
-                    <div>
-                        <h3>Featured Event</h3>
-                        <p>${event.title}</p>
-                        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${event.location}</p>
-                    </div>
-                </div>
-            `;
-        }
-
-        function displayCurrentEvents(events) {
-            const grid = document.getElementById('currentEventsGrid');
-
-            if (events.length === 0) {
-                grid.innerHTML = '<p class="no-results-message">No current events at this time.</p>';
-                return;
+                            </button>`
             }
-
-            grid.innerHTML = events.map(event => {
-                const isFull = event.spotsLeft <= 0;
-                const isAlmostFull = event.registeredCount >= event.maxAttendees * 0.8;
-                const capacityPercent = Math.min((event.registeredCount / event.maxAttendees) * 100, 100);
-
-                let statusBadge = '';
-                if (isFull) {
-                    statusBadge = '<span class="event-badge full">Fully Booked</span>';
-                } else if (isAlmostFull) {
-                    statusBadge = '<span class="event-badge almost-full">Almost Full</span>';
-                } 
-                // else {
-                //     statusBadge = '<span class="event-badge current">Happening Now</span>';
-                // }
-
-                return `
-                    <div class="event-card">
-                        <div class="event-img">
-                            <div>
-                                <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${event.title}</h3>
-                                <p style="font-size: 0.9rem; opacity: 0.9;">${event.location}</p>
-                            </div>
-                            ${statusBadge}
-                        </div>
-                        <div class="event-content">
-                            <h3>${event.title}</h3>
-                            <div class="event-meta">
-                                <span class="event-date">${formatDate(event.startDate)}</span>
-                                <span class="event-location">${event.location}</span>
-                            </div>
-                            <p>${event.description}</p>
-                            
-                            <div class="event-capacity">
-                                <span>${event.spotsLeft} spots left</span>
-                                <div class="capacity-bar">
-                                    <div class="capacity-fill ${isAlmostFull ? 'high' : ''} ${isFull ? 'full' : ''}" 
-                                         style="width: ${capacityPercent}%"></div>
-                                </div>
-                                <span>${event.registeredCount}/${event.maxAttendees}</span>
-                            </div>
-
-                            <div class="event-actions">
-                                ${event.isRegistered ?
-                        `<button class="registered" disabled>✓ Registered</button>` :
-                        `<button onclick="window.registerForEvent('${event.id}')" ${isFull ? 'disabled' : ''}>
-                                        ${isFull ? 'Fully Booked' : 'Register Now'}
-                                    </button>`
-                    }
-                                <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;">View Details</a>
-                            </div>
-                        </div>
+                        <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;">View Details</a>
                     </div>
-                `;
-            }).join('');
+                </div>
+            </div>
+        `;
+    }).join('');
 
+    setTimeout(() => {
+        document.querySelectorAll('#currentEventsGrid .event-card').forEach((card, index) => {
+            setTimeout(() => card.classList.add('show'), index * 100);
+        });
+    }, 100);
+}
+
+function displayUpcomingEvents(events) {
+    const grid = document.getElementById('upcomingEventsGrid');
+
+    if (events.length === 0) {
+        grid.innerHTML = '<p style="text-align: center; color: var(--text-light); grid-column: 1 / -1; padding: 3rem;">No upcoming events at this time.</p>';
+        return;
+    }
+
+    const cards = events.map(event => {
+        return `
+            <div class="coming-card" style="background: var(--white); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); border-left: 4px solid var(--accent); transition: all 0.3s ease;">
+                <h3 style="color: var(--primary-dark); margin-bottom: 1rem; font-size: 1.4rem; font-family: 'Playfair Display', serif; font-weight: 700;">${event.title}</h3>
+                <span class="coming-date" style="color: var(--accent); font-weight: 600; margin-bottom: 1rem; display: block; font-size: 0.95rem;">Opening ${formatDate(event.startDate)}</span>
+                <p style="color: var(--text-light); margin-bottom: 1rem; line-height: 1.6; font-size: 0.95rem;">${event.description}</p>
+                <a href="#" onclick="window.notifyMe('${event.id}'); return false;" style="color: var(--accent); text-decoration: underline; font-weight: 600; transition: color 0.3s ease;">Notify Me</a>
+            </div>
+        `;
+    });
+
+    grid.innerHTML = cards.join('');
+
+    setTimeout(() => {
+        const allCards = document.querySelectorAll('#upcomingEventsGrid .coming-card');
+        allCards.forEach((card, index) => {
             setTimeout(() => {
-                document.querySelectorAll('#currentEventsGrid .event-card').forEach((card, index) => {
-                    setTimeout(() => card.classList.add('show'), index * 100);
-                });
-            }, 100);
-        }
+                card.style.opacity = '1';
+                card.style.transform = 'translateY(0)';
+            }, index * 100);
 
-        function displayUpcomingEvents(events) {
-            const grid = document.getElementById('upcomingEventsGrid');
-
-            if (events.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; color: var(--text-light); grid-column: 1 / -1; padding: 3rem;">No upcoming events at this time.</p>';
-                return;
-            }
-
-            const cards = events.map(event => {
-                return `
-                    <div class="coming-card" style="background: var(--white); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); border-left: 4px solid var(--accent); transition: all 0.3s ease;">
-                        <h3 style="color: var(--primary-dark); margin-bottom: 1rem; font-size: 1.4rem; font-family: 'Playfair Display', serif; font-weight: 700;">${event.title}</h3>
-                        <span class="coming-date" style="color: var(--accent); font-weight: 600; margin-bottom: 1rem; display: block; font-size: 0.95rem;">Opening ${formatDate(event.startDate)}</span>
-                        <p style="color: var(--text-light); margin-bottom: 1rem; line-height: 1.6; font-size: 0.95rem;">${event.description}</p>
-                        <a href="#" onclick="window.notifyMe('${event.id}'); return false;" style="color: var(--accent); text-decoration: underline; font-weight: 600; transition: color 0.3s ease;">Notify Me</a>
-                    </div>
-                `;
+            card.addEventListener('mouseenter', function () {
+                this.style.transform = 'translateY(-5px)';
+                this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.1)';
             });
 
-            grid.innerHTML = cards.join('');
+            card.addEventListener('mouseleave', function () {
+                this.style.transform = 'translateY(0)';
+                this.style.boxShadow = 'var(--shadow)';
+            });
+        });
+    }, 150);
+}
 
-            setTimeout(() => {
-                const allCards = document.querySelectorAll('#upcomingEventsGrid .coming-card');
-                allCards.forEach((card, index) => {
-                    setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
-                    }, index * 100);
+function displayEvents(events) {
+    const filteredEvents = events.filter(e => e.status !== 'past');
+    const mostRecentEvent = filteredEvents.length > 0 ? filteredEvents[0] : null;
+    displayFeaturedEvent(mostRecentEvent);
 
-                    card.addEventListener('mouseenter', function () {
-                        this.style.transform = 'translateY(-5px)';
-                        this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.1)';
-                    });
+    const currentEvents = filteredEvents.filter(e => e.status === 'current');
+    const upcomingEvents = filteredEvents.filter(e => e.status === 'upcoming');
 
-                    card.addEventListener('mouseleave', function () {
-                        this.style.transform = 'translateY(0)';
-                        this.style.boxShadow = 'var(--shadow)';
-                    });
+    displayCurrentEvents(currentEvents);
+    displayUpcomingEvents(upcomingEvents);
+}
 
-                    const link = card.querySelector('a');
-                    if (link) {
-                        link.addEventListener('mouseenter', function () {
-                            this.style.color = 'var(--primary-dark)';
-                        });
-                        link.addEventListener('mouseleave', function () {
-                            this.style.color = 'var(--accent)';
-                        });
-                    }
-                });
-            }, 150);
+// 🔔 دالة Notify Me المحدثة مع الإشعارات
+window.notifyMe = async function (eventId) {
+    if (!currentUser) {
+        alert('Please sign in to receive notifications about upcoming events.');
+        window.location.href = 'Account.html';
+        return;
+    }
+
+    try {
+        const event = allEvents.find(e => e.id === eventId);
+        if (!event) return;
+
+        // حفظ طلب Notify Me
+        const saved = saveNotifyMeRequest(
+            currentUser.uid,
+            eventId,
+            event.title,
+            event.startDate
+        );
+
+        if (saved) {
+            // إرسال إشعار تأكيد فوري
+            await sendEventReminderNotification(
+                currentUser.uid,
+                eventId,
+                event.title,
+                event.startDate
+            );
+
+            alert(`✓ You will be notified when "${event.title}" starts!\n\nWe'll send you a reminder before the event.`);
+        }
+    } catch (error) {
+        console.error('Error setting up notification:', error);
+        alert('Unable to set up notification. Please try again.');
+    }
+}
+
+// 🔔 دالة التسجيل المحدثة مع الإشعارات
+window.registerForEvent = async function (eventId) {
+    if (!currentUser) {
+        alert('Please sign in to register for events.');
+        window.location.href = 'Account.html';
+        return;
+    }
+
+    try {
+        const event = allEvents.find(e => e.id === eventId);
+        if (!event) return;
+
+        if (event.spotsLeft <= 0) {
+            alert('Sorry, this event is fully booked.');
+            return;
         }
 
-        function displayEvents(events) {
-            const filteredEvents = events.filter(e => e.status !== 'past');
-
-            // Get the most recent event for featured section
-            const mostRecentEvent = filteredEvents.length > 0 ? filteredEvents[0] : null;
-            displayFeaturedEvent(mostRecentEvent);
-
-            const currentEvents = filteredEvents.filter(e => e.status === 'current');
-            const upcomingEvents = filteredEvents.filter(e => e.status === 'upcoming');
-
-            displayCurrentEvents(currentEvents);
-            displayUpcomingEvents(upcomingEvents);
+        if (event.isRegistered) {
+            alert('You are already registered for this event.');
+            return;
         }
 
-        window.notifyMe = async function (eventId) {
-            if (!currentUser) {
-                alert('Please sign in to receive notifications about upcoming events.');
-                window.location.href = 'Account.html';
-                return;
-            }
+        const eventRef = doc(db, 'Events', eventId);
+        const currentRegistered = event.registeredUsers || '';
+        const newRegistered = currentRegistered === '' ?
+            currentUser.uid :
+            `${currentRegistered},${currentUser.uid}`;
 
-            try {
-                const event = allEvents.find(e => e.id === eventId);
-                if (!event) return;
+        await updateDoc(eventRef, {
+            registeredUsers: newRegistered
+        });
 
-                alert(`You will be notified when "${event.title}" opens!\n\nWe'll send a reminder to ${currentUser.email}`);
-            } catch (error) {
-                console.error('Error setting up notification:', error);
-                alert('Unable to set up notification. Please try again.');
-            }
-        }
+        // 🔔 إرسال إشعار التسجيل
+        await sendEventRegistrationNotification(
+            currentUser.uid,
+            eventId,
+            event.title
+        );
 
-        window.registerForEvent = async function (eventId) {
-            if (!currentUser) {
-                alert('Please sign in to register for events.');
-                window.location.href = 'Account.html';
-                return;
-            }
+        alert(`✓ Successfully registered for "${event.title}"!\n\nA confirmation notification has been sent.`);
+        loadEvents();
+    } catch (error) {
+        console.error('Error registering:', error);
+        alert('Unable to register. Please try again.');
+    }
+}
 
-            try {
-                const event = allEvents.find(e => e.id === eventId);
-                if (!event) return;
+window.viewEventDetails = function (eventId) {
+    const event = allEvents.find(e => e.id === eventId);
+    if (!event) return;
 
-                if (event.spotsLeft <= 0) {
-                    alert('Sorry, this event is fully booked.');
-                    return;
-                }
+    const startDate = formatDate(event.startDate);
+    const endDate = formatDate(event.endDate);
 
-                if (event.isRegistered) {
-                    alert('You are already registered for this event.');
-                    return;
-                }
-
-                const eventRef = doc(db, 'Events', eventId);
-                const currentRegistered = event.registeredUsers || '';
-                const newRegistered = currentRegistered === '' ?
-                    currentUser.uid :
-                    `${currentRegistered},${currentUser.uid}`;
-
-                await updateDoc(eventRef, {
-                    registeredUsers: newRegistered
-                });
-
-                alert(`Successfully registered for "${event.title}"!\nCheck your email for confirmation.`);
-                loadEvents();
-            } catch (error) {
-                console.error('Error registering:', error);
-                alert('Unable to register. Please try again.');
-            }
-        }
-
-        window.viewEventDetails = function (eventId) {
-            const event = allEvents.find(e => e.id === eventId);
-            if (!event) return;
-
-            const startDate = formatDate(event.startDate);
-            const endDate = formatDate(event.endDate);
-
-            const details = `
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+    const details = `
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
 EVENT DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━━
+━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 📅 ${event.title}
 
@@ -1086,30 +1095,30 @@ ${event.description}
 💺 Available Spots: ${event.spotsLeft}
 
 Status: ${event.status.toUpperCase()}
-            `.trim();
+    `.trim();
 
-            alert(details);
-        }
+    alert(details);
+}
 
-        window.addEventListener('scroll', function () {
-            const nav = document.querySelector('nav');
-            if (window.scrollY > 50) {
-                nav.style.padding = '0.7rem 0';
-                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
-            } else {
-                nav.style.padding = '1rem 0';
-                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
-            }
-        });
+window.addEventListener('scroll', function () {
+    const nav = document.querySelector('nav');
+    if (window.scrollY > 50) {
+        nav.style.padding = '0.7rem 0';
+        nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+    } else {
+        nav.style.padding = '1rem 0';
+        nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
+    }
+});
 
-        document.addEventListener('DOMContentLoaded', function () {
-            console.log('Page loaded, initializing...');
-            loadEvents();
-        });
+document.addEventListener('DOMContentLoaded', function () {
+    console.log('Page loaded, initializing...');
+    loadEvents();
+});
 
-        onSnapshot(collection(db, 'Events'), (snapshot) => {
-            console.log('Events updated in database');
-        });
+onSnapshot(collection(db, 'Events'), (snapshot) => {
+    console.log('Events updated in database');
+});
     </script>
 </body>
 
