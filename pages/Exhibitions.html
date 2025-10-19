@@ -273,7 +273,8 @@
 
         .exhibition-image {
             height: 250px;
-            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><rect fill="%23ffffff" width="200" height="200"/><path d="M40,40 C60,20 80,40 100,30 C120,20 140,40 160,30 C180,20 200,40 200,40 L200,200 L40,200 Z" fill="%23d4af37"/></svg>');
+            background-size: cover;
             position: relative;
             overflow: hidden;
             display: flex;
@@ -281,20 +282,10 @@
             justify-content: center;
         }
 
-        .exhibition-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at 30% 50%, rgba(255, 255, 255, 0.2) 0%, transparent 50%);
-        }
-
         .exhibition-icon {
             font-size: 5rem;
-            opacity: 0.7;
-            color: var(--white);
+            opacity: 0.9;
+            color: var(--primary-dark);
             z-index: 1;
             position: relative;
         }
@@ -337,12 +328,12 @@
             line-height: 1.6;
         }
 
-        .color-arab { background: linear-gradient(135deg, #c19a6b 0%, #d4af37 100%); }
-        .color-persian { background: linear-gradient(135deg, #2c5f7d 0%, #4a90b8 100%); }
-        .color-indian { background: linear-gradient(135deg, #d97634 0%, #f4a261 100%); }
-        .color-andalusian { background: linear-gradient(135deg, #8b4513 0%, #a0522d 100%); }
-        .color-turkish { background: linear-gradient(135deg, #8b0000 0%, #b22222 100%); }
-        .color-others { background: linear-gradient(135deg, #4a5568 0%, #718096 100%); }
+        .color-arab { background-color: #c19a6b; }
+        .color-persian { background-color: #2c5f7d; }
+        .color-indian { background-color: #d97634; }
+        .color-andalusian { background-color: #8b4513; }
+        .color-turkish { background-color: #8b0000; }
+        .color-others { background-color: #4a5568; }
 
         footer {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
