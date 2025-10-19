@@ -8,7 +8,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-dark: #653025;
@@ -157,6 +157,18 @@
             text-align: center;
             color: var(--white);
             margin-bottom: 3rem;
+        }
+
+        .page-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" opacity="0.03"><rect fill="%23ffffff" width="1200" height="600"/><path d="M0,150 C150,100 350,200 500,150 C650,100 850,50 1000,100 C1150,150 1200,100 1200,100 L1200,600 L0,600 Z" fill="%23d4af37"/></svg>');
+            background-size: cover;
+            background-position: center;
         }
 
         .page-hero h1 {
@@ -364,37 +376,6 @@
             margin-bottom: 1rem;
         }
 
-        .event-capacity {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            font-size: 0.9rem;
-            color: var(--text-light);
-        }
-
-        .capacity-bar {
-            flex: 1;
-            height: 8px;
-            background: var(--neutral-light);
-            border-radius: 4px;
-            overflow: hidden;
-        }
-
-        .capacity-fill {
-            height: 100%;
-            background: var(--accent);
-            transition: width 0.3s ease;
-        }
-
-        .capacity-fill.high {
-            background: #f39c12;
-        }
-
-        .capacity-fill.full {
-            background: #e74c3c;
-        }
-
         .event-actions {
             display: flex;
             justify-content: space-between;
@@ -430,6 +411,17 @@
 
         .event-actions button.registered {
             background: #27ae60;
+        }
+
+        .event-actions a.view-details {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .event-actions a.view-details:hover {
+            background: var(--accent);
+            color: var(--white);
         }
 
         /* Featured Event */
@@ -518,6 +510,163 @@
             padding: 1rem;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 10000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: var(--white);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            position: relative;
+            animation: slideUp 0.3s ease;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
+            color: var(--white);
+            padding: 2rem;
+            border-radius: 16px 16px 0 0;
+            position: relative;
+        }
+
+        .modal-header h2 {
+            margin: 0;
+            font-size: 1.8rem;
+            color: var(--white);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: var(--white);
+            font-size: 1.5rem;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: rotate(90deg);
+        }
+
+        .modal-body {
+            padding: 2rem;
+        }
+
+        .modal-detail {
+            margin-bottom: 1.5rem;
+            padding-bottom: 1.5rem;
+            border-bottom: 1px solid var(--neutral-light);
+        }
+
+        .modal-detail:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+
+        .modal-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .modal-label i {
+            color: var(--accent);
+            width: 20px;
+        }
+
+        .modal-value {
+            color: var(--text-light);
+            line-height: 1.7;
+            padding-left: 1.7rem;
+        }
+
+        .modal-actions {
+            padding: 0 2rem 2rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1rem;
+        }
+
+        .modal-btn-primary {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        .modal-btn-primary:hover {
+            background: var(--accent-light);
+        }
+
+        .modal-btn-secondary {
+            background: transparent;
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .modal-btn-secondary:hover {
+            background: var(--accent);
+            color: var(--white);
+        }
+
         /* No Results Message */
         .no-results-message {
             grid-column: 1 / -1;
@@ -591,6 +740,24 @@
             .event-meta {
                 flex-direction: column;
             }
+
+            .modal-content {
+                width: 95%;
+                max-height: 90vh;
+            }
+
+            .modal-header {
+                padding: 1.5rem;
+            }
+
+            .modal-body {
+                padding: 1.5rem;
+            }
+
+            .modal-actions {
+                flex-direction: column;
+                padding: 0 1.5rem 1.5rem;
+            }
         }
     </style>
 </head>
@@ -610,10 +777,28 @@
                 <li><a href="Gallery.html">Gallery</a></li>
             </ul>
             <a href="Account.html" class="account-icon" title="My Account">
-                <span class="material-icons">person</span>
+                <i class="fas fa-user"></i>
             </a>
         </div>
     </nav>
+
+    <!-- Event Details Modal -->
+    <div id="eventModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Event Details</h2>
+                <button class="modal-close" onclick="closeModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                <!-- Content will be inserted here -->
+            </div>
+            <div class="modal-actions" id="modalActions">
+                <!-- Actions will be inserted here -->
+            </div>
+        </div>
+    </div>
 
     <!-- Page Content -->
     <div class="page-content">
@@ -672,20 +857,20 @@
             <div class="footer-info">
                 <div class="footer-section">
                     <h3>Visit Us</h3>
-                    <p>123 Museum Boulevard</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Museum Boulevard</p>
                     <p>Cultural District</p>
                     <p>City, State 12345</p>
-                    <p>Phone: (555) 123-4567</p>
+                    <p><i class="fas fa-phone"></i> (555) 123-4567</p>
                 </div>
                 <div class="footer-section">
                     <h3>Hours</h3>
-                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p><i class="far fa-clock"></i> Monday - Friday: 9:00 AM - 6:00 PM</p>
                     <p>Saturday - Sunday: 10:00 AM - 8:00 PM</p>
                     <p>Closed on major holidays</p>
                 </div>
                 <div class="footer-section">
                     <h3>Admission</h3>
-                    <p>Adults: $15</p>
+                    <p><i class="fas fa-ticket-alt"></i> Adults: $15</p>
                     <p>Students/Seniors: $12</p>
                     <p>Children under 12: Free</p>
                     <p>Members: Always Free</p>
@@ -699,426 +884,438 @@
 
     <!-- Firebase Integration -->
     <script type="module">
-        // في ملف Events.html، استبدل قسم <script type="module"> بهذا الكود المحدث:
+        import { db, auth } from './firebase-config.js';
+        import {
+            collection,
+            getDocs,
+            doc,
+            updateDoc,
+            onSnapshot
+        } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-import { db, auth } from './firebase-config.js';
-import {
-    collection,
-    getDocs,
-    doc,
-    updateDoc,
-    onSnapshot
-} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { 
-    sendEventRegistrationNotification, 
-    saveNotifyMeRequest,
-    sendEventReminderNotification
-} from './notification-system.js';
+        let allEvents = [];
+        let currentUser = null;
 
-let allEvents = [];
-let currentUser = null;
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            console.log('Current user:', currentUser?.email || 'Not logged in');
+        });
 
-onAuthStateChanged(auth, (user) => {
-    currentUser = user;
-    console.log('Current user:', currentUser?.email || 'Not logged in');
-});
-
-function formatDate(timestamp) {
-    if (!timestamp || !timestamp.toDate) return 'Date TBA';
-    const date = timestamp.toDate();
-    return date.toLocaleDateString('en-US', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-}
-
-function getEventStatus(startDate, endDate) {
-    const now = new Date();
-    const start = startDate?.toDate();
-    const end = endDate?.toDate();
-
-    if (!start || !end) return 'upcoming';
-    if (now < start) return 'upcoming';
-    if (now >= start && now <= end) return 'current';
-    return 'past';
-}
-
-function getRegisteredCount(registeredUsers) {
-    if (!registeredUsers || registeredUsers === '') return 0;
-    return registeredUsers.split(',').filter(id => id.trim() !== '').length;
-}
-
-function isUserRegistered(registeredUsers) {
-    if (!currentUser || !registeredUsers) return false;
-    return registeredUsers.includes(currentUser.uid);
-}
-
-async function loadEvents() {
-    try {
-        console.log('Fetching events from Firestore...');
-
-        const eventsCol = collection(db, 'Events');
-        const snapshot = await getDocs(eventsCol);
-
-        if (snapshot.empty) {
-            console.warn('No events found in the "Events" collection');
-            const featuredSection = document.getElementById('featuredEventSection');
-            featuredSection.style.display = 'none';
-            
-            const currentGrid = document.getElementById('currentEventsGrid');
-            currentGrid.innerHTML = `
-                <p class="no-results-message">
-                    No events available at this time.<br>
-                    <small>Check console for details or verify your Firestore collection name.</small>
-                </p>`;
-            return;
-        }
-
-        console.log(`Found ${snapshot.size} events in 'Events' collection`);
-
-        allEvents = [];
-
-        snapshot.forEach((docSnap) => {
-            const data = docSnap.data();
-            const registeredCount = getRegisteredCount(data.registeredUsers);
-
-            allEvents.push({
-                id: docSnap.id,
-                ...data,
-                status: getEventStatus(data.startDate, data.endDate),
-                registeredCount: registeredCount,
-                spotsLeft: (data.maxAttendees || 0) - registeredCount,
-                isRegistered: isUserRegistered(data.registeredUsers)
+        function formatDate(timestamp) {
+            if (!timestamp || !timestamp.toDate) return 'Date TBA';
+            const date = timestamp.toDate();
+            return date.toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
             });
-        });
-
-        allEvents.sort((a, b) => {
-            if (!a.startDate || !b.startDate) return 0;
-            return b.startDate.toMillis() - a.startDate.toMillis();
-        });
-
-        displayEvents(allEvents);
-        console.log('Events loaded successfully');
-    } catch (error) {
-        console.error('Error loading events:', error);
-        const featuredSection = document.getElementById('featuredEventSection');
-        featuredSection.innerHTML = `
-            <p class="no-results-message">
-                Error loading events: ${error.message}<br>
-                Please check the console for details.
-            </p>`;
-    }
-}
-
-function displayFeaturedEvent(event) {
-    const featuredSection = document.getElementById('featuredEventSection');
-    
-    if (!event) {
-        featuredSection.style.display = 'none';
-        return;
-    }
-
-    const isFull = event.spotsLeft <= 0;
-    const startDate = formatDate(event.startDate);
-    const endDate = event.endDate ? formatDate(event.endDate) : null;
-    const dateRange = endDate ? `${startDate} - ${endDate}` : startDate;
-
-    featuredSection.innerHTML = `
-        <div class="featured-content">
-            <h2>${event.title}</h2>
-            <p>${event.description}</p>
-            ${event.additionalInfo ? `<p>${event.additionalInfo}</p>` : ''}
-            <div class="event-meta">
-                <span class="event-date">${dateRange}</span>
-                <span class="event-location">${event.location}</span>
-            </div>
-            <div class="event-capacity" style="margin-bottom: 2rem;">
-                <span style="color: var(--accent-light); font-weight: 600;">${event.spotsLeft} spots remaining</span>
-                <div class="capacity-bar">
-                    <div class="capacity-fill ${event.registeredCount >= event.maxAttendees * 0.8 ? 'high' : ''} ${isFull ? 'full' : ''}" 
-                         style="width: ${Math.min((event.registeredCount / event.maxAttendees) * 100, 100)}%"></div>
-                </div>
-                <span style="color: var(--accent-light); font-weight: 600;">${event.registeredCount}/${event.maxAttendees} registered</span>
-            </div>
-            <div class="event-actions">
-                <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="btn">Learn More</a>
-                ${event.isRegistered ? 
-                    `<button class="btn" style="background: #27ae60; cursor: not-allowed;" disabled>✓ Already Registered</button>` :
-                    `<a href="#" onclick="window.registerForEvent('${event.id}'); return false;" class="btn btn-outline" ${isFull ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
-                        ${isFull ? 'Fully Booked' : 'Register Now'}
-                    </a>`
-                }
-            </div>
-        </div>
-        <div class="featured-image">
-            <div>
-                <h3>Featured Event</h3>
-                <p>${event.title}</p>
-                <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${event.location}</p>
-            </div>
-        </div>
-    `;
-}
-
-function displayCurrentEvents(events) {
-    const grid = document.getElementById('currentEventsGrid');
-
-    if (events.length === 0) {
-        grid.innerHTML = '<p class="no-results-message">No current events at this time.</p>';
-        return;
-    }
-
-    grid.innerHTML = events.map(event => {
-        const isFull = event.spotsLeft <= 0;
-        const isAlmostFull = event.registeredCount >= event.maxAttendees * 0.8;
-        const capacityPercent = Math.min((event.registeredCount / event.maxAttendees) * 100, 100);
-
-        let statusBadge = '';
-        if (isFull) {
-            statusBadge = '<span class="event-badge full">Fully Booked</span>';
-        } else if (isAlmostFull) {
-            statusBadge = '<span class="event-badge almost-full">Almost Full</span>';
         }
 
-        return `
-            <div class="event-card">
-                <div class="event-img">
-                    <div>
-                        <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${event.title}</h3>
-                        <p style="font-size: 0.9rem; opacity: 0.9;">${event.location}</p>
-                    </div>
-                    ${statusBadge}
-                </div>
-                <div class="event-content">
-                    <h3>${event.title}</h3>
-                    <div class="event-meta">
-                        <span class="event-date">${formatDate(event.startDate)}</span>
-                        <span class="event-location">${event.location}</span>
-                    </div>
-                    <p>${event.description}</p>
-                    
-                    <div class="event-capacity">
-                        <span>${event.spotsLeft} spots left</span>
-                        <div class="capacity-bar">
-                            <div class="capacity-fill ${isAlmostFull ? 'high' : ''} ${isFull ? 'full' : ''}" 
-                                 style="width: ${capacityPercent}%"></div>
-                        </div>
-                        <span>${event.registeredCount}/${event.maxAttendees}</span>
-                    </div>
+        function getEventStatus(startDate, endDate) {
+            const now = new Date();
+            const start = startDate?.toDate();
+            const end = endDate?.toDate();
 
-                    <div class="event-actions">
-                        ${event.isRegistered ?
-                `<button class="registered" disabled>✓ Registered</button>` :
-                `<button onclick="window.registerForEvent('${event.id}')" ${isFull ? 'disabled' : ''}>
-                                ${isFull ? 'Fully Booked' : 'Register Now'}
-                            </button>`
+            if (!start || !end) return 'upcoming';
+            if (now < start) return 'upcoming';
+            if (now >= start && now <= end) return 'current';
+            return 'past';
+        }
+
+        function getRegisteredCount(registeredUsers) {
+            if (!registeredUsers || registeredUsers === '') return 0;
+            return registeredUsers.split(',').filter(id => id.trim() !== '').length;
+        }
+
+        function isUserRegistered(registeredUsers) {
+            if (!currentUser || !registeredUsers) return false;
+            return registeredUsers.includes(currentUser.uid);
+        }
+
+        // Modal Functions
+        window.closeModal = function() {
+            const modal = document.getElementById('eventModal');
+            modal.classList.remove('show');
+        }
+
+        window.onclick = function(event) {
+            const modal = document.getElementById('eventModal');
+            if (event.target === modal) {
+                closeModal();
             }
-                        <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;">View Details</a>
+        }
+
+        window.viewEventDetails = function(eventId) {
+            const event = allEvents.find(e => e.id === eventId);
+            if (!event) return;
+
+            const modal = document.getElementById('eventModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            const modalActions = document.getElementById('modalActions');
+
+            modalTitle.textContent = event.title;
+
+            const startDate = formatDate(event.startDate);
+            const endDate = formatDate(event.endDate);
+            const isFull = event.spotsLeft <= 0;
+
+            modalBody.innerHTML = `
+                <div class="modal-detail">
+                    <div class="modal-label">
+                        <i class="fas fa-calendar"></i>
+                        Start Date
+                    </div>
+                    <div class="modal-value">${startDate}</div>
+                </div>
+                <div class="modal-detail">
+                    <div class="modal-label">
+                        <i class="fas fa-calendar-check"></i>
+                        End Date
+                    </div>
+                    <div class="modal-value">${endDate}</div>
+                </div>
+                <div class="modal-detail">
+                    <div class="modal-label">
+                        <i class="fas fa-map-marker-alt"></i>
+                        Location
+                    </div>
+                    <div class="modal-value">${event.location}</div>
+                </div>
+                <div class="modal-detail">
+                    <div class="modal-label">
+                        <i class="fas fa-info-circle"></i>
+                        Description
+                    </div>
+                    <div class="modal-value">${event.description}</div>
+                </div>
+                ${event.additionalInfo ? `
+                <div class="modal-detail">
+                    <div class="modal-label">
+                        <i class="fas fa-plus-circle"></i>
+                        Additional Information
+                    </div>
+                    <div class="modal-value">${event.additionalInfo}</div>
+                </div>
+                ` : ''}
+                <div class="modal-detail">
+                    <div class="modal-label">
+                        <i class="fas fa-tag"></i>
+                        Status
+                    </div>
+                    <div class="modal-value">${event.status.charAt(0).toUpperCase() + event.status.slice(1)}</div>
+                </div>
+            `;
+
+            if (event.isRegistered) {
+                modalActions.innerHTML = `
+                    <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>
+                    <button class="modal-btn modal-btn-primary" style="background: #27ae60;" disabled>
+                        <i class="fas fa-check-circle"></i> Already Registered
+                    </button>
+                `;
+            } else if (isFull) {
+                modalActions.innerHTML = `
+                    <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>
+                    <button class="modal-btn modal-btn-primary" style="background: #e74c3c;" disabled>
+                        <i class="fas fa-times-circle"></i> Fully Booked
+                    </button>
+                `;
+            } else {
+                modalActions.innerHTML = `
+                    <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>
+                    <button class="modal-btn modal-btn-primary" onclick="registerForEvent('${event.id}')">
+                        <i class="fas fa-ticket-alt"></i> Register Now
+                    </button>
+                `;
+            }
+
+            modal.classList.add('show');
+        }
+
+        async function loadEvents() {
+            try {
+                console.log('Fetching events from Firestore...');
+
+                const eventsCol = collection(db, 'Events');
+                const snapshot = await getDocs(eventsCol);
+
+                if (snapshot.empty) {
+                    console.warn('No events found in the "Events" collection');
+                    const featuredSection = document.getElementById('featuredEventSection');
+                    featuredSection.style.display = 'none';
+                    
+                    const currentGrid = document.getElementById('currentEventsGrid');
+                    currentGrid.innerHTML = `
+                        <p class="no-results-message">
+                            No events available at this time.<br>
+                            <small>Check back soon for exciting events!</small>
+                        </p>`;
+                    return;
+                }
+
+                console.log(`Found ${snapshot.size} events in 'Events' collection`);
+
+                allEvents = [];
+
+                snapshot.forEach((docSnap) => {
+                    const data = docSnap.data();
+                    const registeredCount = getRegisteredCount(data.registeredUsers);
+
+                    allEvents.push({
+                        id: docSnap.id,
+                        ...data,
+                        status: getEventStatus(data.startDate, data.endDate),
+                        registeredCount: registeredCount,
+                        spotsLeft: (data.maxAttendees || 0) - registeredCount,
+                        isRegistered: isUserRegistered(data.registeredUsers)
+                    });
+                });
+
+                allEvents.sort((a, b) => {
+                    if (!a.startDate || !b.startDate) return 0;
+                    return b.startDate.toMillis() - a.startDate.toMillis();
+                });
+
+                displayEvents(allEvents);
+                console.log('Events loaded successfully');
+            } catch (error) {
+                console.error('Error loading events:', error);
+                const featuredSection = document.getElementById('featuredEventSection');
+                featuredSection.innerHTML = `
+                    <p class="no-results-message">
+                        Error loading events: ${error.message}<br>
+                        Please check the console for details.
+                    </p>`;
+            }
+        }
+
+        function displayFeaturedEvent(event) {
+            const featuredSection = document.getElementById('featuredEventSection');
+            
+            if (!event) {
+                featuredSection.style.display = 'none';
+                return;
+            }
+
+            const isFull = event.spotsLeft <= 0;
+            const startDate = formatDate(event.startDate);
+            const endDate = event.endDate ? formatDate(event.endDate) : null;
+            const dateRange = endDate ? `${startDate} - ${endDate}` : startDate;
+
+            featuredSection.innerHTML = `
+                <div class="featured-content">
+                    <h2>${event.title}</h2>
+                    <p>${event.description}</p>
+                    ${event.additionalInfo ? `<p>${event.additionalInfo}</p>` : ''}
+                    <div class="event-meta">
+                        <span class="event-date"><i class="far fa-calendar-alt"></i> ${dateRange}</span>
+                        <span class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</span>
+                    </div>
+                    <div class="event-actions">
+                        <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="btn">
+                            <i class="fas fa-info-circle"></i> Learn More
+                        </a>
+                        ${event.isRegistered ? 
+                            `<button class="btn" style="background: #27ae60; cursor: not-allowed;" disabled>
+                                <i class="fas fa-check-circle"></i> Already Registered
+                            </button>` :
+                            `<a href="#" onclick="window.registerForEvent('${event.id}'); return false;" class="btn btn-outline" ${isFull ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
+                                ${isFull ? '<i class="fas fa-times-circle"></i> Fully Booked' : '<i class="fas fa-ticket-alt"></i> Register Now'}
+                            </a>`
+                        }
                     </div>
                 </div>
-            </div>
-        `;
-    }).join('');
+                <div class="featured-image">
+                    <div>
+                        <h3><i class="fas fa-star"></i> Featured Event</h3>
+                        <p>${event.title}</p>
+                        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${event.location}</p>
+                    </div>
+                </div>
+            `;
+        }
 
-    setTimeout(() => {
-        document.querySelectorAll('#currentEventsGrid .event-card').forEach((card, index) => {
-            setTimeout(() => card.classList.add('show'), index * 100);
-        });
-    }, 100);
-}
+        function displayCurrentEvents(events) {
+            const grid = document.getElementById('currentEventsGrid');
 
-function displayUpcomingEvents(events) {
-    const grid = document.getElementById('upcomingEventsGrid');
+            if (events.length === 0) {
+                grid.innerHTML = '<p class="no-results-message"><i class="fas fa-calendar-times"></i><br>No current events at this time.</p>';
+                return;
+            }
 
-    if (events.length === 0) {
-        grid.innerHTML = '<p style="text-align: center; color: var(--text-light); grid-column: 1 / -1; padding: 3rem;">No upcoming events at this time.</p>';
-        return;
-    }
+            grid.innerHTML = events.map(event => {
+                const isFull = event.spotsLeft <= 0;
+                const isAlmostFull = event.registeredCount >= event.maxAttendees * 0.8;
 
-    const cards = events.map(event => {
-        return `
-            <div class="coming-card" style="background: var(--white); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); border-left: 4px solid var(--accent); transition: all 0.3s ease;">
-                <h3 style="color: var(--primary-dark); margin-bottom: 1rem; font-size: 1.4rem; font-family: 'Playfair Display', serif; font-weight: 700;">${event.title}</h3>
-                <span class="coming-date" style="color: var(--accent); font-weight: 600; margin-bottom: 1rem; display: block; font-size: 0.95rem;">Opening ${formatDate(event.startDate)}</span>
-                <p style="color: var(--text-light); margin-bottom: 1rem; line-height: 1.6; font-size: 0.95rem;">${event.description}</p>
-                <a href="#" onclick="window.notifyMe('${event.id}'); return false;" style="color: var(--accent); text-decoration: underline; font-weight: 600; transition: color 0.3s ease;">Notify Me</a>
-            </div>
-        `;
-    });
+                let statusBadge = '';
+                if (isFull) {
+                    statusBadge = '<span class="event-badge full"><i class="fas fa-times-circle"></i> Fully Booked</span>';
+                } else if (isAlmostFull) {
+                    statusBadge = '<span class="event-badge almost-full"><i class="fas fa-exclamation-triangle"></i> Almost Full</span>';
+                }
 
-    grid.innerHTML = cards.join('');
+                return `
+                    <div class="event-card">
+                        <div class="event-img">
+                            <div>
+                                <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${event.title}</h3>
+                                <p style="font-size: 0.9rem; opacity: 0.9;"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                            </div>
+                            ${statusBadge}
+                        </div>
+                        <div class="event-content">
+                            <h3>${event.title}</h3>
+                            <div class="event-meta">
+                                <span class="event-date"><i class="far fa-calendar-alt"></i> ${formatDate(event.startDate)}</span>
+                                <span class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</span>
+                            </div>
+                            <p>${event.description}</p>
 
-    setTimeout(() => {
-        const allCards = document.querySelectorAll('#upcomingEventsGrid .coming-card');
-        allCards.forEach((card, index) => {
+                            <div class="event-actions">
+                                ${event.isRegistered ?
+                    `<button class="registered" disabled><i class="fas fa-check-circle"></i> Registered</button>` :
+                    `<button onclick="window.registerForEvent('${event.id}')" ${isFull ? 'disabled' : ''}>
+                                        <i class="fas fa-ticket-alt"></i> ${isFull ? 'Fully Booked' : 'Register Now'}
+                                    </button>`
+                }
+                                <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="view-details">
+                                    <i class="fas fa-info-circle"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
             setTimeout(() => {
-                card.style.opacity = '1';
-                card.style.transform = 'translateY(0)';
-            }, index * 100);
+                document.querySelectorAll('#currentEventsGrid .event-card').forEach((card, index) => {
+                    setTimeout(() => card.classList.add('show'), index * 100);
+                });
+            }, 100);
+        }
 
-            card.addEventListener('mouseenter', function () {
-                this.style.transform = 'translateY(-5px)';
-                this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.1)';
+        function displayUpcomingEvents(events) {
+            const grid = document.getElementById('upcomingEventsGrid');
+
+            if (events.length === 0) {
+                grid.innerHTML = '<p style="text-align: center; color: var(--text-light); grid-column: 1 / -1; padding: 3rem;"><i class="fas fa-hourglass-half"></i><br>No upcoming events at this time.</p>';
+                return;
+            }
+
+            const cards = events.map(event => {
+                return `
+                    <div class="coming-card" style="background: var(--white); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); border-left: 4px solid var(--accent); transition: all 0.3s ease; opacity: 0; transform: translateY(20px);">
+                        <h3 style="color: var(--primary-dark); margin-bottom: 1rem; font-size: 1.4rem; font-family: 'Playfair Display', serif; font-weight: 700;">${event.title}</h3>
+                        <span class="coming-date" style="color: var(--accent); font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                            <i class="far fa-calendar-alt"></i> Opening ${formatDate(event.startDate)}
+                        </span>
+                        <p style="color: var(--text-light); margin-bottom: 1rem; line-height: 1.6; font-size: 0.95rem;">${event.description}</p>
+                        <a href="#" onclick="window.notifyMe('${event.id}'); return false;" style="color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;">
+                            <i class="far fa-bell"></i> Notify Me
+                        </a>
+                    </div>
+                `;
             });
 
-            card.addEventListener('mouseleave', function () {
-                this.style.transform = 'translateY(0)';
-                this.style.boxShadow = 'var(--shadow)';
-            });
-        });
-    }, 150);
-}
+            grid.innerHTML = cards.join('');
 
-function displayEvents(events) {
-    const filteredEvents = events.filter(e => e.status !== 'past');
-    const mostRecentEvent = filteredEvents.length > 0 ? filteredEvents[0] : null;
-    displayFeaturedEvent(mostRecentEvent);
+            setTimeout(() => {
+                const allCards = document.querySelectorAll('#upcomingEventsGrid .coming-card');
+                allCards.forEach((card, index) => {
+                    setTimeout(() => {
+                        card.style.opacity = '1';
+                        card.style.transform = 'translateY(0)';
+                    }, index * 100);
 
-    const currentEvents = filteredEvents.filter(e => e.status === 'current');
-    const upcomingEvents = filteredEvents.filter(e => e.status === 'upcoming');
+                    card.addEventListener('mouseenter', function () {
+                        this.style.transform = 'translateY(-5px)';
+                        this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.1)';
+                    });
 
-    displayCurrentEvents(currentEvents);
-    displayUpcomingEvents(upcomingEvents);
-}
+                    card.addEventListener('mouseleave', function () {
+                        this.style.transform = 'translateY(0)';
+                        this.style.boxShadow = 'var(--shadow)';
+                    });
+                });
+            }, 150);
+        }
 
-// 🔔 دالة Notify Me المحدثة مع الإشعارات
-window.notifyMe = async function (eventId) {
-    if (!currentUser) {
-        alert('Please sign in to receive notifications about upcoming events.');
-        window.location.href = 'Account.html';
-        return;
-    }
+        function displayEvents(events) {
+            const filteredEvents = events.filter(e => e.status !== 'past');
+            const mostRecentEvent = filteredEvents.length > 0 ? filteredEvents[0] : null;
+            displayFeaturedEvent(mostRecentEvent);
 
-    try {
-        const event = allEvents.find(e => e.id === eventId);
-        if (!event) return;
+            const currentEvents = filteredEvents.filter(e => e.status === 'current');
+            const upcomingEvents = filteredEvents.filter(e => e.status === 'upcoming');
 
-        // حفظ طلب Notify Me
-        const saved = saveNotifyMeRequest(
-            currentUser.uid,
-            eventId,
-            event.title,
-            event.startDate
-        );
+            displayCurrentEvents(currentEvents);
+            displayUpcomingEvents(upcomingEvents);
+        }
 
-        if (saved) {
-            // إرسال إشعار تأكيد فوري
-            await sendEventReminderNotification(
-                currentUser.uid,
-                eventId,
-                event.title,
-                event.startDate
-            );
+        // Notify Me function
+        window.notifyMe = async function (eventId) {
+            if (!currentUser) {
+                alert('Please sign in to receive notifications about upcoming events.');
+                window.location.href = 'Account.html';
+                return;
+            }
+
+            const event = allEvents.find(e => e.id === eventId);
+            if (!event) return;
 
             alert(`✓ You will be notified when "${event.title}" starts!\n\nWe'll send you a reminder before the event.`);
         }
-    } catch (error) {
-        console.error('Error setting up notification:', error);
-        alert('Unable to set up notification. Please try again.');
-    }
-}
 
-// 🔔 دالة التسجيل المحدثة مع الإشعارات
-window.registerForEvent = async function (eventId) {
-    if (!currentUser) {
-        alert('Please sign in to register for events.');
-        window.location.href = 'Account.html';
-        return;
-    }
+        // Register for Event - Navigate to Ticketing page
+        window.registerForEvent = function (eventId) {
+            const event = allEvents.find(e => e.id === eventId);
+            if (!event) return;
 
-    try {
-        const event = allEvents.find(e => e.id === eventId);
-        if (!event) return;
+            if (event.spotsLeft <= 0) {
+                alert('Sorry, this event is fully booked.');
+                return;
+            }
 
-        if (event.spotsLeft <= 0) {
-            alert('Sorry, this event is fully booked.');
-            return;
+            if (event.isRegistered) {
+                alert('You are already registered for this event.');
+                return;
+            }
+
+            // Store event info in sessionStorage for Ticketing page
+            sessionStorage.setItem('selectedEvent', JSON.stringify({
+                id: event.id,
+                title: event.title,
+                date: formatDate(event.startDate),
+                location: event.location
+            }));
+
+            // Navigate to Ticketing page with special events parameter
+            window.location.href = 'Ticketing.html?type=special-events&event=' + encodeURIComponent(event.title);
         }
 
-        if (event.isRegistered) {
-            alert('You are already registered for this event.');
-            return;
-        }
-
-        const eventRef = doc(db, 'Events', eventId);
-        const currentRegistered = event.registeredUsers || '';
-        const newRegistered = currentRegistered === '' ?
-            currentUser.uid :
-            `${currentRegistered},${currentUser.uid}`;
-
-        await updateDoc(eventRef, {
-            registeredUsers: newRegistered
+        window.addEventListener('scroll', function () {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 50) {
+                nav.style.padding = '0.7rem 0';
+                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
+            } else {
+                nav.style.padding = '1rem 0';
+                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
+            }
         });
 
-        // 🔔 إرسال إشعار التسجيل
-        await sendEventRegistrationNotification(
-            currentUser.uid,
-            eventId,
-            event.title
-        );
+        document.addEventListener('DOMContentLoaded', function () {
+            console.log('Page loaded, initializing...');
+            loadEvents();
+        });
 
-        alert(`✓ Successfully registered for "${event.title}"!\n\nA confirmation notification has been sent.`);
-        loadEvents();
-    } catch (error) {
-        console.error('Error registering:', error);
-        alert('Unable to register. Please try again.');
-    }
-}
-
-window.viewEventDetails = function (eventId) {
-    const event = allEvents.find(e => e.id === eventId);
-    if (!event) return;
-
-    const startDate = formatDate(event.startDate);
-    const endDate = formatDate(event.endDate);
-
-    const details = `
-━━━━━━━━━━━━━━━━━━━━━━━━━━━
-EVENT DETAILS
-━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-📅 ${event.title}
-
-📍 Location: ${event.location}
-
-📝 Description:
-${event.description}
-
-🕐 Start: ${startDate}
-🕐 End: ${endDate}
-
-👥 Capacity: ${event.registeredCount}/${event.maxAttendees}
-💺 Available Spots: ${event.spotsLeft}
-
-Status: ${event.status.toUpperCase()}
-    `.trim();
-
-    alert(details);
-}
-
-window.addEventListener('scroll', function () {
-    const nav = document.querySelector('nav');
-    if (window.scrollY > 50) {
-        nav.style.padding = '0.7rem 0';
-        nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
-    } else {
-        nav.style.padding = '1rem 0';
-        nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
-    }
-});
-
-document.addEventListener('DOMContentLoaded', function () {
-    console.log('Page loaded, initializing...');
-    loadEvents();
-});
-
-onSnapshot(collection(db, 'Events'), (snapshot) => {
-    console.log('Events updated in database');
-});
+        onSnapshot(collection(db, 'Events'), (snapshot) => {
+            console.log('Events updated in database');
+        });
     </script>
 </body>
 

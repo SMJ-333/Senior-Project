@@ -8,7 +8,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-dark: #653025;
@@ -224,7 +224,7 @@
             background: var(--white);
             border-radius: 12px;
             padding: 1rem;
-            margin-bottom: 3rem;
+            margin-bottom: 2.5rem;
             box-shadow: var(--shadow);
         }
 
@@ -315,13 +315,13 @@
         }
 
         .clear-filters-btn:hover {
-            background: #b8941f;
+            background: #9a7835;
             transform: translateY(-1px);
         }
 
         .results-info {
             text-align: center;
-            margin-bottom: 2rem;
+            margin-bottom: 1rem;
             padding: 1rem;
             background: var(--neutral-light);
             border-radius: 8px;
@@ -351,6 +351,19 @@
 
         .collection-item.highlight {
             box-shadow: 0 0 0 3px var(--accent);
+            animation: pulse 1s ease-in-out;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.02);
+            }
         }
 
         .collection-item img {
@@ -411,10 +424,45 @@
             color: var(--text-light);
         }
 
-        .no-results .material-icons {
+        .no-results i {
             font-size: 4rem;
             margin-bottom: 1rem;
             opacity: 0.5;
+        }
+
+        .floating-btn {
+            position: fixed;
+            bottom: 40px;
+            right: 40px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--primary-dark);
+            border: none;
+            border-radius: 50%;
+            width: 56px;
+            height: 56px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            cursor: pointer;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15), 0 2px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .floating-btn.show {
+            display: flex;
+        }
+
+        .floating-btn:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2), 0 4px 10px rgba(0, 0, 0, 0.15);
+            background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+        }
+
+        .floating-btn:active {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         footer {
@@ -499,263 +547,280 @@
             .controls-section {
                 padding: 1.5rem;
             }
+
+            .floating-btn {
+                bottom: 20px;
+                right: 20px;
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
         }
 
         .visual-search-btn {
-    background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
-    color: var(--white);
-    border: none;
-    padding: 0.8rem 1.5rem;
-    border-radius: 8px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    box-shadow: 0 4px 10px rgba(176, 141, 87, 0.3);
-}
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            box-shadow: 0 4px 10px rgba(176, 141, 87, 0.3);
+        }
 
-.visual-search-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 15px rgba(176, 141, 87, 0.4);
-}
+        .visual-search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(176, 141, 87, 0.4);
+        }
 
-.visual-search-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(5px);
-}
+        .visual-search-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
 
-.visual-search-modal.active {
-    display: flex;
-}
+        .visual-search-modal.active {
+            display: flex;
+        }
 
-.visual-search-content {
-    background: var(--white);
-    border-radius: 16px;
-    max-width: 600px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    animation: modalSlideIn 0.3s ease-out;
-}
+        .visual-search-content {
+            background: var(--white);
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: modalSlideIn 0.3s ease-out;
+        }
 
-@keyframes modalSlideIn {
-    from {
-        opacity: 0;
-        transform: translateY(-30px) scale(0.95);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-    }
-}
+        @keyframes modalSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-30px) scale(0.95);
+            }
 
-.modal-header {
-    padding: 2rem;
-    border-bottom: 2px solid var(--neutral-light);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
 
-.modal-header h2 {
-    color: var(--primary-dark);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
+        .modal-header {
+            padding: 2rem;
+            border-bottom: 2px solid var(--neutral-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.close-modal-btn {
-    background: none;
-    border: none;
-    color: var(--text-light);
-    cursor: pointer;
-    font-size: 1.5rem;
-    transition: var(--transition);
-    padding: 0.5rem;
-    border-radius: 50%;
-}
+        .modal-header h2 {
+            color: var(--primary-dark);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
 
-.close-modal-btn:hover {
-    background: var(--neutral-light);
-    color: var(--primary-dark);
-}
+        .close-modal-btn {
+            background: none;
+            border: none;
+            color: var(--text-light);
+            cursor: pointer;
+            font-size: 1.5rem;
+            transition: var(--transition);
+            padding: 0.5rem;
+            border-radius: 50%;
+        }
 
-.modal-body {
-    padding: 2rem;
-}
+        .close-modal-btn:hover {
+            background: var(--neutral-light);
+            color: var(--primary-dark);
+        }
 
-.upload-area {
-    border: 3px dashed var(--accent);
-    border-radius: 12px;
-    padding: 3rem 2rem;
-    text-align: center;
-    background: var(--neutral-light);
-    transition: var(--transition);
-    cursor: pointer;
-    position: relative;
-}
+        .modal-body {
+            padding: 2rem;
+        }
 
-.upload-area:hover {
-    background: #ebe7d8;
-    border-color: var(--accent-light);
-}
+        .upload-area {
+            border: 3px dashed var(--accent);
+            border-radius: 12px;
+            padding: 3rem 2rem;
+            text-align: center;
+            background: var(--neutral-light);
+            transition: var(--transition);
+            cursor: pointer;
+            position: relative;
+        }
 
-.upload-area.dragover {
-    background: var(--accent-light);
-    border-color: var(--accent);
-    transform: scale(1.02);
-}
+        .upload-area:hover {
+            background: #ebe7d8;
+            border-color: var(--accent-light);
+        }
 
-.upload-icon {
-    font-size: 4rem;
-    color: var(--accent);
-    margin-bottom: 1rem;
-}
+        .upload-area.dragover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+            transform: scale(1.02);
+        }
 
-.upload-text {
-    color: var(--text-dark);
-    font-size: 1.1rem;
-    font-weight: 500;
-    margin-bottom: 0.5rem;
-}
+        .upload-icon {
+            font-size: 4rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
 
-.upload-hint {
-    color: var(--text-light);
-    font-size: 0.9rem;
-}
+        .upload-text {
+            color: var(--text-dark);
+            font-size: 1.1rem;
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+        }
 
-.file-input {
-    display: none;
-}
+        .upload-hint {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
 
-.preview-container {
-    margin-top: 2rem;
-    display: none;
-}
+        .file-input {
+            display: none;
+        }
 
-.preview-container.active {
-    display: block;
-}
+        .preview-container {
+            margin-top: 2rem;
+            display: none;
+        }
 
-.image-preview {
-    max-width: 100%;
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    margin-bottom: 1rem;
-}
+        .preview-container.active {
+            display: block;
+        }
 
-.preview-info {
-    background: var(--neutral-light);
-    padding: 1rem;
-    border-radius: 8px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
+        .image-preview {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 1rem;
+        }
 
-.search-btn {
-    background: var(--primary-dark);
-    color: var(--white);
-    border: none;
-    padding: 0.8rem 2rem;
-    border-radius: 8px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: var(--transition);
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin: 1.5rem auto 0;
-}
+        .preview-info {
+            background: var(--neutral-light);
+            padding: 1rem;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-.search-btn:hover {
-    background: var(--primary-light);
-    transform: translateY(-2px);
-}
+        .search-btn {
+            background: var(--primary-dark);
+            color: var(--white);
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 1.5rem auto 0;
+        }
 
-.search-btn:disabled {
-    background: #ccc;
-    cursor: not-allowed;
-    transform: none;
-}
+        .search-btn:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
 
-.processing-indicator {
-    display: none;
-    text-align: center;
-    padding: 2rem;
-    color: var(--text-dark);
-}
+        .search-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
 
-.processing-indicator.active {
-    display: block;
-}
+        .processing-indicator {
+            display: none;
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-dark);
+        }
 
-.spinner {
-    border: 4px solid var(--neutral-light);
-    border-top: 4px solid var(--accent);
-    border-radius: 50%;
-    width: 50px;
-    height: 50px;
-    animation: spin 1s linear infinite;
-    margin: 0 auto 1rem;
-}
+        .processing-indicator.active {
+            display: block;
+        }
 
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
+        .spinner {
+            border: 4px solid var(--neutral-light);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
 
-.results-badge {
-    position: absolute;
-    top: -10px;
-    right: -10px;
-    background: #e74c3c;
-    color: white;
-    border-radius: 50%;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.85rem;
-    font-weight: 700;
-    box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
-    animation: pulse 2s infinite;
-}
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
 
-.similarity-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background: linear-gradient(135deg, #27ae60, #2ecc71);
-    color: white;
-    padding: 0.4rem 0.8rem;
-    border-radius: 20px;
-    font-size: 0.85rem;
-    font-weight: 600;
-    box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
-}
+            100% {
+                transform: rotate(360deg);
+            }
+        }
 
-@keyframes pulse {
-    0%, 100% {
-        transform: scale(1);
-    }
-    50% {
-        transform: scale(1.1);
-    }
-}
+        .results-badge {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            font-weight: 700;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        .similarity-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: linear-gradient(135deg, #27ae60, #2ecc71);
+            color: white;
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
     </style>
 </head>
 
@@ -774,15 +839,16 @@
                 <li><a href="Exhibitions.html">Exhibitions</a></li>
                 <li><a href="Gallery.html" class="active">Gallery</a></li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account"><span
-                    class="material-icons">person</span></a>
+            <a href="Account.html" class="account-icon" title="My Account">
+                <i class="fas fa-user"></i>
+            </a>
         </div>
     </nav>
 
     <!-- Page Content -->
     <div class="page-content">
         <!-- Hero Section -->
-        <section class="hero">
+        <section class="hero" id="hero">
             <div class="hero-content">
                 <h1>Explore Our Gallery</h1>
                 <p>Discover a wide variety of historical artifacts, from ancient codices to exquisite bottles, carefully
@@ -800,55 +866,55 @@
             <div class="controls-section">
                 <div class="search-filter-container">
                     <button id="visual-search-btn" class="visual-search-btn">
-                    <span class="material-icons">photo_camera</span>
-                    Search by Image
-                </button>
+                        <span class="material-icons">photo_camera</span>
+                        Search by Image
+                    </button>
 
-                <!-- Modal للبحث بالصورة -->
-                <div id="visual-search-modal" class="visual-search-modal">
-                    <div class="visual-search-content">
-                        <div class="modal-header">
-                            <h2>
-                                <span class="material-icons">image_search</span>
-                                Visual Search
-                            </h2>
-                            <button class="close-modal-btn" id="close-visual-modal">
-                                <span class="material-icons">close</span>
-                            </button>
-                        </div>
-                        <div class="modal-body">
-                            <div id="upload-area" class="upload-area">
-                                <div class="upload-icon">
-                                    <span class="material-icons" style="font-size: inherit;">cloud_upload</span>
-                                </div>
-                                <div class="upload-text">Drop an image here or click to browse</div>
-                                <div class="upload-hint">Supported: JPG, PNG, WEBP (Max 5MB)</div>
-                                <input type="file" id="image-input" class="file-input" accept="image/*">
+                    <!-- Modal للبحث بالصورة -->
+                    <div id="visual-search-modal" class="visual-search-modal">
+                        <div class="visual-search-content">
+                            <div class="modal-header">
+                                <h2>
+                                    <span class="material-icons">image_search</span>
+                                    Visual Search
+                                </h2>
+                                <button class="close-modal-btn" id="close-visual-modal">
+                                    <span class="material-icons">close</span>
+                                </button>
                             </div>
-
-                            <div id="preview-container" class="preview-container">
-                                <img id="image-preview" class="image-preview" alt="Preview">
-                                <div class="preview-info">
-                                    <span id="file-name" style="color: var(--text-dark); font-weight: 500;"></span>
-                                    <button class="search-btn" id="search-similar-btn" style="margin: 0;">
-                                        <span class="material-icons">search</span>
-                                        Find Similar
-                                    </button>
+                            <div class="modal-body">
+                                <div id="upload-area" class="upload-area">
+                                    <div class="upload-icon">
+                                        <span class="material-icons" style="font-size: inherit;">cloud_upload</span>
+                                    </div>
+                                    <div class="upload-text">Drop an image here or click to browse</div>
+                                    <div class="upload-hint">Supported: JPG, PNG, WEBP (Max 5MB)</div>
+                                    <input type="file" id="image-input" class="file-input" accept="image/*">
                                 </div>
-                            </div>
 
-                            <div id="processing-indicator" class="processing-indicator">
-                                <div class="spinner"></div>
-                                <p>Analyzing image with AI...</p>
-                                <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
-                                    This may take a few seconds
-                                </p>
+                                <div id="preview-container" class="preview-container">
+                                    <img id="image-preview" class="image-preview" alt="Preview">
+                                    <div class="preview-info">
+                                        <span id="file-name" style="color: var(--text-dark); font-weight: 500;"></span>
+                                        <button class="search-btn" id="search-similar-btn" style="margin: 0;">
+                                            <span class="material-icons">search</span>
+                                            Find Similar
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <div id="processing-indicator" class="processing-indicator">
+                                    <div class="spinner"></div>
+                                    <p>Analyzing image with AI...</p>
+                                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
+                                        This may take a few seconds
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
                     <div class="search-wrapper">
-                        <span class="material-icons search-icon">search</span>
+                        <i class="fas fa-search search-icon"></i>
                         <input type="text" id="search-input" class="search-input"
                             placeholder="Search artworks by title or artist..." autocomplete="off">
                     </div>
@@ -861,10 +927,9 @@
                             <option value="boxes">Boxes</option>
                             <option value="bottles">Bottles</option>
                         </select>
-                        <span class="material-icons filter-icon">expand_more</span>
+                        <i class="fas fa-chevron-down filter-icon"></i>
                     </div>
 
-                    <!-- ✅ Exhibition Filter Added -->
                     <div class="filter-wrapper">
                         <select id="exhibition-filter" class="filter-select">
                             <option value="">All Exhibitions</option>
@@ -875,11 +940,11 @@
                             <option value="Turkish Heritage">Turkish Heritage</option>
                             <option value="Others">Others</option>
                         </select>
-                        <span class="material-icons filter-icon">expand_more</span>
+                        <i class="fas fa-chevron-down filter-icon"></i>
                     </div>
 
                     <button id="clear-filters" class="clear-filters-btn">
-                        <span class="material-icons">clear</span>
+                        <i class="fas fa-times"></i>
                         Clear
                     </button>
                 </div>
@@ -891,16 +956,18 @@
             </div>
 
             <div id="loading" class="loading">
-                Loading Gallery...
+                <i class="fas fa-spinner fa-spin" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                <br>Loading Gallery...
             </div>
 
             <div id="error" class="error" style="display: none;">
+                <i class="fas fa-exclamation-triangle" style="font-size: 3rem; margin-bottom: 1rem;"></i>
                 <h3>Unable to Load Gallery</h3>
                 <p id="error-message"></p>
             </div>
 
             <div id="no-results" class="no-results" style="display: none;">
-                <div class="material-icons">search_off</div>
+                <i class="fas fa-search-minus"></i>
                 <h3>No Results Found</h3>
                 <p>Try adjusting your search or filter criteria</p>
             </div>
@@ -910,26 +977,30 @@
         </div>
     </div>
 
+    <button class="floating-btn" aria-label="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
     <!-- Footer -->
     <footer>
         <div class="footer-content">
             <div class="footer-info">
                 <div class="footer-section">
                     <h3>Visit Us</h3>
-                    <p>123 Museum Boulevard</p>
+                    <p><i class="fas fa-map-marker-alt"></i> 123 Museum Boulevard</p>
                     <p>Cultural District</p>
                     <p>City, State 12345</p>
-                    <p>Phone: (555) 123-4567</p>
+                    <p><i class="fas fa-phone"></i> (555) 123-4567</p>
                 </div>
                 <div class="footer-section">
                     <h3>Hours</h3>
-                    <p>Monday - Friday: 9:00 AM - 6:00 PM</p>
+                    <p><i class="far fa-clock"></i> Monday - Friday: 9:00 AM - 6:00 PM</p>
                     <p>Saturday - Sunday: 10:00 AM - 8:00 PM</p>
                     <p>Closed on major holidays</p>
                 </div>
                 <div class="footer-section">
                     <h3>Admission</h3>
-                    <p>Adults: $15</p>
+                    <p><i class="fas fa-ticket-alt"></i> Adults: $15</p>
                     <p>Students/Seniors: $12</p>
                     <p>Children under 12: Free</p>
                     <p>Members: Always Free</p>
@@ -969,6 +1040,38 @@
             return (str || '').toString().trim().replace(/\s+/g, ' ').toLowerCase();
         }
 
+        function saveFilterState() {
+            const filterState = {
+                search: searchInput.value,
+                category: categoryFilter.value,
+                exhibition: exhibitionFilter.value
+            };
+            sessionStorage.setItem('galleryFilters', JSON.stringify(filterState));
+            // ✅ Also save exhibition filter separately
+            if (exhibitionFilter.value) {
+                sessionStorage.setItem('galleryExhibitionFilter', exhibitionFilter.value);
+            } else {
+                sessionStorage.removeItem('galleryExhibitionFilter');
+            }
+        }
+
+        function restoreFilterState() {
+            const savedFilters = sessionStorage.getItem('galleryFilters');
+            if (savedFilters) {
+                try {
+                    const filterState = JSON.parse(savedFilters);
+                    searchInput.value = filterState.search || '';
+                    categoryFilter.value = filterState.category || '';
+                    exhibitionFilter.value = filterState.exhibition || '';
+                    return true;
+                } catch (e) {
+                    console.error('Error restoring filters:', e);
+                    return false;
+                }
+            }
+            return false;
+        }
+
         function filterAndSearch() {
             const searchTerm = normalize(searchInput.value);
             const selectedCategory = normalize(categoryFilter.value);
@@ -989,6 +1092,7 @@
 
             renderCollections(filteredCollections);
             updateResultsInfo();
+            saveFilterState();
         }
 
         function updateResultsInfo() {
@@ -1005,6 +1109,8 @@
             searchInput.value = '';
             categoryFilter.value = '';
             exhibitionFilter.value = '';
+            sessionStorage.removeItem('galleryFilters');
+            sessionStorage.removeItem('galleryExhibitionFilter');
             filteredCollections = [...allCollections];
             renderCollections(filteredCollections);
             updateResultsInfo();
@@ -1037,17 +1143,18 @@
                 const exhibitionLabel = item.Exhibition || item.exhibition || '';
 
                 div.innerHTML = `
-            <img src="${imageURL}" alt="${title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"280\\" height=\\"250\\" viewBox=\\"0 0 280 250\\"%3E%3Crect fill=\\"%23e2e8f0\\" width=\\"280\\" height=\\"250\\"/%3E%3Ctext x=\\"140\\" y=\\"125\\" text-anchor=\\"middle\\" fill=\\"%23718096\\" font-size=\\"18\\"%3EImage Error%3C/text%3E%3C/svg%3E'">
-            <div class="collection-info">
-                <h3 class="collection-title">${title}</h3>
-                <p class="collection-artist">by ${artist}</p>
-                ${category ? `<div class="collection-category">${category}</div>` : ''}
-                ${exhibitionLabel ? `<div class="collection-category" style="margin-top:0.5rem">${exhibitionLabel}</div>` : ''}
-            </div>
-        `;
+                    <img src="${imageURL}" alt="${title}" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\\"http://www.w3.org/2000/svg\\" width=\\"280\\" height=\\"250\\" viewBox=\\"0 0 280 250\\"%3E%3Crect fill=\\"%23e2e8f0\\" width=\\"280\\" height=\\"250\\"/%3E%3Ctext x=\\"140\\" y=\\"125\\" text-anchor=\\"middle\\" fill=\\"%23718096\\" font-size=\\"18\\"%3EImage Error%3C/text%3E%3C/svg%3E'">
+                    <div class="collection-info">
+                        <h3 class="collection-title">${title}</h3>
+                        <p class="collection-artist">by ${artist}</p>
+                        ${category ? `<div class="collection-category">${category}</div>` : ''}
+                        ${exhibitionLabel ? `<div class="collection-category" style="margin-top:0.5rem">${exhibitionLabel}</div>` : ''}
+                    </div>
+                `;
 
                 div.addEventListener('click', () => {
-                    window.location.href = `ArtDetails.html?id=${item.id}`;
+                    saveFilterState();
+                    window.location.href = `ArtDetails.html?id=${item.id}&from=Gallery.html`;
                 });
 
                 collectionsGrid.appendChild(div);
@@ -1072,7 +1179,6 @@
             });
         }
 
-        // Event listeners
         searchInput.addEventListener('input', filterAndSearch);
         categoryFilter.addEventListener('change', filterAndSearch);
         exhibitionFilter.addEventListener('change', filterAndSearch);
@@ -1084,10 +1190,32 @@
                     history.scrollRestoration = 'manual';
                 }
 
-                // ✅ NEW: Get URL parameters for exhibition filter
+                // Floating button logic
+                const floatingBtn = document.querySelector('.floating-btn');
+                if (floatingBtn) {
+                    window.addEventListener('scroll', () => {
+                        if (window.pageYOffset > 1000) {
+                            floatingBtn.classList.add('show');
+                        } else {
+                            floatingBtn.classList.remove('show');
+                        }
+                    });
+
+                    floatingBtn.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    });
+                }
+
+                // Get URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 const exhibitionParam = urlParams.get('exhibition');
                 const fromPage = urlParams.get('from');
+
+                // Clear scroll position if coming from ExhibitionDetails
+                if (fromPage && fromPage.includes('ExhibitionDetails')) {
+                    sessionStorage.removeItem('scrollToArtwork');
+                }
 
                 const cachedCollections = sessionStorage.getItem('collections_cache');
 
@@ -1095,17 +1223,15 @@
                     allCollections = JSON.parse(cachedCollections);
                     filteredCollections = [...allCollections];
 
-                    // ✅ NEW: Apply exhibition filter if coming from ExhibitionDetails
-                    if (exhibitionParam && exhibitionFilter) {
-                        exhibitionFilter.value = exhibitionParam;
-                    }
-
-                    renderCollections(filteredCollections);
-
-                    // ✅ NEW: Run filter after setting exhibition value
+                    // Set exhibition filter if provided in URL
                     if (exhibitionParam) {
-                        filterAndSearch();
+                        exhibitionFilter.value = exhibitionParam;
+                        sessionStorage.setItem('galleryExhibitionFilter', exhibitionParam);
+                    } else {
+                        restoreFilterState();
                     }
+
+                    filterAndSearch();
 
                     listenCollections(updatedCollections => {
                         allCollections = updatedCollections;
@@ -1117,17 +1243,13 @@
                     filteredCollections = [...allCollections];
                     sessionStorage.setItem('collections_cache', JSON.stringify(allCollections));
 
-                    // ✅ NEW: Apply exhibition filter if coming from ExhibitionDetails
-                    if (exhibitionParam && exhibitionFilter) {
-                        exhibitionFilter.value = exhibitionParam;
-                    }
-
-                    renderCollections(filteredCollections);
-
-                    // ✅ NEW: Run filter after setting exhibition value
+                    // Set exhibition filter if provided in URL
                     if (exhibitionParam) {
-                        filterAndSearch();
+                        exhibitionFilter.value = exhibitionParam;
+                        sessionStorage.setItem('galleryExhibitionFilter', exhibitionParam);
                     }
+
+                    filterAndSearch();
 
                     listenCollections(updatedCollections => {
                         allCollections = updatedCollections;
@@ -1136,11 +1258,9 @@
                     });
                 }
 
-                // ✅ NEW: Smart scroll logic - only scroll if NOT coming from ExhibitionDetails
+                // Handle scroll to artwork (only if NOT coming from ExhibitionDetails)
                 const scrollToArtwork = sessionStorage.getItem('scrollToArtwork');
-                if (scrollToArtwork && fromPage !== 'ExhibitionDetails') {
-                    sessionStorage.removeItem('scrollToArtwork');
-
+                if (scrollToArtwork && (!fromPage || !fromPage.includes('ExhibitionDetails'))) {
                     setTimeout(() => {
                         const artworkCard = document.querySelector(`[data-artwork-id="${scrollToArtwork}"]`);
                         if (artworkCard) {
@@ -1150,10 +1270,8 @@
                                 artworkCard.classList.remove('highlight');
                             }, 2000);
                         }
-                    }, 300);
-                } else if (fromPage === 'ExhibitionDetails') {
-                    // Clear scroll position when coming from ExhibitionDetails
-                    sessionStorage.removeItem('scrollToArtwork');
+                        sessionStorage.removeItem('scrollToArtwork');
+                    }, 500);
                 }
 
             } catch (error) {
@@ -1173,7 +1291,8 @@
             }
         });
 
-                // 🔍 Visual Search System
+
+        // 🔍 Visual Search System
         let mobilenetModel = null;
         let imageFeatures = new Map(); // Store features for all artworks
 
@@ -1195,7 +1314,7 @@
             if (!mobilenetModel) {
                 await loadModel();
             }
-            
+
             try {
                 const activation = mobilenetModel.infer(imageElement, true);
                 const features = await activation.data();
@@ -1210,17 +1329,17 @@
         // Calculate cosine similarity
         function cosineSimilarity(vec1, vec2) {
             if (!vec1 || !vec2 || vec1.length !== vec2.length) return 0;
-            
+
             let dotProduct = 0;
             let norm1 = 0;
             let norm2 = 0;
-            
+
             for (let i = 0; i < vec1.length; i++) {
                 dotProduct += vec1[i] * vec2[i];
                 norm1 += vec1[i] * vec1[i];
                 norm2 += vec2[i] * vec2[i];
             }
-            
+
             if (norm1 === 0 || norm2 === 0) return 0;
             return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
         }
@@ -1228,7 +1347,7 @@
         // Find similar artworks
         async function findSimilarArtworks(uploadedImageFeatures) {
             const similarities = [];
-            
+
             for (const [artworkId, features] of imageFeatures.entries()) {
                 const similarity = cosineSimilarity(uploadedImageFeatures, features);
                 similarities.push({
@@ -1236,10 +1355,10 @@
                     similarity: similarity
                 });
             }
-            
+
             // Sort by similarity (highest first)
             similarities.sort((a, b) => b.similarity - a.similarity);
-            
+
             // Return top 10 results with similarity > 0.3
             return similarities.filter(s => s.similarity > 0.3).slice(0, 10);
         }
@@ -1249,21 +1368,21 @@
             if (!mobilenetModel) {
                 await loadModel();
             }
-            
+
             console.log('🔄 Preloading artwork features...');
-            
+
             for (const artwork of allCollections) {
                 if (artwork.imageURL && !imageFeatures.has(artwork.id)) {
                     try {
                         const img = new Image();
                         img.crossOrigin = 'anonymous';
-                        
+
                         await new Promise((resolve, reject) => {
                             img.onload = resolve;
                             img.onerror = reject;
                             img.src = artwork.imageURL;
                         });
-                        
+
                         const features = await extractFeatures(img);
                         if (features) {
                             imageFeatures.set(artwork.id, features);
@@ -1273,7 +1392,7 @@
                     }
                 }
             }
-            
+
             console.log(`✅ Loaded features for ${imageFeatures.size} artworks`);
         }
 
@@ -1294,12 +1413,12 @@
 
         visualSearchBtn.addEventListener('click', async () => {
             visualSearchModal.classList.add('active');
-            
+
             // Load model on first open
             if (!mobilenetModel) {
                 await loadModel();
             }
-            
+
             // Preload features if not done yet
             if (imageFeatures.size === 0) {
                 setTimeout(preloadArtworkFeatures, 1000);
@@ -1334,7 +1453,7 @@
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.classList.remove('dragover');
-            
+
             const file = e.dataTransfer.files[0];
             if (file && file.type.startsWith('image/')) {
                 handleImageUpload(file);
@@ -1353,7 +1472,7 @@
                 alert('Image size must be less than 5MB');
                 return;
             }
-            
+
             const reader = new FileReader();
             reader.onload = async (e) => {
                 uploadedImage = new Image();
@@ -1362,12 +1481,12 @@
                     fileName.textContent = file.name;
                     previewContainer.classList.add('active');
                     uploadArea.style.display = 'none';
-                    
+
                     // Extract features immediately
                     processingIndicator.classList.add('active');
                     uploadedImageFeatures = await extractFeatures(uploadedImage);
                     processingIndicator.classList.remove('active');
-                    
+
                     if (!uploadedImageFeatures) {
                         alert('Failed to analyze image. Please try another one.');
                     }
@@ -1382,16 +1501,16 @@
                 alert('Please wait for image analysis to complete');
                 return;
             }
-            
+
             processingIndicator.classList.add('active');
             searchSimilarBtn.disabled = true;
-            
+
             try {
                 const similarArtworks = await findSimilarArtworks(uploadedImageFeatures);
-                
+
                 visualSearchModal.classList.remove('active');
                 resetUploadState();
-                
+
                 // Show results
                 if (similarArtworks.length > 0) {
                     // Add visual search badge to button
@@ -1403,11 +1522,11 @@
                         visualSearchBtn.appendChild(badge);
                     }
                     badge.textContent = similarArtworks.length;
-                    
+
                     // Display similar artworks
                     const artworksToShow = similarArtworks.map(s => s.artwork);
                     renderCollections(artworksToShow);
-                    
+
                     // Add similarity badges to cards
                     setTimeout(() => {
                         similarArtworks.forEach((item, index) => {
@@ -1421,11 +1540,11 @@
                             }
                         });
                     }, 100);
-                    
+
                     // Update results info
                     resultsInfo.style.display = 'block';
                     resultsCount.textContent = similarArtworks.length;
-                    
+
                     // Scroll to results
                     collectionsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
                 } else {
@@ -1454,20 +1573,20 @@
             if (badge) {
                 badge.remove();
             }
-            
+
             // Remove similarity badges
             document.querySelectorAll('.similarity-badge').forEach(b => b.remove());
         }
 
         // Update existing filter functions
         const originalFilterAndSearch = filterAndSearch;
-        filterAndSearch = function() {
+        filterAndSearch = function () {
             clearVisualSearchResults();
             originalFilterAndSearch();
         };
 
         const originalClearAllFilters = clearAllFilters;
-        clearAllFilters = function() {
+        clearAllFilters = function () {
             clearVisualSearchResults();
             originalClearAllFilters();
         };
@@ -1475,6 +1594,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
+
 </body>
 
 </html>

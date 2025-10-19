@@ -737,7 +737,7 @@
 
             // Update gallery link
             const galleryLink = document.getElementById('gallery-link');
-            galleryLink.href = `Gallery.html?exhibition=${encodeURIComponent(exhibitionName)}&from=ExhibitionDetails`;
+            galleryLink.href = `Gallery.html?exhibition=${encodeURIComponent(exhibitionName)}`;
         }
 
         function updateFeaturedImages(artifacts) {
@@ -755,17 +755,15 @@
             featuredGrid.innerHTML = featured.map(item => {
                 const imageURL = item.imageURL || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200"%3E%3Crect fill="%23e2e8f0" width="200" height="200"/%3E%3Ctext x="100" y="100" text-anchor="middle" fill="%23718096" font-size="16"%3ENo Image%3C/text%3E%3C/svg%3E';
                 const title = item.title || 'Untitled';
-                const currentPage = window.location.pathname.split('/').pop();
 
                 return `
-                    <div class="featured-item" onclick="window.location.href='ArtDetails.html?id=${item.id}&from=ExhibitionDetails.html&exhibition=${encodeURIComponent(exhibitionName)}'">
-                        <img src="${imageURL}" alt="${title}" onerror="...">
-                        <div class="featured-overlay">${title}</div>
-                    </div>
-                `;
+            <div class="featured-item">
+                <img src="${imageURL}" alt="${title}" onerror="...">
+                <div class="featured-overlay">${title}</div>
+            </div>
+        `;
             }).join('');
         }
-
         function updateClassifications(artifacts) {
             const themesGrid = document.getElementById('themes-grid');
             const classificationsLoading = document.getElementById('classifications-loading');
