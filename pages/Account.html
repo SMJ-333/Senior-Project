@@ -286,9 +286,22 @@
         }
 
         .account-container {
-            max-width: 900px;
+            max-width: 1400px;
             margin: 0 auto;
             padding: 2rem;
+        }
+
+        .account-grid {
+            display: grid;
+            grid-template-columns: 400px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1200px) {
+            .account-grid {
+                grid-template-columns: 1fr;
+            }
         }
 
         .page-hero {
@@ -485,7 +498,12 @@
 
         /* Notifications Section */
         .notifications-section {
-            margin-bottom: 2.5rem;
+            position: sticky;
+            top: 7rem;
+            max-height: calc(100vh - 9rem);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
         }
 
         .notifications-header {
@@ -493,6 +511,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--neutral-light);
         }
 
         .mark-all-read-btn {
@@ -503,7 +523,7 @@
             border-radius: 6px;
             cursor: pointer;
             font-weight: 600;
-            font-size: 0.9rem;
+            font-size: 0.85rem;
             transition: var(--transition);
         }
 
@@ -512,11 +532,30 @@
         }
 
         .notifications-list {
-            max-height: 500px;
+            max-height: calc(100vh - 20rem);
             overflow-y: auto;
             display: flex;
             flex-direction: column;
             gap: 1rem;
+            padding-right: 0.5rem;
+        }
+
+        .notifications-list::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .notifications-list::-webkit-scrollbar-track {
+            background: var(--neutral-light);
+            border-radius: 10px;
+        }
+
+        .notifications-list::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .notifications-list::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
         }
 
         .notification-item {
@@ -530,22 +569,20 @@
 
         .notification-item:hover {
             background: #e8e4d5;
-            transform: translateX(5px);
+            transform: translateX(3px);
         }
 
         .notification-item.unread {
             background: #fff9e6;
             border-left-color: #f39c12;
+            box-shadow: 0 2px 8px rgba(243, 156, 18, 0.1);
         }
 
         .notification-item.unread::before {
-            content: '';
-            display: inline-block;
-            width: 8px;
-            height: 8px;
-            background: #f39c12;
-            border-radius: 50%;
+            content: '●';
+            color: #f39c12;
             margin-right: 0.5rem;
+            font-size: 0.8rem;
         }
 
         .notification-header {
@@ -561,17 +598,20 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.95rem;
         }
 
         .notification-date {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-light);
+            white-space: nowrap;
         }
 
         .notification-message {
             color: var(--text-dark);
             line-height: 1.5;
             margin-bottom: 0.5rem;
+            font-size: 0.9rem;
         }
 
         .notification-type-badge {
@@ -600,14 +640,23 @@
 
         .no-notifications {
             text-align: center;
-            padding: 3rem;
+            padding: 2rem;
             color: var(--text-light);
         }
 
         .no-notifications .material-icons {
-            font-size: 4rem;
+            font-size: 3rem;
             margin-bottom: 1rem;
             opacity: 0.3;
+        }
+
+        .no-notifications h3 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .no-notifications p {
+            font-size: 0.9rem;
         }
 
         @media (max-width: 768px) {
@@ -661,131 +710,136 @@
             </div>
 
             <div id="accountContent" style="display: none;">
-                <!-- Notifications Section -->
-                <div class="account-card notifications-section">
-                    <div class="section-title">
-                        <span class="material-icons">notifications</span>
-                        Notifications
-                        <span id="unreadCount" style="margin-left: auto; color: var(--accent); font-size: 0.9rem;"></span>
-                    </div>
+                <div class="account-grid">
+                    <!-- Notifications Section - Left Side -->
+                    <div class="account-card notifications-section">
+                        <div class="section-title">
+                            <span class="material-icons">notifications</span>
+                            Notifications
+                        </div>
 
-                    <div class="notifications-header">
-                        <button class="mark-all-read-btn" id="markAllReadBtn" onclick="markAllNotificationsRead()">
-                            Mark All as Read
-                        </button>
-                    </div>
+                        <div class="notifications-header">
+                            <span id="unreadCount" style="color: var(--accent); font-size: 0.9rem; font-weight: 600;"></span>
+                            <button class="mark-all-read-btn" id="markAllReadBtn" onclick="markAllNotificationsRead()">
+                                Mark All as Read
+                            </button>
+                        </div>
 
-                    <div id="notificationsLoading" class="loading" style="padding: 2rem;">
-                        Loading notifications...
-                    </div>
+                        <div id="notificationsLoading" class="loading" style="padding: 2rem;">
+                            Loading notifications...
+                        </div>
 
-                    <div id="notificationsList" class="notifications-list" style="display: none;">
-                        <!-- Notifications will be loaded here -->
-                    </div>
+                        <div id="notificationsList" class="notifications-list" style="display: none;">
+                            <!-- Notifications will be loaded here -->
+                        </div>
 
-                    <div id="noNotifications" class="no-notifications" style="display: none;">
-                        <span class="material-icons">notifications_none</span>
-                        <h3>No Notifications</h3>
-                        <p>You don't have any notifications yet</p>
-                    </div>
-                </div>
-
-                <div class="account-card">
-                    <div class="card-header">
-                        <div class="profile-section">
-                            <div class="profile-image-container">
-                                <div id="profileImageContainer" class="profile-image profile-placeholder"
-                                    aria-hidden="false">
-                                    <span class="material-icons" aria-hidden="true">person</span>
-                                </div>
-                            </div>
-
-                            <div class="profile-info">
-                                <h2 id="profileName">Loading...</h2>
-                                <p id="profileEmail">Loading...</p>
-                                <p style="color: var(--accent); font-weight: 500; margin-top: 0.5rem;">Museum Member</p>
-                            </div>
+                        <div id="noNotifications" class="no-notifications" style="display: none;">
+                            <span class="material-icons">notifications_none</span>
+                            <h3>No Notifications</h3>
+                            <p>You don't have any notifications yet</p>
                         </div>
                     </div>
 
-                    <div class="card-body">
-                        <div class="section">
-                            <h3 class="section-title">Personal Information</h3>
-
-                            <form id="profileForm">
-                                <div class="form-grid">
-                                    <div class="form-group">
-                                        <label class="form-label" for="username">Username</label>
-                                        <input type="text" id="username" class="form-input" required>
+                    <!-- Profile Section - Right Side -->
+                    <div>
+                        <div class="account-card">
+                            <div class="card-header">
+                                <div class="profile-section">
+                                    <div class="profile-image-container">
+                                        <div id="profileImageContainer" class="profile-image profile-placeholder"
+                                            aria-hidden="false">
+                                            <span class="material-icons" aria-hidden="true">person</span>
+                                        </div>
                                     </div>
 
-                                    <div class="form-group">
-                                        <label class="form-label" for="email">Email Address</label>
-                                        <input type="email" id="email" class="form-input" disabled>
-                                        <small style="color: var(--text-light); font-size: 0.8rem;">Email cannot be
-                                            changed</small>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="phone">Phone Number</label>
-                                        <input type="tel" id="phone" class="form-input" required>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="dateOfBirth">Date of Birth</label>
-                                        <input type="date" id="dateOfBirth" class="form-input" disabled>
-                                    </div>
-
-                                    <div class="form-group">
-                                        <label class="form-label" for="memberSince">Member Since</label>
-                                        <input type="text" id="memberSince" class="form-input" disabled>
+                                    <div class="profile-info">
+                                        <h2 id="profileName">Loading...</h2>
+                                        <p id="profileEmail">Loading...</p>
+                                        <p style="color: var(--accent); font-weight: 500; margin-top: 0.5rem;">Museum Member</p>
                                     </div>
                                 </div>
+                            </div>
 
-                                <div class="btn-group">
-                                    <button type="submit" class="btn btn-primary">Save Changes</button>
-                                    <button type="button" class="btn btn-secondary" onclick="loadUserData()">Reset</button>
-                                </div>
-                            </form>
-                        </div>
+                            <div class="card-body">
+                                <div class="section">
+                                    <h3 class="section-title">Personal Information</h3>
 
-                        <div class="section">
-                            <h3 class="section-title">Password & Security</h3>
+                                    <form id="profileForm">
+                                        <div class="form-grid">
+                                            <div class="form-group">
+                                                <label class="form-label" for="username">Username</label>
+                                                <input type="text" id="username" class="form-input" required>
+                                            </div>
 
-                            <div class="password-section">
-                                <button class="password-toggle" onclick="togglePasswordSection()">
-                                    Change Password
-                                    <span id="passwordToggleIcon">▶</span>
-                                </button>
+                                            <div class="form-group">
+                                                <label class="form-label" for="email">Email Address</label>
+                                                <input type="email" id="email" class="form-input" disabled>
+                                                <small style="color: var(--text-light); font-size: 0.8rem;">Email cannot be
+                                                    changed</small>
+                                            </div>
 
-                                <div class="password-form" id="passwordForm">
-                                    <form id="passwordChangeForm">
-                                        <div class="form-group">
-                                            <label class="form-label" for="currentPassword">Current Password</label>
-                                            <input type="password" id="currentPassword" class="form-input" required>
-                                        </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="phone">Phone Number</label>
+                                                <input type="tel" id="phone" class="form-input" required>
+                                            </div>
 
-                                        <div class="form-group">
-                                            <label class="form-label" for="newPassword">New Password</label>
-                                            <input type="password" id="newPassword" class="form-input" required>
-                                        </div>
+                                            <div class="form-group">
+                                                <label class="form-label" for="dateOfBirth">Date of Birth</label>
+                                                <input type="date" id="dateOfBirth" class="form-input" disabled>
+                                            </div>
 
-                                        <div class="form-group">
-                                            <label class="form-label" for="confirmPassword">Confirm New Password</label>
-                                            <input type="password" id="confirmPassword" class="form-input" required>
+                                            <div class="form-group">
+                                                <label class="form-label" for="memberSince">Member Since</label>
+                                                <input type="text" id="memberSince" class="form-input" disabled>
+                                            </div>
                                         </div>
 
                                         <div class="btn-group">
-                                            <button type="submit" class="btn btn-primary">Update Password</button>
-                                            <button type="button" class="btn btn-secondary"
-                                                onclick="resetPasswordForm()">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                                            <button type="button" class="btn btn-secondary" onclick="loadUserData()">Reset</button>
                                         </div>
                                     </form>
                                 </div>
+
+                                <div class="section">
+                                    <h3 class="section-title">Password & Security</h3>
+
+                                    <div class="password-section">
+                                        <button class="password-toggle" onclick="togglePasswordSection()">
+                                            Change Password
+                                            <span id="passwordToggleIcon">▶</span>
+                                        </button>
+
+                                        <div class="password-form" id="passwordForm">
+                                            <form id="passwordChangeForm">
+                                                <div class="form-group">
+                                                    <label class="form-label" for="currentPassword">Current Password</label>
+                                                    <input type="password" id="currentPassword" class="form-input" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="form-label" for="newPassword">New Password</label>
+                                                    <input type="password" id="newPassword" class="form-input" required>
+                                                </div>
+
+                                                <div class="form-group">
+                                                    <label class="form-label" for="confirmPassword">Confirm New Password</label>
+                                                    <input type="password" id="confirmPassword" class="form-input" required>
+                                                </div>
+
+                                                <div class="btn-group">
+                                                    <button type="submit" class="btn btn-primary">Update Password</button>
+                                                    <button type="button" class="btn btn-secondary"
+                                                        onclick="resetPasswordForm()">Cancel</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button class="logout-btn" id="logoutBtn">Logout</button>
                             </div>
                         </div>
-
-                        <button class="logout-btn" id="logoutBtn">Logout</button>
                     </div>
                 </div>
             </div>
@@ -822,13 +876,22 @@
             getDocs
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         
-        import { 
-            listenToNotifications, 
-            markAsRead, 
-            markAllAsRead,
-            getUnreadCount,
-            startNotificationScheduler
-        } from './notification-system.js';
+        // Import notification system - with error handling
+        let notificationSystemAvailable = false;
+        let listenToNotifications, markAsRead, markAllAsRead, startNotificationScheduler;
+        
+        try {
+            const notificationModule = await import('./notification-system.js');
+            listenToNotifications = notificationModule.listenToNotifications;
+            markAsRead = notificationModule.markAsRead;
+            markAllAsRead = notificationModule.markAllAsRead;
+            startNotificationScheduler = notificationModule.startNotificationScheduler;
+            notificationSystemAvailable = true;
+            console.log('✅ Notification system loaded successfully');
+        } catch (error) {
+            console.warn('⚠️ Notification system not available:', error.message);
+            console.log('📝 The page will work without notifications');
+        }
 
         let currentUser = null;
         let userData = null;
@@ -949,13 +1012,13 @@
         }
 
         window.handleNotificationClick = async function(notificationId, isRead) {
-            if (!isRead) {
+            if (!isRead && notificationSystemAvailable) {
                 await markAsRead(notificationId);
             }
         }
 
         window.markAllNotificationsRead = async function() {
-            if (!currentUser) return;
+            if (!currentUser || !notificationSystemAvailable) return;
             
             const result = await markAllAsRead(currentUser.uid);
             if (result) {
@@ -965,6 +1028,19 @@
 
         function loadNotifications() {
             if (!currentUser) return;
+            
+            // Check if notification system is available
+            if (!notificationSystemAvailable) {
+                console.log('📭 Notifications disabled - notification-system.js not found');
+                document.getElementById('notificationsLoading').style.display = 'none';
+                document.getElementById('noNotifications').style.display = 'block';
+                document.getElementById('noNotifications').innerHTML = `
+                    <span class="material-icons">notifications_off</span>
+                    <h3>Notifications Unavailable</h3>
+                    <p>The notification system is currently disabled</p>
+                `;
+                return;
+            }
 
             const loading = document.getElementById('notificationsLoading');
             loading.style.display = 'block';
@@ -1177,7 +1253,9 @@
             if (user) {
                 currentUser = user;
                 loadUserData();
-                startNotificationScheduler();
+                if (notificationSystemAvailable) {
+                    startNotificationScheduler();
+                }
             } else {
                 window.location.href = 'LogIn.html';
             }
