@@ -9,6 +9,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
     <style>
         :root {
             --primary-dark: #653025;
@@ -839,9 +840,8 @@
                 <li><a href="Exhibitions.html">Exhibitions</a></li>
                 <li><a href="Gallery.html" class="active">Gallery</a></li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account">
-                <i class="fas fa-user"></i>
-            </a>
+            <a href="Account.html" class="account-icon" title="My Account"><span
+                    class="material-icons">person</span></a>
         </div>
     </nav>
 
@@ -866,53 +866,55 @@
             <div class="controls-section">
                 <div class="search-filter-container">
                     <button id="visual-search-btn" class="visual-search-btn">
-                        <span class="material-icons">photo_camera</span>
-                        Search by Image
-                    </button>
+                            <span class="material-icons">photo_camera</span>
+                            Search by Image
+                        </button>
+                    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
                     <!-- Modal للبحث بالصورة -->
-                    <div id="visual-search-modal" class="visual-search-modal">
-                        <div class="visual-search-content">
-                            <div class="modal-header">
-                                <h2>
-                                    <span class="material-icons">image_search</span>
-                                    Visual Search
-                                </h2>
-                                <button class="close-modal-btn" id="close-visual-modal">
-                                    <span class="material-icons">close</span>
-                                </button>
-                            </div>
-                            <div class="modal-body">
-                                <div id="upload-area" class="upload-area">
-                                    <div class="upload-icon">
-                                        <span class="material-icons" style="font-size: inherit;">cloud_upload</span>
-                                    </div>
-                                    <div class="upload-text">Drop an image here or click to browse</div>
-                                    <div class="upload-hint">Supported: JPG, PNG, WEBP (Max 5MB)</div>
-                                    <input type="file" id="image-input" class="file-input" accept="image/*">
-                                </div>
+<div id="visual-search-modal" class="visual-search-modal">
+    <div class="visual-search-content">
+        <div class="modal-header">
+            <h2>
+                <span class="material-icons">image_search</span>
+                Visual Search
+            </h2>
+            <button class="close-modal-btn" id="close-visual-modal">
+                <span class="material-icons">close</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <div id="upload-area" class="upload-area">
+                <div class="upload-icon">
+                    <span class="material-icons" style="font-size: inherit;">cloud_upload</span>
+                </div>
+                <div class="upload-text">Drop an image here or click to browse</div>
+                <div class="upload-hint">Supported: JPG, PNG, WEBP (Max 5MB)</div>
+                <input type="file" id="image-input" class="file-input" accept="image/*">
+            </div>
 
-                                <div id="preview-container" class="preview-container">
-                                    <img id="image-preview" class="image-preview" alt="Preview">
-                                    <div class="preview-info">
-                                        <span id="file-name" style="color: var(--text-dark); font-weight: 500;"></span>
-                                        <button class="search-btn" id="search-similar-btn" style="margin: 0;">
-                                            <span class="material-icons">search</span>
-                                            Find Similar
-                                        </button>
-                                    </div>
-                                </div>
+            <div id="preview-container" class="preview-container">
+                <img id="image-preview" class="image-preview" alt="Preview">
+                <div class="preview-info">
+                    <span id="file-name" style="color: var(--text-dark); font-weight: 500;"></span>
+                    <button class="search-btn" id="search-similar-btn" style="margin: 0;">
+                        <span class="material-icons">search</span>
+                        Find Similar
+                    </button>
+                </div>
+            </div>
 
-                                <div id="processing-indicator" class="processing-indicator">
-                                    <div class="spinner"></div>
-                                    <p>Analyzing image with AI...</p>
-                                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
-                                        This may take a few seconds
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <div id="processing-indicator" class="processing-indicator">
+                <div class="spinner"></div>
+                <p>Analyzing image with AI...</p>
+                <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
+                    This may take a few seconds
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
                     <div class="search-wrapper">
                         <i class="fas fa-search search-icon"></i>
                         <input type="text" id="search-input" class="search-input"
@@ -1011,7 +1013,8 @@
             </div>
         </div>
     </footer>
-
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
     <script type="module">
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -1292,309 +1295,307 @@
         });
 
 
-        // 🔍 Visual Search System
-        let mobilenetModel = null;
-        let imageFeatures = new Map(); // Store features for all artworks
+        // استبدل قسم Visual Search في Gallery.html بهذا الكود المحسّن:
 
-        // Load MobileNet model
-        async function loadModel() {
+// 🔍 Visual Search System
+let mobilenetModel = null;
+let imageFeatures = new Map(); // Store features for all artworks
+
+// Load MobileNet model
+async function loadModel() {
+    try {
+        console.log('🤖 Loading AI model...');
+        mobilenetModel = await mobilenet.load();
+        console.log('✅ AI model loaded successfully!');
+        return true;
+    } catch (error) {
+        console.error('❌ Error loading model:', error);
+        return false;
+    }
+}
+
+// Extract features from image
+async function extractFeatures(imageElement) {
+    if (!mobilenetModel) {
+        await loadModel();
+    }
+    
+    try {
+        const activation = mobilenetModel.infer(imageElement, true);
+        const features = await activation.data();
+        activation.dispose();
+        return Array.from(features);
+    } catch (error) {
+        console.error('Error extracting features:', error);
+        return null;
+    }
+}
+
+// Calculate cosine similarity
+function cosineSimilarity(vec1, vec2) {
+    if (!vec1 || !vec2 || vec1.length !== vec2.length) return 0;
+    
+    let dotProduct = 0;
+    let norm1 = 0;
+    let norm2 = 0;
+    
+    for (let i = 0; i < vec1.length; i++) {
+        dotProduct += vec1[i] * vec2[i];
+        norm1 += vec1[i] * vec1[i];
+        norm2 += vec2[i] * vec2[i];
+    }
+    
+    if (norm1 === 0 || norm2 === 0) return 0;
+    return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
+}
+
+// Find similar artworks
+async function findSimilarArtworks(uploadedImageFeatures) {
+    const similarities = [];
+    
+    for (const [artworkId, features] of imageFeatures.entries()) {
+        const similarity = cosineSimilarity(uploadedImageFeatures, features);
+        similarities.push({
+            artwork: allCollections.find(c => c.id === artworkId),
+            similarity: similarity
+        });
+    }
+    
+    // Sort by similarity (highest first)
+    similarities.sort((a, b) => b.similarity - a.similarity);
+    
+    // Return top 10 results with similarity > 0.3
+    return similarities.filter(s => s.similarity > 0.3).slice(0, 10);
+}
+
+// Preload features for all artworks
+async function preloadArtworkFeatures() {
+    if (!mobilenetModel) {
+        await loadModel();
+    }
+    
+    console.log('🔄 Preloading artwork features...');
+    
+    for (const artwork of allCollections) {
+        if (artwork.imageURL && !imageFeatures.has(artwork.id)) {
             try {
-                console.log('🤖 Loading AI model...');
-                mobilenetModel = await mobilenet.load();
-                console.log('✅ AI model loaded successfully!');
-                return true;
-            } catch (error) {
-                console.error('❌ Error loading model:', error);
-                return false;
-            }
-        }
-
-        // Extract features from image
-        async function extractFeatures(imageElement) {
-            if (!mobilenetModel) {
-                await loadModel();
-            }
-
-            try {
-                const activation = mobilenetModel.infer(imageElement, true);
-                const features = await activation.data();
-                activation.dispose();
-                return Array.from(features);
-            } catch (error) {
-                console.error('Error extracting features:', error);
-                return null;
-            }
-        }
-
-        // Calculate cosine similarity
-        function cosineSimilarity(vec1, vec2) {
-            if (!vec1 || !vec2 || vec1.length !== vec2.length) return 0;
-
-            let dotProduct = 0;
-            let norm1 = 0;
-            let norm2 = 0;
-
-            for (let i = 0; i < vec1.length; i++) {
-                dotProduct += vec1[i] * vec2[i];
-                norm1 += vec1[i] * vec1[i];
-                norm2 += vec2[i] * vec2[i];
-            }
-
-            if (norm1 === 0 || norm2 === 0) return 0;
-            return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
-        }
-
-        // Find similar artworks
-        async function findSimilarArtworks(uploadedImageFeatures) {
-            const similarities = [];
-
-            for (const [artworkId, features] of imageFeatures.entries()) {
-                const similarity = cosineSimilarity(uploadedImageFeatures, features);
-                similarities.push({
-                    artwork: allCollections.find(c => c.id === artworkId),
-                    similarity: similarity
+                const img = new Image();
+                img.crossOrigin = 'anonymous';
+                
+                await new Promise((resolve, reject) => {
+                    img.onload = resolve;
+                    img.onerror = reject;
+                    img.src = artwork.imageURL;
                 });
-            }
-
-            // Sort by similarity (highest first)
-            similarities.sort((a, b) => b.similarity - a.similarity);
-
-            // Return top 10 results with similarity > 0.3
-            return similarities.filter(s => s.similarity > 0.3).slice(0, 10);
-        }
-
-        // Preload features for all artworks
-        async function preloadArtworkFeatures() {
-            if (!mobilenetModel) {
-                await loadModel();
-            }
-
-            console.log('🔄 Preloading artwork features...');
-
-            for (const artwork of allCollections) {
-                if (artwork.imageURL && !imageFeatures.has(artwork.id)) {
-                    try {
-                        const img = new Image();
-                        img.crossOrigin = 'anonymous';
-
-                        await new Promise((resolve, reject) => {
-                            img.onload = resolve;
-                            img.onerror = reject;
-                            img.src = artwork.imageURL;
-                        });
-
-                        const features = await extractFeatures(img);
-                        if (features) {
-                            imageFeatures.set(artwork.id, features);
-                        }
-                    } catch (error) {
-                        console.warn(`Failed to extract features for ${artwork.title}:`, error);
-                    }
-                }
-            }
-
-            console.log(`✅ Loaded features for ${imageFeatures.size} artworks`);
-        }
-
-        // UI Handlers
-        const visualSearchBtn = document.getElementById('visual-search-btn');
-        const visualSearchModal = document.getElementById('visual-search-modal');
-        const closeVisualModal = document.getElementById('close-visual-modal');
-        const uploadArea = document.getElementById('upload-area');
-        const imageInput = document.getElementById('image-input');
-        const previewContainer = document.getElementById('preview-container');
-        const imagePreview = document.getElementById('image-preview');
-        const fileName = document.getElementById('file-name');
-        const searchSimilarBtn = document.getElementById('search-similar-btn');
-        const processingIndicator = document.getElementById('processing-indicator');
-
-        let uploadedImage = null;
-        let uploadedImageFeatures = null;
-
-        visualSearchBtn.addEventListener('click', async () => {
-            visualSearchModal.classList.add('active');
-
-            // Load model on first open
-            if (!mobilenetModel) {
-                await loadModel();
-            }
-
-            // Preload features if not done yet
-            if (imageFeatures.size === 0) {
-                setTimeout(preloadArtworkFeatures, 1000);
-            }
-        });
-
-        closeVisualModal.addEventListener('click', () => {
-            visualSearchModal.classList.remove('active');
-            resetUploadState();
-        });
-
-        visualSearchModal.addEventListener('click', (e) => {
-            if (e.target === visualSearchModal) {
-                visualSearchModal.classList.remove('active');
-                resetUploadState();
-            }
-        });
-
-        uploadArea.addEventListener('click', () => {
-            imageInput.click();
-        });
-
-        uploadArea.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            uploadArea.classList.add('dragover');
-        });
-
-        uploadArea.addEventListener('dragleave', () => {
-            uploadArea.classList.remove('dragover');
-        });
-
-        uploadArea.addEventListener('drop', (e) => {
-            e.preventDefault();
-            uploadArea.classList.remove('dragover');
-
-            const file = e.dataTransfer.files[0];
-            if (file && file.type.startsWith('image/')) {
-                handleImageUpload(file);
-            }
-        });
-
-        imageInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                handleImageUpload(file);
-            }
-        });
-
-        async function handleImageUpload(file) {
-            if (file.size > 5 * 1024 * 1024) {
-                alert('Image size must be less than 5MB');
-                return;
-            }
-
-            const reader = new FileReader();
-            reader.onload = async (e) => {
-                uploadedImage = new Image();
-                uploadedImage.onload = async () => {
-                    imagePreview.src = e.target.result;
-                    fileName.textContent = file.name;
-                    previewContainer.classList.add('active');
-                    uploadArea.style.display = 'none';
-
-                    // Extract features immediately
-                    processingIndicator.classList.add('active');
-                    uploadedImageFeatures = await extractFeatures(uploadedImage);
-                    processingIndicator.classList.remove('active');
-
-                    if (!uploadedImageFeatures) {
-                        alert('Failed to analyze image. Please try another one.');
-                    }
-                };
-                uploadedImage.src = e.target.result;
-            };
-            reader.readAsDataURL(file);
-        }
-
-        searchSimilarBtn.addEventListener('click', async () => {
-            if (!uploadedImageFeatures) {
-                alert('Please wait for image analysis to complete');
-                return;
-            }
-
-            processingIndicator.classList.add('active');
-            searchSimilarBtn.disabled = true;
-
-            try {
-                const similarArtworks = await findSimilarArtworks(uploadedImageFeatures);
-
-                visualSearchModal.classList.remove('active');
-                resetUploadState();
-
-                // Show results
-                if (similarArtworks.length > 0) {
-                    // Add visual search badge to button
-                    let badge = visualSearchBtn.querySelector('.results-badge');
-                    if (!badge) {
-                        badge = document.createElement('span');
-                        badge.className = 'results-badge';
-                        visualSearchBtn.style.position = 'relative';
-                        visualSearchBtn.appendChild(badge);
-                    }
-                    badge.textContent = similarArtworks.length;
-
-                    // Display similar artworks
-                    const artworksToShow = similarArtworks.map(s => s.artwork);
-                    renderCollections(artworksToShow);
-
-                    // Add similarity badges to cards
-                    setTimeout(() => {
-                        similarArtworks.forEach((item, index) => {
-                            const card = document.querySelector(`[data-artwork-id="${item.artwork.id}"]`);
-                            if (card) {
-                                const badge = document.createElement('div');
-                                badge.className = 'similarity-badge';
-                                badge.textContent = `${Math.round(item.similarity * 100)}% Match`;
-                                card.style.position = 'relative';
-                                card.appendChild(badge);
-                            }
-                        });
-                    }, 100);
-
-                    // Update results info
-                    resultsInfo.style.display = 'block';
-                    resultsCount.textContent = similarArtworks.length;
-
-                    // Scroll to results
-                    collectionsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                } else {
-                    alert('No similar artworks found. Try another image!');
+                
+                const features = await extractFeatures(img);
+                if (features) {
+                    imageFeatures.set(artwork.id, features);
                 }
             } catch (error) {
-                console.error('Error finding similar artworks:', error);
-                alert('An error occurred. Please try again.');
-            } finally {
-                processingIndicator.classList.remove('active');
-                searchSimilarBtn.disabled = false;
+                console.warn(`Failed to extract features for ${artwork.title}:`, error);
             }
-        });
-
-        function resetUploadState() {
-            uploadArea.style.display = 'block';
-            previewContainer.classList.remove('active');
-            imageInput.value = '';
-            uploadedImage = null;
-            uploadedImageFeatures = null;
         }
+    }
+    
+    console.log(`✅ Loaded features for ${imageFeatures.size} artworks`);
+}
 
-        // Clear visual search results when using other filters
-        function clearVisualSearchResults() {
-            const badge = visualSearchBtn.querySelector('.results-badge');
-            if (badge) {
-                badge.remove();
+// UI Handlers
+const visualSearchBtn = document.getElementById('visual-search-btn');
+const visualSearchModal = document.getElementById('visual-search-modal');
+const closeVisualModal = document.getElementById('close-visual-modal');
+const uploadArea = document.getElementById('upload-area');
+const imageInput = document.getElementById('image-input');
+const previewContainer = document.getElementById('preview-container');
+const imagePreview = document.getElementById('image-preview');
+const fileName = document.getElementById('file-name');
+const searchSimilarBtn = document.getElementById('search-similar-btn');
+const processingIndicator = document.getElementById('processing-indicator');
+
+let uploadedImage = null;
+let uploadedImageFeatures = null;
+
+visualSearchBtn.addEventListener('click', async () => {
+    visualSearchModal.classList.add('active');
+    
+    // Load model on first open
+    if (!mobilenetModel) {
+        await loadModel();
+    }
+    
+    // Preload features if not done yet
+    if (imageFeatures.size === 0) {
+        setTimeout(preloadArtworkFeatures, 1000);
+    }
+});
+
+closeVisualModal.addEventListener('click', () => {
+    visualSearchModal.classList.remove('active');
+    resetUploadState();
+});
+
+visualSearchModal.addEventListener('click', (e) => {
+    if (e.target === visualSearchModal) {
+        visualSearchModal.classList.remove('active');
+        resetUploadState();
+    }
+});
+
+uploadArea.addEventListener('click', () => {
+    imageInput.click();
+});
+
+uploadArea.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    uploadArea.classList.add('dragover');
+});
+
+uploadArea.addEventListener('dragleave', () => {
+    uploadArea.classList.remove('dragover');
+});
+
+uploadArea.addEventListener('drop', (e) => {
+    e.preventDefault();
+    uploadArea.classList.remove('dragover');
+    
+    const file = e.dataTransfer.files[0];
+    if (file && file.type.startsWith('image/')) {
+        handleImageUpload(file);
+    }
+});
+
+imageInput.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        handleImageUpload(file);
+    }
+});
+
+async function handleImageUpload(file) {
+    if (file.size > 5 * 1024 * 1024) {
+        alert('Image size must be less than 5MB');
+        return;
+    }
+    
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+        uploadedImage = new Image();
+        uploadedImage.onload = async () => {
+            imagePreview.src = e.target.result;
+            fileName.textContent = file.name;
+            previewContainer.classList.add('active');
+            uploadArea.style.display = 'none';
+            
+            // Extract features immediately
+            processingIndicator.classList.add('active');
+            uploadedImageFeatures = await extractFeatures(uploadedImage);
+            processingIndicator.classList.remove('active');
+            
+            if (!uploadedImageFeatures) {
+                alert('Failed to analyze image. Please try another one.');
             }
+        };
+        uploadedImage.src = e.target.result;
+    };
+    reader.readAsDataURL(file);
+}
 
-            // Remove similarity badges
-            document.querySelectorAll('.similarity-badge').forEach(b => b.remove());
+searchSimilarBtn.addEventListener('click', async () => {
+    if (!uploadedImageFeatures) {
+        alert('Please wait for image analysis to complete');
+        return;
+    }
+    
+    processingIndicator.classList.add('active');
+    searchSimilarBtn.disabled = true;
+    
+    try {
+        const similarArtworks = await findSimilarArtworks(uploadedImageFeatures);
+        
+        visualSearchModal.classList.remove('active');
+        resetUploadState();
+        
+        // Show results
+        if (similarArtworks.length > 0) {
+            // Add visual search badge to button
+            let badge = visualSearchBtn.querySelector('.results-badge');
+            if (!badge) {
+                badge = document.createElement('span');
+                badge.className = 'results-badge';
+                visualSearchBtn.style.position = 'relative';
+                visualSearchBtn.appendChild(badge);
+            }
+            badge.textContent = similarArtworks.length;
+            
+            // Display similar artworks
+            const artworksToShow = similarArtworks.map(s => s.artwork);
+            renderCollections(artworksToShow);
+            
+            // Add similarity badges to cards
+            setTimeout(() => {
+                similarArtworks.forEach((item, index) => {
+                    const card = document.querySelector(`[data-artwork-id="${item.artwork.id}"]`);
+                    if (card) {
+                        const badge = document.createElement('div');
+                        badge.className = 'similarity-badge';
+                        badge.textContent = `${Math.round(item.similarity * 100)}% Match`;
+                        card.style.position = 'relative';
+                        card.appendChild(badge);
+                    }
+                });
+            }, 100);
+            
+            // Update results info
+            resultsInfo.style.display = 'block';
+            resultsCount.textContent = similarArtworks.length;
+            
+            // Scroll to results
+            collectionsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        } else {
+            alert('No similar artworks found. Try another image!');
         }
+    } catch (error) {
+        console.error('Error finding similar artworks:', error);
+        alert('An error occurred. Please try again.');
+    } finally {
+        processingIndicator.classList.remove('active');
+        searchSimilarBtn.disabled = false;
+    }
+});
 
-        // Update existing filter functions
-        const originalFilterAndSearch = filterAndSearch;
-        filterAndSearch = function () {
-            clearVisualSearchResults();
-            originalFilterAndSearch();
-        };
+function resetUploadState() {
+    uploadArea.style.display = 'block';
+    previewContainer.classList.remove('active');
+    imageInput.value = '';
+    uploadedImage = null;
+    uploadedImageFeatures = null;
+}
 
-        const originalClearAllFilters = clearAllFilters;
-        clearAllFilters = function () {
-            clearVisualSearchResults();
-            originalClearAllFilters();
-        };
+// Clear visual search results when using other filters
+function clearVisualSearchResults() {
+    const badge = visualSearchBtn.querySelector('.results-badge');
+    if (badge) {
+        badge.remove();
+    }
+    
+    // Remove similarity badges
+    document.querySelectorAll('.similarity-badge').forEach(b => b.remove());
+}
 
+// Update existing filter functions
+const originalFilterAndSearch = filterAndSearch;
+filterAndSearch = function() {
+    clearVisualSearchResults();
+    originalFilterAndSearch();
+};
+
+const originalClearAllFilters = clearAllFilters;
+clearAllFilters = function() {
+    clearVisualSearchResults();
+    originalClearAllFilters();
+};
     </script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/mobilenet@2.1.0/dist/mobilenet.min.js"></script>
-
+    
 </body>
-
 </html>

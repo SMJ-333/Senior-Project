@@ -79,7 +79,7 @@ export async function sendNewsNotificationToUsers(newsId, newsTitle, newsCategor
                 await createNotification(
                     userDoc.id,
                     NotificationType.NEWS,
-                    '📰 New article in your interests!',
+                    '📰 Stay updated!',
                     `A new article has been published: "${newsTitle}" In class ${newsCategory}`,
                     newsId,
                     newsTitle,
