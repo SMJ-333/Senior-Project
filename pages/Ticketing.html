@@ -165,7 +165,7 @@
             background-size: cover;
             background-position: center;
         }
-        
+
         .page-hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -739,6 +739,18 @@
 
                     <div class="counter-group">
                         <div class="counter-info">
+                            <div class="counter-label">Seniors (65+)</div>
+                            <div class="counter-price" id="senior-price">35% off</div>
+                        </div>
+                        <div class="counter-controls">
+                            <button class="counter-btn" onclick="decrementCounter('seniors')">−</button>
+                            <span class="counter-value" id="seniors-count">0</span>
+                            <button class="counter-btn" onclick="incrementCounter('seniors')">+</button>
+                        </div>
+                    </div>
+
+                    <div class="counter-group">
+                        <div class="counter-info">
                             <div class="counter-label">Children (0-17)</div>
                             <div class="counter-price">Free admission</div>
                         </div>
@@ -801,6 +813,7 @@
             getDocs
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import './notification-system.js';
 
         let isMember = false;
         let userName = 'Guest';
@@ -817,7 +830,8 @@
 
         const visitors = {
             adults: 0,
-            children: 0
+            children: 0,
+            seniors: 0
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -862,12 +876,8 @@
                     const data = docSnap.data();
                     const status = getEventStatus(data.startDate, data.endDate);
 
-                    // Include both current and upcoming events
                     if (status === 'current' || status === 'upcoming') {
-                        allEvents.push({
-                            id: docSnap.id,
-                            ...data
-                        });
+                        allEvents.push({ id: docSnap.id, ...data });
                     }
                 });
 
@@ -876,7 +886,6 @@
                     return;
                 }
 
-                // Sort by start date so the soonest events appear first
                 allEvents.sort((a, b) => a.startDate.toDate() - b.startDate.toDate());
 
                 eventSelect.innerHTML = '<option value="">-- Select an Event --</option>';
@@ -890,12 +899,13 @@
                     eventSelect.appendChild(option);
                 });
 
+                return true; // ✅ Events loaded
             } catch (error) {
                 console.error('Error loading events:', error);
                 eventSelect.innerHTML = '<option value="">-- Error loading events --</option>';
+                return false;
             }
         }
-
         function initializeMemberStatus() {
             const statusCard = document.getElementById('member-status-card');
             const greeting = document.getElementById('member-greeting');
@@ -1147,6 +1157,13 @@
             let total = 0;
             let items = [];
 
+            const seniorPriceLabel = document.getElementById('senior-price');
+            if (selectedVisitType === 'event' && selectedEventData) {
+                seniorPriceLabel.textContent = `35% off ($${(selectedEventData.price * 0.65).toFixed(2)})`;
+            } else {
+                seniorPriceLabel.textContent = isMember ? 'Free for members' : '35% off ($9.75)';
+            }
+
             if (visitors.adults > 0) {
                 if (selectedVisitType === 'general' && isMember) {
                     items.push({
@@ -1170,6 +1187,33 @@
                 }
             }
 
+            if (visitors.seniors > 0) {
+                let seniorCost = 0;
+
+                if (selectedVisitType === 'general') {
+                    const basePrice = 15;
+                    seniorCost = isMember ? 0 : visitors.seniors * basePrice * 0.65;
+
+                    items.push({
+                        label: isMember
+                            ? `${visitors.seniors} × Senior General Admission (Member Benefit)`
+                            : `${visitors.seniors} × Senior General Admission (35% off)`,
+                        price: seniorCost
+                    });
+
+                } else if (selectedVisitType === 'event' && selectedEventData) {
+                    const basePrice = selectedEventData.price;
+                    seniorCost = visitors.seniors * basePrice * 0.65;
+
+                    items.push({
+                        label: `${visitors.seniors} × ${selectedEventData.title} Ticket (Senior 35% off)`,
+                        price: seniorCost
+                    });
+                }
+
+                total += seniorCost;
+            }
+
             if (visitors.children > 0) {
                 items.push({
                     label: `${visitors.children} × Children (Free)`,
@@ -1189,16 +1233,16 @@
                 `;
             });
 
-            if (total > 0) {
-                const serviceFee = 2.50;
-                summaryItems.innerHTML += `
-                    <div class="summary-item">
-                        <span>Service Fee</span>
-                        <span>${serviceFee.toFixed(2)}</span>
-                    </div>
-                `;
-                total += serviceFee;
-            }
+            // if (total > 0) {
+            //     const serviceFee = 2.50;
+            //     summaryItems.innerHTML += `
+            //         <div class="summary-item">
+            //             <span>Service Fee</span>
+            //             <span>${serviceFee.toFixed(2)}</span>
+            //         </div>
+            //     `;
+            //     total += serviceFee;
+            // }
 
             document.getElementById('total-price').textContent = `${total.toFixed(2)}`;
             updateCheckoutButton();
@@ -1390,9 +1434,38 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', function () {
-            loadCurrentEvents();
-            renderCalendar();
+        document.addEventListener('DOMContentLoaded', async () => {
+            const params = new URLSearchParams(window.location.search);
+            const visitType = params.get('type');
+            const eventTitle = params.get('event');
+
+            const eventsLoaded = await loadCurrentEvents();
+
+            if (visitType === 'special-events' && eventsLoaded) {
+                const eventCard = document.querySelector('.visit-type-card[data-type="event"]');
+                if (eventCard) {
+                    eventCard.classList.add('selected');
+                    eventCard.click();
+                }
+
+                document.getElementById('event-section').classList.remove('hidden');
+
+                const selectEl = document.getElementById('event-select');
+                const options = Array.from(selectEl.options);
+                const match = options.find(opt => opt.dataset.title === eventTitle);
+
+                if (match) {
+                    selectEl.value = match.value;
+                    selectEl.dispatchEvent(new Event('change', { bubbles: true }));
+                    // Scroll to the Select Date & Time section
+                    const dateTimeHeader = document.querySelector('#booking-section h3');
+                    if (dateTimeHeader) {
+                        dateTimeHeader.scrollIntoView({ behavior: 'smooth' });
+                    }
+                } else {
+                    console.warn('❌ Could not auto-select event:', eventTitle);
+                }
+            }
         });
     </script>
 </body>

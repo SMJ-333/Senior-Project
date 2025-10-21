@@ -1,22 +1,25 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATHAR Museum - Discover History</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-            --primary-dark: #653025;     
-            --primary-light: #8d2e1d;    
-            --accent: #b08d57;           
-            --accent-light: #d4b483;     
-            --neutral-light: #f4f1e3;    
-            --neutral-dark: #4a3c2a;     
-            --text-dark: #3b2f23;        
-            --text-light: #7c6f57;       
-            --white: #fdfaf4;            
+            --primary-dark: #653025;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
             --transition: all 0.3s ease;
         }
@@ -35,7 +38,10 @@
             overflow-x: hidden;
         }
 
-        h1, h2, h3, h4 {
+        h1,
+        h2,
+        h3,
+        h4 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             line-height: 1.2;
@@ -157,13 +163,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.4); 
+            background: rgba(0, 0, 0, 0.4);
             z-index: 0;
         }
 
         .hero-content {
             position: relative;
-            z-index: 1; 
+            z-index: 1;
             max-width: 800px;
             padding: 2rem;
             animation: fadeIn 1s ease-out;
@@ -630,6 +636,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -640,9 +647,11 @@
             .hero-content h1 {
                 font-size: 2.8rem;
             }
+
             .info-grid {
                 gap: 3rem;
             }
+
             .recommendations-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
@@ -652,25 +661,32 @@
             .nav-links {
                 display: none;
             }
+
             .hero-content h1 {
                 font-size: 2.3rem;
             }
+
             .hero-content p {
                 font-size: 1.1rem;
             }
+
             .info-grid {
                 grid-template-columns: 1fr;
             }
+
             .events-exhibitions {
                 grid-template-columns: 1fr;
                 gap: 2.5rem;
             }
+
             .info-stats {
                 grid-template-columns: 1fr;
             }
+
             .section {
                 padding: 2rem;
             }
+
             .recommendations-grid {
                 grid-template-columns: 1fr;
             }
@@ -680,18 +696,60 @@
             .hero-content h1 {
                 font-size: 2rem;
             }
+
             .container {
                 padding: 4rem 1.5rem;
             }
+
             .info-image {
                 height: 350px;
             }
+
             .stat-box {
                 padding: 1.5rem;
             }
         }
+
+        /* Notification Badge on Account Icon */
+        .notification-badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            border: 2px solid var(--white);
+            animation: pulse 2s infinite;
+            z-index: 10;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        /* Make sure account icon has position relative */
+        .account-icon {
+            position: relative;
+            /* ... keep your existing account-icon styles ... */
+        }
     </style>
 </head>
+
 <body>
     <nav>
         <div class="nav-container">
@@ -705,14 +763,16 @@
                 <li><a href="Exhibitions.html">Exhibitions</a></li>
                 <li><a href="Gallery.html">Gallery</a></li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account"><span class="material-icons">person</span></a>
+            <a href="Account.html" class="account-icon" title="My Account"><span
+                    class="material-icons">person</span></a>
         </div>
     </nav>
 
     <section class="hero" id="home">
         <div class="hero-content">
             <h1>Discover Timeless ATHAR</h1>
-            <p>Experience centuries of art, culture, and history through our world-class collections and immersive exhibitions.</p>
+            <p>Experience centuries of art, culture, and history through our world-class collections and immersive
+                exhibitions.</p>
             <a href="Exhibitions.html" class="cta-button">Explore Exhibitions</a>
         </div>
     </section>
@@ -722,8 +782,12 @@
             <div class="info-grid">
                 <div class="info-text">
                     <h2>About Our Museum</h2>
-                    <p>Established in 1892, the ATHAR Museum stands as a beacon of cultural preservation and education. Our mission is to inspire curiosity and understanding of our shared human story through carefully curated collections and engaging programs.</p>
-                    <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an unparalleled journey through time. Our expertly designed galleries provide context and meaning to the objects that have shaped our world.</p>
+                    <p>Established in 1892, the ATHAR Museum stands as a beacon of cultural preservation and education.
+                        Our mission is to inspire curiosity and understanding of our shared human story through
+                        carefully curated collections and engaging programs.</p>
+                    <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an
+                        unparalleled journey through time. Our expertly designed galleries provide context and meaning
+                        to the objects that have shaped our world.</p>
                     <div class="info-stats">
                         <div class="stat-box">
                             <h3>50K+</h3>
@@ -765,7 +829,7 @@
                 <span class="personalized-badge">✨ Personalized</span>
             </div>
             <p class="recommendations-subtitle">Based on your interests and preferences</p>
-            
+
             <div id="recommendations-loading" class="loading-recommendations">
                 <span class="material-icons" style="font-size: 3rem; animation: spin 2s linear infinite;">explore</span>
                 <p>Finding perfect recommendations for you...</p>
@@ -857,6 +921,7 @@
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import './notification-system.js';
 
         let currentUser = null;
         let userData = null;
@@ -911,14 +976,14 @@
                     // Clean imageURL by removing newlines and extra spaces
                     let cleanImageURL = (data.imageURL || data.ImageURL || '').trim();
                     cleanImageURL = cleanImageURL.replace(/\n/g, '').replace(/\r/g, '');
-                    
-                    return { 
-                        id: doc.id, 
+
+                    return {
+                        id: doc.id,
                         ...data,
                         imageURL: cleanImageURL
                     };
                 });
-                
+
                 allUsers = usersSnap.docs.map(doc => {
                     const data = doc.data();
                     const age = calculateAge(data['Date of Birth']);
@@ -1047,14 +1112,14 @@
 
             container.innerHTML = recommendations.map(rec => {
                 const badgeType = getBadgeType(rec.reasons);
-                const badgeText = badgeType === 'trending' ? '🔥 Trending' : 
-                                 badgeType === 'interest' ? '✨ For You' : 
-                                 '⭐ Popular';
-                
+                const badgeText = badgeType === 'trending' ? '🔥 Trending' :
+                    badgeType === 'interest' ? '✨ For You' :
+                        '⭐ Popular';
+
                 // Get image URL
                 const imageURL = rec.imageURL || '';
                 console.log('Rendering card for:', rec.title, 'with imageURL:', imageURL);
-                
+
                 const hasImage = imageURL && imageURL.trim() !== '';
 
                 // Create image element or placeholder
@@ -1100,21 +1165,21 @@
                     const userDoc = await getDoc(doc(db, "Users", user.uid));
                     if (userDoc.exists()) {
                         userData = userDoc.data();
-                        
+
                         // Then load all data
                         await loadData();
-                        
+
                         // Wait a bit to ensure data is loaded
                         setTimeout(() => {
                             const recommendations = generateRecommendations();
                             console.log('Generated recommendations:', recommendations);
-                            
+
                             // Check first recommendation
                             if (recommendations.length > 0) {
                                 console.log('First recommendation title:', recommendations[0].title);
                                 console.log('First recommendation imageURL:', recommendations[0].imageURL);
                             }
-                            
+
                             displayRecommendations(recommendations);
                         }, 500);
                     }
@@ -1211,4 +1276,5 @@
         document.head.appendChild(style);
     </script>
 </body>
+
 </html>
