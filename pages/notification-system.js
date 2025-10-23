@@ -1,5 +1,5 @@
-// notification-system.js - نظام الإشعارات المركزي
-import { db } from './firebase-config.js';
+// notification-system.js - Central Notification System with Badge Support
+import { db, auth } from './firebase-config.js';
 import { 
     collection, 
     addDoc, 
@@ -12,8 +12,9 @@ import {
     orderBy,
     onSnapshot
 } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-// تعريف أنواع الإشعارات
+// Notification Types
 export const NotificationType = {
     NEWS: 'news',
     EVENT_REGISTRATION: 'event_registration',
@@ -21,7 +22,109 @@ export const NotificationType = {
     EVENT_UPCOMING: 'event_upcoming'
 };
 
-// إنشاء إشعار جديد
+let notificationsUnsubscribe = null;
+let currentUserId = null;
+
+// ==================== NOTIFICATION BADGE FUNCTIONS ====================
+
+// Create and add notification badge to account icon
+export function initializeNotificationBadge() {
+    // Wait for DOM to be ready
+    const accountIcon = document.querySelector('.account-icon');
+    
+    if (!accountIcon) {
+        console.warn('⚠️ Account icon not found on this page');
+        return null;
+    }
+
+    // Check if badge already exists
+    let badge = accountIcon.querySelector('.notification-badge');
+    
+    if (!badge) {
+        badge = document.createElement('span');
+        badge.className = 'notification-badge';
+        badge.id = 'notificationBadge';
+        badge.style.cssText = `
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #e74c3c;
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 600;
+            border: 2px solid #fdfaf4;
+            z-index: 10;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        `;
+        accountIcon.style.position = 'relative';
+        accountIcon.appendChild(badge);
+        console.log('✅ Notification badge initialized');
+    }
+    
+    return badge;
+}
+
+// Listen to user's notifications and update badge
+export function listenToNotificationCount(userId) {
+    if (notificationsUnsubscribe) {
+        notificationsUnsubscribe();
+    }
+
+    // Retry initialization if badge doesn't exist yet
+    let retryCount = 0;
+    const maxRetries = 5;
+    
+    const tryInitialize = () => {
+        const badge = initializeNotificationBadge();
+        
+        if (!badge && retryCount < maxRetries) {
+            retryCount++;
+            console.log(`⏳ Retrying badge initialization (${retryCount}/${maxRetries})...`);
+            setTimeout(tryInitialize, 500);
+            return;
+        }
+        
+        if (!badge) {
+            console.error('❌ Failed to initialize notification badge after retries');
+            return;
+        }
+
+        // Start listening to notifications
+        const notificationsRef = collection(db, 'Notifications');
+        const q = query(
+            notificationsRef,
+            where('userId', '==', userId),
+            where('isRead', '==', false)
+        );
+
+        notificationsUnsubscribe = onSnapshot(q, (snapshot) => {
+            const unreadCount = snapshot.size;
+            
+            if (unreadCount > 0) {
+                badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+                badge.style.display = 'flex';
+                console.log(`🔔 ${unreadCount} unread notifications`);
+            } else {
+                badge.style.display = 'none';
+            }
+        }, (error) => {
+            console.error('❌ Error listening to notifications:', error);
+            badge.style.display = 'none';
+        });
+    };
+
+    tryInitialize();
+}
+
+// ==================== NOTIFICATION CREATION FUNCTIONS ====================
+
+// Create new notification
 export async function createNotification(userId, type, title, message, relatedId, relatedTitle, category = null) {
     try {
         const notificationData = {
@@ -35,7 +138,7 @@ export async function createNotification(userId, type, title, message, relatedId
             createdAt: Timestamp.now()
         };
 
-        if (category) {
+        if (category) {New
             notificationData.category = category;
         }
 
@@ -48,19 +151,17 @@ export async function createNotification(userId, type, title, message, relatedId
     }
 }
 
-// إرسال إشعار خبر جديد لمستخدمين حسب اهتماماتهم
+// Send news notification to users based on interests
 export async function sendNewsNotificationToUsers(newsId, newsTitle, newsCategory) {
     try {
-        // خريطة الفئات إلى الاهتمامات
         const categoryToInterestMap = {
             'Exhibitions': ['Arab Heritage', 'Persian Heritage', 'Indian Heritage', 'Andalusian Heritage', 'Turkish Heritage', 'Echoes of Islamic Civilization'],
             'Events': ['Arab Heritage', 'Persian Heritage', 'Indian Heritage', 'Andalusian Heritage', 'Turkish Heritage'],
             'Collections': ['Manuscripts', 'Weapons', 'Boxes', 'Bottles'],
             'Research': ['Manuscripts', 'Weapons', 'Boxes', 'Bottles'],
-            'Announcements': [] // للجميع
+            'Announcements': []
         };
 
-        // جلب جميع المستخدمين
         const usersSnapshot = await getDocs(collection(db, "Users"));
         const targetInterests = categoryToInterestMap[newsCategory] || [];
         
@@ -70,7 +171,6 @@ export async function sendNewsNotificationToUsers(newsId, newsTitle, newsCategor
             const userData = userDoc.data();
             const userInterests = userData.Interests || [];
             
-            // إرسال للجميع إذا كانت Announcements أو إذا كان لديه اهتمام مطابق
             const shouldSend = newsCategory === 'Announcements' || 
                              targetInterests.length === 0 ||
                              userInterests.some(interest => targetInterests.includes(interest));
@@ -79,7 +179,7 @@ export async function sendNewsNotificationToUsers(newsId, newsTitle, newsCategor
                 await createNotification(
                     userDoc.id,
                     NotificationType.NEWS,
-                    '📰 Stay updated!',
+                    '📰  article in your interests!',
                     `A new article has been published: "${newsTitle}" In class ${newsCategory}`,
                     newsId,
                     newsTitle,
@@ -97,13 +197,13 @@ export async function sendNewsNotificationToUsers(newsId, newsTitle, newsCategor
     }
 }
 
-// إرسال إشعار تسجيل في حدث
+// Send event registration notification
 export async function sendEventRegistrationNotification(userId, eventId, eventTitle) {
     try {
         await createNotification(
             userId,
             NotificationType.EVENT_REGISTRATION,
-            '✅   Registration completed successfully!',
+            '✅ Registration completed successfully!',
             `You are registered for the event: "${eventTitle}". Check your email for more details.`,
             eventId,
             eventTitle
@@ -116,10 +216,10 @@ export async function sendEventRegistrationNotification(userId, eventId, eventTi
     }
 }
 
-// إرسال إشعار تذكير بحدث قادم
+// Send event reminder notification
 export async function sendEventReminderNotification(userId, eventId, eventTitle, eventDate) {
     try {
-        const dateStr = eventDate.toDate().toLocaleDateString('ar-SA', { 
+        const dateStr = eventDate.toDate().toLocaleDateString('en-US', { 
             year: 'numeric', 
             month: 'long', 
             day: 'numeric',
@@ -131,7 +231,7 @@ export async function sendEventReminderNotification(userId, eventId, eventTitle,
             userId,
             NotificationType.EVENT_REMINDER,
             '🔔 Reminder: Upcoming Event!',
-            `The event "${eventTitle}" start on  ${dateStr}. Don't forget to attend!`,
+            `The event "${eventTitle}" starts on ${dateStr}. Don't forget to attend!`,
             eventId,
             eventTitle
         );
@@ -143,14 +243,14 @@ export async function sendEventReminderNotification(userId, eventId, eventTitle,
     }
 }
 
-// إرسال إشعار "Notify Me" للحدث القادم
+// Send "Notify Me" upcoming event notification
 export async function sendUpcomingEventNotification(userId, eventId, eventTitle) {
     try {
         await createNotification(
             userId,
             NotificationType.EVENT_UPCOMING,
-            '🎉 The event you requested to be notified about has become available!',
-            `The event "${eventTitle}" is now available, hurry up and register!`,
+            '🎉 The event you requested is now available!',
+            `The event "${eventTitle}" is now available. Hurry up and register!`,
             eventId,
             eventTitle
         );
@@ -162,7 +262,9 @@ export async function sendUpcomingEventNotification(userId, eventId, eventTitle)
     }
 }
 
-// جلب إشعارات المستخدم
+// ==================== NOTIFICATION MANAGEMENT FUNCTIONS ====================
+
+// Get user notifications
 export async function getUserNotifications(userId) {
     try {
         const q = query(
@@ -188,7 +290,7 @@ export async function getUserNotifications(userId) {
     }
 }
 
-// الاستماع للإشعارات الجديدة
+// Listen to notifications (real-time)
 export function listenToNotifications(userId, callback) {
     try {
         const q = query(
@@ -213,7 +315,7 @@ export function listenToNotifications(userId, callback) {
     }
 }
 
-// تحديد إشعار كمقروء
+// Mark notification as read
 export async function markAsRead(notificationId) {
     try {
         await updateDoc(doc(db, "Notifications", notificationId), {
@@ -227,7 +329,7 @@ export async function markAsRead(notificationId) {
     }
 }
 
-// تحديد جميع الإشعارات كمقروءة
+// Mark all notifications as read
 export async function markAllAsRead(userId) {
     try {
         const q = query(
@@ -254,7 +356,7 @@ export async function markAllAsRead(userId) {
     }
 }
 
-// حساب عدد الإشعارات غير المقروءة
+// Get unread notification count
 export async function getUnreadCount(userId) {
     try {
         const q = query(
@@ -271,7 +373,9 @@ export async function getUnreadCount(userId) {
     }
 }
 
-// حفظ طلب "Notify Me" في localStorage
+// ==================== EVENT NOTIFICATION SCHEDULER ====================
+
+// Save "Notify Me" request
 export function saveNotifyMeRequest(userId, eventId, eventTitle, eventDate) {
     try {
         const requests = JSON.parse(localStorage.getItem('notifyMeRequests') || '[]');
@@ -284,7 +388,6 @@ export function saveNotifyMeRequest(userId, eventId, eventTitle, eventDate) {
             requestedAt: new Date().toISOString()
         };
 
-        // تجنب التكرار
         const exists = requests.some(req => 
             req.userId === userId && req.eventId === eventId
         );
@@ -302,7 +405,7 @@ export function saveNotifyMeRequest(userId, eventId, eventTitle, eventDate) {
     }
 }
 
-// التحقق من الأحداث القادمة وإرسال الإشعارات
+// Check upcoming events and send notifications
 export async function checkUpcomingEventsAndNotify() {
     try {
         const requests = JSON.parse(localStorage.getItem('notifyMeRequests') || '[]');
@@ -313,7 +416,6 @@ export async function checkUpcomingEventsAndNotify() {
             const dayBeforeEvent = new Date(eventDate);
             dayBeforeEvent.setDate(dayBeforeEvent.getDate() - 1);
 
-            // إرسال إشعار قبل يوم من الحدث
             if (now >= dayBeforeEvent && now < eventDate) {
                 await sendEventReminderNotification(
                     request.userId,
@@ -322,7 +424,6 @@ export async function checkUpcomingEventsAndNotify() {
                     eventDate
                 );
 
-                // حذف الطلب بعد الإرسال
                 const updatedRequests = requests.filter(req => 
                     !(req.userId === request.userId && req.eventId === request.eventId)
                 );
@@ -334,11 +435,51 @@ export async function checkUpcomingEventsAndNotify() {
     }
 }
 
-// تشغيل فحص دوري للأحداث القادمة (يتم استدعاؤه عند تحميل الصفحة)
+// Start notification scheduler
 export function startNotificationScheduler() {
-    // فحص فوري
     checkUpcomingEventsAndNotify();
-
-    // فحص كل ساعة
     setInterval(checkUpcomingEventsAndNotify, 60 * 60 * 1000);
 }
+
+// ==================== AUTO-INITIALIZATION ====================
+
+// Wait for DOM to be ready before initializing
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initializeSystem);
+} else {
+    initializeSystem();
+}
+
+function initializeSystem() {
+    console.log('📦 Notification system initializing...');
+    
+    // Initialize badge on auth state change
+    onAuthStateChanged(auth, (user) => {
+        if (user) {
+            console.log('👤 User logged in:', user.email);
+            currentUserId = user.uid;
+            listenToNotificationCount(user.uid);
+        } else {
+            console.log('👤 No user logged in');
+            currentUserId = null;
+            const badge = document.getElementById('notificationBadge');
+            if (badge) {
+                badge.style.display = 'none';
+            }
+            
+            if (notificationsUnsubscribe) {
+                notificationsUnsubscribe();
+                notificationsUnsubscribe = null;
+            }
+        }
+    });
+
+    // Cleanup on page unload
+    window.addEventListener('beforeunload', () => {
+        if (notificationsUnsubscribe) {
+            notificationsUnsubscribe();
+        }
+    });
+}
+
+console.log('📦 Notification system module loaded');

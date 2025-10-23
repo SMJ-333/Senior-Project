@@ -8,6 +8,7 @@
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
@@ -760,6 +761,14 @@
                 flex-direction: column;
                 padding: 0 1.5rem 1.5rem;
             }
+
+            #upcomingEventsGrid {
+                flex-direction: column;
+            }
+
+            .coming-card {
+                min-width: 100% !important;
+            }
         }
     </style>
 </head>
@@ -843,7 +852,7 @@
             </div>
 
             <div id="upcomingEventsGrid" class="coming-soon-grid"
-                style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 2rem;">
+                style="display: flex; gap: 2rem; overflow-x: auto; padding-bottom: 1rem;">
                 <div class="loading-spinner">
                     <div class="spinner"></div>
                     <div class="loading-text">Loading upcoming events...</div>
@@ -894,6 +903,7 @@
             onSnapshot
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+        import './notification-system.js';
 
         let allEvents = [];
         let currentUser = null;
@@ -1203,13 +1213,13 @@
             const grid = document.getElementById('upcomingEventsGrid');
 
             if (events.length === 0) {
-                grid.innerHTML = '<p style="text-align: center; color: var(--text-light); grid-column: 1 / -1; padding: 3rem;"><i class="fas fa-hourglass-half"></i><br>No upcoming events at this time.</p>';
+                grid.innerHTML = '<p style="text-align: center; color: var(--text-light); width: 100%; padding: 3rem;"><i class="fas fa-hourglass-half"></i><br>No upcoming events at this time.</p>';
                 return;
             }
 
             const cards = events.map(event => {
                 return `
-                    <div class="coming-card" style="background: var(--white); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); border-left: 4px solid var(--accent); transition: all 0.3s ease; opacity: 0; transform: translateY(20px);">
+                    <div class="coming-card" style="background: var(--white); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); border-left: 4px solid var(--accent); transition: all 0.3s ease; opacity: 0; transform: translateY(20px); min-width: 300px; flex: 1;">
                         <h3 style="color: var(--primary-dark); margin-bottom: 1rem; font-size: 1.4rem; font-family: 'Playfair Display', serif; font-weight: 700;">${event.title}</h3>
                         <span class="coming-date" style="color: var(--accent); font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
                             <i class="far fa-calendar-alt"></i> Opening ${formatDate(event.startDate)}
