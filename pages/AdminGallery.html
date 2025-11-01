@@ -733,21 +733,43 @@
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // ===== ACTIVITY LOGGING FUNCTION =====
+        async function logActivity(type, action, targetTitle, metadata = {}) {
+            try {
+                const user = auth.currentUser;
+                await addDoc(collection(db, "ActivityLog"), {
+                    type: type,
+                    action: action,
+                    targetTitle: targetTitle,
+                    userEmail: user?.email || 'Admin',
+                    timestamp: serverTimestamp(),
+                    metadata: metadata
+                });
+                console.log('✓ Activity logged:', type, action, targetTitle);
+            } catch (error) {
+                console.error('✗ Error logging activity:', error);
+            }
+        }
 
         let allArtworks = [];
         let allUsers = [];
         let currentEditId = null;
 
-        // Load all artworks
+        // Load all artworks with optimized rendering
         function loadArtworks() {
             const unsubscribe = onSnapshot(collection(db, "Museum_Collection"), (snapshot) => {
                 allArtworks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                renderArtworks();
-                updateStats();
-                renderPopularItems();
-                updateChart();
-                updateRecommendations();
+                
+                // Batch all UI updates in a single frame
+                requestAnimationFrame(() => {
+                    renderArtworks();
+                    updateStats();
+                    renderPopularItems();
+                    updateChart();
+                    updateRecommendations();
+                });
             });
         }
 
@@ -756,14 +778,17 @@
             try {
                 const usersSnapshot = await getDocs(collection(db, "Users"));
                 allUsers = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                updateUserInterestsChart();
-                updateRecommendations();
+                
+                requestAnimationFrame(() => {
+                    updateUserInterestsChart();
+                    updateRecommendations();
+                });
             } catch (error) {
                 console.error("Error loading users:", error);
             }
         }
 
-        // Render artworks list
+        // Render artworks list with performance optimization
         function renderArtworks() {
             const grid = document.getElementById('items-grid');
             if (allArtworks.length === 0) {
@@ -771,7 +796,7 @@
                 return;
             }
 
-            grid.innerHTML = allArtworks.map(item => `
+            const html = allArtworks.map(item => `
                 <div class="item-card">
                     <img src="${item.imageURL || 'https://via.placeholder.com/80'}" alt="${item.title}" class="item-image">
                     <div class="item-info">
@@ -789,13 +814,14 @@
                     </div>
                 </div>
             `).join('');
+            
+            grid.innerHTML = html;
         }
 
         // Update statistics
         function updateStats() {
             document.getElementById('total-items').textContent = allArtworks.length;
             
-            // حساب مجموع الإعجابات - استخدام likesCount
             let totalLikes = 0;
             const categoryLikes = {
                 codices: 0,
@@ -821,9 +847,8 @@
             document.getElementById('bottles-likes').textContent = categoryLikes.bottles;
         }
 
-        // Render popular items
+        // Render popular items with optimization
         function renderPopularItems() {
-            // فلترة القطع التي لها إعجابات فقط
             const itemsWithLikes = allArtworks.filter(item => {
                 const likes = item.likesCount || 0;
                 return parseInt(likes) > 0;
@@ -844,7 +869,7 @@
                 return;
             }
 
-            container.innerHTML = popular.map((item, index) => {
+            const html = popular.map((item, index) => {
                 const likes = item.likesCount || 0;
                 return `
                     <div class="popular-item">
@@ -863,6 +888,8 @@
                     </div>
                 `;
             }).join('');
+            
+            container.innerHTML = html;
         }
 
         // Update chart
@@ -894,7 +921,6 @@
                 }
             });
 
-            // إزالة الفئات التي عددها 0
             const labels = [];
             const data = [];
             const colors = {
@@ -918,7 +944,6 @@
                 categoryChart.destroy();
             }
 
-            // إذا لم يكن هناك بيانات
             if (data.length === 0) {
                 ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
                 const text = 'No data available';
@@ -966,7 +991,6 @@
         function updateUserInterestsChart() {
             const ctx = document.getElementById('userInterestsChart').getContext('2d');
             
-            // Map interests to categories
             const interestMapping = {
                 'Decorative Arts': 'bottles',
                 'Fine Arts': 'codices',
@@ -981,7 +1005,6 @@
                 'Bottles': 0
             };
 
-            // Count users interested in each category
             allUsers.forEach(user => {
                 if (user.Interests && Array.isArray(user.Interests)) {
                     user.Interests.forEach(interest => {
@@ -1042,7 +1065,6 @@
                 return;
             }
 
-            // Map interests to categories
             const interestMapping = {
                 'Decorative Arts': 'bottles',
                 'Fine Arts': 'codices',
@@ -1050,7 +1072,6 @@
                 'Military History': 'arms'
             };
 
-            // Count users interested in each category
             const categoryInterests = {
                 'codices': 0,
                 'arms': 0,
@@ -1069,7 +1090,6 @@
                 }
             });
 
-            // Count artworks in each category
             const categoryArtworks = {
                 'codices': 0,
                 'arms': 0,
@@ -1084,7 +1104,6 @@
                 }
             });
 
-            // Generate recommendations
             const recommendations = [];
 
             Object.keys(categoryInterests).forEach(category => {
@@ -1119,7 +1138,6 @@
                 }
             });
 
-            // Sort by priority
             const priorityOrder = { 'high': 0, 'medium': 1, 'low': 2 };
             recommendations.sort((a, b) => priorityOrder[a.priority] - priorityOrder[b.priority]);
 
@@ -1176,7 +1194,7 @@
             document.getElementById('artwork-category').value = (artwork.classification || '').toLowerCase();
             document.getElementById('artwork-description').value = artwork.description || '';
             document.getElementById('artwork-image').value = artwork.imageURL || '';
-            document.getElementById('artwork-exhibition').value = (artwork.Exhibition || '').toLowerCase();
+            document.getElementById('artwork-exhibition').value = artwork.Exhibition || '';
             
             const preview = document.getElementById('image-preview');
             if (artwork.imageURL) {
@@ -1191,7 +1209,16 @@
             if (!confirm('Are you sure you want to delete this artwork?')) return;
 
             try {
+                const artwork = allArtworks.find(item => item.id === id);
+                const artworkTitle = artwork ? artwork.title : 'Unknown Artwork';
+                
                 await deleteDoc(doc(db, "Museum_Collection", id));
+                
+                // ===== LOG ACTIVITY: ARTWORK DELETED =====
+                await logActivity('gallery', 'deleted', artworkTitle, {
+                    category: artwork?.classification || 'Unknown'
+                });
+                
                 alert('Artwork deleted successfully!');
             } catch (error) {
                 console.error('Error deleting artwork:', error);
@@ -1215,21 +1242,23 @@
             }
         });
 
-        // Form submission
+        // Form submission with detailed change tracking
         document.getElementById('artworkForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
+            const artworkTitle = document.getElementById('artwork-title').value;
+            const artworkCategory = document.getElementById('artwork-category').value;
+
             const artworkData = {
-                title: document.getElementById('artwork-title').value,
+                title: artworkTitle,
                 artist: document.getElementById('artwork-artist').value,
                 artistName: document.getElementById('artwork-artist').value,
-                classification: document.getElementById('artwork-category').value,
+                classification: artworkCategory,
                 description: document.getElementById('artwork-description').value,
                 imageURL: document.getElementById('artwork-image').value,
                 Exhibition: document.getElementById('artwork-exhibition').value
             };
 
-            // عند الإضافة فقط، نضيف حقول الإعجابات
             const id = document.getElementById('artwork-id').value;
             if (!id) {
                 artworkData.likesCount = 0;
@@ -1238,12 +1267,70 @@
 
             try {
                 if (id) {
-                    // Update existing - لا نعدل حقول الإعجابات
+                    // Get original artwork data for comparison
+                    const originalArtwork = allArtworks.find(item => item.id === id);
+                    
+                    // Track changes
+                    const changes = [];
+                    const fieldMapping = {
+                        title: 'title',
+                        artist: 'artist',
+                        classification: 'category',
+                        description: 'description',
+                        imageURL: 'image',
+                        Exhibition: 'exhibition'
+                    };
+
+                    Object.keys(fieldMapping).forEach(field => {
+                        const oldValue = originalArtwork[field] || (field === 'artist' ? originalArtwork.artistName : '');
+                        const newValue = artworkData[field] || '';
+                        
+                        if (oldValue !== newValue) {
+                            changes.push({
+                                field: fieldMapping[field],
+                                from: oldValue,
+                                to: newValue
+                            });
+                        }
+                    });
+
+                    // Update existing
                     await updateDoc(doc(db, "Museum_Collection", id), artworkData);
+                    
+                    // ===== LOG ACTIVITY: ARTWORK UPDATED WITH DETAILED CHANGES =====
+                    if (changes.length > 0) {
+                        // Create a readable description of changes
+                        const changeDescriptions = changes.map(change => {
+                            if (change.field === 'title') {
+                                return `title from "${change.from}" to "${change.to}"`;
+                            } else if (change.field === 'image') {
+                                return `image URL`;
+                            } else if (change.field === 'description') {
+                                return `description`;
+                            } else {
+                                return `${change.field} from "${change.from}" to "${change.to}"`;
+                            }
+                        }).join(', ');
+
+                        await logActivity('gallery', 'updated', originalArtwork.title, {
+                            category: artworkCategory,
+                            changes: changes,
+                            changeDescription: changeDescriptions,
+                            newTitle: artworkTitle
+                        });
+                    }
+                    
                     alert('Artwork updated successfully!');
                 } else {
                     // Add new
                     await addDoc(collection(db, "Museum_Collection"), artworkData);
+                    
+                    // ===== LOG ACTIVITY: ARTWORK CREATED =====
+                    await logActivity('gallery', 'uploaded', artworkTitle, {
+                        category: artworkCategory,
+                        count: 1
+                    });
+                    
                     alert('Artwork added successfully!');
                 }
 

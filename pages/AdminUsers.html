@@ -617,12 +617,31 @@
     </div>
 
     <script type="module">
-        import { db } from './firebase-config.js';
-        import { collection, getDocs, doc, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { auth, db } from './firebase-config.js';
+        import { collection, getDocs, doc, updateDoc, addDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // ===== ACTIVITY LOGGING FUNCTION =====
+        async function logActivity(type, action, targetTitle, metadata = {}) {
+            try {
+                const user = auth.currentUser;
+                await addDoc(collection(db, "ActivityLog"), {
+                    type: type,
+                    action: action,
+                    targetTitle: targetTitle,
+                    userEmail: user?.email || 'Admin',
+                    timestamp: serverTimestamp(),
+                    metadata: metadata
+                });
+                console.log('✓ Activity logged:', type, action, targetTitle);
+            } catch (error) {
+                console.error('✗ Error logging activity:', error);
+            }
+        }
 
         let allUsers = [];
         let allArtworks = [];
         let filteredUsers = [];
+        let usersUnsubscribe = null;
 
         function calculateAge(dateOfBirth) {
             if (!dateOfBirth) return null;
@@ -648,29 +667,33 @@
 
         async function loadData() {
             try {
-                const [usersSnap, artworksSnap] = await Promise.all([
-                    getDocs(collection(db, "Users")),
-                    getDocs(collection(db, "Museum_Collection"))
-                ]);
-
-                allUsers = usersSnap.docs.map(doc => {
-                    const data = doc.data();
-                    const age = calculateAge(data['Date of Birth']);
-                    return {
-                        id: doc.id,
-                        ...data,
-                        age: age,
-                        ageGroup: age ? getAgeGroup(age) : 'unknown'
-                    };
-                });
-
+                // Load artworks once
+                const artworksSnap = await getDocs(collection(db, "Museum_Collection"));
                 allArtworks = artworksSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-                filteredUsers = [...allUsers];
-                renderUsers();
-                updateStats();
-                updateCharts();
-                updateInsights();
+                // Listen to users in real-time
+                usersUnsubscribe = onSnapshot(collection(db, "Users"), (usersSnap) => {
+                    allUsers = usersSnap.docs.map(doc => {
+                        const data = doc.data();
+                        const age = calculateAge(data['Date of Birth']);
+                        return {
+                            id: doc.id,
+                            ...data,
+                            age: age,
+                            ageGroup: age ? getAgeGroup(age) : 'unknown'
+                        };
+                    });
+
+                    filteredUsers = [...allUsers];
+                    
+                    // Batch all UI updates
+                    requestAnimationFrame(() => {
+                        renderUsers();
+                        updateStats();
+                        updateCharts();
+                        updateInsights();
+                    });
+                });
             } catch (error) {
                 console.error("Error loading data:", error);
             }
@@ -700,7 +723,6 @@
         function updateCategoryPreferencesChart() {
             const ctx = document.getElementById('categoryPreferencesChart').getContext('2d');
 
-            // حساب عدد الإعجابات لكل فئة (Codices, Arms, Boxes, Bottles) حسب الفئة العمرية
             const categoryLikes = {
                 youth: { codices: 0, arms: 0, boxes: 0, bottles: 0 },
                 adult: { codices: 0, arms: 0, boxes: 0, bottles: 0 },
@@ -787,7 +809,6 @@
         function updateEngagementChart() {
             const ctx = document.getElementById('engagementChart').getContext('2d');
 
-            // حساب متوسط الإعجابات لكل مستخدم حسب الفئة العمرية
             const engagement = {
                 youth: { totalLikes: 0, userCount: 0 },
                 adult: { totalLikes: 0, userCount: 0 },
@@ -798,7 +819,6 @@
                 if (user.ageGroup && engagement[user.ageGroup]) {
                     engagement[user.ageGroup].userCount++;
                     
-                    // عد كم قطعة أعجب بها هذا المستخدم
                     let userLikes = 0;
                     allArtworks.forEach(artwork => {
                         if (artwork.likedBy && artwork.likedBy.includes(user.uid)) {
@@ -810,7 +830,6 @@
                 }
             });
 
-            // حساب المتوسط
             const avgYouth = engagement.youth.userCount > 0 ? 
                 (engagement.youth.totalLikes / engagement.youth.userCount).toFixed(1) : 0;
             const avgAdult = engagement.adult.userCount > 0 ? 
@@ -887,7 +906,6 @@
                     }
                 });
 
-                // إيجاد الفئة الأكثر إعجاباً
                 let mostLikedCategory = null;
                 let maxLikes = 0;
                 
@@ -900,7 +918,6 @@
 
                 if (!mostLikedCategory || maxLikes === 0) return 'No data';
 
-                // إيجاد القطعة الأكثر إعجاباً في تلك الفئة
                 const artworks = categoryLikes[mostLikedCategory].artworks;
                 const topArtwork = Object.entries(artworks)
                     .sort((a, b) => b[1] - a[1])[0];
@@ -921,7 +938,7 @@
                 return;
             }
 
-            tbody.innerHTML = filteredUsers.map(user => {
+            const html = filteredUsers.map(user => {
                 const ageGroupClass = user.ageGroup === 'youth' ? 'youth' : 
                                      user.ageGroup === 'adult' ? 'adult' : 
                                      user.ageGroup === 'senior' ? 'senior' : '';
@@ -952,6 +969,8 @@
                     </tr>
                 `;
             }).join('');
+
+            tbody.innerHTML = html;
         }
 
         window.viewUser = function(userId) {
@@ -1018,44 +1037,64 @@
             if (!user) return;
 
             const newStatus = !user['Is Active'];
-            const action = newStatus ? 'activate' : 'deactivate';
+            const action = newStatus ? 'activated' : 'deactivated';
             
-            if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+            if (!confirm(`Are you sure you want to ${action === 'activated' ? 'activate' : 'deactivate'} this user?`)) return;
 
             try {
                 await updateDoc(doc(db, "Users", userId), {
                     'Is Active': newStatus
                 });
                 
+                // ===== LOG ACTIVITY: USER STATUS CHANGED =====
+                const userName = user.Username || 'User';
+                const userEmail = user['Email Address'] || 'unknown@email.com';
+                
+                // Create detailed activity description
+                const activityTitle = `${userName} (${userEmail}) - ${action}`;
+                
+                await logActivity('user', action, activityTitle, {
+                    userName: userName,
+                    userEmail: userEmail,
+                    previousStatus: !newStatus ? 'active' : 'inactive',
+                    newStatus: newStatus ? 'active' : 'inactive',
+                    userId: userId
+                });
+                
                 user['Is Active'] = newStatus;
                 filterUsers();
-                alert(`User ${action}d successfully!`);
+                alert(`User ${action} successfully!`);
             } catch (error) {
                 console.error('Error updating user status:', error);
                 alert('Error updating user status. Please try again.');
             }
         };
 
+        // Debounced filter function
+        let filterDebounceTimer;
         function filterUsers() {
-            const searchTerm = document.getElementById('search-input').value.toLowerCase();
-            const statusFilter = document.getElementById('status-filter').value;
-            const ageFilter = document.getElementById('age-filter').value;
+            clearTimeout(filterDebounceTimer);
+            filterDebounceTimer = setTimeout(() => {
+                const searchTerm = document.getElementById('search-input').value.toLowerCase();
+                const statusFilter = document.getElementById('status-filter').value;
+                const ageFilter = document.getElementById('age-filter').value;
 
-            filteredUsers = allUsers.filter(user => {
-                const matchesSearch = !searchTerm || 
-                    (user.Username && user.Username.toLowerCase().includes(searchTerm)) ||
-                    (user['Email Address'] && user['Email Address'].toLowerCase().includes(searchTerm));
+                filteredUsers = allUsers.filter(user => {
+                    const matchesSearch = !searchTerm || 
+                        (user.Username && user.Username.toLowerCase().includes(searchTerm)) ||
+                        (user['Email Address'] && user['Email Address'].toLowerCase().includes(searchTerm));
 
-                const matchesStatus = !statusFilter || 
-                    (statusFilter === 'active' && user['Is Active']) ||
-                    (statusFilter === 'inactive' && !user['Is Active']);
+                    const matchesStatus = !statusFilter || 
+                        (statusFilter === 'active' && user['Is Active']) ||
+                        (statusFilter === 'inactive' && !user['Is Active']);
 
-                const matchesAge = !ageFilter || user.ageGroup === ageFilter;
+                    const matchesAge = !ageFilter || user.ageGroup === ageFilter;
 
-                return matchesSearch && matchesStatus && matchesAge;
-            });
+                    return matchesSearch && matchesStatus && matchesAge;
+                });
 
-            renderUsers();
+                renderUsers();
+            }, 300);
         }
 
         document.getElementById('search-input').addEventListener('input', filterUsers);
@@ -1070,6 +1109,13 @@
 
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
+        });
+
+        // Cleanup on page unload
+        window.addEventListener('beforeunload', () => {
+            if (usersUnsubscribe) {
+                usersUnsubscribe();
+            }
         });
     </script>
 </body>

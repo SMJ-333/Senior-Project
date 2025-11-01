@@ -1,26 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard - ATHAR Museum</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
         :root {
-            --primary-dark: #653025;     
-        --primary-light: #8d2e1d;    
-        --accent: #b08d57;           
-        --accent-light: #d4b483;     
-        --neutral-light: #f4f1e3;    
-        --neutral-dark: #4a3c2a;     
-        --text-dark: #3b2f23;        
-        --text-light: #7c6f57;       
-        --white: #fdfaf4;            
-        --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
-        --transition: all 0.3s ease;
+            --primary-dark: #653025;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
 
             --success: #48bb78;
             --warning: #ecc94b;
@@ -41,7 +43,9 @@
             background-color: var(--neutral-light);
         }
 
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
         }
@@ -205,6 +209,11 @@
             color: var(--success);
         }
 
+        .stat-change.negative {
+            background: rgba(245, 101, 101, 0.1);
+            color: var(--danger);
+        }
+
         .quick-actions {
             background: var(--white);
             padding: 2rem;
@@ -283,6 +292,30 @@
             gap: 0.5rem;
         }
 
+        .scrollable-content {
+            max-height: 400px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .scrollable-content::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-track {
+            background: var(--neutral-light);
+            border-radius: 4px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .scrollable-content::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
+
         .activity-item {
             padding: 1rem;
             border-left: 3px solid var(--accent);
@@ -301,6 +334,14 @@
         .activity-desc {
             color: var(--text-dark);
             font-size: 0.95rem;
+        }
+
+        .activity-changes {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-top: 0.5rem;
+            padding-left: 0.5rem;
+            border-left: 2px solid var(--accent-light);
         }
 
         .alert-item {
@@ -345,6 +386,18 @@
             color: var(--text-light);
         }
 
+        .loading-alerts {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
+        .loading-activity {
+            text-align: center;
+            padding: 2rem;
+            color: var(--text-light);
+        }
+
         @media (max-width: 992px) {
             .content-grid {
                 grid-template-columns: 1fr;
@@ -367,6 +420,7 @@
         }
     </style>
 </head>
+
 <body>
     <header class="admin-header">
         <div class="header-content">
@@ -391,55 +445,29 @@
     </header>
 
     <div class="container">
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon primary">
-                        <span class="material-icons">article</span>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value" id="total-news">0</div>
-                        <div class="stat-label">News Articles</div>
-                        <span class="stat-change positive">↑ 12% this month</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon accent">
-                        <span class="material-icons">event</span>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">24</div>
-                        <div class="stat-label">Upcoming Events</div>
-                        <span class="stat-change positive">↑ 8 new events</span>
+        <div class="content-grid">
+            <div class="content-section" id="activity-section">
+                <h2>
+                    <span class="material-icons">history</span>
+                    Recent Activity
+                </h2>
+                <div class="scrollable-content">
+                    <div class="loading-activity">
+                        <span class="material-icons" style="font-size: 2rem; opacity: 0.3;">hourglass_empty</span>
+                        <p>Loading activities...</p>
                     </div>
                 </div>
             </div>
 
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon success">
-                        <span class="material-icons">people</span>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">1,247</div>
-                        <div class="stat-label">Registered Users</div>
-                        <span class="stat-change positive">↑ 156 this week</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stat-card">
-                <div class="stat-header">
-                    <div class="stat-icon info">
-                        <span class="material-icons">confirmation_number</span>
-                    </div>
-                    <div class="stat-content">
-                        <div class="stat-value">892</div>
-                        <div class="stat-label">Tickets Sold</div>
-                        <span class="stat-change positive">↑ 23% this week</span>
+            <div class="content-section" id="alerts-section">
+                <h2>
+                    <span class="material-icons">notifications</span>
+                    Alerts & Reminders
+                </h2>
+                <div class="scrollable-content">
+                    <div class="loading-alerts">
+                        <span class="material-icons" style="font-size: 2rem; opacity: 0.3;">hourglass_empty</span>
+                        <p>Loading alerts...</p>
                     </div>
                 </div>
             </div>
@@ -452,13 +480,13 @@
             </h2>
             <div class="action-grid">
                 <a href="AdminNews.html" class="action-card">
-                    <span class="material-icons">article</span>
+                    <span class="material-icons">event</span>
                     <h3>Manage News</h3>
                     <p>Create and edit news articles</p>
                 </a>
 
                 <a href="AdminEvents.html" class="action-card">
-                    <span class="material-icons">event</span>
+                    <span class="material-icons">article</span>
                     <h3>Manage Events</h3>
                     <p>Schedule and organize events</p>
                 </a>
@@ -489,104 +517,46 @@
             </div>
         </div>
 
-        <!-- Analytics Charts Section -->
-<div class="content-grid">
-    <div class="content-section">
-        <h2>
-            <span class="material-icons">show_chart</span>
-            Visitor Statistics
-        </h2>
-        <div style="height: 300px;">
-            <canvas id="visitorsChart"></canvas>
-        </div>
-    </div>
-
-    <div class="content-section">
-        <h2>
-            <span class="material-icons">pie_chart</span>
-            Events Distribution
-        </h2>
-        <div style="height: 300px;">
-            <canvas id="eventsChart"></canvas>
-        </div>
-    </div>
-</div>
-
-<div class="content-grid">
-    <div class="content-section">
-        <h2>
-            <span class="material-icons">bar_chart</span>
-            Weekly Ticket Sales
-        </h2>
-        <div style="height: 300px;">
-            <canvas id="ticketsChart"></canvas>
-        </div>
-    </div>
-
-    <div class="content-section">
-        <h2>
-            <span class="material-icons">trending_up</span>
-            New User Registrations
-        </h2>
-        <div style="height: 300px;">
-            <canvas id="usersChart"></canvas>
-        </div>
-    </div>
-</div>
-
         <div class="content-grid">
             <div class="content-section">
                 <h2>
-                    <span class="material-icons">history</span>
-                    Recent Activity
+                    <span class="material-icons">show_chart</span>
+                    Visitor Statistics
                 </h2>
-                <div class="activity-item">
-                    <span class="activity-time">2 hours ago</span>
-                    <div class="activity-desc">New article published: "Ancient Egypt Exhibition Opening"</div>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-time">5 hours ago</span>
-                    <div class="activity-desc">Event updated: Renaissance Art Workshop - Date changed</div>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-time">Yesterday</span>
-                    <div class="activity-desc">15 new user registrations</div>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-time">2 days ago</span>
-                    <div class="activity-desc">Gallery updated with 24 new images</div>
-                </div>
-                <div class="activity-item">
-                    <span class="activity-time">3 days ago</span>
-                    <div class="activity-desc">Exhibit information updated: Treasures of Ancient Rome</div>
+                <div style="height: 300px;">
+                    <canvas id="visitorsChart"></canvas>
                 </div>
             </div>
 
             <div class="content-section">
                 <h2>
-                    <span class="material-icons">notifications</span>
-                    Alerts & Reminders
+                    <span class="material-icons">pie_chart</span>
+                    Events Distribution
                 </h2>
-                <div class="alert-item warning">
-                    <span class="material-icons">warning</span>
-                    <div class="alert-content">
-                        <div class="alert-title">Event Starting Soon</div>
-                        <div class="alert-desc">Ancient Egypt Night Tour starts in 3 days</div>
-                    </div>
+                <div style="height: 300px;">
+                    <canvas id="eventsChart"></canvas>
                 </div>
-                <div class="alert-item info">
-                    <span class="material-icons">info</span>
-                    <div class="alert-content">
-                        <div class="alert-title">System Update</div>
-                        <div class="alert-desc">Platform maintenance scheduled for Sunday 2 AM</div>
-                    </div>
+            </div>
+        </div>
+
+        <div class="content-grid">
+            <div class="content-section">
+                <h2>
+                    <span class="material-icons">bar_chart</span>
+                    Weekly Ticket Sales
+                </h2>
+                <div style="height: 300px;">
+                    <canvas id="ticketsChart"></canvas>
                 </div>
-                <div class="alert-item warning">
-                    <span class="material-icons">warning</span>
-                    <div class="alert-content">
-                        <div class="alert-title">Low Ticket Inventory</div>
-                        <div class="alert-desc">Weekend tickets selling fast - only 15 left</div>
-                    </div>
+            </div>
+
+            <div class="content-section">
+                <h2>
+                    <span class="material-icons">trending_up</span>
+                    New User Registrations
+                </h2>
+                <div style="height: 300px;">
+                    <canvas id="usersChart"></canvas>
                 </div>
             </div>
         </div>
@@ -594,7 +564,7 @@
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { collection, getDocs, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         onAuthStateChanged(auth, (user) => {
@@ -602,17 +572,6 @@
                 document.getElementById('admin-email').textContent = user.email;
             }
         });
-
-        async function loadNewsCount() {
-            try {
-                const newsQuery = query(collection(db, 'News'), orderBy('publishedAt', 'desc'));
-                const snapshot = await getDocs(newsQuery);
-                const activeNews = snapshot.docs.filter(doc => !doc.data().isDeleted);
-                document.getElementById('total-news').textContent = activeNews.length;
-            } catch (error) {
-                console.error('Error loading news count:', error);
-            }
-        }
 
         document.getElementById('logout-btn').addEventListener('click', async () => {
             if (confirm('Are you sure you want to logout?')) {
@@ -626,161 +585,316 @@
             }
         });
 
-       function initCharts() {
-    // Visitors Chart
-    const visitorsCtx = document.getElementById('visitorsChart').getContext('2d');
-    new Chart(visitorsCtx, {
-        type: 'line',
-        data: {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June'],
-            datasets: [{
-                label: 'Visitors',
-                data: [1200, 1900, 1500, 2100, 1800, 2400],
-                borderColor: '#8b1a1a',
-                backgroundColor: 'rgba(139, 26, 26, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
+        async function loadAlerts() {
+            const alertsSection = document.getElementById('alerts-section');
+            const scrollableContainer = alertsSection.querySelector('.scrollable-content');
 
-    // Ticket Sales Chart
-    const ticketsCtx = document.getElementById('ticketsChart').getContext('2d');
-    new Chart(ticketsCtx, {
-        type: 'bar',
-        data: {
-            labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
-            datasets: [{
-                label: 'Tickets Sold',
-                data: [85, 120, 95, 140, 180, 220, 195],
-                backgroundColor: '#b08d57',
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-
-    // Events Distribution Chart
-    const eventsCtx = document.getElementById('eventsChart').getContext('2d');
-    new Chart(eventsCtx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Workshops', 'Tours', 'Exhibitions', 'Lectures', 'Special Events'],
-            datasets: [{
-                data: [30, 25, 20, 15, 10],
-                backgroundColor: [
-                    '#8b1a1a',
-                    '#b08d57',
-                    '#48bb78',
-                    '#4299e1',
-                    '#ecc94b'
-                ]
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: 'bottom'
-                }
-            }
-        }
-    });
-
-    // User Registrations Chart
-    const usersCtx = document.getElementById('usersChart').getContext('2d');
-    new Chart(usersCtx, {
-        type: 'line',
-        data: {
-            labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-            datasets: [{
-                label: 'New Users',
-                data: [45, 62, 78, 156],
-                borderColor: '#48bb78',
-                backgroundColor: 'rgba(72, 187, 120, 0.1)',
-                tension: 0.4,
-                fill: true
-            }]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    display: false
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
-        }
-    });
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-    loadNewsCount();
-    initCharts();
-});
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-    <script type="module">
-        import { auth, db } from './firebase-config.js';
-        import { collection, getDocs, query, orderBy } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-
-        onAuthStateChanged(auth, (user) => {
-            if (user) {
-                document.getElementById('admin-email').textContent = user.email;
-            }
-        });
-
-        async function loadNewsCount() {
             try {
-                const newsQuery = query(collection(db, 'News'), orderBy('publishedAt', 'desc'));
-                const snapshot = await getDocs(newsQuery);
-                const activeNews = snapshot.docs.filter(doc => !doc.data().isDeleted);
-                document.getElementById('total-news').textContent = activeNews.length;
+                const alerts = [];
+
+                const eventsSnapshot = await getDocs(collection(db, "Events"));
+                const now = new Date();
+                const sevenDaysFromNow = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
+
+                eventsSnapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const startDate = data.startDate?.toDate();
+
+                    if (startDate && startDate > now && startDate <= sevenDaysFromNow) {
+                        const daysUntil = Math.ceil((startDate - now) / (1000 * 60 * 60 * 24));
+                        const hoursUntil = Math.ceil((startDate - now) / (1000 * 60 * 60));
+
+                        let timeText;
+                        if (daysUntil === 0) {
+                            timeText = `starts in ${hoursUntil} hours`;
+                        } else if (daysUntil === 1) {
+                            timeText = 'starts tomorrow';
+                        } else {
+                            timeText = `starts in ${daysUntil} days`;
+                        }
+
+                        alerts.push({
+                            type: 'info',
+                            icon: 'info',
+                            title: 'Event Starting Soon',
+                            description: `${data.title || data.name || 'Event'} ${timeText}`,
+                            priority: daysUntil,
+                            timestamp: startDate
+                        });
+                    }
+                });
+
+                const newsSnapshot = await getDocs(collection(db, "News"));
+                const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
+
+                newsSnapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const publishDate = data.publishedAt?.toDate() || data.publishDate?.toDate() || data.createdAt?.toDate() || data.date?.toDate();
+                    const category = (data.category || '').toLowerCase();
+
+                    if (category === 'announcement' || category === 'announcements') {
+                        if (publishDate && publishDate >= sevenDaysAgo && publishDate <= now) {
+                            const daysAgo = Math.floor((now - publishDate) / (1000 * 60 * 60 * 24));
+
+                            let timeText;
+                            if (daysAgo === 0) {
+                                timeText = 'Published today';
+                            } else if (daysAgo === 1) {
+                                timeText = 'Published yesterday';
+                            } else {
+                                timeText = `Published ${daysAgo} days ago`;
+                            }
+
+                            alerts.push({
+                                type: 'warning',
+                                icon: 'warning',
+                                title: 'New Announcement',
+                                description: `${data.title || 'Announcement'} - ${timeText}`,
+                                priority: 10 + daysAgo,
+                                timestamp: publishDate
+                            });
+                        }
+                    }
+                });
+
+                eventsSnapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const maxAttendees = data.maxAttendees || 0;
+                    const registeredCount = data.registeredUsers ?
+                        data.registeredUsers.split(',').filter(u => u.trim()).length : 0;
+
+                    if (maxAttendees > 0) {
+                        const availableSpots = maxAttendees - registeredCount;
+                        const percentAvailable = (availableSpots / maxAttendees) * 100;
+
+                        const startDate = data.startDate?.toDate();
+                        if (percentAvailable < 20 && percentAvailable > 0 && startDate > now) {
+                            alerts.push({
+                                type: 'info',
+                                icon: 'info',
+                                title: 'Low Event Capacity',
+                                description: `${data.title || data.name || 'Event'} - Only ${availableSpots} spots left`,
+                                priority: 15,
+                                timestamp: now
+                            });
+                        }
+
+                        if (availableSpots <= 0 && startDate > now) {
+                            alerts.push({
+                                type: 'info',
+                                icon: 'info',
+                                title: 'Event Fully Booked',
+                                description: `${data.title || data.name || 'Event'} has reached maximum capacity`,
+                                priority: 20,
+                                timestamp: now
+                            });
+                        }
+                    }
+                });
+
+                alerts.sort((a, b) => a.priority - b.priority);
+
+                if (alerts.length === 0) {
+                    scrollableContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                            <span class="material-icons" style="font-size: 3rem; opacity: 0.3;">check_circle</span>
+                            <p style="margin-top: 1rem;">No alerts at this time</p>
+                        </div>
+                    `;
+                } else {
+                    scrollableContainer.innerHTML = alerts.map(alert => `
+                        <div class="alert-item ${alert.type}">
+                            <span class="material-icons">${alert.icon}</span>
+                            <div class="alert-content">
+                                <div class="alert-title">${alert.title}</div>
+                                <div class="alert-desc">${alert.description}</div>
+                            </div>
+                        </div>
+                    `).join('');
+                }
+
             } catch (error) {
-                console.error('Error loading news count:', error);
+                console.error('Error loading alerts:', error);
+                scrollableContainer.innerHTML = `
+                    <div class="alert-item warning">
+                        <span class="material-icons">error</span>
+                        <div class="alert-content">
+                            <div class="alert-title">Error Loading Alerts</div>
+                            <div class="alert-desc">${error.message}</div>
+                        </div>
+                    </div>
+                `;
             }
+        }
+
+        async function loadRecentActivity() {
+            console.log('=== LOADING ACTIVITIES ===');
+            const activitySection = document.getElementById('activity-section');
+            const scrollableContainer = activitySection.querySelector('.scrollable-content');
+
+            try {
+                const activitiesSnapshot = await getDocs(
+                    query(
+                        collection(db, "ActivityLog"),
+                        orderBy("timestamp", "desc"),
+                        limit(50) // Fetch more to filter by date
+                    )
+                );
+
+                console.log('Activities found:', activitiesSnapshot.docs.length);
+
+                if (activitiesSnapshot.empty) {
+                    scrollableContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                            <span class="material-icons" style="font-size: 3rem; opacity: 0.3;">history</span>
+                            <p style="margin-top: 1rem;">No recent activity</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Calculate cutoff date (2 weeks ago)
+                const twoWeeksAgo = new Date();
+                twoWeeksAgo.setDate(twoWeeksAgo.getDate() - 14);
+
+                // Filter activities from last 2 weeks and limit to 10
+                const activities = activitiesSnapshot.docs
+                    .map(doc => {
+                        const data = doc.data();
+                        return {
+                            id: doc.id,
+                            type: data.type,
+                            action: data.action,
+                            targetTitle: data.targetTitle || 'Unknown',
+                            userEmail: data.userEmail || 'Admin',
+                            timestamp: data.timestamp?.toDate() || new Date(),
+                            metadata: data.metadata || {}
+                        };
+                    })
+                    .filter(activity => activity.timestamp >= twoWeeksAgo)
+                    .slice(0, 10); // Limit to 10 most recent
+
+                console.log('Filtered activities (last 2 weeks):', activities.length);
+
+                if (activities.length === 0) {
+                    scrollableContainer.innerHTML = `
+                        <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                            <span class="material-icons" style="font-size: 3rem; opacity: 0.3;">history</span>
+                            <p style="margin-top: 1rem;">No recent activity in the last 2 weeks</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                const activitiesHTML = activities.map(activity => {
+                    const timeAgo = getTimeAgo(activity.timestamp);
+                    const description = formatActivityDescription(activity);
+
+                    return `
+                        <div class="activity-item">
+                            <span class="activity-time">${timeAgo}</span>
+                            <div class="activity-desc">${description.main}</div>
+                            ${description.changes ? `<div class="activity-changes">${description.changes}</div>` : ''}
+                        </div>
+                    `;
+                }).join('');
+
+                scrollableContainer.innerHTML = activitiesHTML;
+
+                console.log('=== ACTIVITIES LOADED SUCCESSFULLY ===');
+
+            } catch (error) {
+                console.error('!!! ERROR LOADING ACTIVITIES !!!', error);
+                scrollableContainer.innerHTML = `
+                    <div class="activity-item" style="background: rgba(245, 101, 101, 0.1);">
+                        <span class="activity-time">Error</span>
+                        <div class="activity-desc" style="color: var(--danger);">Failed to load activities: ${error.message}</div>
+                    </div>
+                `;
+            }
+        }
+
+        function formatActivityDescription(activity) {
+            // Handle event updates with detailed changes
+            if (activity.type === 'event' && activity.action === 'updated' && activity.metadata?.changes) {
+                return {
+                    main: `<strong>Event updated:</strong> ${activity.targetTitle}`,
+                    changes: activity.metadata.changes
+                };
+            }
+
+            // Handle news updates with detailed changes
+            if (activity.type === 'news' && activity.action === 'updated' && activity.metadata?.changeDescription) {
+                return {
+                    main: `<strong>Article updated:</strong> ${activity.targetTitle}`,
+                    changes: activity.metadata.changeDescription
+                };
+            }
+
+            // Handle gallery updates with detailed changes
+            if (activity.type === 'gallery' && activity.action === 'updated' && activity.metadata?.changeDescription) {
+                return {
+                    main: `<strong>Gallery updated:</strong> ${activity.targetTitle}`,
+                    changes: activity.metadata.changeDescription
+                };
+            }
+
+            const templates = {
+                event: {
+                    created: `<strong>New event created:</strong> ${activity.targetTitle}`,
+                    updated: `<strong>Event updated:</strong> ${activity.targetTitle}`,
+                    deleted: `<strong>Event deleted:</strong> ${activity.targetTitle}`
+                },
+                news: {
+                    created: `<strong>New article published:</strong> ${activity.targetTitle}`,
+                    updated: `<strong>Article updated:</strong> ${activity.targetTitle}`,
+                    deleted: `<strong>Article deleted:</strong> ${activity.targetTitle}`
+                },
+                gallery: {
+                    uploaded: `<strong>Gallery:</strong> New artwork uploaded - ${activity.targetTitle}`,
+                    updated: `<strong>Gallery updated:</strong> ${activity.targetTitle}`,
+                    deleted: `<strong>Gallery:</strong> Artwork deleted - ${activity.targetTitle}`
+                },
+                exhibit: {
+                    created: `<strong>New exhibit added:</strong> ${activity.targetTitle}`,
+                    updated: `<strong>Exhibit updated:</strong> ${activity.targetTitle}`,
+                    deleted: `<strong>Exhibit removed:</strong> ${activity.targetTitle}`
+                },
+                user: {
+                    registered: `<strong>User registered:</strong> ${activity.metadata?.count || 1} new registration(s)`,
+                    activated: `<strong>User activated:</strong> ${activity.targetTitle}`,
+                    deactivated: `<strong>User deactivated:</strong> ${activity.targetTitle}`,
+                    updated: `<strong>User updated:</strong> ${activity.targetTitle}`,
+                    deleted: `<strong>User deleted:</strong> ${activity.targetTitle}`
+                }
+            };
+
+            const mainText = templates[activity.type]?.[activity.action] || `<strong>${activity.type} ${activity.action}:</strong>`;
+            return { main: mainText, changes: null };
+        }
+
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+
+            if (seconds < 60) return 'Just now';
+            if (seconds < 120) return '1 minute ago';
+            if (seconds < 3600) return `${Math.floor(seconds / 60)} minutes ago`;
+            if (seconds < 7200) return '1 hour ago';
+            if (seconds < 86400) return `${Math.floor(seconds / 3600)} hours ago`;
+            if (seconds < 172800) return 'Yesterday';
+            if (seconds < 604800) return `${Math.floor(seconds / 86400)} days ago`;
+            if (seconds < 1209600) return '1 week ago';
+            if (seconds < 2592000) return `${Math.floor(seconds / 604800)} weeks ago`;
+
+            return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
         function initCharts() {
-            // Visitors Chart
             const visitorsCtx = document.getElementById('visitorsChart').getContext('2d');
             new Chart(visitorsCtx, {
                 type: 'line',
                 data: {
-                    labels: ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN'],
+                    labels: ['January', 'February', 'March', 'April', 'May', 'June'],
                     datasets: [{
                         label: 'Visitors',
                         data: [1200, 1900, 1500, 2100, 1800, 2400],
@@ -806,14 +920,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Ticket Sales Chart
             const ticketsCtx = document.getElementById('ticketsChart').getContext('2d');
             new Chart(ticketsCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['MON', 'TUE', 'WED', 'THE', 'FRI', 'SAT', 'SUN'],
+                    labels: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
                     datasets: [{
-                        label: ' Tickets sold',
+                        label: 'Tickets Sold',
                         data: [85, 120, 95, 140, 180, 220, 195],
                         backgroundColor: '#b08d57',
                     }]
@@ -834,12 +947,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // Events Distribution Chart
             const eventsCtx = document.getElementById('eventsChart').getContext('2d');
             new Chart(eventsCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Workshops', 'Tours', 'Exhabits', 'Lectures', 'Spatial Events'],
+                    labels: ['Workshops', 'Tours', 'Exhibitions', 'Lectures', 'Special Events'],
                     datasets: [{
                         data: [30, 25, 20, 15, 10],
                         backgroundColor: [
@@ -862,14 +974,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             });
 
-            // User Registrations Chart
             const usersCtx = document.getElementById('usersChart').getContext('2d');
             new Chart(usersCtx, {
                 type: 'line',
                 data: {
-                    labels: ['week 1', 'week 2', 'week 3', 'week 4'],
+                    labels: ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
                     datasets: [{
-                        label: 'New Visitors',
+                        label: 'New Users',
                         data: [45, 62, 78, 156],
                         borderColor: '#48bb78',
                         backgroundColor: 'rgba(72, 187, 120, 0.1)',
@@ -894,22 +1005,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        document.getElementById('logout-btn').addEventListener('click', async () => {
-            if (confirm('Are you sure you want to logout?')) {
-                try {
-                    await signOut(auth);
-                    window.location.href = 'login.html';
-                } catch (error) {
-                    console.error('Error logging out:', error);
-                    alert('Error logging out. Please try again.');
-                }
-            }
-        });
-
         document.addEventListener('DOMContentLoaded', () => {
-            loadNewsCount();
             initCharts();
+            loadAlerts();
+            loadRecentActivity();
         });
     </script>
 </body>
+
 </html>

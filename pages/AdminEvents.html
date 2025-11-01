@@ -1,23 +1,26 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Events - ATHAR Museum</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
     <style>
         :root {
-            --primary-dark: #8b1a1a;     
-            --primary-light: #8d2e1d;    
-            --accent: #b08d57;           
-            --accent-light: #d4b483;     
-            --neutral-light: #f4f1e3;    
-            --neutral-dark: #4a3c2a;     
-            --text-dark: #3b2f23;        
-            --text-light: #7c6f57;       
-            --white: #fdfaf4;            
+            --primary-dark: #8b1a1a;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
             --transition: all 0.3s ease;
             --success: #48bb78;
@@ -39,7 +42,9 @@
             background-color: var(--neutral-light);
         }
 
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
         }
@@ -235,6 +240,24 @@
             padding-right: 0.5rem;
         }
 
+        .items-grid::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .items-grid::-webkit-scrollbar-track {
+            background: var(--neutral-light);
+            border-radius: 4px;
+        }
+
+        .items-grid::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .items-grid::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
+
         .item-card {
             display: flex;
             gap: 1rem;
@@ -242,6 +265,7 @@
             background: var(--neutral-light);
             border-radius: 8px;
             transition: var(--transition);
+            margin: 10px;
         }
 
         .item-card:hover {
@@ -434,7 +458,8 @@
             color: var(--text-dark);
         }
 
-        .form-input, .form-textarea {
+        .form-input,
+        .form-textarea {
             width: 100%;
             padding: 0.8rem;
             border: 2px solid #e2e8f0;
@@ -443,7 +468,9 @@
             transition: var(--transition);
         }
 
-        .form-input:focus, .form-select:focus, .form-textarea:focus {
+        .form-input:focus,
+        .form-select:focus,
+        .form-textarea:focus {
             outline: none;
             border-color: var(--accent);
         }
@@ -520,6 +547,7 @@
         }
     </style>
 </head>
+
 <body>
     <header class="admin-header">
         <div class="header-left">
@@ -574,9 +602,9 @@
 
                 <div class="filters">
                     <div class="search-box">
-                        <input type="text" id="searchInput" placeholder="Search events..." onkeyup="filterEvents()">
+                        <input type="text" id="searchInput" placeholder="Search events...">
                     </div>
-                    <select class="form-select" id="statusFilter" onchange="filterEvents()">
+                    <select class="form-select" id="statusFilter">
                         <option value="">All Status</option>
                         <option value="upcoming">Upcoming</option>
                         <option value="ongoing">Ongoing</option>
@@ -641,7 +669,7 @@
             </div>
             <form id="eventForm">
                 <input type="hidden" id="event-id">
-                
+
                 <div class="form-group">
                     <label class="form-label">Event Name *</label>
                     <input type="text" class="form-input" id="event-name" required>
@@ -678,6 +706,15 @@
                 </div>
 
                 <div class="form-group">
+                    <label class="form-label">Event Image</label>
+                    <input type="file" class="form-input" id="event-image" accept="image/*">
+                    <div id="image-preview" style="margin-top: 1rem; display: none;">
+                        <img id="preview-img" style="max-width: 100%; max-height: 200px; border-radius: 8px;"
+                            alt="Preview">
+                    </div>
+                </div>
+
+                <div class="form-group">
                     <label class="form-label">Max Participants</label>
                     <input type="number" class="form-input" id="max-participants" min="1" value="50">
                 </div>
@@ -691,8 +728,27 @@
     </div>
 
     <script type="module">
-        import { auth, db } from './firebase-config.js';
-        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, Timestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { auth, db, storage } from './firebase-config.js';
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
+
+        // ===== ACTIVITY LOGGING FUNCTION =====
+        async function logActivity(type, action, targetTitle, metadata = {}) {
+            try {
+                const user = auth.currentUser;
+                await addDoc(collection(db, "ActivityLog"), {
+                    type: type,
+                    action: action,
+                    targetTitle: targetTitle,
+                    userEmail: user?.email || 'Admin',
+                    timestamp: serverTimestamp(),
+                    metadata: metadata
+                });
+                console.log('✓ Activity logged:', type, action, targetTitle);
+            } catch (error) {
+                console.error('✗ Error logging activity:', error);
+            }
+        }
 
         let events = [];
         let editingEventId = null;
@@ -711,16 +767,21 @@
                         startDate: data.startDate,
                         endDate: data.endDate,
                         location: data.location || '',
+                        imageUrl: data.imageUrl || '',
                         participants: data.registeredUsers ? data.registeredUsers.split(',').filter(u => u.trim()).length : 0,
                         maxParticipants: data.maxAttendees || 0,
                         registeredUsers: data.registeredUsers || '',
                         status: getEventStatus(data.startDate, data.endDate)
                     };
                 });
-                renderEvents();
-                renderPopularEvents();
-                updateStats();
-                updateCharts();
+
+                // Batch all UI updates in a single frame
+                requestAnimationFrame(() => {
+                    renderEvents();
+                    renderPopularEvents();
+                    updateStats();
+                    updateCharts();
+                });
             });
         }
 
@@ -770,41 +831,51 @@
 
         function renderEvents(eventsToRender = events) {
             const grid = document.getElementById('events-grid');
-            
+
             if (eventsToRender.length === 0) {
                 grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No events found</div>';
                 return;
             }
 
-            grid.innerHTML = eventsToRender.map(event => `
-                <div class="item-card">
-                    <div class="item-info">
-                        <div class="item-title">${event.name}</div>
-                        <div class="item-date">
-                            <span class="material-icons" style="font-size: 1rem;">calendar_today</span>
-                            ${formatDate(event.startDate)} - ${formatDate(event.endDate)}
-                        </div>
-                        <div class="item-location">
-                            <span class="material-icons" style="font-size: 1rem;">location_on</span>
-                            ${event.location}
-                        </div>
-                        <div style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.3rem;">
-                            ${event.participants} / ${event.maxParticipants} registered
-                        </div>
-                        <span class="status-badge status-${event.status}">${event.status.charAt(0).toUpperCase() + event.status.slice(1)}</span>
-                    </div>
-                    <div class="item-actions">
-                        <button class="icon-btn edit" onclick="editEvent('${event.id}')" title="Edit">
-                            <span class="material-icons">edit</span>
-                        </button>
-                        <button class="icon-btn delete" onclick="deleteEvent('${event.id}')" title="Delete">
-                            <span class="material-icons">delete</span>
-                        </button>
-                    </div>
-                </div>
-            `).join('');
+            // Use DocumentFragment to batch DOM updates
+            const fragment = document.createDocumentFragment();
+            const tempDiv = document.createElement('div');
 
-            updateStats();
+            tempDiv.innerHTML = eventsToRender.map(event => `
+            <div class="item-card">
+                ${event.imageUrl ? `<img src="${event.imageUrl}" alt="${event.name}" style="width: 120px; height: 120px; object-fit: cover; border-radius: 8px;">` : ''}
+                <div class="item-info">
+                    <div class="item-title">${event.name}</div>
+                    <div class="item-date">
+                        <span class="material-icons" style="font-size: 1rem;">calendar_today</span>
+                        ${formatDate(event.startDate)} - ${formatDate(event.endDate)}
+                    </div>
+                    <div class="item-location">
+                        <span class="material-icons" style="font-size: 1rem;">location_on</span>
+                        ${event.location}
+                    </div>
+                    <div style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.3rem;">
+                        ${event.participants} / ${event.maxParticipants} registered
+                    </div>
+                    <span class="status-badge status-${event.status}" onclick="filterByStatus('${event.status}')" style="cursor: pointer;" title="Filter by ${event.status}">${event.status.charAt(0).toUpperCase() + event.status.slice(1)}</span>
+                </div>
+                <div class="item-actions">
+                    <button class="icon-btn edit" onclick="editEvent('${event.id}')" title="Edit">
+                        <span class="material-icons">edit</span>
+                    </button>
+                    <button class="icon-btn delete" onclick="deleteEvent('${event.id}')" title="Delete">
+                        <span class="material-icons">delete</span>
+                    </button>
+                </div>
+            </div>
+        `).join('');
+
+            // Single DOM update
+            grid.innerHTML = '';
+            grid.appendChild(tempDiv);
+
+            // Defer stats update to next frame
+            requestAnimationFrame(() => updateStats());
         }
 
         function renderPopularEvents() {
@@ -814,34 +885,43 @@
                 .slice(0, 5);
 
             const container = document.getElementById('popular-events');
-            
+
             if (popular.length === 0) {
                 container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No registrations yet</div>';
                 return;
             }
 
-            container.innerHTML = popular.map((event, index) => `
-                <div class="popular-item">
-                    <div class="popular-rank">#${index + 1}</div>
-                    <div class="popular-info">
-                        <div class="popular-title">${event.name}</div>
-                        <div class="popular-count">
-                            <span class="material-icons" style="font-size: 1rem;">people</span>
-                            ${event.participants} registrations
-                        </div>
+            // Batch DOM update
+            const html = popular.map((event, index) => `
+            <div class="popular-item">
+                <div class="popular-rank">#${index + 1}</div>
+                <div class="popular-info">
+                    <div class="popular-title">${event.name}</div>
+                    <div class="popular-count">
+                        <span class="material-icons" style="font-size: 1rem;">people</span>
+                        ${event.participants} registrations
                     </div>
                 </div>
-            `).join('');
+            </div>
+        `).join('');
+
+            // Single DOM update using requestAnimationFrame
+            requestAnimationFrame(() => {
+                container.innerHTML = html;
+            });
         }
 
         function updateCharts() {
-            updateStatusChart();
-            updateRegistrationsChart();
+            // Use requestAnimationFrame to batch chart updates
+            requestAnimationFrame(() => {
+                updateStatusChart();
+                updateRegistrationsChart();
+            });
         }
 
         function updateStatusChart() {
             const ctx = document.getElementById('statusChart').getContext('2d');
-            
+
             const statusCounts = {
                 'Upcoming': events.filter(e => e.status === 'upcoming').length,
                 'Ongoing': events.filter(e => e.status === 'ongoing').length,
@@ -876,7 +956,7 @@
 
         function updateRegistrationsChart() {
             const ctx = document.getElementById('registrationsChart').getContext('2d');
-            
+
             const sortedEvents = [...events]
                 .sort((a, b) => {
                     const dateA = a.startDate?.toDate() || new Date(0);
@@ -884,7 +964,7 @@
                     return dateA - dateB;
                 })
                 .slice(0, 6);
-            
+
             if (registrationsChart) {
                 registrationsChart.destroy();
             }
@@ -919,19 +999,47 @@
             });
         }
 
-        window.openAddModal = function() {
+        // Upload image to Firebase Storage
+        async function uploadEventImage(file, eventId) {
+            if (!file) return null;
+
+            try {
+                // Validate file size (max 20MB)
+                const maxSize = 20 * 1024 * 1024;
+                if (file.size > maxSize) {
+                    throw new Error('Image size must be less than 20MB');
+                }
+
+                // Validate file type
+                if (!file.type.startsWith('image/')) {
+                    throw new Error('File must be an image');
+                }
+
+                const storageRef = ref(storage, `events/${eventId}_${Date.now()}_${file.name}`);
+                await uploadBytes(storageRef, file);
+                const downloadUrl = await getDownloadURL(storageRef);
+                console.log('Image uploaded successfully:', downloadUrl);
+                return downloadUrl;
+            } catch (error) {
+                console.error('Error uploading image:', error);
+                throw error;
+            }
+        }
+
+        window.openAddModal = function () {
             editingEventId = null;
             document.getElementById('modal-title').textContent = 'Add New Event';
             document.getElementById('eventForm').reset();
             document.getElementById('event-id').value = '';
+            document.getElementById('image-preview').style.display = 'none';
             document.getElementById('eventModal').classList.add('active');
         };
 
-        window.closeModal = function() {
+        window.closeModal = function () {
             document.getElementById('eventModal').classList.remove('active');
         };
 
-        window.editEvent = function(id) {
+        window.editEvent = function (id) {
             const event = events.find(e => e.id === id);
             if (!event) return;
 
@@ -940,31 +1048,46 @@
             document.getElementById('event-id').value = id;
             document.getElementById('event-name').value = event.name;
             document.getElementById('event-description').value = event.description;
-            
+
             // Convert Firestore timestamps to date/time inputs
             if (event.startDate) {
                 const startDate = event.startDate.toDate();
                 document.getElementById('event-start-date').value = startDate.toISOString().split('T')[0];
                 document.getElementById('event-start-time').value = startDate.toTimeString().slice(0, 5);
             }
-            
+
             if (event.endDate) {
                 const endDate = event.endDate.toDate();
                 document.getElementById('event-end-date').value = endDate.toISOString().split('T')[0];
                 document.getElementById('event-end-time').value = endDate.toTimeString().slice(0, 5);
             }
-            
+
             document.getElementById('event-location').value = event.location;
             document.getElementById('max-participants').value = event.maxParticipants;
+
+            // Show existing image if available
+            if (event.imageUrl) {
+                document.getElementById('preview-img').src = event.imageUrl;
+                document.getElementById('image-preview').style.display = 'block';
+            } else {
+                document.getElementById('image-preview').style.display = 'none';
+            }
 
             document.getElementById('eventModal').classList.add('active');
         };
 
-        window.deleteEvent = async function(id) {
+        window.deleteEvent = async function (id) {
             if (!confirm('Are you sure you want to delete this event?')) return;
 
             try {
+                const event = events.find(e => e.id === id);
+                const eventTitle = event ? event.name : 'Unknown Event';
+
                 await deleteDoc(doc(db, "Events", id));
+
+                // ===== LOG ACTIVITY: EVENT DELETED =====
+                await logActivity('event', 'deleted', eventTitle);
+
                 alert('Event deleted successfully!');
             } catch (error) {
                 console.error('Error deleting event:', error);
@@ -972,69 +1095,211 @@
             }
         };
 
-        document.getElementById('eventForm').addEventListener('submit', async function(e) {
-            e.preventDefault();
-
-            const startDate = document.getElementById('event-start-date').value;
-            const startTime = document.getElementById('event-start-time').value;
-            const endDate = document.getElementById('event-end-date').value;
-            const endTime = document.getElementById('event-end-time').value;
-
-            const eventData = {
-                title: document.getElementById('event-name').value,
-                description: document.getElementById('event-description').value,
-                startDate: createTimestamp(startDate, startTime),
-                endDate: createTimestamp(endDate, endTime),
-                location: document.getElementById('event-location').value,
-                maxAttendees: parseInt(document.getElementById('max-participants').value)
-            };
-
-            const id = document.getElementById('event-id').value;
-            
-            try {
-                if (id) {
-                    // Update existing - don't modify registeredUsers
-                    await updateDoc(doc(db, "Events", id), eventData);
-                    alert('Event updated successfully!');
-                } else {
-                    // Add new event
-                    eventData.registeredUsers = '';
-                    await addDoc(collection(db, "Events"), eventData);
-                    alert('Event added successfully!');
-                }
-
-                closeModal();
-            } catch (error) {
-                console.error('Error saving event:', error);
-                alert('Error saving event: ' + error.message);
-            }
-        });
-
         function filterEvents() {
-            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
-            const statusFilter = document.getElementById('statusFilter').value;
+            const searchText = document.getElementById('searchInput').value.toLowerCase();
+            const selectedStatus = document.getElementById('statusFilter').value;
 
-            let filtered = events.filter(event => {
-                const matchesSearch = event.name.toLowerCase().includes(searchTerm) || 
-                                    event.location.toLowerCase().includes(searchTerm);
-                const matchesStatus = !statusFilter || event.status === statusFilter;
+            const filtered = events.filter(event => {
+                const matchesSearch = event.name.toLowerCase().includes(searchText);
+                const matchesStatus = selectedStatus === '' || event.status === selectedStatus;
                 return matchesSearch && matchesStatus;
             });
 
             renderEvents(filtered);
         }
 
+        // Debounce search input to reduce reflows
+        let searchDebounceTimer;
+        function debouncedFilterEvents() {
+            clearTimeout(searchDebounceTimer);
+            searchDebounceTimer = setTimeout(() => {
+                filterEvents();
+            }, 300);
+        }
+
+        function filterByStatus(status) {
+            // Reset dropdown and search input
+            document.getElementById('statusFilter').value = status;
+            document.getElementById('searchInput').value = '';
+
+            // Filter and render
+            const filtered = events.filter(event => event.status === status);
+            renderEvents(filtered);
+        }
+
+        // Make functions globally accessible for onclick handlers
+        window.filterByStatus = filterByStatus;
+
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadEvents();
-        });
 
-        // Close modal on outside click
-        document.getElementById('eventModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
+            // Add event listeners for filters with debouncing
+            document.getElementById('searchInput').addEventListener('keyup', debouncedFilterEvents);
+            document.getElementById('statusFilter').addEventListener('change', filterEvents);
+
+            // Image preview functionality
+            document.getElementById('event-image').addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (e) {
+                        document.getElementById('preview-img').src = e.target.result;
+                        document.getElementById('image-preview').style.display = 'block';
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    document.getElementById('image-preview').style.display = 'none';
+                }
+            });
+
+            // Form submission
+            document.getElementById('eventForm').addEventListener('submit', async function (e) {
+                e.preventDefault();
+
+                const startDate = document.getElementById('event-start-date').value;
+                const startTime = document.getElementById('event-start-time').value;
+                const endDate = document.getElementById('event-end-date').value;
+                const endTime = document.getElementById('event-end-time').value;
+                const imageFile = document.getElementById('event-image').files[0];
+                const eventTitle = document.getElementById('event-name').value;
+
+                // Validate required fields
+                if (!startDate || !startTime || !endDate || !endTime) {
+                    alert('Please fill in all required date and time fields');
+                    return;
+                }
+
+                const eventData = {
+                    title: eventTitle,
+                    description: document.getElementById('event-description').value,
+                    startDate: createTimestamp(startDate, startTime),
+                    endDate: createTimestamp(endDate, endTime),
+                    location: document.getElementById('event-location').value,
+                    maxAttendees: parseInt(document.getElementById('max-participants').value),
+                    price: 0
+                };
+
+                const id = document.getElementById('event-id').value;
+
+                try {
+                    let docRef;
+                    let eventId;
+
+                    if (id) {
+                        // Update existing event
+                        eventId = id;
+
+                        // Get the current event data to track changes
+                        const currentEvent = events.find(e => e.id === id);
+                        const changes = [];
+
+                        // Track title changes
+                        if (currentEvent && currentEvent.name !== eventTitle) {
+                            changes.push(`title from "${currentEvent.name}" to "${eventTitle}"`);
+                        }
+
+                        // Track description changes
+                        if (currentEvent && currentEvent.description !== eventData.description) {
+                            const oldDesc = currentEvent.description || '(empty)';
+                            const newDesc = eventData.description || '(empty)';
+                            if (oldDesc !== newDesc) {
+                                changes.push(`description updated`);
+                            }
+                        }
+
+                        // Track location changes
+                        if (currentEvent && currentEvent.location !== eventData.location) {
+                            changes.push(`location from "${currentEvent.location}" to "${eventData.location}"`);
+                        }
+
+                        // Track max participants changes
+                        if (currentEvent && currentEvent.maxParticipants !== eventData.maxAttendees) {
+                            changes.push(`Max Participants from ${currentEvent.maxParticipants} to ${eventData.maxAttendees}`);
+                        }
+
+                        // Track start date changes
+                        const currentStartDate = currentEvent?.startDate?.toDate();
+                        const newStartDate = eventData.startDate.toDate();
+                        if (currentStartDate && currentStartDate.getTime() !== newStartDate.getTime()) {
+                            changes.push(`start date/time from "${currentStartDate.toLocaleString()}" to "${newStartDate.toLocaleString()}"`);
+                        }
+
+                        // Track end date changes
+                        const currentEndDate = currentEvent?.endDate?.toDate();
+                        const newEndDate = eventData.endDate.toDate();
+                        if (currentEndDate && currentEndDate.getTime() !== newEndDate.getTime()) {
+                            changes.push(`end date/time from "${currentEndDate.toLocaleString()}" to "${newEndDate.toLocaleString()}"`);
+                        }
+
+                        // Upload new image if provided
+                        if (imageFile) {
+                            try {
+                                console.log('Uploading image for existing event...');
+                                eventData.imageUrl = await uploadEventImage(imageFile, eventId);
+                                console.log('Image uploaded, URL:', eventData.imageUrl);
+                                changes.push(`image updated`);
+                            } catch (uploadError) {
+                                console.error('Image upload failed:', uploadError);
+                                alert('Image upload failed: ' + uploadError.message + '. The event will be saved without the image.');
+                            }
+                        }
+
+                        delete eventData.registeredUsers;
+
+                        await updateDoc(doc(db, "Events", id), eventData);
+
+                        // ===== LOG ACTIVITY: EVENT UPDATED WITH CHANGES =====
+                        const changesText = changes.length > 0 ? changes.join(', ') : 'no changes detected';
+                        await logActivity('event', 'updated', eventTitle, {
+                            changes: changesText
+                        });
+
+                        alert('Event updated successfully!');
+                    } else {
+                        // Add new event
+                        eventData.registeredUsers = '';
+                        docRef = await addDoc(collection(db, "Events"), eventData);
+                        eventId = docRef.id;
+                        console.log('Event created with ID:', eventId);
+
+                        // Upload image if provided
+                        if (imageFile) {
+                            try {
+                                console.log('Uploading image for new event...');
+                                const imageUrl = await uploadEventImage(imageFile, eventId);
+                                console.log('Image uploaded, URL:', imageUrl);
+                                await updateDoc(doc(db, "Events", eventId), { imageUrl });
+                            } catch (uploadError) {
+                                console.error('Image upload failed:', uploadError);
+                                alert('Image upload failed: ' + uploadError.message + '. The event was created but without the image.');
+                            }
+                        }
+
+                        // ===== LOG ACTIVITY: EVENT CREATED =====
+                        await logActivity('event', 'created', eventTitle, {
+                            location: eventData.location,
+                            maxAttendees: eventData.maxAttendees
+                        });
+
+                        alert('Event added successfully!');
+                    }
+
+                    closeModal();
+                } catch (error) {
+                    console.error('Error saving event:', error);
+                    alert('Error saving event: ' + error.message);
+                }
+            });
+
+            // Close modal on outside click
+            document.getElementById('eventModal').addEventListener('click', function (e) {
+                if (e.target === this) {
+                    closeModal();
+                }
+            });
         });
     </script>
 </body>
+
 </html>
