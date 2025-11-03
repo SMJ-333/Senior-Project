@@ -1,0 +1,1166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exhibition Management - ATHAR Museum Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <style>
+        :root {
+            --primary-dark: #653025;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
+            --transition: all 0.3s ease;
+            --success: #48bb78;
+            --warning: #ed8936;
+            --danger: #e53e3e;
+            --info: #4299e1;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            line-height: 1.6;
+            color: var(--text-dark);
+            background-color: var(--neutral-light);
+        }
+
+        h1, h2, h3, h4 {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+
+
+
+
+
+        .page-content {
+            min-height: 100vh;
+        }
+
+        .hero {
+            background: linear-gradient(135deg, #8B4513 0%, #6B3410 100%);
+            padding: 2rem 0;
+            color: var(--white);
+            position: relative;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .hero-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .hero-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .back-button {
+            width: 48px;
+            height: 48px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+            color: white;
+        }
+
+        .back-button:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateX(-3px);
+        }
+
+        .hero-title-section h1 {
+            font-size: 2.2rem;
+            margin-bottom: 0.3rem;
+            font-weight: 700;
+        }
+
+        .hero-title-section p {
+            font-size: 1rem;
+            opacity: 0.85;
+            font-weight: 300;
+        }
+
+        .view-button {
+            background: var(--accent);
+            color: var(--primary-dark);
+            padding: 0.85rem 1.8rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .view-button:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            color: white;
+        }
+
+        .stat-icon.accent {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: var(--primary-dark);
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .stat-info h3 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            font-family: 'Playfair Display', serif;
+        }
+
+        .stat-info p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .actions-bar {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--neutral-light);
+            padding: 0.7rem 1.2rem;
+            border-radius: 8px;
+            flex: 1;
+            max-width: 400px;
+        }
+
+        .search-box input {
+            border: none;
+            background: none;
+            outline: none;
+            width: 100%;
+            color: var(--text-dark);
+            font-size: 0.95rem;
+        }
+
+        .search-box .material-icons {
+            color: var(--text-light);
+            margin-right: 0.5rem;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-select {
+            padding: 0.7rem 1rem;
+            border: 2px solid var(--neutral-light);
+            border-radius: 8px;
+            background: var(--white);
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            cursor: pointer;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .filter-select:hover {
+            border-color: var(--accent);
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.7rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: var(--transition);
+            cursor: pointer;
+            border: none;
+            font-size: 0.95rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--primary-dark);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(176, 141, 87, 0.4);
+        }
+
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #c53030;
+        }
+
+        .btn-success {
+            background: var(--success);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #38a169;
+        }
+
+        .btn-secondary {
+            background: var(--neutral-light);
+            color: var(--text-dark);
+        }
+
+        .btn-secondary:hover {
+            background: var(--text-light);
+            color: white;
+        }
+
+        .exhibitions-table {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+        }
+
+        .table-header {
+            background: linear-gradient(135deg, var(--primary-dark), var(--primary-light));
+            color: var(--white);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            font-size: 1.5rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        thead {
+            background: var(--neutral-light);
+        }
+
+        th {
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--neutral-light);
+        }
+
+        tbody tr {
+            transition: var(--transition);
+        }
+
+        tbody tr:hover {
+            background: #f9f7f1;
+        }
+
+        .exhibition-name {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .exhibition-icon {
+            font-size: 2rem;
+        }
+
+        .exhibition-details {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .exhibition-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            font-size: 1rem;
+        }
+
+        .exhibition-subtitle {
+            color: var(--text-light);
+            font-size: 0.85rem;
+        }
+
+        .badge {
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .badge-high {
+            background: #c6f6d5;
+            color: #22543d;
+        }
+
+        .badge-medium {
+            background: #fef3c7;
+            color: #78350f;
+        }
+
+        .badge-low {
+            background: #fed7d7;
+            color: #742a2a;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            border: none;
+        }
+
+        .btn-icon.view {
+            background: var(--info);
+            color: white;
+        }
+
+        .btn-icon.edit {
+            background: var(--warning);
+            color: white;
+        }
+
+        .btn-icon.delete {
+            background: var(--danger);
+            color: white;
+        }
+
+        .btn-icon:hover {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .modal-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--white);
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--neutral-light);
+        }
+
+        .modal-header h2 {
+            color: var(--primary-dark);
+            font-size: 1.8rem;
+        }
+
+        .close-modal {
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .close-modal:hover {
+            color: var(--danger);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 0.8rem;
+            border: 2px solid var(--neutral-light);
+            border-radius: 8px;
+            font-size: 0.95rem;
+            color: var(--text-dark);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--accent);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+
+        .modal-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            margin-top: 2rem;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 3rem;
+            color: var(--text-light);
+        }
+
+        .spinner {
+            border: 4px solid var(--neutral-light);
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: var(--text-light);
+        }
+
+        .empty-state .material-icons {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            opacity: 0.4;
+        }
+
+        @media (max-width: 1024px) {
+            table {
+                font-size: 0.9rem;
+            }
+
+            th, td {
+                padding: 0.8rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .hero-content h1 {
+                font-size: 2rem;
+            }
+
+            .hero-content {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+
+            .view-button {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .actions-bar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .search-box {
+                max-width: 100%;
+            }
+
+            table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .modal-content {
+                width: 95%;
+                padding: 1.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+<div class="page-content">
+        <section class="hero">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <button class="back-button" onclick="window.history.back()" title="Go Back">
+                        <span class="material-icons">arrow_back</span>
+                    </button>
+                    <div class="hero-title-section">
+                        <h1>Manage Exhibitions</h1>
+                        <p>Create and manage museum exhibitions</p>
+                    </div>
+                </div>
+                <a href="Exhibitions.html" class="view-button">
+                    <span class="material-icons">open_in_new</span>
+                    View Exhibitions
+                </a>
+            </div>
+        </section>
+
+        <div class="container">
+            <!-- Dashboard Stats -->
+            <div class="dashboard-stats">
+                <div class="stat-card">
+                    <div class="stat-icon primary">
+                        <span class="material-icons">museum</span>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-exhibitions">6</h3>
+                        <p>Total Exhibitions</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon accent">
+                        <span class="material-icons">art_track</span>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-artifacts">0</h3>
+                        <p>Total Artifacts</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon success">
+                        <span class="material-icons">category</span>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="total-categories">0</h3>
+                        <p>Categories</p>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-icon primary">
+                        <span class="material-icons">visibility</span>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="most-viewed">-</h3>
+                        <p>Most Viewed</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions Bar -->
+            <div class="actions-bar">
+                <div class="search-box">
+                    <span class="material-icons">search</span>
+                    <input type="text" id="search-input" placeholder="Search exhibitions...">
+                </div>
+                <div class="filter-group">
+                    <select class="filter-select" id="sort-select">
+                        <option value="name">Sort by Name</option>
+                        <option value="artifacts">Sort by Artifacts</option>
+                        <option value="categories">Sort by Categories</option>
+                    </select>
+                    <button class="btn btn-primary" onclick="openAddModal()">
+                        <span class="material-icons">add</span>
+                        Add Exhibition
+                    </button>
+                </div>
+            </div>
+
+            <!-- Exhibitions Table -->
+            <div class="exhibitions-table">
+                <div class="table-header">
+                    <h2>All Exhibitions</h2>
+                    <button class="btn btn-secondary" onclick="refreshData()">
+                        <span class="material-icons">refresh</span>
+                        Refresh
+                    </button>
+                </div>
+                
+                <div id="loading" class="loading">
+                    <div class="spinner"></div>
+                    Loading exhibitions...
+                </div>
+
+                <div id="table-container" style="display: none;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Exhibition</th>
+                                <th>Timeline</th>
+                                <th>Artifacts</th>
+                                <th>Categories</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="exhibitions-tbody"></tbody>
+                    </table>
+                </div>
+
+                <div id="empty-state" class="empty-state" style="display: none;">
+                    <span class="material-icons">inventory_2</span>
+                    <h3>No exhibitions found</h3>
+                    <p>Try adjusting your search or add a new exhibition</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add/Edit Modal -->
+    <div id="exhibition-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add Exhibition</h2>
+                <span class="material-icons close-modal" onclick="closeModal()">close</span>
+            </div>
+            <form id="exhibition-form">
+                <div class="form-group">
+                    <label>Exhibition Name *</label>
+                    <input type="text" id="exhibition-name" required>
+                </div>
+                <div class="form-group">
+                    <label>Icon (Emoji)</label>
+                    <input type="text" id="exhibition-icon" placeholder="🕋">
+                </div>
+                <div class="form-group">
+                    <label>Timeline</label>
+                    <input type="text" id="exhibition-timeline" placeholder="7th - 19th Century CE">
+                </div>
+                <div class="form-group">
+                    <label>Short Description</label>
+                    <textarea id="exhibition-description" rows="3"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Detailed Description</label>
+                    <textarea id="exhibition-detailed" rows="4"></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Curator's Note</label>
+                    <textarea id="exhibition-curator" rows="4"></textarea>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                    <button type="submit" class="btn btn-success">
+                        <span class="material-icons">save</span>
+                        Save Exhibition
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="delete-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Confirm Deletion</h2>
+                <span class="material-icons close-modal" onclick="closeDeleteModal()">close</span>
+            </div>
+            <p style="margin-bottom: 2rem; color: var(--text-light);">
+                Are you sure you want to delete this exhibition? This action cannot be undone.
+            </p>
+            <div class="modal-actions">
+                <button class="btn btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                <button class="btn btn-danger" onclick="confirmDelete()">
+                    <span class="material-icons">delete</span>
+                    Delete
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        let exhibitionsData = {
+            'Arab Heritage': {
+                icon: '🕋',
+                timeline: '7th - 19th Century CE',
+                description: 'Discover the golden age of Islamic civilization through calligraphy, manuscripts, and architectural elements.',
+                detailedDescription: 'The Arab Heritage collection spans over a millennium of cultural achievement, from the early Islamic period through the golden age of the Abbasid Caliphate.',
+                curatorNote: 'This collection showcases the remarkable intellectual and artistic achievements of Arab civilization.'
+            },
+            'Persian Heritage': {
+                icon: '🌸',
+                timeline: '550 BCE - 18th Century CE',
+                description: 'Journey through the splendor of ancient Persia with exquisite miniature paintings and legendary poetry manuscripts.',
+                detailedDescription: 'The Persian collection celebrates one of the world\'s oldest continuous civilizations, spanning from the mighty Achaemenid Empire through the artistic zenith of the Safavid dynasty.',
+                curatorNote: 'Persian art speaks to the soul with its delicate miniatures and profound poetry.'
+            },
+            'Indian Heritage': {
+                icon: '🪔',
+                timeline: '3rd Century BCE - 19th Century CE',
+                description: 'Experience the vibrant colors and spiritual depth of Indian art from Mughal miniatures to sacred sculptures.',
+                detailedDescription: 'The Indian Heritage collection encompasses the incredible diversity of the subcontinent\'s artistic traditions.',
+                curatorNote: 'Indian art is characterized by its spiritual depth and vibrant expression.'
+            },
+            'Andalusian Heritage': {
+                icon: '🏰',
+                timeline: '711 - 1492 CE',
+                description: 'Step into Al-Andalus where Islamic, Christian, and Jewish cultures merged to create artistic brilliance.',
+                detailedDescription: 'The Andalusian collection represents a golden age of cultural synthesis in medieval Iberia.',
+                curatorNote: 'Andalusian art represents a unique moment in history when different cultures coexisted and enriched one another.'
+            },
+            'Turkish Heritage': {
+                icon: '🕌',
+                timeline: '1299 - 1922 CE',
+                description: 'Witness the grandeur of the Ottoman Empire through imperial treasures and elaborate textiles.',
+                detailedDescription: 'The Turkish collection showcases the magnificence of the Ottoman Empire, which ruled for over six centuries as a bridge between East and West.',
+                curatorNote: 'Ottoman art reflects an empire that valued both martial prowess and refined aesthetics.'
+            },
+            'Others': {
+                icon: '🌍',
+                timeline: 'Various Periods',
+                description: 'Explore diverse collections from cultures across Asia, Africa, and beyond.',
+                detailedDescription: 'This collection celebrates the diversity of human creativity across regions and time periods.',
+                curatorNote: 'These diverse pieces remind us that every culture has contributed to the rich tapestry of human civilization.'
+            }
+        };
+
+        let exhibitionStats = {};
+        let currentDeleteExhibition = null;
+        let currentEditingExhibition = null;
+
+        // Load exhibitions from Firebase or localStorage
+        async function loadExhibitionsData() {
+            try {
+                // Try to load from localStorage first
+                const stored = localStorage.getItem('exhibitionsData');
+                if (stored) {
+                    exhibitionsData = JSON.parse(stored);
+                }
+            } catch (error) {
+                console.error('Error loading exhibitions data:', error);
+            }
+        }
+
+        // Save exhibitions to localStorage
+        function saveExhibitionsData() {
+            try {
+                localStorage.setItem('exhibitionsData', JSON.stringify(exhibitionsData));
+                console.log('Exhibitions data saved successfully');
+            } catch (error) {
+                console.error('Error saving exhibitions data:', error);
+            }
+        }
+
+        async function loadExhibitionStats() {
+            try {
+                const querySnapshot = await getDocs(collection(db, "Museum_Collection"));
+                const stats = {};
+                const categories = new Set();
+
+                querySnapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const exhibition = data.Exhibition ? data.Exhibition.trim() : 'Others';
+                    
+                    if (!stats[exhibition]) {
+                        stats[exhibition] = {
+                            count: 0,
+                            categories: new Set()
+                        };
+                    }
+                    
+                    stats[exhibition].count++;
+                    
+                    if (data.classification) {
+                        stats[exhibition].categories.add(data.classification);
+                        categories.add(data.classification);
+                    }
+                });
+
+                exhibitionStats = stats;
+
+                // Update dashboard stats
+                const totalArtifacts = querySnapshot.size;
+                const totalCategories = categories.size;
+                
+                document.getElementById('total-artifacts').textContent = totalArtifacts;
+                document.getElementById('total-categories').textContent = totalCategories;
+
+                // Find most viewed (highest artifact count)
+                let maxCount = 0;
+                let mostViewed = '-';
+                Object.keys(stats).forEach(name => {
+                    if (stats[name].count > maxCount) {
+                        maxCount = stats[name].count;
+                        mostViewed = name;
+                    }
+                });
+                document.getElementById('most-viewed').textContent = mostViewed;
+
+                renderExhibitions();
+            } catch (error) {
+                console.error('Error loading exhibition stats:', error);
+            }
+        }
+
+        function renderExhibitions() {
+            const tbody = document.getElementById('exhibitions-tbody');
+            const loading = document.getElementById('loading');
+            const tableContainer = document.getElementById('table-container');
+            const emptyState = document.getElementById('empty-state');
+
+            loading.style.display = 'none';
+
+            const exhibitions = Object.keys(exhibitionsData).map(name => ({
+                name: name,
+                data: exhibitionsData[name],
+                stats: exhibitionStats[name] || { count: 0, categories: new Set() }
+            }));
+
+            // Apply sorting
+            const sortBy = document.getElementById('sort-select').value;
+            exhibitions.sort((a, b) => {
+                if (sortBy === 'artifacts') {
+                    return b.stats.count - a.stats.count;
+                } else if (sortBy === 'categories') {
+                    return b.stats.categories.size - a.stats.categories.size;
+                }
+                return a.name.localeCompare(b.name);
+            });
+
+            // Apply search filter
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const filtered = exhibitions.filter(ex => 
+                ex.name.toLowerCase().includes(searchTerm) ||
+                ex.data.description.toLowerCase().includes(searchTerm)
+            );
+
+            if (filtered.length === 0) {
+                tableContainer.style.display = 'none';
+                emptyState.style.display = 'block';
+                return;
+            }
+
+            tableContainer.style.display = 'block';
+            emptyState.style.display = 'none';
+
+            tbody.innerHTML = filtered.map(ex => {
+                const artifactCount = ex.stats.count;
+                const categoryCount = ex.stats.categories.size;
+                
+                let statusBadge = '';
+                if (artifactCount > 50) {
+                    statusBadge = '<span class="badge badge-high">High</span>';
+                } else if (artifactCount > 20) {
+                    statusBadge = '<span class="badge badge-medium">Medium</span>';
+                } else {
+                    statusBadge = '<span class="badge badge-low">Low</span>';
+                }
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="exhibition-name">
+                                <span class="exhibition-icon">${ex.data.icon}</span>
+                                <div class="exhibition-details">
+                                    <span class="exhibition-title">${ex.name}</span>
+                                    <span class="exhibition-subtitle">${ex.data.description.substring(0, 60)}...</span>
+                                </div>
+                            </div>
+                        </td>
+                        <td>${ex.data.timeline}</td>
+                        <td><strong>${artifactCount}</strong> items</td>
+                        <td><strong>${categoryCount}</strong> types</td>
+                        <td>${statusBadge}</td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn-icon view" onclick="viewExhibition('${ex.name}')" title="View Details">
+                                    <span class="material-icons">visibility</span>
+                                </button>
+                                <button class="btn-icon edit" onclick="editExhibition('${ex.name}')" title="Edit">
+                                    <span class="material-icons">edit</span>
+                                </button>
+                                <button class="btn-icon delete" onclick="deleteExhibition('${ex.name}')" title="Delete">
+                                    <span class="material-icons">delete</span>
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        window.viewExhibition = function(name) {
+            window.location.href = `ExhibitionDetails.html?exhibition=${encodeURIComponent(name)}`;
+        }
+
+        window.editExhibition = function(name) {
+            const data = exhibitionsData[name];
+            
+            currentEditingExhibition = name;
+            document.getElementById('modal-title').textContent = 'Edit Exhibition';
+            document.getElementById('exhibition-name').value = name;
+            document.getElementById('exhibition-name').setAttribute('data-original', name);
+            document.getElementById('exhibition-icon').value = data.icon;
+            document.getElementById('exhibition-timeline').value = data.timeline;
+            document.getElementById('exhibition-description').value = data.description;
+            document.getElementById('exhibition-detailed').value = data.detailedDescription || data.description;
+            document.getElementById('exhibition-curator').value = data.curatorNote || '';
+            
+            document.getElementById('exhibition-modal').style.display = 'block';
+        }
+
+        window.deleteExhibition = function(name) {
+            currentDeleteExhibition = name;
+            document.getElementById('delete-modal').style.display = 'block';
+        }
+
+        window.openAddModal = function() {
+            currentEditingExhibition = null;
+            document.getElementById('modal-title').textContent = 'Add New Exhibition';
+            document.getElementById('exhibition-form').reset();
+            document.getElementById('exhibition-name').removeAttribute('data-original');
+            document.getElementById('exhibition-modal').style.display = 'block';
+        }
+
+        window.closeModal = function() {
+            document.getElementById('exhibition-modal').style.display = 'none';
+            currentEditingExhibition = null;
+        }
+
+        window.closeDeleteModal = function() {
+            document.getElementById('delete-modal').style.display = 'none';
+            currentDeleteExhibition = null;
+        }
+
+        window.confirmDelete = function() {
+            if (currentDeleteExhibition) {
+                // Delete the exhibition
+                delete exhibitionsData[currentDeleteExhibition];
+                
+                // Save to localStorage
+                saveExhibitionsData();
+                
+                // Update total exhibitions count
+                document.getElementById('total-exhibitions').textContent = Object.keys(exhibitionsData).length;
+                
+                // Refresh display
+                renderExhibitions();
+                
+                // Show success message
+                alert(`Exhibition "${currentDeleteExhibition}" has been deleted successfully!`);
+                
+                closeDeleteModal();
+            }
+        }
+
+        window.refreshData = function() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('table-container').style.display = 'none';
+            loadExhibitionStats();
+        }
+
+        // Form submission
+        document.getElementById('exhibition-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('exhibition-name').value.trim();
+            const originalName = document.getElementById('exhibition-name').getAttribute('data-original');
+            const icon = document.getElementById('exhibition-icon').value.trim() || '🎨';
+            const timeline = document.getElementById('exhibition-timeline').value.trim() || 'Various Periods';
+            const description = document.getElementById('exhibition-description').value.trim();
+            const detailed = document.getElementById('exhibition-detailed').value.trim();
+            const curator = document.getElementById('exhibition-curator').value.trim();
+
+            // Validation
+            if (!name) {
+                alert('Please enter an exhibition name');
+                return;
+            }
+
+            // Check if name already exists (for new exhibitions only)
+            if (!originalName && exhibitionsData[name]) {
+                alert('An exhibition with this name already exists!');
+                return;
+            }
+
+            // If editing and name changed, delete old entry
+            if (originalName && originalName !== name) {
+                delete exhibitionsData[originalName];
+            }
+
+            // Create/Update exhibition data
+            exhibitionsData[name] = {
+                icon: icon,
+                timeline: timeline,
+                description: description || 'Explore this unique collection.',
+                detailedDescription: detailed || description || 'Explore this unique collection.',
+                curatorNote: curator || 'A carefully curated collection showcasing remarkable artifacts.'
+            };
+
+            // Save to localStorage
+            saveExhibitionsData();
+            
+            // Update total exhibitions count
+            document.getElementById('total-exhibitions').textContent = Object.keys(exhibitionsData).length;
+            
+            // Refresh the display
+            renderExhibitions();
+            
+            // Show success message
+            const action = originalName ? 'updated' : 'added';
+            alert(`Exhibition "${name}" has been ${action} successfully!`);
+            
+            // Close modal
+            closeModal();
+        });
+
+        // Search functionality
+        document.getElementById('search-input').addEventListener('input', renderExhibitions);
+
+        // Sort functionality
+        document.getElementById('sort-select').addEventListener('change', renderExhibitions);
+
+        // Load data on page load
+        async function initialize() {
+            await loadExhibitionsData();
+            document.getElementById('total-exhibitions').textContent = Object.keys(exhibitionsData).length;
+            await loadExhibitionStats();
+        }
+        
+        initialize();
+    </script>
+</body>
+
+</html>

@@ -334,6 +334,7 @@
         .color-andalusian { background-color: #8b4513; }
         .color-turkish { background-color: #8b0000; }
         .color-others { background-color: #4a5568; }
+        .color-default { background: linear-gradient(135deg, var(--accent), var(--accent-light)); }
 
         footer {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
@@ -483,7 +484,8 @@
         import { collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import './notification-system.js';
         
-        const exhibitionsData = {
+        // Default exhibitions data (fallback)
+        const defaultExhibitionsData = {
             'Arab Heritage': {
                 icon: '🕋',
                 color: 'color-arab',
@@ -515,6 +517,31 @@
                 description: 'Explore diverse collections from cultures across Asia, Africa, and beyond.'
             }
         };
+
+        // Color mapping for custom exhibitions
+        const colorClasses = ['color-arab', 'color-persian', 'color-indian', 'color-andalusian', 'color-turkish', 'color-others'];
+
+        // Load exhibitions data from localStorage (synced with admin)
+        function loadExhibitionsData() {
+            try {
+                const stored = localStorage.getItem('exhibitionsData');
+                if (stored) {
+                    const loadedData = JSON.parse(stored);
+                    // Merge with default data to ensure color classes exist
+                    Object.keys(loadedData).forEach((key, index) => {
+                        if (!loadedData[key].color) {
+                            loadedData[key].color = colorClasses[index % colorClasses.length];
+                        }
+                    });
+                    return loadedData;
+                }
+            } catch (error) {
+                console.error('Error loading exhibitions from localStorage:', error);
+            }
+            return defaultExhibitionsData;
+        }
+
+        const exhibitionsData = loadExhibitionsData();
 
         const loading = document.getElementById('loading');
         const errorDiv = document.getElementById('error');
@@ -549,7 +576,7 @@
                 loading.style.display = 'none';
 
                 // Display each exhibition with its actual count
-                Object.keys(exhibitionsData).forEach(exhibitionName => {
+                Object.keys(exhibitionsData).forEach((exhibitionName, index) => {
                     const count = exhibitionCounts[exhibitionName] || 0;
                     const data = exhibitionsData[exhibitionName];
                     
@@ -557,15 +584,17 @@
                     card.className = 'exhibition-card';
                     card.onclick = () => viewExhibition(exhibitionName);
                     
+                    const colorClass = data.color || 'color-default';
+                    
                     card.innerHTML = `
-                        <div class="exhibition-image ${data.color}">
-                            <div class="exhibition-icon">${data.icon}</div>
+                        <div class="exhibition-image ${colorClass}">
+                            <div class="exhibition-icon">${data.icon || '🎨'}</div>
                             <div class="exhibition-badge">${count} Artifact${count !== 1 ? 's' : ''}</div>
                         </div>
                         <div class="exhibition-info">
                             <h3 class="exhibition-title">${exhibitionName}</h3>
                             <p class="exhibition-count">${count} item${count !== 1 ? 's' : ''} in collection</p>
-                            <p class="exhibition-description">${data.description}</p>
+                            <p class="exhibition-description">${data.description || 'Explore this unique collection.'}</p>
                         </div>
                     `;
                     
