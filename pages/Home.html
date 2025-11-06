@@ -136,6 +136,7 @@
             cursor: pointer;
             text-decoration: none;
             transition: var(--transition);
+            position: relative;
         }
 
         .account-icon:hover {
@@ -186,6 +187,153 @@
             margin-bottom: 2.5rem;
             font-weight: 300;
             opacity: 0.9;
+        }
+
+        /* Search Bar Styles */
+        .search-container {
+            position: relative;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 50px;
+            padding: 0.8rem 1.5rem;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(10px);
+            transition: var(--transition);
+        }
+
+        .search-wrapper:focus-within {
+            transform: scale(1.02);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .search-icon {
+            color: var(--accent);
+            margin-right: 1rem;
+            font-size: 1.5rem;
+        }
+
+        #hero-search {
+            flex: 1;
+            border: none;
+            background: transparent;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            outline: none;
+            font-family: 'Inter', sans-serif;
+        }
+
+        #hero-search::placeholder {
+            color: var(--text-light);
+            opacity: 0.7;
+        }
+
+
+
+        /* Suggestions Dropdown */
+        .suggestions-dropdown {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 100;
+        }
+
+        .suggestions-dropdown.show {
+            display: block;
+            animation: slideDown 0.3s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .suggestion-category {
+            padding: 0.8rem 1.5rem;
+            font-weight: 600;
+            color: var(--accent);
+            background: var(--neutral-light);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-top: 1px solid rgba(176, 141, 87, 0.2);
+        }
+
+        .suggestion-category:first-child {
+            border-top: none;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .suggestion-item {
+            padding: 1rem 1.5rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .suggestion-item:hover {
+            background: var(--neutral-light);
+            padding-left: 2rem;
+        }
+
+        .suggestion-item:last-child {
+            border-bottom: none;
+        }
+
+        .suggestion-icon {
+            color: var(--accent);
+            font-size: 1.2rem;
+        }
+
+        .suggestion-content {
+            flex: 1;
+        }
+
+        .suggestion-title {
+            font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.2rem;
+        }
+
+        .suggestion-meta {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .no-results {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .no-results .material-icons {
+            font-size: 3rem;
+            opacity: 0.5;
+            margin-bottom: 0.5rem;
         }
 
         .cta-button {
@@ -561,6 +709,7 @@
             border-radius: 10px;
             transition: var(--transition);
             border-left: 4px solid transparent;
+            cursor: pointer;
         }
 
         .event-item:hover,
@@ -568,6 +717,7 @@
             transform: translateX(5px);
             border-left: 4px solid var(--accent);
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            background: var(--white);
         }
 
         .event-item h3,
@@ -655,6 +805,10 @@
             .recommendations-grid {
                 grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             }
+
+            .search-container {
+                max-width: 500px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -690,6 +844,14 @@
             .recommendations-grid {
                 grid-template-columns: 1fr;
             }
+
+            .search-container {
+                max-width: 90%;
+            }
+
+            #hero-search {
+                font-size: 1rem;
+            }
         }
 
         @media (max-width: 576px) {
@@ -707,6 +869,12 @@
 
             .stat-box {
                 padding: 1.5rem;
+            }
+
+            .search-wrapper {
+                flex-direction: column;
+                gap: 0.8rem;
+                padding: 1rem;
             }
         }
 
@@ -731,21 +899,52 @@
         }
 
         @keyframes pulse {
-
-            0%,
-            100% {
+            0%, 100% {
                 transform: scale(1);
             }
-
             50% {
                 transform: scale(1.1);
             }
         }
 
-        /* Make sure account icon has position relative */
-        .account-icon {
-            position: relative;
-            /* ... keep your existing account-icon styles ... */
+        /* Loading Spinner */
+        .loading-spinner {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .spinner {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Highlight animation for searched sections */
+        @keyframes highlightPulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(176, 141, 87, 0.7);
+                background-color: rgba(176, 141, 87, 0.1);
+            }
+            50% {
+                box-shadow: 0 0 0 20px rgba(176, 141, 87, 0);
+                background-color: rgba(176, 141, 87, 0.2);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(176, 141, 87, 0);
+                background-color: transparent;
+            }
+        }
+
+        .highlight-section {
+            animation: highlightPulse 2s ease-out;
+            border: 2px solid var(--accent) !important;
+            border-radius: 12px;
         }
     </style>
 </head>
@@ -773,7 +972,20 @@
             <h1>Discover Timeless ATHAR</h1>
             <p>Experience centuries of art, culture, and history through our world-class collections and immersive
                 exhibitions.</p>
-            <a href="Exhibitions.html" class="cta-button">Explore Exhibitions</a>
+            
+            <!-- Search Bar replacing CTA button -->
+            <div class="search-container">
+                <div class="search-wrapper">
+                    <span class="material-icons search-icon">search</span>
+                    <input 
+                        type="text" 
+                        id="hero-search" 
+                        placeholder="Search exhibitions, events, artworks..."
+                        autocomplete="off"
+                    >
+                </div>
+                <div class="suggestions-dropdown" id="suggestions-dropdown"></div>
+            </div>
         </div>
     </section>
 
@@ -848,40 +1060,22 @@
             <h2>What's On</h2>
         </div>
         <div class="events-exhibitions">
-            <div class="section">
+            <div class="section" id="upcoming-events">
                 <h2>Upcoming Events</h2>
-                <div class="event-item">
-                    <span class="event-date">October 25, 2025 • 6:30 PM</span>
-                    <h3>Ancient Egypt Night Tour</h3>
-                    <p>Experience the mysteries of ancient Egypt in a special after-hours guided tour.</p>
-                </div>
-                <div class="event-item">
-                    <span class="event-date">November 12, 2025 • 10:00 AM</span>
-                    <h3>Renaissance Art Workshop</h3>
-                    <p>Learn traditional painting techniques from master artists.</p>
-                </div>
-                <div class="event-item">
-                    <span class="event-date">November 28, 2025 • 11:00 AM</span>
-                    <h3>Family Discovery Day</h3>
-                    <p>A special event designed for families with interactive exhibits.</p>
+                <div id="upcoming-events-container">
+                    <div class="loading-spinner" style="padding: 2rem;">
+                        <div class="spinner" style="border: 3px solid var(--neutral-light); border-top: 3px solid var(--accent); width: 40px; height: 40px;"></div>
+                        <p class="loading-text" style="margin-top: 1rem; color: var(--text-light);">Loading upcoming events...</p>
+                    </div>
                 </div>
             </div>
-            <div class="section">
+            <div class="section" id="featured-exhibitions">
                 <h2>Featured Exhibitions</h2>
-                <div class="exhibition-item">
-                    <h3>Treasures of Ancient Rome</h3>
-                    <span class="event-date">Now through December 2025</span>
-                    <p>Marvel at authentic Roman artifacts including sculptures, mosaics, and everyday objects.</p>
-                </div>
-                <div class="exhibition-item">
-                    <h3>Modern Masters: 20th Century Art</h3>
-                    <span class="event-date">Permanent Collection</span>
-                    <p>Explore works by Picasso, Van Gogh, and other influential artists.</p>
-                </div>
-                <div class="exhibition-item">
-                    <h3>Lost Civilizations of the Americas</h3>
-                    <span class="event-date">Opening November 2025</span>
-                    <p>Discover the sophisticated cultures of pre-Columbian America.</p>
+                <div id="featured-exhibitions-container">
+                    <div class="loading-spinner" style="padding: 2rem;">
+                        <div class="spinner" style="border: 3px solid var(--neutral-light); border-top: 3px solid var(--accent); width: 40px; height: 40px;"></div>
+                        <p class="loading-text" style="margin-top: 1rem; color: var(--text-light);">Loading featured exhibitions...</p>
+                    </div>
                 </div>
             </div>
         </div>
@@ -917,6 +1111,9 @@
         </div>
     </footer>
 
+    <!-- Include the highlighter script for search navigation -->
+    <script src="section-highlighter.js"></script>
+
     <script type="module">
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -927,6 +1124,7 @@
         let userData = null;
         let allArtworks = [];
         let allUsers = [];
+        let searchData = [];
 
         // Interest to Category Mapping
         const interestToCategoryMap = {
@@ -944,6 +1142,442 @@
             'Turkish Heritage': 'Turkish Heritage',
             'Echoes of Islamic Civilization': 'Others'
         };
+
+        // Load Upcoming Events from Database (Top 3)
+        async function loadUpcomingEvents() {
+            try {
+                const eventsCol = collection(db, 'Events');
+                const eventsSnapshot = await getDocs(eventsCol);
+                
+                const now = new Date();
+                const upcomingEvents = [];
+
+                eventsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const startDate = data.startDate?.toDate();
+                    
+                    // Only include events that haven't started yet
+                    if (startDate && startDate > now) {
+                        upcomingEvents.push({
+                            id: doc.id,
+                            ...data,
+                            startDate: startDate
+                        });
+                    }
+                });
+
+                // Sort by date (earliest first) and take top 3
+                upcomingEvents.sort((a, b) => a.startDate - b.startDate);
+                const top3Events = upcomingEvents.slice(0, 3);
+
+                displayUpcomingEvents(top3Events);
+            } catch (error) {
+                console.error('Error loading upcoming events:', error);
+                document.getElementById('upcoming-events-container').innerHTML = `
+                    <p style="color: var(--text-light); text-align: center; padding: 2rem;">
+                        Unable to load events
+                    </p>
+                `;
+            }
+        }
+
+        function displayUpcomingEvents(events) {
+            const container = document.getElementById('upcoming-events-container');
+            
+            if (events.length === 0) {
+                container.innerHTML = `
+                    <p style="color: var(--text-light); text-align: center; padding: 2rem;">
+                        No upcoming events at this time
+                    </p>
+                `;
+                return;
+            }
+
+            container.innerHTML = events.map(event => {
+                const dateStr = event.startDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+                return `
+                    <div class="event-item" onclick="navigateToEvent('${event.id}')" style="cursor: pointer;">
+                        <span class="event-date">${dateStr}</span>
+                        <h3>${event.title || 'Untitled Event'}</h3>
+                        <p>${event.description || 'No description available'}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Navigate to event on Events page
+        window.navigateToEvent = function(eventId) {
+            // Store event ID to highlight
+            sessionStorage.setItem('highlightEvent', eventId);
+            window.location.href = 'Events.html#event-' + eventId;
+        }
+
+        // Calculate most popular interests from all users
+        async function getMostPopularInterests() {
+            try {
+                const usersCol = collection(db, 'Users');
+                const usersSnapshot = await getDocs(usersCol);
+                
+                const interestCount = {};
+
+                usersSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const interests = data.Interests || [];
+                    
+                    interests.forEach(interest => {
+                        interestCount[interest] = (interestCount[interest] || 0) + 1;
+                    });
+                });
+
+                // Sort interests by count and return top ones
+                const sortedInterests = Object.entries(interestCount)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(entry => entry[0]);
+
+                console.log('Popular interests ranking:', sortedInterests);
+                return sortedInterests;
+            } catch (error) {
+                console.error('Error getting popular interests:', error);
+                return [];
+            }
+        }
+
+        // Load Featured Exhibitions based on most popular interests
+        async function loadFeaturedExhibitions() {
+            try {
+                // Get most popular interests
+                const popularInterests = await getMostPopularInterests();
+
+                // Get all artworks
+                const artworksCol = collection(db, 'Museum_Collection');
+                const artworksSnapshot = await getDocs(artworksCol);
+                
+                const exhibitionCounts = {};
+
+                // FIRST: Count ALL artworks per exhibition (accurate counts)
+                artworksSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    let exhibition = data.Exhibition;
+                    
+                    if (!exhibition) return;
+
+                    // Normalize exhibition name (trim spaces, consistent capitalization)
+                    exhibition = exhibition.trim();
+                    
+                    // Map common variations to standard names
+                    const exhibitionMap = {
+                        'arab heritage': 'Arab Heritage',
+                        'persian heritage': 'Persian Heritage',
+                        'indian heritage': 'Indian Heritage',
+                        'andalusian heritage': 'Andalusian Heritage',
+                        'turkish heritage': 'Turkish Heritage',
+                        'others': 'Others'
+                    };
+                    
+                    const normalizedKey = exhibition.toLowerCase();
+                    const standardName = exhibitionMap[normalizedKey] || exhibition;
+
+                    // Initialize if new exhibition
+                    if (!exhibitionCounts[standardName]) {
+                        exhibitionCounts[standardName] = {
+                            count: 0,
+                            popularityScore: 0
+                        };
+                    }
+
+                    // Count EVERY artwork in this exhibition
+                    exhibitionCounts[standardName].count++;
+                });
+
+                // SECOND: Add popularity score based on user interests
+                Object.keys(exhibitionCounts).forEach(exhibition => {
+                    popularInterests.forEach((interest, index) => {
+                        const mappedExhibition = interestToExhibitionMap[interest];
+                        if (mappedExhibition === exhibition) {
+                            // Higher score for more popular interests (diminishing weight)
+                            exhibitionCounts[exhibition].popularityScore += (popularInterests.length - index);
+                        }
+                    });
+                });
+
+                // Sort exhibitions by popularity score, then by count
+                const sortedExhibitions = Object.entries(exhibitionCounts)
+                    .sort((a, b) => {
+                        // First sort by popularity score
+                        if (b[1].popularityScore !== a[1].popularityScore) {
+                            return b[1].popularityScore - a[1].popularityScore;
+                        }
+                        // Then by artwork count
+                        return b[1].count - a[1].count;
+                    })
+                    .slice(0, 3);
+
+                console.log('Exhibition counts (normalized):', exhibitionCounts);
+                console.log('Top 3 featured:', sortedExhibitions);
+                
+                displayFeaturedExhibitions(sortedExhibitions);
+            } catch (error) {
+                console.error('Error loading featured exhibitions:', error);
+                document.getElementById('featured-exhibitions-container').innerHTML = `
+                    <p style="color: var(--text-light); text-align: center; padding: 2rem;">
+                        Unable to load exhibitions
+                    </p>
+                `;
+            }
+        }
+
+        function displayFeaturedExhibitions(exhibitions) {
+            const container = document.getElementById('featured-exhibitions-container');
+            
+            if (exhibitions.length === 0) {
+                container.innerHTML = `
+                    <p style="color: var(--text-light); text-align: center; padding: 2rem;">
+                        No exhibitions available
+                    </p>
+                `;
+                return;
+            }
+
+            container.innerHTML = exhibitions.map(([name, data]) => {
+                const artworkCount = data.count;
+                const description = getExhibitionDescription(name);
+
+                return `
+                    <div class="exhibition-item" onclick="navigateToExhibition('${encodeURIComponent(name)}')" style="cursor: pointer;">
+                        <h3>${name}</h3>
+                        <span class="event-date">${artworkCount} artwork${artworkCount !== 1 ? 's' : ''}${data.popularityScore > 0 ? ' • Popular Choice' : ''}</span>
+                        <p>${description}</p>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Navigate to exhibition details page
+        window.navigateToExhibition = function(exhibitionName) {
+            // Navigate to ExhibitionDetails page with exhibition name as parameter
+            window.location.href = 'ExhibitionDetails.html?exhibition=' + exhibitionName;
+        }
+
+        // Helper function to get exhibition descriptions
+        function getExhibitionDescription(exhibitionName) {
+            const descriptions = {
+                'Arab Heritage': 'Explore the rich cultural treasures of Arab civilization through stunning artifacts and art.',
+                'Persian Heritage': 'Discover the art and history of ancient Persia, from intricate textiles to masterful ceramics.',
+                'Indian Heritage': 'Journey through thousands of years of Indian civilization and artistic achievement.',
+                'Andalusian Heritage': 'Experience the golden age of Andalusian culture and its lasting influence.',
+                'Turkish Heritage': 'Discover the treasures of the Ottoman Empire and Turkish artistic traditions.',
+                'Others': 'Echoes of Islamic Civilization - A diverse collection spanning the Islamic world.'
+            };
+
+            return descriptions[exhibitionName] || 'A remarkable collection showcasing artistic and cultural heritage.';
+        }
+
+        // Search Data Structure
+        function buildSearchIndex() {
+            searchData = [];
+
+            // Add exhibitions - navigate to ExhibitionDetails page
+            const exhibitions = [
+                { name: 'Arab Heritage', url: 'ExhibitionDetails.html?exhibition=Arab%20Heritage', type: 'exhibition', description: 'Explore Arab cultural treasures' },
+                { name: 'Persian Heritage', url: 'ExhibitionDetails.html?exhibition=Persian%20Heritage', type: 'exhibition', description: 'Discover Persian art and history' },
+                { name: 'Indian Heritage', url: 'ExhibitionDetails.html?exhibition=Indian%20Heritage', type: 'exhibition', description: 'Journey through Indian civilization' },
+                { name: 'Andalusian Heritage', url: 'ExhibitionDetails.html?exhibition=Andalusian%20Heritage', type: 'exhibition', description: 'Experience Andalusian culture' },
+                { name: 'Turkish Heritage', url: 'ExhibitionDetails.html?exhibition=Turkish%20Heritage', type: 'exhibition', description: 'Discover Ottoman treasures' },
+                { name: 'Others', url: 'ExhibitionDetails.html?exhibition=Others', type: 'exhibition', description: 'Echoes of Islamic Civilization' }
+            ];
+
+            // Add events with section targeting
+            const events = [
+                { name: 'Ancient Egypt Night Tour', url: 'Home.html#upcoming-events', type: 'event', date: 'October 25, 2025', description: 'After-hours guided tour', section: 'upcoming-events' },
+                { name: 'Renaissance Art Workshop', url: 'Home.html#upcoming-events', type: 'event', date: 'November 12, 2025', description: 'Learn painting techniques', section: 'upcoming-events' },
+                { name: 'Family Discovery Day', url: 'Home.html#upcoming-events', type: 'event', date: 'November 28, 2025', description: 'Interactive family event', section: 'upcoming-events' }
+            ];
+
+            // Add pages
+            const pages = [
+                { name: 'Gallery', url: 'Gallery.html', type: 'page', description: 'Browse our complete art collection' },
+                { name: 'Events', url: 'Events.html', type: 'page', description: 'View upcoming museum events' },
+                { name: 'News', url: 'News.html', type: 'page', description: 'Latest museum news and updates' },
+                { name: 'About Us', url: 'AboutUs.html', type: 'page', description: 'Learn about our museum' },
+                { name: 'Ticketing', url: 'Ticketing.html', type: 'page', description: 'Purchase museum tickets' },
+                { name: 'Account', url: 'Account.html', type: 'page', description: 'Manage your account' }
+            ];
+
+            searchData = [...exhibitions, ...events, ...pages];
+
+            // Add artworks from database
+            allArtworks.forEach(artwork => {
+                searchData.push({
+                    name: artwork.title || 'Untitled',
+                    url: `ArtDetails.html?id=${artwork.id}`,
+                    type: 'artwork',
+                    description: `${artwork.artist || artwork.artistName || 'Unknown Artist'} • ${artwork.Exhibition || 'Museum Collection'}`,
+                    keywords: [
+                        artwork.title,
+                        artwork.artist,
+                        artwork.artistName,
+                        artwork.Exhibition,
+                        artwork.classification
+                    ].filter(Boolean).join(' ').toLowerCase()
+                });
+            });
+        }
+
+        // Search functionality
+        function performSearch(query) {
+            if (!query || query.trim().length < 2) {
+                return [];
+            }
+
+            const lowerQuery = query.toLowerCase().trim();
+            const results = [];
+
+            searchData.forEach(item => {
+                const searchText = `${item.name} ${item.description} ${item.keywords || ''}`.toLowerCase();
+                
+                if (searchText.includes(lowerQuery)) {
+                    // Calculate relevance score
+                    let score = 0;
+                    if (item.name.toLowerCase().startsWith(lowerQuery)) {
+                        score = 100; // Exact match at start
+                    } else if (item.name.toLowerCase().includes(lowerQuery)) {
+                        score = 50; // Contains in name
+                    } else {
+                        score = 10; // Contains in description/keywords
+                    }
+
+                    results.push({ ...item, score });
+                }
+            });
+
+            // Sort by relevance and limit results
+            return results
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 8);
+        }
+
+        // Display search suggestions
+        function displaySuggestions(results) {
+            const dropdown = document.getElementById('suggestions-dropdown');
+            
+            if (results.length === 0) {
+                dropdown.innerHTML = `
+                    <div class="no-results">
+                        <span class="material-icons">search_off</span>
+                        <p>No results found</p>
+                    </div>
+                `;
+                dropdown.classList.add('show');
+                return;
+            }
+
+            // Group results by type
+            const grouped = {
+                exhibition: [],
+                event: [],
+                artwork: [],
+                page: []
+            };
+
+            results.forEach(result => {
+                grouped[result.type].push(result);
+            });
+
+            let html = '';
+
+            // Display each category
+            if (grouped.exhibition.length > 0) {
+                html += '<div class="suggestion-category">Exhibitions</div>';
+                grouped.exhibition.forEach(item => {
+                    html += createSuggestionHTML(item, 'museum');
+                });
+            }
+
+            if (grouped.event.length > 0) {
+                html += '<div class="suggestion-category">Events</div>';
+                grouped.event.forEach(item => {
+                    html += createSuggestionHTML(item, 'event');
+                });
+            }
+
+            if (grouped.artwork.length > 0) {
+                html += '<div class="suggestion-category">Artworks</div>';
+                grouped.artwork.forEach(item => {
+                    html += createSuggestionHTML(item, 'palette');
+                });
+            }
+
+            if (grouped.page.length > 0) {
+                html += '<div class="suggestion-category">Pages</div>';
+                grouped.page.forEach(item => {
+                    html += createSuggestionHTML(item, 'article');
+                });
+            }
+
+            dropdown.innerHTML = html;
+            dropdown.classList.add('show');
+
+            // Add click handlers - direct navigation
+            dropdown.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const url = this.dataset.url;
+                    window.location.href = url;
+                });
+            });
+        }
+
+        function createSuggestionHTML(item, icon) {
+            return `
+                <div class="suggestion-item" data-url="${item.url}">
+                    <span class="material-icons suggestion-icon">${icon}</span>
+                    <div class="suggestion-content">
+                        <div class="suggestion-title">${item.name}</div>
+                        <div class="suggestion-meta">${item.description}${item.date ? ' • ' + item.date : ''}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Search input handler
+        const searchInput = document.getElementById('hero-search');
+        const dropdown = document.getElementById('suggestions-dropdown');
+
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value;
+
+            if (query.trim().length < 2) {
+                dropdown.classList.remove('show');
+                return;
+            }
+
+            searchTimeout = setTimeout(() => {
+                const results = performSearch(query);
+                displaySuggestions(results);
+            }, 300);
+        });
+
+        // Enter key - do nothing, user must click a suggestion
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault(); // Prevent form submission
+            }
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                dropdown.classList.remove('show');
+            }
+        });
 
         function calculateAge(dateOfBirth) {
             if (!dateOfBirth) return null;
@@ -973,7 +1607,6 @@
 
                 allArtworks = artworksSnap.docs.map(doc => {
                     const data = doc.data();
-                    // Clean imageURL by removing newlines and extra spaces
                     let cleanImageURL = (data.imageURL || data.ImageURL || '').trim();
                     cleanImageURL = cleanImageURL.replace(/\n/g, '').replace(/\r/g, '');
 
@@ -995,10 +1628,11 @@
                     };
                 });
 
+                // Build search index after loading data
+                buildSearchIndex();
+
                 console.log('Loaded artworks:', allArtworks.length);
-                console.log('Sample artwork:', allArtworks[0]);
-                console.log('First artwork imageURL:', allArtworks[0]?.imageURL);
-                console.log('First artwork full data:', JSON.stringify(allArtworks[0], null, 2));
+                console.log('Search index built with', searchData.length, 'items');
             } catch (error) {
                 console.error('Error loading data:', error);
             }
@@ -1016,26 +1650,21 @@
             const userCountry = userData.Country || null;
             const userLikedArtworks = userData.likedArtworks || [];
 
-            // Score each artwork
             allArtworks.forEach(artwork => {
                 let score = 0;
                 let reasons = [];
 
-                // 1. Interest Match (Exhibition + Category) - Weight: 3
                 userInterests.forEach(interest => {
-                    // Check Exhibition match
                     if (interestToExhibitionMap[interest] && artwork.Exhibition === interestToExhibitionMap[interest]) {
                         score += 3;
                         reasons.push(`Matches your interest in ${interest}`);
                     }
-                    // Check Category match
                     if (interestToCategoryMap[interest] && artwork.classification === interestToCategoryMap[interest]) {
                         score += 3;
                         reasons.push(`You like ${interest}`);
                     }
                 });
 
-                // 2. Popular in Age Group - Weight: 2
                 if (userAgeGroup && artwork.likedBy && artwork.likedBy.length > 0) {
                     const ageGroupLikes = artwork.likedBy.filter(userId => {
                         const user = allUsers.find(u => u.uid === userId);
@@ -1048,7 +1677,6 @@
                     }
                 }
 
-                // 3. Popular in Country - Weight: 2
                 if (userCountry && artwork.likedBy && artwork.likedBy.length > 0) {
                     const countryLikes = artwork.likedBy.filter(userId => {
                         const user = allUsers.find(u => u.uid === userId);
@@ -1061,15 +1689,13 @@
                     }
                 }
 
-                // 4. Trending (High likes overall) - Weight: 1
                 if (artwork.likesCount && artwork.likesCount >= 5) {
                     score += 1;
                     reasons.push(`Trending artwork`);
                 }
 
-                // 5. Not already liked by user
                 if (userLikedArtworks.includes(artwork.id)) {
-                    score = 0; // Don't recommend already liked items
+                    score = 0;
                 }
 
                 if (score > 0) {
@@ -1081,7 +1707,6 @@
                 }
             });
 
-            // Sort by score and get top 6
             return recommendations
                 .sort((a, b) => b.score - a.score)
                 .slice(0, 6);
@@ -1116,13 +1741,9 @@
                     badgeType === 'interest' ? '✨ For You' :
                         '⭐ Popular';
 
-                // Get image URL
                 const imageURL = rec.imageURL || '';
-                console.log('Rendering card for:', rec.title, 'with imageURL:', imageURL);
-
                 const hasImage = imageURL && imageURL.trim() !== '';
 
-                // Create image element or placeholder
                 let imageHTML = '';
                 if (hasImage) {
                     imageHTML = `
@@ -1161,25 +1782,13 @@
             if (user) {
                 currentUser = user;
                 try {
-                    // Load user data first
                     const userDoc = await getDoc(doc(db, "Users", user.uid));
                     if (userDoc.exists()) {
                         userData = userDoc.data();
-
-                        // Then load all data
                         await loadData();
 
-                        // Wait a bit to ensure data is loaded
                         setTimeout(() => {
                             const recommendations = generateRecommendations();
-                            console.log('Generated recommendations:', recommendations);
-
-                            // Check first recommendation
-                            if (recommendations.length > 0) {
-                                console.log('First recommendation title:', recommendations[0].title);
-                                console.log('First recommendation imageURL:', recommendations[0].imageURL);
-                            }
-
                             displayRecommendations(recommendations);
                         }, 500);
                     }
@@ -1188,9 +1797,14 @@
                     document.getElementById('recommendations-section').style.display = 'none';
                 }
             } else {
-                // User not logged in - hide recommendations section
+                // Load data even if user is not logged in (for search functionality)
+                await loadData();
                 document.getElementById('recommendations-section').style.display = 'none';
             }
+
+            // Load upcoming events and featured exhibitions (works for both logged in and guests)
+            loadUpcomingEvents();
+            loadFeaturedExhibitions();
         });
 
         // Navigation scroll effect
@@ -1239,7 +1853,6 @@
             });
         }
 
-        // Initialize animations
         document.addEventListener('DOMContentLoaded', function () {
             const items = document.querySelectorAll('.event-item, .exhibition-item, .stat-box');
             items.forEach(item => {
@@ -1253,17 +1866,36 @@
 
         window.addEventListener('scroll', animateOnScroll);
 
-        // CTA button hover effect
-        const ctaButton = document.querySelector('.cta-button');
-        if (ctaButton) {
-            ctaButton.addEventListener('mouseover', function () {
-                this.style.background = 'linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%)';
-            });
-
-            ctaButton.addEventListener('mouseout', function () {
-                this.style.background = 'linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%)';
-            });
-        }
+        // Check for section to highlight on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const sectionToHighlight = sessionStorage.getItem('highlightSection');
+            
+            if (sectionToHighlight) {
+                // Clear the storage
+                sessionStorage.removeItem('highlightSection');
+                
+                // Wait a bit for page to fully render
+                setTimeout(() => {
+                    const targetElement = document.getElementById(sectionToHighlight);
+                    
+                    if (targetElement) {
+                        // Scroll to the element with smooth behavior
+                        targetElement.scrollIntoView({ 
+                            behavior: 'smooth', 
+                            block: 'center' 
+                        });
+                        
+                        // Add highlight class
+                        targetElement.classList.add('highlight-section');
+                        
+                        // Remove highlight after animation completes
+                        setTimeout(() => {
+                            targetElement.classList.remove('highlight-section');
+                        }, 2000);
+                    }
+                }, 500);
+            }
+        });
 
         // Add spin animation for loading icon
         const style = document.createElement('style');

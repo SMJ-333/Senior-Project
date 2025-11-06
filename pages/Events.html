@@ -264,6 +264,8 @@
             transition: var(--transition);
             opacity: 0;
             transform: translateY(20px);
+            display: flex;
+            flex-direction: column;
         }
 
         .event-card.show {
@@ -346,6 +348,9 @@
 
         .event-content {
             padding: 1.5rem;
+            display: flex;
+            flex-direction: column;
+            flex: 1;
         }
 
         .event-content h3 {
@@ -377,12 +382,14 @@
             font-size: 0.95rem;
             line-height: 1.6;
             margin-bottom: 1rem;
+            flex: 1;
         }
 
         .event-actions {
             display: flex;
             justify-content: space-between;
             gap: 1rem;
+            margin-top: auto;
         }
 
         .event-actions button,
@@ -679,6 +686,74 @@
             font-size: 1.2rem;
         }
 
+        /* Upcoming Events Grid */
+        .coming-soon-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .coming-card {
+            background: var(--white);
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--accent);
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .coming-card.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .coming-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .coming-card h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-size: 1.4rem;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+        }
+
+        .coming-date {
+            color: var(--accent);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .coming-card p {
+            color: var(--text-light);
+            margin-bottom: 1rem;
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .coming-card a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .coming-card a:hover {
+            color: var(--accent-light);
+        }
+
         /* Footer */
         .footer {
             background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
@@ -736,7 +811,8 @@
                 min-height: 300px;
             }
 
-            .events-grid {
+            .events-grid,
+            .coming-soon-grid {
                 grid-template-columns: 1fr;
             }
 
@@ -760,14 +836,6 @@
             .modal-actions {
                 flex-direction: column;
                 padding: 0 1.5rem 1.5rem;
-            }
-
-            #upcomingEventsGrid {
-                flex-direction: column;
-            }
-
-            .coming-card {
-                min-width: 100% !important;
             }
         }
     </style>
@@ -822,7 +890,7 @@
         </section>
 
         <!-- Featured Event -->
-        <section class="container">
+        <section class="container" id="featured-event">
             <div id="featuredEventSection" class="featured-event">
                 <div class="loading-spinner">
                     <div class="spinner"></div>
@@ -832,7 +900,7 @@
         </section>
 
         <!-- Events Grid -->
-        <section class="container">
+        <section class="container" id="current-events">
             <div class="section-title">
                 <h2>Current Events</h2>
             </div>
@@ -846,13 +914,12 @@
         </section>
 
         <!-- Upcoming Events Section -->
-        <section class="container coming-soon">
+        <section class="container coming-soon" id="upcoming-events">
             <div class="section-title">
                 <h2>Upcoming Events</h2>
             </div>
 
-            <div id="upcomingEventsGrid" class="coming-soon-grid"
-                style="display: flex; gap: 2rem; overflow-x: auto; padding-bottom: 1rem;">
+            <div id="upcomingEventsGrid" class="coming-soon-grid">
                 <div class="loading-spinner">
                     <div class="spinner"></div>
                     <div class="loading-text">Loading upcoming events...</div>
@@ -891,6 +958,9 @@
             </div>
         </div>
     </footer>
+
+    <!-- Include section highlighter for navigation -->
+    <script src="section-highlighter.js"></script>
 
     <!-- Firebase Integration -->
     <script type="module">
@@ -1078,7 +1148,15 @@
 
                     allEvents.push({
                         id: docSnap.id,
-                        ...data,
+                        title: data.title || '',
+                        description: data.description || '',
+                        startDate: data.startDate,
+                        endDate: data.endDate,
+                        location: data.location || '',
+                        imageUrl: data.imageUrl || '',
+                        maxAttendees: data.maxAttendees || 0,
+                        price: data.price || 0,
+                        registeredUsers: data.registeredUsers || '',
                         status: getEventStatus(data.startDate, data.endDate),
                         registeredCount: registeredCount,
                         spotsLeft: (data.maxAttendees || 0) - registeredCount,
@@ -1093,6 +1171,9 @@
 
                 displayEvents(allEvents);
                 console.log('Events loaded successfully');
+
+                // Check if we need to highlight a specific event
+                checkForEventHighlight();
             } catch (error) {
                 console.error('Error loading events:', error);
                 const featuredSection = document.getElementById('featuredEventSection');
@@ -1101,6 +1182,26 @@
                         Error loading events: ${error.message}<br>
                         Please check the console for details.
                     </p>`;
+            }
+        }
+
+        // Check if we need to highlight a specific event (from Home page navigation)
+        function checkForEventHighlight() {
+            const eventId = sessionStorage.getItem('highlightEvent');
+            if (eventId) {
+                sessionStorage.removeItem('highlightEvent');
+                
+                setTimeout(() => {
+                    const eventCard = document.getElementById('event-' + eventId);
+                    if (eventCard) {
+                        eventCard.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        eventCard.classList.add('highlight-section');
+                        
+                        setTimeout(() => {
+                            eventCard.classList.remove('highlight-section');
+                        }, 2000);
+                    }
+                }, 500);
             }
         }
 
@@ -1140,12 +1241,22 @@
                         }
                     </div>
                 </div>
-                <div class="featured-image">
+                <div class="featured-image" style="${event.imageUrl ? `background-image: url('${event.imageUrl}'); background-size: cover; background-position: center;` : ''}">
+                    ${event.imageUrl ? `
+                    <div style="background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)); width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 2rem;">
+                        <div style="color: white;">
+                            <h3 style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);"><i class="fas fa-star"></i> Featured Event</h3>
+                            <p style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">${event.title}</p>
+                            <p style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">${event.location}</p>
+                        </div>
+                    </div>
+                    ` : `
                     <div>
                         <h3><i class="fas fa-star"></i> Featured Event</h3>
                         <p>${event.title}</p>
                         <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${event.location}</p>
                     </div>
+                    `}
                 </div>
             `;
         }
@@ -1170,12 +1281,21 @@
                 }
 
                 return `
-                    <div class="event-card">
-                        <div class="event-img">
+                    <div class="event-card" id="event-${event.id}">
+                        <div class="event-img" style="${event.imageUrl ? `background-image: url('${event.imageUrl}'); background-size: cover; background-position: center;` : ''}">
+                            ${!event.imageUrl ? `
                             <div>
                                 <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${event.title}</h3>
                                 <p style="font-size: 0.9rem; opacity: 0.9;"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
                             </div>
+                            ` : `
+                            <div style="background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)); width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 1.5rem;">
+                                <div style="text-align: left;">
+                                    <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">${event.title}</h3>
+                                    <p style="font-size: 0.9rem; opacity: 0.9; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
+                                </div>
+                            </div>
+                            `}
                             ${statusBadge}
                         </div>
                         <div class="event-content">
@@ -1219,13 +1339,13 @@
 
             const cards = events.map(event => {
                 return `
-                    <div class="coming-card" style="background: var(--white); border-radius: 12px; padding: 2rem; box-shadow: var(--shadow); border-left: 4px solid var(--accent); transition: all 0.3s ease; opacity: 0; transform: translateY(20px); min-width: 300px; flex: 1;">
-                        <h3 style="color: var(--primary-dark); margin-bottom: 1rem; font-size: 1.4rem; font-family: 'Playfair Display', serif; font-weight: 700;">${event.title}</h3>
-                        <span class="coming-date" style="color: var(--accent); font-weight: 600; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.95rem;">
+                    <div class="coming-card" id="event-${event.id}">
+                        <h3>${event.title}</h3>
+                        <span class="coming-date">
                             <i class="far fa-calendar-alt"></i> Opening ${formatDate(event.startDate)}
                         </span>
-                        <p style="color: var(--text-light); margin-bottom: 1rem; line-height: 1.6; font-size: 0.95rem;">${event.description}</p>
-                        <a href="#" onclick="window.notifyMe('${event.id}'); return false;" style="color: var(--accent); text-decoration: none; font-weight: 600; transition: color 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem;">
+                        <p>${event.description}</p>
+                        <a href="#" onclick="window.notifyMe('${event.id}'); return false;">
                             <i class="far fa-bell"></i> Notify Me
                         </a>
                     </div>
@@ -1238,19 +1358,8 @@
                 const allCards = document.querySelectorAll('#upcomingEventsGrid .coming-card');
                 allCards.forEach((card, index) => {
                     setTimeout(() => {
-                        card.style.opacity = '1';
-                        card.style.transform = 'translateY(0)';
+                        card.classList.add('show');
                     }, index * 100);
-
-                    card.addEventListener('mouseenter', function () {
-                        this.style.transform = 'translateY(-5px)';
-                        this.style.boxShadow = '0 15px 30px rgba(0, 0, 0, 0.1)';
-                    });
-
-                    card.addEventListener('mouseleave', function () {
-                        this.style.transform = 'translateY(0)';
-                        this.style.boxShadow = 'var(--shadow)';
-                    });
                 });
             }, 150);
         }

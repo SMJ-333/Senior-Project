@@ -1,15 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Events - ATHAR Museum</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+    
     <style>
         :root {
             --primary-dark: #8b1a1a;
@@ -42,9 +40,7 @@
             background-color: var(--neutral-light);
         }
 
-        h1,
-        h2,
-        h3 {
+        h1, h2, h3 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
         }
@@ -551,7 +547,7 @@
 <body>
     <header class="admin-header">
         <div class="header-left">
-            <button class="back-btn" onclick="window.location.href='AdminDashboard.html'">
+            <button class="back-btn" onclick="goBackToDashboard()">
                 <span class="material-icons">arrow_back</span>
             </button>
             <div class="header-title">
@@ -706,12 +702,16 @@
                 </div>
 
                 <div class="form-group">
-                    <label class="form-label">Event Image</label>
-                    <input type="file" class="form-input" id="event-image" accept="image/*">
+                    <label class="form-label">Event Image URL</label>
+                    <input type="url" class="form-input" id="event-image-url" placeholder="https://example.com/image.jpg">
                     <div id="image-preview" style="margin-top: 1rem; display: none;">
-                        <img id="preview-img" style="max-width: 100%; max-height: 200px; border-radius: 8px;"
-                            alt="Preview">
+                        <img id="preview-img" style="max-width: 100%; max-height: 200px; border-radius: 8px;" alt="Preview">
                     </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Price ($)</label>
+                    <input type="number" class="form-input" id="event-price" min="0" step="0.01" value="15">
                 </div>
 
                 <div class="form-group">
@@ -728,9 +728,8 @@
     </div>
 
     <script type="module">
-        import { auth, db, storage } from './firebase-config.js';
+        import { auth, db } from './firebase-config.js';
         import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-        import { ref, uploadBytes, getDownloadURL, deleteObject } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js";
 
         // ===== ACTIVITY LOGGING FUNCTION =====
         async function logActivity(type, action, targetTitle, metadata = {}) {
@@ -768,6 +767,7 @@
                         endDate: data.endDate,
                         location: data.location || '',
                         imageUrl: data.imageUrl || '',
+                        price: data.price || 0,
                         participants: data.registeredUsers ? data.registeredUsers.split(',').filter(u => u.trim()).length : 0,
                         maxParticipants: data.maxAttendees || 0,
                         registeredUsers: data.registeredUsers || '',
@@ -775,7 +775,6 @@
                     };
                 });
 
-                // Batch all UI updates in a single frame
                 requestAnimationFrame(() => {
                     renderEvents();
                     renderPopularEvents();
@@ -785,7 +784,6 @@
             });
         }
 
-        // Determine event status based on dates
         function getEventStatus(startDate, endDate) {
             const now = new Date();
             const start = startDate?.toDate();
@@ -802,21 +800,18 @@
             }
         }
 
-        // Format Firestore Timestamp to date string
         function formatDate(timestamp) {
             if (!timestamp) return '';
             const date = timestamp.toDate();
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         }
 
-        // Format Firestore Timestamp to time string
         function formatTime(timestamp) {
             if (!timestamp) return '';
             const date = timestamp.toDate();
             return date.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
         }
 
-        // Convert date and time inputs to Firestore Timestamp
         function createTimestamp(dateStr, timeStr = "00:00") {
             const datetime = new Date(`${dateStr}T${timeStr}`);
             return Timestamp.fromDate(datetime);
@@ -837,7 +832,6 @@
                 return;
             }
 
-            // Use DocumentFragment to batch DOM updates
             const fragment = document.createDocumentFragment();
             const tempDiv = document.createElement('div');
 
@@ -855,7 +849,7 @@
                         ${event.location}
                     </div>
                     <div style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.3rem;">
-                        ${event.participants} / ${event.maxParticipants} registered
+                        ${event.participants} / ${event.maxParticipants} registered • $ ${event.price}
                     </div>
                     <span class="status-badge status-${event.status}" onclick="filterByStatus('${event.status}')" style="cursor: pointer;" title="Filter by ${event.status}">${event.status.charAt(0).toUpperCase() + event.status.slice(1)}</span>
                 </div>
@@ -870,11 +864,9 @@
             </div>
         `).join('');
 
-            // Single DOM update
             grid.innerHTML = '';
             grid.appendChild(tempDiv);
 
-            // Defer stats update to next frame
             requestAnimationFrame(() => updateStats());
         }
 
@@ -891,7 +883,6 @@
                 return;
             }
 
-            // Batch DOM update
             const html = popular.map((event, index) => `
             <div class="popular-item">
                 <div class="popular-rank">#${index + 1}</div>
@@ -905,14 +896,12 @@
             </div>
         `).join('');
 
-            // Single DOM update using requestAnimationFrame
             requestAnimationFrame(() => {
                 container.innerHTML = html;
             });
         }
 
         function updateCharts() {
-            // Use requestAnimationFrame to batch chart updates
             requestAnimationFrame(() => {
                 updateStatusChart();
                 updateRegistrationsChart();
@@ -999,38 +988,12 @@
             });
         }
 
-        // Upload image to Firebase Storage
-        async function uploadEventImage(file, eventId) {
-            if (!file) return null;
-
-            try {
-                // Validate file size (max 20MB)
-                const maxSize = 20 * 1024 * 1024;
-                if (file.size > maxSize) {
-                    throw new Error('Image size must be less than 20MB');
-                }
-
-                // Validate file type
-                if (!file.type.startsWith('image/')) {
-                    throw new Error('File must be an image');
-                }
-
-                const storageRef = ref(storage, `events/${eventId}_${Date.now()}_${file.name}`);
-                await uploadBytes(storageRef, file);
-                const downloadUrl = await getDownloadURL(storageRef);
-                console.log('Image uploaded successfully:', downloadUrl);
-                return downloadUrl;
-            } catch (error) {
-                console.error('Error uploading image:', error);
-                throw error;
-            }
-        }
-
         window.openAddModal = function () {
             editingEventId = null;
             document.getElementById('modal-title').textContent = 'Add New Event';
             document.getElementById('eventForm').reset();
             document.getElementById('event-id').value = '';
+            document.getElementById('event-price').value = '15';
             document.getElementById('image-preview').style.display = 'none';
             document.getElementById('eventModal').classList.add('active');
         };
@@ -1049,7 +1012,6 @@
             document.getElementById('event-name').value = event.name;
             document.getElementById('event-description').value = event.description;
 
-            // Convert Firestore timestamps to date/time inputs
             if (event.startDate) {
                 const startDate = event.startDate.toDate();
                 document.getElementById('event-start-date').value = startDate.toISOString().split('T')[0];
@@ -1063,9 +1025,10 @@
             }
 
             document.getElementById('event-location').value = event.location;
+            document.getElementById('event-image-url').value = event.imageUrl || '';
+            document.getElementById('event-price').value = event.price || 15;
             document.getElementById('max-participants').value = event.maxParticipants;
 
-            // Show existing image if available
             if (event.imageUrl) {
                 document.getElementById('preview-img').src = event.imageUrl;
                 document.getElementById('image-preview').style.display = 'block';
@@ -1085,7 +1048,6 @@
 
                 await deleteDoc(doc(db, "Events", id));
 
-                // ===== LOG ACTIVITY: EVENT DELETED =====
                 await logActivity('event', 'deleted', eventTitle);
 
                 alert('Event deleted successfully!');
@@ -1108,7 +1070,6 @@
             renderEvents(filtered);
         }
 
-        // Debounce search input to reduce reflows
         let searchDebounceTimer;
         function debouncedFilterEvents() {
             clearTimeout(searchDebounceTimer);
@@ -1118,36 +1079,39 @@
         }
 
         function filterByStatus(status) {
-            // Reset dropdown and search input
             document.getElementById('statusFilter').value = status;
             document.getElementById('searchInput').value = '';
 
-            // Filter and render
             const filtered = events.filter(event => event.status === status);
             renderEvents(filtered);
         }
 
-        // Make functions globally accessible for onclick handlers
         window.filterByStatus = filterByStatus;
+
+        window.goBackToDashboard = function() {
+            window.location.href = 'AdminDashboard.html';
+        };
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
             loadEvents();
 
-            // Add event listeners for filters with debouncing
             document.getElementById('searchInput').addEventListener('keyup', debouncedFilterEvents);
             document.getElementById('statusFilter').addEventListener('change', filterEvents);
 
-            // Image preview functionality
-            document.getElementById('event-image').addEventListener('change', function (e) {
-                const file = e.target.files[0];
-                if (file) {
-                    const reader = new FileReader();
-                    reader.onload = function (e) {
-                        document.getElementById('preview-img').src = e.target.result;
+            // Image URL preview functionality
+            document.getElementById('event-image-url').addEventListener('input', function (e) {
+                const url = e.target.value.trim();
+                if (url) {
+                    const img = new Image();
+                    img.onload = function() {
+                        document.getElementById('preview-img').src = url;
                         document.getElementById('image-preview').style.display = 'block';
                     };
-                    reader.readAsDataURL(file);
+                    img.onerror = function() {
+                        document.getElementById('image-preview').style.display = 'none';
+                    };
+                    img.src = url;
                 } else {
                     document.getElementById('image-preview').style.display = 'none';
                 }
@@ -1161,10 +1125,10 @@
                 const startTime = document.getElementById('event-start-time').value;
                 const endDate = document.getElementById('event-end-date').value;
                 const endTime = document.getElementById('event-end-time').value;
-                const imageFile = document.getElementById('event-image').files[0];
+                const imageUrl = document.getElementById('event-image-url').value.trim();
                 const eventTitle = document.getElementById('event-name').value;
+                const eventPrice = parseFloat(document.getElementById('event-price').value) || 15;
 
-                // Validate required fields
                 if (!startDate || !startTime || !endDate || !endTime) {
                     alert('Please fill in all required date and time fields');
                     return;
@@ -1177,29 +1141,22 @@
                     endDate: createTimestamp(endDate, endTime),
                     location: document.getElementById('event-location').value,
                     maxAttendees: parseInt(document.getElementById('max-participants').value),
-                    price: 0
+                    price: eventPrice,
+                    imageUrl: imageUrl || ''
                 };
 
                 const id = document.getElementById('event-id').value;
 
                 try {
-                    let docRef;
-                    let eventId;
-
                     if (id) {
-                        // Update existing event
-                        eventId = id;
-
-                        // Get the current event data to track changes
+                        // UPDATE EXISTING EVENT
                         const currentEvent = events.find(e => e.id === id);
                         const changes = [];
 
-                        // Track title changes
                         if (currentEvent && currentEvent.name !== eventTitle) {
                             changes.push(`title from "${currentEvent.name}" to "${eventTitle}"`);
                         }
 
-                        // Track description changes
                         if (currentEvent && currentEvent.description !== eventData.description) {
                             const oldDesc = currentEvent.description || '(empty)';
                             const newDesc = eventData.description || '(empty)';
@@ -1208,48 +1165,37 @@
                             }
                         }
 
-                        // Track location changes
                         if (currentEvent && currentEvent.location !== eventData.location) {
                             changes.push(`location from "${currentEvent.location}" to "${eventData.location}"`);
                         }
 
-                        // Track max participants changes
+                        if (currentEvent && currentEvent.price !== eventPrice) {
+                            changes.push(`price from $ ${currentEvent.price} to $ ${eventPrice}`);
+                        }
+
                         if (currentEvent && currentEvent.maxParticipants !== eventData.maxAttendees) {
                             changes.push(`Max Participants from ${currentEvent.maxParticipants} to ${eventData.maxAttendees}`);
                         }
 
-                        // Track start date changes
                         const currentStartDate = currentEvent?.startDate?.toDate();
                         const newStartDate = eventData.startDate.toDate();
                         if (currentStartDate && currentStartDate.getTime() !== newStartDate.getTime()) {
                             changes.push(`start date/time from "${currentStartDate.toLocaleString()}" to "${newStartDate.toLocaleString()}"`);
                         }
 
-                        // Track end date changes
                         const currentEndDate = currentEvent?.endDate?.toDate();
                         const newEndDate = eventData.endDate.toDate();
                         if (currentEndDate && currentEndDate.getTime() !== newEndDate.getTime()) {
                             changes.push(`end date/time from "${currentEndDate.toLocaleString()}" to "${newEndDate.toLocaleString()}"`);
                         }
 
-                        // Upload new image if provided
-                        if (imageFile) {
-                            try {
-                                console.log('Uploading image for existing event...');
-                                eventData.imageUrl = await uploadEventImage(imageFile, eventId);
-                                console.log('Image uploaded, URL:', eventData.imageUrl);
-                                changes.push(`image updated`);
-                            } catch (uploadError) {
-                                console.error('Image upload failed:', uploadError);
-                                alert('Image upload failed: ' + uploadError.message + '. The event will be saved without the image.');
-                            }
+                        if (currentEvent && currentEvent.imageUrl !== imageUrl) {
+                            changes.push(`image URL updated`);
                         }
 
                         delete eventData.registeredUsers;
-
                         await updateDoc(doc(db, "Events", id), eventData);
 
-                        // ===== LOG ACTIVITY: EVENT UPDATED WITH CHANGES =====
                         const changesText = changes.length > 0 ? changes.join(', ') : 'no changes detected';
                         await logActivity('event', 'updated', eventTitle, {
                             changes: changesText
@@ -1257,29 +1203,18 @@
 
                         alert('Event updated successfully!');
                     } else {
-                        // Add new event
+                        // ADD NEW EVENT
                         eventData.registeredUsers = '';
-                        docRef = await addDoc(collection(db, "Events"), eventData);
-                        eventId = docRef.id;
-                        console.log('Event created with ID:', eventId);
+                        
+                        console.log('Creating event with data:', eventData);
+                        const docRef = await addDoc(collection(db, "Events"), eventData);
+                        console.log('✓ Event created with ID:', docRef.id);
 
-                        // Upload image if provided
-                        if (imageFile) {
-                            try {
-                                console.log('Uploading image for new event...');
-                                const imageUrl = await uploadEventImage(imageFile, eventId);
-                                console.log('Image uploaded, URL:', imageUrl);
-                                await updateDoc(doc(db, "Events", eventId), { imageUrl });
-                            } catch (uploadError) {
-                                console.error('Image upload failed:', uploadError);
-                                alert('Image upload failed: ' + uploadError.message + '. The event was created but without the image.');
-                            }
-                        }
-
-                        // ===== LOG ACTIVITY: EVENT CREATED =====
                         await logActivity('event', 'created', eventTitle, {
                             location: eventData.location,
-                            maxAttendees: eventData.maxAttendees
+                            price: eventPrice,
+                            maxAttendees: eventData.maxAttendees,
+                            hasImage: !!eventData.imageUrl
                         });
 
                         alert('Event added successfully!');
@@ -1287,12 +1222,11 @@
 
                     closeModal();
                 } catch (error) {
-                    console.error('Error saving event:', error);
+                    console.error('✗ Error saving event:', error);
                     alert('Error saving event: ' + error.message);
                 }
             });
 
-            // Close modal on outside click
             document.getElementById('eventModal').addEventListener('click', function (e) {
                 if (e.target === this) {
                     closeModal();

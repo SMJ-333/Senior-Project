@@ -266,6 +266,30 @@
             color: var(--primary-dark);
         }
 
+        .news-table-wrapper {
+            max-height: 500px;
+            overflow-y: auto;
+            padding-right: 0.5rem;
+        }
+
+        .news-table-wrapper::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .news-table-wrapper::-webkit-scrollbar-track {
+            background: var(--neutral-light);
+            border-radius: 4px;
+        }
+
+        .news-table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .news-table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-light);
+        }
+
         table {
             width: 100%;
             border-collapse: collapse;
@@ -273,6 +297,9 @@
 
         thead {
             background: var(--neutral-light);
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         th {
@@ -702,20 +729,22 @@
                 <p>Click "Add New Article" to create your first news article</p>
             </div>
 
-            <table id="news-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Status</th>
-                        <th>Published Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="news-tbody">
-                </tbody>
-            </table>
+            <div class="news-table-wrapper" id="news-table-wrapper" style="display: none;">
+                <table id="news-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Status</th>
+                            <th>Published Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="news-tbody">
+                    </tbody>
+                </table>
+            </div>
         </div>
 
         <div class="news-table-container deleted-section" id="deleted-section" style="display: none;">
@@ -723,20 +752,22 @@
                 <h2>Deleted Articles</h2>
             </div>
 
-            <table id="deleted-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>Image</th>
-                        <th>Title</th>
-                        <th>Category</th>
-                        <th>Deleted By</th>
-                        <th>Deleted Date</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="deleted-tbody">
-                </tbody>
-            </table>
+            <div class="news-table-wrapper" id="deleted-table-wrapper" style="display: none;">
+                <table id="deleted-table">
+                    <thead>
+                        <tr>
+                            <th>Image</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Deleted By</th>
+                            <th>Deleted Date</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="deleted-tbody">
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -845,7 +876,7 @@
         const modalTitle = document.getElementById('modal-title');
         const submitBtn = document.getElementById('submit-btn');
         const newsTbody = document.getElementById('news-tbody');
-        const newsTable = document.getElementById('news-table');
+        const newsTableWrapper = document.getElementById('news-table-wrapper');
         const loading = document.getElementById('loading');
         const emptyState = document.getElementById('empty-state');
         const addNewsBtn = document.getElementById('add-news-btn');
@@ -854,7 +885,7 @@
         const imagePreview = document.getElementById('image-preview');
         const previewImg = document.getElementById('preview-img');
         const deletedSection = document.getElementById('deleted-section');
-        const deletedTable = document.getElementById('deleted-table');
+        const deletedTableWrapper = document.getElementById('deleted-table-wrapper');
         const deletedTbody = document.getElementById('deleted-tbody');
 
         onAuthStateChanged(auth, (user) => {
@@ -902,7 +933,7 @@
             }
 
             deletedSection.style.display = 'block';
-            deletedTable.style.display = 'table';
+            deletedTableWrapper.style.display = 'block';
 
             const html = deletedNews.map(news => `
                 <tr>
@@ -953,12 +984,12 @@
             newsTbody.innerHTML = '';
 
             if (newsList.length === 0) {
-                newsTable.style.display = 'none';
+                newsTableWrapper.style.display = 'none';
                 emptyState.style.display = 'block';
                 return;
             }
 
-            newsTable.style.display = 'table';
+            newsTableWrapper.style.display = 'block';
             emptyState.style.display = 'none';
 
             const html = newsList.map(news => {
