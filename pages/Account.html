@@ -650,6 +650,11 @@
             color: #ef6c00;
         }
 
+        .badge-booking {
+            background: #e8f5e9;
+            color: #2e7d32;
+        }
+        
         .no-notifications {
             text-align: center;
             padding: 2rem;
@@ -958,70 +963,92 @@
             return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         }
 
-        function getNotificationIcon(type) {
-            switch(type) {
-                case 'news': return 'article';
-                case 'event_registration': return 'event_available';
-                case 'event_reminder': return 'notification_important';
-                case 'event_upcoming': return 'event';
-                default: return 'notifications';
-            }
-        }
+    function getNotificationIcon(type) {
+     switch(type) {
+        case 'news': return 'article';
+        case 'event_registration': return 'event_available';
+        case 'event_reminder': return 'notification_important';
+        case 'event_upcoming': return 'event';
+        case 'booking_confirmation': return 'confirmation_number';
+        default: return 'notifications';
+    }
+}
 
-        function getNotificationBadgeClass(type) {
-            if (type === 'news') return 'badge-news';
-            if (type.includes('event')) return 'badge-event';
-            return 'badge-reminder';
-        }
+function getNotificationBadgeClass(type) {
+    if (type === 'news') return 'badge-news';
+    if (type.includes('event')) return 'badge-event';
+    if (type === 'booking_confirmation') return 'badge-booking';
+    return 'badge-reminder';
+}
 
         function renderNotifications(notifications) {
-            const loading = document.getElementById('notificationsLoading');
-            const list = document.getElementById('notificationsList');
-            const noNotifs = document.getElementById('noNotifications');
-            const unreadCountEl = document.getElementById('unreadCount');
-            const navBadge = document.getElementById('navNotificationBadge');
+    const loading = document.getElementById('notificationsLoading');
+    const list = document.getElementById('notificationsList');
+    const noNotifs = document.getElementById('noNotifications');
+    const unreadCountEl = document.getElementById('unreadCount');
+    const navBadge = document.getElementById('navNotificationBadge');
 
-            loading.style.display = 'none';
+    loading.style.display = 'none';
+    const unreadCount = notifications.filter(n => !n.isRead).length;
+    
+    if (unreadCount > 0) {
+        unreadCountEl.textContent = `${unreadCount} unread`;
+        navBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+        navBadge.style.display = 'flex';
+    } else {
+        unreadCountEl.textContent = '';
+        navBadge.style.display = 'none';
+    }
 
-            const unreadCount = notifications.filter(n => !n.isRead).length;
-            
-            if (unreadCount > 0) {
-                unreadCountEl.textContent = `${unreadCount} unread`;
-                navBadge.textContent = unreadCount > 99 ? '99+' : unreadCount;
-                navBadge.style.display = 'flex';
-            } else {
-                unreadCountEl.textContent = '';
-                navBadge.style.display = 'none';
-            }
+    if (notifications.length === 0) {
+        list.style.display = 'none';
+        noNotifs.style.display = 'block';
+        return;
+    }
 
-            if (notifications.length === 0) {
-                list.style.display = 'none';
-                noNotifs.style.display = 'block';
-                return;
-            }
-
-            noNotifs.style.display = 'none';
-            list.style.display = 'flex';
-            
-            list.innerHTML = notifications.map(notif => `
-                <div class="notification-item ${notif.isRead ? '' : 'unread'}" 
-                     onclick="handleNotificationClick('${notif.id}', ${notif.isRead})">
-                    <div class="notification-header">
-                        <div class="notification-title">
-                            <span class="material-icons" style="font-size: 1.2rem; color: var(--accent);">
-                                ${getNotificationIcon(notif.type)}
-                            </span>
-                            ${notif.title}
-                        </div>
-                        <div class="notification-date">${formatNotificationDate(notif.createdAt)}</div>
+    noNotifs.style.display = 'none';
+    list.style.display = 'flex';
+    
+    list.innerHTML = notifications.map(notif => {
+        let additionalInfo = '';
+        
+        if (notif.type === 'booking_confirmation' && notif.bookingDetails) {
+            const bd = notif.bookingDetails;
+            additionalInfo = `
+                <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-left: 3px solid #0ea5e9; border-radius: 8px; padding: 1rem; margin-top: 0.75rem; font-size: 0.88rem;">
+                    <div style="display: grid; grid-template-columns: auto 1fr; gap: 0.6rem 1rem; color: var(--text-dark);">
+                        <div style="display: flex; align-items: center; gap: 0.4rem;"><span style="font-size: 1.1rem;">📍</span><strong>Visit:</strong></div>
+                        <span>${bd.visitInfo || 'Museum Visit'}</span>
+                        <div style="display: flex; align-items: center; gap: 0.4rem;"><span style="font-size: 1.1rem;">📅</span><strong>Date:</strong></div>
+                        <span>${bd.date || 'N/A'}</span>
+                        <div style="display: flex; align-items: center; gap: 0.4rem;"><span style="font-size: 1.1rem;">🕒</span><strong>Time:</strong></div>
+                        <span>${bd.time || 'N/A'}</span>
+                        <div style="display: flex; align-items: center; gap: 0.4rem;"><span style="font-size: 1.1rem;">👥</span><strong>Visitors:</strong></div>
+                        <span>${bd.totalVisitors || 0} total${bd.adults ? ` (${bd.adults} adults` : ''}${bd.children ? `, ${bd.children} children` : ''}${bd.seniors ? `, ${bd.seniors} seniors` : ''}${bd.adults || bd.children || bd.seniors ? ')' : ''}</span>
+                        <div style="display: flex; align-items: center; gap: 0.4rem;"><span style="font-size: 1.1rem;">💳</span><strong>Payment:</strong></div>
+                        <span style="color: #059669; font-weight: 600;">${bd.paymentMethod ? bd.paymentMethod.toUpperCase() : 'N/A'} - $${bd.total || '0.00'}</span>
                     </div>
-                    <div class="notification-message">${notif.message}</div>
-                    <span class="notification-type-badge ${getNotificationBadgeClass(notif.type)}">
-                        ${notif.type.replace('_', ' ')}
-                    </span>
                 </div>
-            `).join('');
+            `;
         }
+        
+        return `
+            <div class="notification-item ${notif.isRead ? '' : 'unread'}" onclick="handleNotificationClick('${notif.id}', ${notif.isRead})">
+                <div class="notification-header">
+                    <div class="notification-title">
+                        <span class="material-icons" style="font-size: 1.2rem; color: var(--accent);">${getNotificationIcon(notif.type)}</span>
+                        ${notif.title}
+                    </div>
+                    <div class="notification-date">${formatNotificationDate(notif.createdAt)}</div>
+                </div>
+                <div class="notification-message">${notif.message}</div>
+                ${additionalInfo}
+                <span class="notification-type-badge ${getNotificationBadgeClass(notif.type)}">${notif.type.replace(/_/g, ' ')}</span>
+            </div>
+        `;
+    }).join('');
+}
+
 
         window.handleNotificationClick = async function(notificationId, isRead) {
             if (!isRead && notificationSystemAvailable) {
@@ -1283,6 +1310,20 @@
                 nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
             }
         });
+
+        (function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const tab = urlParams.get('tab');
+    if (tab === 'notifications') {
+        setTimeout(() => {
+            const notificationsSection = document.querySelector('.notifications-section');
+            if (notificationsSection) {
+                notificationsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }, 800);
+    }
+})();
+
     </script>
 </body>
 

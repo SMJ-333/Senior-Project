@@ -165,7 +165,7 @@
             background-size: cover;
             background-position: center;
         }
-
+        
         .page-hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -266,28 +266,6 @@
 
         .visit-type-card .price-tag.free {
             color: var(--success);
-        }
-
-        .section-title {
-            text-align: center;
-            margin-bottom: 3rem;
-            position: relative;
-        }
-
-        .section-title h2 {
-            font-size: 2.5rem;
-            color: var(--primary-dark);
-            display: inline-block;
-            margin-bottom: 1rem;
-        }
-
-        .section-title::after {
-            content: '';
-            display: block;
-            width: 60px;
-            height: 3px;
-            background: var(--accent);
-            margin: 0 auto;
         }
 
         .booking-section {
@@ -536,35 +514,73 @@
             font-size: 2rem;
         }
 
-        .loading-spinner {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-            gap: 1rem;
-        }
-
-        .spinner {
-            border: 4px solid var(--neutral-light);
-            border-top: 4px solid var(--accent);
-            border-radius: 50%;
-            width: 40px;
-            height: 40px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
         .hidden {
             display: none !important;
+        }
+
+        .success-banner {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            z-index: 10000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            animation: slideDown 0.5s ease-out;
+        }
+
+        .success-banner.active {
+            display: flex;
+        }
+
+        .success-banner .material-icons {
+            font-size: 2rem;
+            animation: scaleIn 0.5s ease-out;
+        }
+
+        .success-banner-content {
+            text-align: center;
+        }
+
+        .success-banner-content h3 {
+            margin: 0;
+            font-size: 1.3rem;
+            margin-bottom: 0.3rem;
+        }
+
+        .success-banner-content p {
+            margin: 0;
+            font-size: 0.95rem;
+            opacity: 0.95;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @keyframes scaleIn {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+            100% {
+                transform: scale(1);
+            }
         }
 
         .footer {
@@ -624,6 +640,15 @@
 </head>
 
 <body>
+    <!-- Success Banner -->
+    <div id="successBanner" class="success-banner">
+        <span class="material-icons">check_circle</span>
+        <div class="success-banner-content">
+            <h3>Booking Confirmed!</h3>
+            <p>Your visit has been booked successfully.</p>
+        </div>
+    </div>
+
     <nav>
         <div class="nav-container">
             <a href="Home.html" class="logo">ATHAR Museum</a>
@@ -725,39 +750,59 @@
                 <h3 style="margin-top: 2rem; margin-bottom: 1rem;">Number of Visitors</h3>
 
                 <div id="visitor-counters">
-                    <div class="counter-group">
-                        <div class="counter-info">
-                            <div class="counter-label">Adults (18-64)</div>
-                            <div class="counter-price" id="adult-price">Free for members</div>
+                    <!-- For Members: Single visitor notice -->
+                    <div id="member-single-visitor" class="hidden" style="background: var(--neutral-light); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
+                            <span class="material-icons" style="font-size: 3rem; color: var(--accent);">person</span>
+                            <div style="text-align: left;">
+                                <h3 style="color: var(--primary-dark); margin: 0;">Single Member Visit</h3>
+                                <p style="color: var(--text-light); margin: 0.3rem 0 0 0;">This free visit is for you only</p>
+                            </div>
                         </div>
-                        <div class="counter-controls">
-                            <button class="counter-btn" onclick="decrementCounter('adults')">−</button>
-                            <span class="counter-value" id="adults-count">0</span>
-                            <button class="counter-btn" onclick="incrementCounter('adults')">+</button>
-                        </div>
-                    </div>
-
-                    <div class="counter-group">
-                        <div class="counter-info">
-                            <div class="counter-label">Seniors (65+)</div>
-                            <div class="counter-price" id="senior-price">35% off</div>
-                        </div>
-                        <div class="counter-controls">
-                            <button class="counter-btn" onclick="decrementCounter('seniors')">−</button>
-                            <span class="counter-value" id="seniors-count">0</span>
-                            <button class="counter-btn" onclick="incrementCounter('seniors')">+</button>
+                        <div style="background: linear-gradient(135deg, #e6f7ed 0%, #d4f4dd 100%); border-left: 4px solid var(--success); padding: 1rem; border-radius: 6px;">
+                            <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
+                                <span class="material-icons" style="color: var(--success);">card_giftcard</span>
+                                <strong style="color: var(--success);">Member Benefit: Free Admission</strong>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="counter-group">
-                        <div class="counter-info">
-                            <div class="counter-label">Children (0-17)</div>
-                            <div class="counter-price">Free admission</div>
+                    <!-- For Non-Members: Show counters -->
+                    <div id="non-member-counters">
+                        <div class="counter-group">
+                            <div class="counter-info">
+                                <div class="counter-label">Adults (18-64)</div>
+                                <div class="counter-price" id="adult-price">Free for members</div>
+                            </div>
+                            <div class="counter-controls">
+                                <button class="counter-btn" onclick="decrementCounter('adults')">−</button>
+                                <span class="counter-value" id="adults-count">0</span>
+                                <button class="counter-btn" onclick="incrementCounter('adults')">+</button>
+                            </div>
                         </div>
-                        <div class="counter-controls">
-                            <button class="counter-btn" onclick="decrementCounter('children')">−</button>
-                            <span class="counter-value" id="children-count">0</span>
-                            <button class="counter-btn" onclick="incrementCounter('children')">+</button>
+
+                        <div class="counter-group">
+                            <div class="counter-info">
+                                <div class="counter-label">Seniors (65+)</div>
+                                <div class="counter-price" id="senior-price">35% off</div>
+                            </div>
+                            <div class="counter-controls">
+                                <button class="counter-btn" onclick="decrementCounter('seniors')">−</button>
+                                <span class="counter-value" id="seniors-count">0</span>
+                                <button class="counter-btn" onclick="incrementCounter('seniors')">+</button>
+                            </div>
+                        </div>
+
+                        <div class="counter-group">
+                            <div class="counter-info">
+                                <div class="counter-label">Children (0-17)</div>
+                                <div class="counter-price">Free admission</div>
+                            </div>
+                            <div class="counter-controls">
+                                <button class="counter-btn" onclick="decrementCounter('children')">−</button>
+                                <span class="counter-value" id="children-count">0</span>
+                                <button class="counter-btn" onclick="incrementCounter('children')">+</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -771,6 +816,13 @@
                     </div>
                 </div>
 
+                <!-- Member Button (Free Visit) -->
+                <button class="btn hidden" id="member-confirm-btn" onclick="confirmMemberBooking()" style="margin-top: 2rem; background: var(--accent-light); display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                    <span class="material-icons">check_circle</span>
+                    Confirm Free Booking
+                </button>
+
+                <!-- Non-Member Button (Payment) -->
                 <button class="btn" id="checkout-btn" disabled style="margin-top: 2rem;">Continue to Checkout</button>
             </div>
         </section>
@@ -810,10 +862,24 @@
         import { db, auth } from './firebase-config.js';
         import {
             collection,
-            getDocs
+            getDocs,
+            addDoc,
+            doc,
+            getDoc
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import './notification-system.js';
+
+        
+
+        // Import notification function
+        let sendBookingConfirmationNotification;
+        try {
+            const notifModule = await import('./notification-system.js');
+            sendBookingConfirmationNotification = notifModule.sendBookingConfirmationNotification;
+        } catch (error) {
+            console.warn('⚠️ Notification system not available:', error);
+        }
 
         let isMember = false;
         let userName = 'Guest';
@@ -840,6 +906,114 @@
             userName = user?.displayName || user?.email?.split('@')[0] || 'Guest';
             initializeMemberStatus();
         });
+
+        function showSuccessBanner(message, subtitle) {
+            const banner = document.getElementById('successBanner');
+            const content = banner.querySelector('.success-banner-content');
+            
+            content.innerHTML = `
+                <h3>${message}</h3>
+                <p>${subtitle}</p>
+            `;
+            
+            banner.classList.add('active');
+            
+            setTimeout(() => {
+                banner.classList.remove('active');
+            }, 5000);
+        }
+
+        window.confirmMemberBooking = async function() {
+            if (!currentUser) {
+                alert('Please log in to book your free visit.');
+                return;
+            }
+
+            if (!selectedDate || !selectedTime) {
+                alert('Please select date and time for your visit.');
+                return;
+            }
+
+            const confirmBtn = document.getElementById('member-confirm-btn');
+            if (confirmBtn) {
+                confirmBtn.disabled = true;
+                confirmBtn.innerHTML = '<span class="material-icons">hourglass_empty</span> Booking...';
+            }
+
+            try {
+                const userDoc = await getDoc(doc(db, "Users", currentUser.uid));
+                const userData = userDoc.exists() ? userDoc.data() : {};
+
+                const dateStr = selectedDate.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+
+                const timeSelect = document.getElementById('time-select');
+                const timeStr = timeSelect.options[timeSelect.selectedIndex].text;
+
+                const bookingData = {
+                    userId: currentUser.uid,
+                    userName: userData.Username || currentUser.email,
+                    userEmail: userData["Email Address"] || currentUser.email,
+                    userPhone: userData["Phone Number"] || '',
+                    visitType: 'general',
+                    visitInfo: 'General Museum Visit (Member)',
+                    date: dateStr,
+                    time: timeStr,
+                    adults: 1,
+                    children: 0,
+                    seniors: 0,
+                    totalVisitors: 1,
+                    total: '0.00',
+                    paymentDetails: {
+                        method: 'member_free',
+                        cardType: 'Free Member Visit'
+                    },
+                    status: 'confirmed',
+                    createdAt: new Date(),
+                    isMemberBooking: true
+                };
+
+                const bookingRef = await addDoc(collection(db, "Bookings"), bookingData);
+                console.log('✅ Member booking saved:', bookingRef.id);
+
+                if (sendBookingConfirmationNotification) {
+                    await sendBookingConfirmationNotification(currentUser.uid, {
+                        bookingId: bookingRef.id,
+                        visitInfo: 'General Museum Visit (Member)',
+                        date: dateStr,
+                        time: timeStr,
+                        totalVisitors: 1,
+                        adults: 1,
+                        children: 0,
+                        seniors: 0,
+                        total: '0.00',
+                        paymentMethod: 'Free Member Visit'
+                    });
+                }
+
+                showSuccessBanner(
+                    '🎉 Booking Confirmed!',
+                    `Your free visit on ${dateStr} at ${timeStr} has been confirmed. We look forward to seeing you!`
+                );
+
+                setTimeout(() => {
+                    window.location.href = 'Account.html?tab=notifications';
+                }, 3000);
+
+            } catch (error) {
+                console.error('Error creating member booking:', error);
+                alert('Failed to confirm booking. Please try again.');
+                
+                if (confirmBtn) {
+                    confirmBtn.disabled = false;
+                    confirmBtn.innerHTML = '<span class="material-icons">check_circle</span> Confirm Free Booking';
+                }
+            }
+        };
 
         function formatDate(timestamp) {
             if (!timestamp || !timestamp.toDate) return 'Date TBA';
@@ -892,20 +1066,21 @@
                 allEvents.forEach(event => {
                     const option = document.createElement('option');
                     option.value = event.id;
-                    option.textContent = `${event.title} - ${formatDate(event.startDate)} ($${event.price || 20})`;
+                    option.textContent = `${event.title} - ${formatDate(event.startDate)} (${event.price || 20})`;
                     option.dataset.price = event.price || 20;
                     option.dataset.title = event.title;
                     option.dataset.location = event.location || 'Museum';
                     eventSelect.appendChild(option);
                 });
 
-                return true; // ✅ Events loaded
+                return true;
             } catch (error) {
                 console.error('Error loading events:', error);
                 eventSelect.innerHTML = '<option value="">-- Error loading events --</option>';
                 return false;
             }
         }
+
         function initializeMemberStatus() {
             const statusCard = document.getElementById('member-status-card');
             const greeting = document.getElementById('member-greeting');
@@ -933,44 +1108,57 @@
         }
 
         document.querySelectorAll('.visit-type-card').forEach(card => {
-            card.addEventListener('click', function () {
-                document.querySelectorAll('.visit-type-card').forEach(c => c.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedVisitType = this.dataset.type;
+    card.addEventListener('click', async function () { // ðŸ‘ˆ Ø£Ø¶Ù async
+        document.querySelectorAll('.visit-type-card').forEach(c => c.classList.remove('selected'));
+        this.classList.add('selected');
+        selectedVisitType = this.dataset.type;
 
-                const eventSection = document.getElementById('event-section');
-                const bookingSection = document.getElementById('booking-section');
-                const memberBenefit = document.getElementById('member-benefit');
+        const eventSection = document.getElementById('event-section');
+        const bookingSection = document.getElementById('booking-section');
+        const memberBenefit = document.getElementById('member-benefit');
 
-                if (selectedVisitType === 'event') {
-                    eventSection.classList.remove('hidden');
-                    bookingSection.classList.add('hidden');
-                    memberBenefit.classList.add('hidden');
-                } else {
-                    eventSection.classList.add('hidden');
-                    bookingSection.classList.remove('hidden');
+        if (selectedVisitType === 'event') {
+            console.log('🎪 Special Event selected'); 
+            eventSection.classList.remove('hidden');
+            bookingSection.classList.add('hidden');
+            memberBenefit.classList.add('hidden');
+            
+            
+            console.log('📞 Calling loadCurrentEvents...');
+            await loadCurrentEvents();
+            
+        } else {
+            console.log('🏛️ General Visit selected');
+            eventSection.classList.add('hidden');
+            bookingSection.classList.remove('hidden');
 
-                    if (isMember) {
-                        memberBenefit.classList.remove('hidden');
-                    } else {
-                        memberBenefit.classList.add('hidden');
-                    }
+            if (isMember) {
+                memberBenefit.classList.remove('hidden');
+            } else {
+                memberBenefit.classList.add('hidden');
+            }
 
-                    selectedEvent = null;
-                    selectedEventData = null;
-                    updatePriceDisplay();
-                    updateTimeOptions();
-                    renderCalendar();
-                }
-            });
-        });
+            selectedEvent = null;
+            selectedEventData = null;
+            updatePriceDisplay();
+            updateTimeOptions();
+            renderCalendar();
+        }
+    });
+});
 
         document.getElementById('event-select').addEventListener('change', function () {
             selectedEvent = this.value;
+            
+            console.log('ðŸŽª Event selected:', selectedEvent);
+            
             if (selectedEvent) {
                 const selectedOption = this.options[this.selectedIndex];
                 const eventPrice = parseInt(selectedOption.dataset.price);
                 const event = allEvents.find(e => e.id === selectedEvent);
+
+                console.log('  Event price:', eventPrice);
+                console.log('  Event data:', event);
 
                 selectedEventData = {
                     id: selectedEvent,
@@ -984,10 +1172,20 @@
                 };
 
                 document.getElementById('booking-section').classList.remove('hidden');
-                document.getElementById('member-benefit').classList.add('hidden');
+                document.getElementById('member-benefit').classList.add('hidden'); 
+                
+                
+                visitors.adults = 0;
+                visitors.children = 0;
+                visitors.seniors = 0;
+                document.getElementById('adults-count').textContent = '0';
+                document.getElementById('children-count').textContent = '0';
+                document.getElementById('seniors-count').textContent = '0';
+                
                 updatePriceDisplay(eventPrice);
                 updateTimeOptions();
                 renderCalendar();
+                
             } else {
                 document.getElementById('booking-section').classList.add('hidden');
                 selectedEventData = null;
@@ -995,23 +1193,18 @@
         });
 
         function toDateSafe(ts) {
-            // Firestore Timestamp (has toDate)
             if (ts && typeof ts.toDate === 'function') {
                 return ts.toDate();
             }
-            // Already a JS Date
             if (ts instanceof Date) {
                 return ts;
             }
-            // ISO string
             if (typeof ts === 'string' && /^\d{4}-\d{2}-\d{2}T/.test(ts)) {
                 return new Date(ts);
             }
-            // Custom human-readable string: "October 13, 2025 at 10:00:00 AM UTC+3"
             if (typeof ts === 'string') {
                 return parseCustomStringToDate(ts);
             }
-            // Number epoch ms
             if (typeof ts === 'number') {
                 return new Date(ts);
             }
@@ -1021,18 +1214,16 @@
         }
 
         function parseCustomStringToDate(ts) {
-            // Expect: "October 13, 2025 at 10:00:00 AM UTC+3"
             const cleaned = ts.replace(' at ', ' ');
             const parts = cleaned.split(' ');
-            // ["October","13,","2025","10:00:00","AM","UTC+3"]
             if (parts.length < 6) return new Date(NaN);
 
             const monthName = parts[0];
             const day = parts[1].replace(',', '');
             const year = parts[2];
-            const time = parts[3]; // "10:00:00"
-            const ampm = parts[4]; // "AM" or "PM"
-            const offsetRaw = parts[5]; // "UTC+3"
+            const time = parts[3];
+            const ampm = parts[4];
+            const offsetRaw = parts[5];
 
             const monthMap = {
                 January: '01', February: '02', March: '03', April: '04',
@@ -1048,8 +1239,7 @@
             if (ampm && ampm.toUpperCase() === 'AM' && hour === 12) hour = 0;
             const hh24 = hour.toString().padStart(2, '0');
 
-            // "UTC+3" -> "+03:00"
-            const tz = offsetRaw.replace('UTC', ''); // "+3"
+            const tz = offsetRaw.replace('UTC', '');
             const tzSign = tz.startsWith('+') || tz.startsWith('-') ? '' : '+';
             const tzNum = tzSign + tz;
             const tzFormatted = tzNum.includes(':') ? tzNum : `${tzNum}:00`;
@@ -1110,34 +1300,34 @@
             }
         }
 
-        function parseTimeString(timeStr) {
-            const match = timeStr.match(/(\d+):?(\d*)\s*(AM|PM)?/i);
-            if (!match) return 9;
-
-            let hour = parseInt(match[1]);
-            const ampm = match[3];
-
-            if (ampm) {
-                if (ampm.toUpperCase() === 'PM' && hour !== 12) hour += 12;
-                if (ampm.toUpperCase() === 'AM' && hour === 12) hour = 0;
-            }
-
-            return hour;
-        }
-
         function updatePriceDisplay(eventPrice = null) {
-            const adultPrice = document.getElementById('adult-price');
+    const adultPrice = document.getElementById('adult-price');
+    const seniorPrice = document.getElementById('senior-price');
 
-            if (selectedVisitType === 'general' && isMember) {
-                adultPrice.textContent = 'Free for members';
-            } else if (selectedVisitType === 'general' && !isMember) {
-                adultPrice.textContent = '$15 per person';
-            } else if (selectedVisitType === 'event' && eventPrice) {
-                adultPrice.textContent = `${eventPrice} per person`;
-            }
+    console.log('ðŸ’° updatePriceDisplay called');
+    console.log('  selectedVisitType:', selectedVisitType);
+    console.log('  isMember:', isMember);
+    console.log('  eventPrice:', eventPrice);
 
-            calculateTotal();
-        }
+    if (selectedVisitType === 'general' && isMember) {
+        // Ø²ÙŠØ§Ø±Ø© Ø¹Ø§Ù…Ø© Ù„Ù„Ø£Ø¹Ø¶Ø§Ø¡ = Ù…Ø¬Ø§Ù†ÙŠ
+        adultPrice.textContent = 'Free for members';
+        seniorPrice.textContent = 'Free for members';
+        
+    } else if (selectedVisitType === 'general' && !isMember) {
+        // Ø²ÙŠØ§Ø±Ø© Ø¹Ø§Ù…Ø© Ù„ØºÙŠØ± Ø§Ù„Ø£Ø¹Ø¶Ø§Ø¡ = $15
+        adultPrice.textContent = '$15 per person';
+        seniorPrice.textContent = '35% off ($9.75)';
+        
+    } else if (selectedVisitType === 'event' && eventPrice) {
+        // Ø­Ø¯Ø« Ø®Ø§Øµ = Ø³Ø¹Ø± Ø§Ù„Ø­Ø¯Ø« (Ù„Ù„Ø¬Ù…ÙŠØ¹ØŒ Ø£Ø¹Ø¶Ø§Ø¡ ÙˆØºÙŠØ± Ø£Ø¹Ø¶Ø§Ø¡)
+        const seniorDiscountPrice = (eventPrice * 0.65).toFixed(2);
+        adultPrice.textContent = `$${eventPrice} per person`;
+        seniorPrice.textContent = `35% off ($${seniorDiscountPrice})`;
+    }
+
+    calculateTotal();
+}
 
         window.incrementCounter = function (type) {
             visitors[type]++;
@@ -1157,63 +1347,63 @@
             let total = 0;
             let items = [];
 
+            console.log('ðŸ§® calculateTotal called');
+            console.log('  visitors:', visitors);
+            console.log('  selectedVisitType:', selectedVisitType);
+            console.log('  isMember:', isMember);
+
             const seniorPriceLabel = document.getElementById('senior-price');
-            if (selectedVisitType === 'event' && selectedEventData) {
-                seniorPriceLabel.textContent = `35% off ($${(selectedEventData.price * 0.65).toFixed(2)})`;
-            } else {
+            
+            // Ø­Ø³Ø§Ø¨ Ø§Ù„Ø³Ø¹Ø± Ø­Ø³Ø¨ Ù†ÙˆØ¹ Ø§Ù„Ø²ÙŠØ§Ø±Ø©
+            let adultPrice = 0;
+            let seniorPrice = 0;
+            let itemLabel = '';
+
+            if (selectedVisitType === 'general') {
+                if (isMember) {
+                    // Ø£Ø¹Ø¶Ø§Ø¡ - Ø²ÙŠØ§Ø±Ø© Ø¹Ø§Ù…Ø© = Ù…Ø¬Ø§Ù†ÙŠ
+                    adultPrice = 0;
+                    seniorPrice = 0;
+                    itemLabel = 'General Admission (Member Benefit)';
+                } else {
+                    // ØºÙŠØ± Ø£Ø¹Ø¶Ø§Ø¡ - Ø²ÙŠØ§Ø±Ø© Ø¹Ø§Ù…Ø© = $15
+                    adultPrice = 15;
+                    seniorPrice = 15 * 0.65; // $9.75
+                    itemLabel = 'General Admission';
+                }
                 seniorPriceLabel.textContent = isMember ? 'Free for members' : '35% off ($9.75)';
+                
+            } else if (selectedVisitType === 'event' && selectedEventData) {
+                // Ø­Ø¯Ø« Ø®Ø§Øµ = Ø³Ø¹Ø± Ø§Ù„Ø­Ø¯Ø« (Ù„Ù„Ø¬Ù…ÙŠØ¹)
+                adultPrice = selectedEventData.price;
+                seniorPrice = selectedEventData.price * 0.65;
+                itemLabel = selectedEventData.title + ' Ticket';
+                seniorPriceLabel.textContent = `35% off ($${seniorPrice.toFixed(2)})`;
             }
 
+            // Ø­Ø³Ø§Ø¨ Adults
             if (visitors.adults > 0) {
-                if (selectedVisitType === 'general' && isMember) {
-                    items.push({
-                        label: `${visitors.adults} × Adult General Admission (Member Benefit)`,
-                        price: 0
-                    });
-                } else if (selectedVisitType === 'general' && !isMember) {
-                    const cost = visitors.adults * 15;
-                    total += cost;
-                    items.push({
-                        label: `${visitors.adults} × Adult General Admission`,
-                        price: cost
-                    });
-                } else if (selectedVisitType === 'event' && selectedEventData) {
-                    const cost = visitors.adults * selectedEventData.price;
-                    total += cost;
-                    items.push({
-                        label: `${visitors.adults} × ${selectedEventData.title} Ticket`,
-                        price: cost
-                    });
-                }
+                const cost = visitors.adults * adultPrice;
+                total += cost;
+                
+                items.push({
+                    label: `${visitors.adults} × Adult ${itemLabel}`,
+                    price: cost
+                });
             }
 
+            // Ø­Ø³Ø§Ø¨ Seniors
             if (visitors.seniors > 0) {
-                let seniorCost = 0;
-
-                if (selectedVisitType === 'general') {
-                    const basePrice = 15;
-                    seniorCost = isMember ? 0 : visitors.seniors * basePrice * 0.65;
-
-                    items.push({
-                        label: isMember
-                            ? `${visitors.seniors} × Senior General Admission (Member Benefit)`
-                            : `${visitors.seniors} × Senior General Admission (35% off)`,
-                        price: seniorCost
-                    });
-
-                } else if (selectedVisitType === 'event' && selectedEventData) {
-                    const basePrice = selectedEventData.price;
-                    seniorCost = visitors.seniors * basePrice * 0.65;
-
-                    items.push({
-                        label: `${visitors.seniors} × ${selectedEventData.title} Ticket (Senior 35% off)`,
-                        price: seniorCost
-                    });
-                }
-
-                total += seniorCost;
+                const cost = visitors.seniors * seniorPrice;
+                total += cost;
+                
+                items.push({
+                    label: `${visitors.seniors} × Senior ${itemLabel} (35% off)`,
+                    price: cost
+                });
             }
 
+            // Ø­Ø³Ø§Ø¨ Children (Ø¯Ø§Ø¦Ù…Ø§Ù‹ Ù…Ø¬Ø§Ù†ÙŠ)
             if (visitors.children > 0) {
                 items.push({
                     label: `${visitors.children} × Children (Free)`,
@@ -1221,6 +1411,7 @@
                 });
             }
 
+            // Ø¹Ø±Ø¶ Ø§Ù„Ù…Ù„Ø®Øµ
             const summaryItems = document.getElementById('summary-items');
             summaryItems.innerHTML = '';
 
@@ -1228,35 +1419,72 @@
                 summaryItems.innerHTML += `
                     <div class="summary-item">
                         <span>${item.label}</span>
-                        <span>${item.price.toFixed(2)}</span>
+                        <span>$${item.price.toFixed(2)}</span>
                     </div>
                 `;
             });
 
-            // if (total > 0) {
-            //     const serviceFee = 2.50;
-            //     summaryItems.innerHTML += `
-            //         <div class="summary-item">
-            //             <span>Service Fee</span>
-            //             <span>${serviceFee.toFixed(2)}</span>
-            //         </div>
-            //     `;
-            //     total += serviceFee;
-            // }
-
-            document.getElementById('total-price').textContent = `${total.toFixed(2)}`;
+            document.getElementById('total-price').textContent = `$${total.toFixed(2)}`;
+            
+            console.log('  Total calculated:', total);
+            
             updateCheckoutButton();
         }
 
         function updateCheckoutButton() {
+            const memberBtn = document.getElementById('member-confirm-btn');
             const checkoutBtn = document.getElementById('checkout-btn');
+            const memberSingleVisitor = document.getElementById('member-single-visitor');
+            const nonMemberCounters = document.getElementById('non-member-counters');
+            const summaryCard = document.getElementById('summary-card');
+            
             const hasVisitType = selectedVisitType !== null;
             const hasDate = selectedDate !== null;
             const hasTime = document.getElementById('time-select').value !== '';
             const hasValidEvent = selectedVisitType !== 'event' || (selectedVisitType === 'event' && selectedEvent);
-            const hasVisitors = visitors.adults > 0 || visitors.children > 0;
 
-            checkoutBtn.disabled = !(hasVisitType && hasDate && hasTime && hasValidEvent && hasVisitors);
+            console.log('ðŸ”„ updateCheckoutButton called');
+            console.log('  isMember:', isMember);
+            console.log('  selectedVisitType:', selectedVisitType);
+            console.log('  selectedEvent:', selectedEvent);
+
+            if (isMember && selectedVisitType === 'general') {
+
+                console.log('  âœ… Member free visit mode');
+
+                if (memberSingleVisitor) memberSingleVisitor.classList.remove('hidden');
+                if (nonMemberCounters) nonMemberCounters.style.display = 'none';
+                if (summaryCard) summaryCard.style.display = 'none';
+                
+                if (memberBtn) {
+                    memberBtn.classList.remove('hidden');
+                    memberBtn.style.display = 'flex';
+                    memberBtn.disabled = !(hasDate && hasTime);
+                }
+                if (checkoutBtn) checkoutBtn.style.display = 'none';
+            } else {
+                console.log('  ðŸ’³ Payment required mode');
+                if (memberSingleVisitor) memberSingleVisitor.classList.add('hidden');
+                if (nonMemberCounters) nonMemberCounters.style.display = 'block';
+                if (summaryCard) summaryCard.style.display = 'block';
+                
+                if (memberBtn) {
+                    memberBtn.classList.add('hidden');
+                    memberBtn.style.display = 'none';
+                }
+                if (checkoutBtn) {
+                    checkoutBtn.style.display = 'block';
+                    
+                    const hasVisitors = visitors.adults > 0 || visitors.children > 0 || visitors.seniors > 0;
+                    const canCheckout = hasVisitType && hasDate && hasTime && hasValidEvent && hasVisitors;
+                    
+                    checkoutBtn.disabled = !canCheckout;
+                    
+                    console.log('  Checkout button enabled:', canCheckout);
+                    console.log('    hasVisitors:', hasVisitors);
+                    console.log('    visitors:', visitors);
+                }
+            }
         }
 
         function renderCalendar() {
@@ -1402,7 +1630,7 @@
                 visitInfo = selectedEventData.title;
             }
 
-            const totalVisitors = visitors.adults + visitors.children;
+            const totalVisitors = visitors.adults + visitors.children + visitors.seniors;
             const total = document.getElementById('total-price').textContent;
 
             const bookingData = {
@@ -1412,6 +1640,7 @@
                 time: timeStr,
                 adults: visitors.adults,
                 children: visitors.children,
+                seniors: visitors.seniors,
                 totalVisitors: totalVisitors,
                 total: total,
                 isMember: isMember,
@@ -1457,13 +1686,12 @@
                 if (match) {
                     selectEl.value = match.value;
                     selectEl.dispatchEvent(new Event('change', { bubbles: true }));
-                    // Scroll to the Select Date & Time section
                     const dateTimeHeader = document.querySelector('#booking-section h3');
                     if (dateTimeHeader) {
                         dateTimeHeader.scrollIntoView({ behavior: 'smooth' });
                     }
                 } else {
-                    console.warn('❌ Could not auto-select event:', eventTitle);
+                    console.warn('⚠  Could not auto-select event:', eventTitle);
                 }
             }
         });

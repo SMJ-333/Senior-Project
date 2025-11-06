@@ -19,7 +19,8 @@ export const NotificationType = {
     NEWS: 'news',
     EVENT_REGISTRATION: 'event_registration',
     EVENT_REMINDER: 'event_reminder',
-    EVENT_UPCOMING: 'event_upcoming'
+    EVENT_UPCOMING: 'event_upcoming',
+    BOOKING_CONFIRMATION: 'booking_confirmation'  // ← جديد
 };
 
 let notificationsUnsubscribe = null;
@@ -258,6 +259,43 @@ export async function sendUpcomingEventNotification(userId, eventId, eventTitle)
         return true;
     } catch (error) {
         console.error('❌ Error sending upcoming event notification:', error);
+        return false;
+    }
+}
+
+// Send booking confirmation notification
+export async function sendBookingConfirmationNotification(userId, bookingDetails) {
+    try {
+        const message = `Your ${bookingDetails.visitInfo} booking is confirmed for ${bookingDetails.date} at ${bookingDetails.time}. Total visitors: ${bookingDetails.totalVisitors}. Amount paid: $${bookingDetails.total}`;
+        
+        const notificationData = {
+            userId: userId,
+            type: NotificationType.BOOKING_CONFIRMATION,
+            title: '🎫 Booking Confirmed',
+            message: message,
+            relatedId: bookingDetails.bookingId,
+            relatedTitle: bookingDetails.visitInfo,
+            bookingDetails: {
+                bookingId: bookingDetails.bookingId,
+                visitInfo: bookingDetails.visitInfo,
+                date: bookingDetails.date,
+                time: bookingDetails.time,
+                totalVisitors: bookingDetails.totalVisitors,
+                adults: bookingDetails.adults || 0,
+                children: bookingDetails.children || 0,
+                seniors: bookingDetails.seniors || 0,
+                total: bookingDetails.total,
+                paymentMethod: bookingDetails.paymentMethod
+            },
+            isRead: false,
+            createdAt: Timestamp.now()
+        };
+
+        await addDoc(collection(db, "Notifications"), notificationData);
+        console.log('✅ Booking confirmation notification sent');
+        return true;
+    } catch (error) {
+        console.error('❌ Error sending booking confirmation:', error);
         return false;
     }
 }
