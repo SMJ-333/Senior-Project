@@ -1,13 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ATHAR Museum - Discover History</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
@@ -38,10 +35,7 @@
             overflow-x: hidden;
         }
 
-        h1,
-        h2,
-        h3,
-        h4 {
+        h1, h2, h3, h4 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
             line-height: 1.2;
@@ -189,11 +183,11 @@
             opacity: 0.9;
         }
 
-        /* Search Bar Styles */
+        /* IMPROVED Search Bar Styles */
         .search-container {
             position: relative;
             width: 100%;
-            max-width: 600px;
+            max-width: 650px;
             margin: 0 auto;
         }
 
@@ -203,22 +197,29 @@
             align-items: center;
             background: rgba(255, 255, 255, 0.95);
             border-radius: 50px;
-            padding: 0.8rem 1.5rem;
-            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
-            backdrop-filter: blur(10px);
+            padding: 1rem 1.8rem;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(15px);
             transition: var(--transition);
+            border: 2px solid transparent;
         }
 
         .search-wrapper:focus-within {
             transform: scale(1.02);
-            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+            box-shadow: 0 15px 50px rgba(176, 141, 87, 0.4);
             background: rgba(255, 255, 255, 1);
+            border-color: var(--accent);
         }
 
         .search-icon {
             color: var(--accent);
             margin-right: 1rem;
             font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .search-wrapper:focus-within .search-icon {
+            transform: rotate(90deg);
         }
 
         #hero-search {
@@ -236,21 +237,20 @@
             opacity: 0.7;
         }
 
-
-
-        /* Suggestions Dropdown */
+        /* IMPROVED Suggestions Dropdown */
         .suggestions-dropdown {
             position: absolute;
-            top: calc(100% + 10px);
+            top: calc(100% + 15px);
             left: 0;
             right: 0;
             background: var(--white);
-            border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
             max-height: 400px;
             overflow-y: auto;
             display: none;
             z-index: 100;
+            border: 1px solid rgba(176, 141, 87, 0.2);
         }
 
         .suggestions-dropdown.show {
@@ -261,7 +261,7 @@
         @keyframes slideDown {
             from {
                 opacity: 0;
-                transform: translateY(-10px);
+                transform: translateY(-20px);
             }
             to {
                 opacity: 1;
@@ -270,34 +270,62 @@
         }
 
         .suggestion-category {
-            padding: 0.8rem 1.5rem;
-            font-weight: 600;
-            color: var(--accent);
+            padding: 1rem 1.5rem 0.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
             background: var(--neutral-light);
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border-top: 1px solid rgba(176, 141, 87, 0.2);
+            letter-spacing: 1px;
+            border-top: 1px solid rgba(176, 141, 87, 0.15);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .suggestion-category:first-child {
             border-top: none;
-            border-radius: 12px 12px 0 0;
+            border-radius: 20px 20px 0 0;
+        }
+
+        .category-icon {
+            font-size: 1.2rem;
+            color: var(--accent);
         }
 
         .suggestion-item {
-            padding: 1rem 1.5rem;
+            padding: 1.2rem 1.5rem;
             cursor: pointer;
             transition: var(--transition);
             display: flex;
             align-items: center;
-            gap: 1rem;
+            gap: 1.2rem;
             border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .suggestion-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 4px;
+            background: var(--accent);
+            transform: scaleY(0);
+            transition: var(--transition);
         }
 
         .suggestion-item:hover {
-            background: var(--neutral-light);
+            background: linear-gradient(90deg, rgba(176, 141, 87, 0.08) 0%, transparent 100%);
             padding-left: 2rem;
+        }
+
+        .suggestion-item:hover::before {
+            transform: scaleY(1);
         }
 
         .suggestion-item:last-child {
@@ -305,37 +333,112 @@
         }
 
         .suggestion-icon {
-            color: var(--accent);
-            font-size: 1.2rem;
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+            color: white;
+            border-radius: 12px;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+            box-shadow: 0 4px 10px rgba(176, 141, 87, 0.3);
         }
 
         .suggestion-content {
             flex: 1;
+            min-width: 0;
         }
 
         .suggestion-title {
             font-weight: 600;
             color: var(--primary-dark);
-            margin-bottom: 0.2rem;
+            margin-bottom: 0.3rem;
+            font-size: 1rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .suggestion-meta {
             font-size: 0.85rem;
             color: var(--text-light);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .meta-tag {
+            background: var(--neutral-light);
+            padding: 0.2rem 0.6rem;
+            border-radius: 10px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--accent);
         }
 
         .no-results {
-            padding: 2rem;
+            padding: 3rem 2rem;
             text-align: center;
             color: var(--text-light);
         }
 
         .no-results .material-icons {
-            font-size: 3rem;
-            opacity: 0.5;
-            margin-bottom: 0.5rem;
+            font-size: 4rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
+            color: var(--accent);
         }
 
+        .no-results h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+
+        .no-results p {
+            font-size: 0.95rem;
+        }
+
+        /* Scrollbar styling for dropdown */
+        .suggestions-dropdown::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar-track {
+            background: var(--neutral-light);
+            border-radius: 0 20px 20px 0;
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .suggestions-dropdown::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Loading state */
+        .search-loading {
+            padding: 2rem;
+            text-align: center;
+            color: var(--text-light);
+        }
+
+        .search-loading .material-icons {
+            animation: spin 1s linear infinite;
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Rest of the styles remain the same... */
         .cta-button {
             background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
             color: var(--primary-dark);
@@ -478,17 +581,6 @@
             justify-content: center;
             color: var(--white);
             font-size: 1rem;
-        }
-
-        .recommendation-image.no-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><rect fill="%23ffffff" width="200" height="200"/><path d="M40,40 C60,20 80,40 100,30 C120,20 140,40 160,30 C180,20 200,40 200,40 L200,200 L40,200 Z" fill="%23d4af37"/></svg>');
-            background-size: cover;
         }
 
         .recommendation-badge {
@@ -638,17 +730,6 @@
             overflow: hidden;
         }
 
-        .info-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><rect fill="%23ffffff" width="200" height="200"/><path d="M40,40 C60,20 80,40 100,30 C120,20 140,40 160,30 C180,20 200,40 200,40 L200,200 L40,200 Z" fill="%23d4af37"/></svg>');
-            background-size: cover;
-        }
-
         .info-image div {
             position: relative;
             z-index: 1;
@@ -786,7 +867,6 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
-
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -872,13 +952,20 @@
             }
 
             .search-wrapper {
-                flex-direction: column;
-                gap: 0.8rem;
+                padding: 0.9rem 1.2rem;
+            }
+
+            .suggestion-item {
                 padding: 1rem;
+            }
+
+            .suggestion-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 1.1rem;
             }
         }
 
-        /* Notification Badge on Account Icon */
         .notification-badge {
             position: absolute;
             top: -5px;
@@ -907,7 +994,6 @@
             }
         }
 
-        /* Loading Spinner */
         .loading-spinner {
             display: flex;
             flex-direction: column;
@@ -920,12 +1006,6 @@
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Highlight animation for searched sections */
         @keyframes highlightPulse {
             0% {
                 box-shadow: 0 0 0 0 rgba(176, 141, 87, 0.7);
@@ -948,7 +1028,6 @@
         }
     </style>
 </head>
-
 <body>
     <nav>
         <div class="nav-container">
@@ -962,25 +1041,25 @@
                 <li><a href="Exhibitions.html">Exhibitions</a></li>
                 <li><a href="Gallery.html">Gallery</a></li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account"><span
-                    class="material-icons">person</span></a>
+            <a href="Account.html" class="account-icon" title="My Account">
+                <span class="material-icons">person</span>
+            </a>
         </div>
     </nav>
 
     <section class="hero" id="home">
         <div class="hero-content">
             <h1>Discover Timeless ATHAR</h1>
-            <p>Experience centuries of art, culture, and history through our world-class collections and immersive
-                exhibitions.</p>
+            <p>Experience centuries of art, culture, and history through our world-class collections and immersive exhibitions.</p>
             
-            <!-- Search Bar replacing CTA button -->
+            <!-- Enhanced Search Bar -->
             <div class="search-container">
                 <div class="search-wrapper">
                     <span class="material-icons search-icon">search</span>
                     <input 
                         type="text" 
                         id="hero-search" 
-                        placeholder="Search exhibitions, events, artworks..."
+                        placeholder="Search exhibitions, events, artworks, pages..."
                         autocomplete="off"
                     >
                 </div>
@@ -989,17 +1068,14 @@
         </div>
     </section>
 
+    <!-- Museum Info Section -->
     <section class="museum-info">
         <div class="container">
             <div class="info-grid">
                 <div class="info-text">
                     <h2>About Our Museum</h2>
-                    <p>Established in 1892, the ATHAR Museum stands as a beacon of cultural preservation and education.
-                        Our mission is to inspire curiosity and understanding of our shared human story through
-                        carefully curated collections and engaging programs.</p>
-                    <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an
-                        unparalleled journey through time. Our expertly designed galleries provide context and meaning
-                        to the objects that have shaped our world.</p>
+                    <p>Established in 1892, the ATHAR Museum stands as a beacon of cultural preservation and education. Our mission is to inspire curiosity and understanding of our shared human story through carefully curated collections and engaging programs.</p>
+                    <p>With over 50,000 artifacts spanning 5,000 years of human civilization, we offer visitors an unparalleled journey through time. Our expertly designed galleries provide context and meaning to the objects that have shaped our world.</p>
                     <div class="info-stats">
                         <div class="stat-box">
                             <h3>50K+</h3>
@@ -1055,6 +1131,7 @@
         </div>
     </section>
 
+    <!-- Events and Exhibitions -->
     <div class="container">
         <div class="section-title">
             <h2>What's On</h2>
@@ -1064,8 +1141,8 @@
                 <h2>Upcoming Events</h2>
                 <div id="upcoming-events-container">
                     <div class="loading-spinner" style="padding: 2rem;">
-                        <div class="spinner" style="border: 3px solid var(--neutral-light); border-top: 3px solid var(--accent); width: 40px; height: 40px;"></div>
-                        <p class="loading-text" style="margin-top: 1rem; color: var(--text-light);">Loading upcoming events...</p>
+                        <div class="spinner" style="border: 3px solid var(--neutral-light); border-top: 3px solid var(--accent); border-radius: 50%; width: 40px; height: 40px;"></div>
+                        <p style="margin-top: 1rem; color: var(--text-light);">Loading upcoming events...</p>
                     </div>
                 </div>
             </div>
@@ -1073,14 +1150,15 @@
                 <h2>Featured Exhibitions</h2>
                 <div id="featured-exhibitions-container">
                     <div class="loading-spinner" style="padding: 2rem;">
-                        <div class="spinner" style="border: 3px solid var(--neutral-light); border-top: 3px solid var(--accent); width: 40px; height: 40px;"></div>
-                        <p class="loading-text" style="margin-top: 1rem; color: var(--text-light);">Loading featured exhibitions...</p>
+                        <div class="spinner" style="border: 3px solid var(--neutral-light); border-top: 3px solid var(--accent); border-radius: 50%; width: 40px; height: 40px;"></div>
+                        <p style="margin-top: 1rem; color: var(--text-light);">Loading featured exhibitions...</p>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
             <div class="footer-info">
@@ -1111,9 +1189,10 @@
         </div>
     </footer>
 
-    <!-- Include the highlighter script for search navigation -->
+    <!-- Search Highlighter Script -->
+    <script src="search-highlighter.js"></script>
+    
     <script src="section-highlighter.js"></script>
-
     <script type="module">
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
@@ -1124,14 +1203,15 @@
         let userData = null;
         let allArtworks = [];
         let allUsers = [];
+        let allEvents = [];
+        let allExhibitions = [];
         let searchData = [];
 
-        // Interest to Category Mapping
         const interestToCategoryMap = {
-            'Manuscripts': 'codices',
-            'Weapons': 'arms',
-            'Boxes': 'boxes',
-            'Bottles': 'bottles'
+            'Manuscripts': 'Codices',
+            'Weapons': 'Arms',
+            'Boxes': 'Boxes',
+            'Bottles': 'Bottles'
         };
 
         const interestToExhibitionMap = {
@@ -1143,34 +1223,356 @@
             'Echoes of Islamic Civilization': 'Others'
         };
 
-        // Load Upcoming Events from Database (Top 3)
-        async function loadUpcomingEvents() {
+        // ===== DATABASE-DRIVEN SEARCH SYSTEM =====
+        async function loadAllSearchableData() {
             try {
-                const eventsCol = collection(db, 'Events');
-                const eventsSnapshot = await getDocs(eventsCol);
+                console.log('🔍 Loading searchable data from database...');
                 
-                const now = new Date();
-                const upcomingEvents = [];
-
-                eventsSnapshot.forEach(doc => {
+                // Load artworks
+                const artworksSnap = await getDocs(collection(db, "Museum_Collection"));
+                allArtworks = artworksSnap.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+                
+                // Load events
+                const eventsSnap = await getDocs(collection(db, "Events"));
+                allEvents = eventsSnap.docs.map(doc => {
                     const data = doc.data();
-                    const startDate = data.startDate?.toDate();
-                    
-                    // Only include events that haven't started yet
-                    if (startDate && startDate > now) {
-                        upcomingEvents.push({
-                            id: doc.id,
-                            ...data,
-                            startDate: startDate
-                        });
+                    return {
+                        id: doc.id,
+                        ...data,
+                        startDate: data.startDate?.toDate()
+                    };
+                });
+                
+                // Extract unique exhibitions from artworks
+                const exhibitionSet = new Set();
+                allArtworks.forEach(artwork => {
+                    if (artwork.Exhibition) {
+                        exhibitionSet.add(artwork.Exhibition.trim());
                     }
                 });
+                allExhibitions = Array.from(exhibitionSet);
+                
+                // Load users for recommendations
+                const usersSnap = await getDocs(collection(db, "Users"));
+                allUsers = usersSnap.docs.map(doc => {
+                    const data = doc.data();
+                    const age = calculateAge(data['Date of Birth']);
+                    return {
+                        id: doc.id,
+                        ...data,
+                        age: age,
+                        ageGroup: age ? getAgeGroup(age) : 'unknown'
+                    };
+                });
 
-                // Sort by date (earliest first) and take top 3
-                upcomingEvents.sort((a, b) => a.startDate - b.startDate);
-                const top3Events = upcomingEvents.slice(0, 3);
+                console.log(`✅ Loaded: ${allArtworks.length} artworks, ${allEvents.length} events, ${allExhibitions.length} exhibitions`);
+                
+                buildSearchIndex();
+            } catch (error) {
+                console.error('❌ Error loading search data:', error);
+            }
+        }
 
-                displayUpcomingEvents(top3Events);
+        function buildSearchIndex() {
+            searchData = [];
+            
+            console.log('📚 Building comprehensive search index...');
+
+            // === ARTWORKS from Database ===
+            allArtworks.forEach(artwork => {
+                searchData.push({
+                    name: artwork.title || 'Untitled',
+                    url: `ArtDetails.html?id=${artwork.id}`,
+                    type: 'artwork',
+                    description: `${artwork.artist || artwork.artistName || 'Unknown Artist'}`,
+                    meta: artwork.Exhibition || 'Museum Collection',
+                    keywords: [
+                        artwork.title,
+                        artwork.artist,
+                        artwork.artistName,
+                        artwork.Exhibition,
+                        artwork.classification,
+                        artwork.description,
+                        artwork.material,
+                        artwork.Geography
+                    ].filter(Boolean).join(' ').toLowerCase()
+                });
+            });
+
+            // === EVENTS from Database ===
+            allEvents.forEach(event => {
+                const dateStr = event.startDate ? event.startDate.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'short',
+                    day: 'numeric'
+                }) : 'TBA';
+                
+                searchData.push({
+                    name: event.title || 'Untitled Event',
+                    url: `Events.html#event-${event.id}`,
+                    type: 'event',
+                    description: event.description || 'Museum event',
+                    meta: dateStr,
+                    keywords: [
+                        event.title,
+                        event.description,
+                        event.location,
+                        dateStr
+                    ].filter(Boolean).join(' ').toLowerCase()
+                });
+            });
+
+            // === EXHIBITIONS from Database ===
+            allExhibitions.forEach(exhibition => {
+                const artworkCount = allArtworks.filter(a => a.Exhibition === exhibition).length;
+                
+                searchData.push({
+                    name: exhibition,
+                    url: `ExhibitionDetails.html?exhibition=${encodeURIComponent(exhibition)}`,
+                    type: 'exhibition',
+                    description: getExhibitionDescription(exhibition),
+                    meta: `${artworkCount} artwork${artworkCount !== 1 ? 's' : ''}`,
+                    keywords: [exhibition, getExhibitionDescription(exhibition)].join(' ').toLowerCase()
+                });
+            });
+
+            // === STATIC PAGES (comprehensive list) ===
+            const pages = [
+                { name: 'Home', url: 'Home.html', description: 'Museum homepage and latest updates', keywords: 'home main start welcome' },
+                { name: 'About Us', url: 'AboutUs.html', description: 'Learn about our museum history and mission', keywords: 'about history mission team staff' },
+                { name: 'Gallery', url: 'Gallery.html', description: 'Browse our complete art collection', keywords: 'gallery collection artworks browse view' },
+                { name: 'Events', url: 'Events.html', description: 'View all upcoming museum events', keywords: 'events activities programs workshops' },
+                { name: 'News', url: 'News.html', description: 'Latest museum news and updates', keywords: 'news updates blog announcements' },
+                { name: 'Exhibitions', url: 'Exhibitions.html', description: 'Current and upcoming exhibitions', keywords: 'exhibitions shows displays current' },
+                { name: 'Ticketing', url: 'Ticketing.html', description: 'Purchase museum tickets and passes', keywords: 'tickets ticketing admission buy purchase prices' },
+                { name: 'Account', url: 'Account.html', description: 'Manage your account and preferences', keywords: 'account profile settings preferences login' },
+                { name: 'Exhibition Details', url: 'ExhibitionDetails.html', description: 'Detailed exhibition information', keywords: 'exhibition details information specific' }
+            ];
+
+            pages.forEach(page => {
+                searchData.push({
+                    name: page.name,
+                    url: page.url,
+                    type: 'page',
+                    description: page.description,
+                    meta: 'Website Page',
+                    keywords: page.keywords
+                });
+            });
+
+            console.log(`✅ Search index built with ${searchData.length} items`);
+        }
+
+        function performSearch(query) {
+            if (!query || query.trim().length < 2) {
+                return [];
+            }
+
+            const lowerQuery = query.toLowerCase().trim();
+            const results = [];
+
+            searchData.forEach(item => {
+                const searchText = `${item.name} ${item.description} ${item.meta} ${item.keywords || ''}`.toLowerCase();
+                
+                if (searchText.includes(lowerQuery)) {
+                    let score = 0;
+                    const nameMatch = item.name.toLowerCase();
+                    
+                    if (nameMatch === lowerQuery) {
+                        score = 1000; // Exact match
+                    } else if (nameMatch.startsWith(lowerQuery)) {
+                        score = 500; // Starts with query
+                    } else if (nameMatch.includes(lowerQuery)) {
+                        score = 100; // Contains in name
+                    } else if (item.description.toLowerCase().includes(lowerQuery)) {
+                        score = 50; // In description
+                    } else {
+                        score = 10; // In keywords
+                    }
+
+                    results.push({ ...item, score });
+                }
+            });
+
+            return results
+                .sort((a, b) => b.score - a.score)
+                .slice(0, 12); // Show top 12 results
+        }
+
+        function displaySuggestions(results) {
+            const dropdown = document.getElementById('suggestions-dropdown');
+            
+            if (results.length === 0) {
+                dropdown.innerHTML = `
+                    <div class="no-results">
+                        <span class="material-icons">search_off</span>
+                        <h3>No Results Found</h3>
+                        <p>Try searching for artworks, events, exhibitions, or pages</p>
+                    </div>
+                `;
+                dropdown.classList.add('show');
+                return;
+            }
+
+            // Group results by type
+            const grouped = {
+                artwork: [],
+                exhibition: [],
+                event: [],
+                page: []
+            };
+
+            results.forEach(result => {
+                if (grouped[result.type]) {
+                    grouped[result.type].push(result);
+                }
+            });
+
+            let html = '';
+
+            // Display each category with icons
+            if (grouped.artwork.length > 0) {
+                html += '<div class="suggestion-category"><span class="material-icons category-icon">palette</span>Artworks</div>';
+                grouped.artwork.forEach(item => {
+                    html += createSuggestionHTML(item, 'palette');
+                });
+            }
+
+            if (grouped.exhibition.length > 0) {
+                html += '<div class="suggestion-category"><span class="material-icons category-icon">museum</span>Exhibitions</div>';
+                grouped.exhibition.forEach(item => {
+                    html += createSuggestionHTML(item, 'museum');
+                });
+            }
+
+            if (grouped.event.length > 0) {
+                html += '<div class="suggestion-category"><span class="material-icons category-icon">event</span>Events</div>';
+                grouped.event.forEach(item => {
+                    html += createSuggestionHTML(item, 'event');
+                });
+            }
+
+            if (grouped.page.length > 0) {
+                html += '<div class="suggestion-category"><span class="material-icons category-icon">article</span>Pages</div>';
+                grouped.page.forEach(item => {
+                    html += createSuggestionHTML(item, 'article');
+                });
+            }
+
+            dropdown.innerHTML = html;
+            dropdown.classList.add('show');
+
+            // Add click handlers with search query
+            dropdown.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    const url = this.dataset.url;
+                    const searchQuery = searchInput.value.trim();
+                    
+                    // Add search query to URL
+                    const separator = url.includes('?') ? '&' : '?';
+                    const finalUrl = `${url}${separator}searchQuery=${encodeURIComponent(searchQuery)}`;
+                    
+                    window.location.href = finalUrl;
+                });
+            });
+        }
+
+        function createSuggestionHTML(item, icon) {
+            return `
+                <div class="suggestion-item" data-url="${item.url}">
+                    <span class="material-icons suggestion-icon">${icon}</span>
+                    <div class="suggestion-content">
+                        <div class="suggestion-title">${item.name}</div>
+                        <div class="suggestion-meta">
+                            ${item.description}
+                            ${item.meta ? ` <span class="meta-tag">${item.meta}</span>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Search input handler
+        const searchInput = document.getElementById('hero-search');
+        const dropdown = document.getElementById('suggestions-dropdown');
+
+        let searchTimeout;
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimeout);
+            const query = this.value;
+
+            if (query.trim().length < 2) {
+                dropdown.classList.remove('show');
+                return;
+            }
+
+            // Show loading state
+            dropdown.innerHTML = `
+                <div class="search-loading">
+                    <span class="material-icons">hourglass_empty</span>
+                    <p style="margin-top: 0.5rem;">Searching...</p>
+                </div>
+            `;
+            dropdown.classList.add('show');
+
+            searchTimeout = setTimeout(() => {
+                const results = performSearch(query);
+                displaySuggestions(results);
+            }, 300);
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.search-container')) {
+                dropdown.classList.remove('show');
+            }
+        });
+
+        // Helper functions
+        function calculateAge(dateOfBirth) {
+            if (!dateOfBirth) return null;
+            const birthDate = dateOfBirth.toDate ? dateOfBirth.toDate() : new Date(dateOfBirth);
+            const today = new Date();
+            let age = today.getFullYear() - birthDate.getFullYear();
+            const monthDiff = today.getMonth() - birthDate.getMonth();
+            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+                age--;
+            }
+            return age;
+        }
+
+        function getAgeGroup(age) {
+            if (age < 13) return 'child';
+            if (age <= 25) return 'youth';
+            if (age <= 59) return 'adult';
+            return 'senior';
+        }
+
+        function getExhibitionDescription(exhibitionName) {
+            const descriptions = {
+                'Arab Heritage': 'Explore the rich cultural treasures of Arab civilization',
+                'Persian Heritage': 'Discover the art and history of ancient Persia',
+                'Indian Heritage': 'Journey through thousands of years of Indian civilization',
+                'Andalusian Heritage': 'Experience the golden age of Andalusian culture',
+                'Turkish Heritage': 'Discover the treasures of the Ottoman Empire',
+                'Others': 'Echoes of Islamic Civilization'
+            };
+            return descriptions[exhibitionName] || 'A remarkable collection showcasing heritage';
+        }
+
+        // Load Upcoming Events from Database
+        async function loadUpcomingEvents() {
+            try {
+                const now = new Date();
+                const upcomingEvents = allEvents
+                    .filter(event => event.startDate && event.startDate > now)
+                    .sort((a, b) => a.startDate - b.startDate)
+                    .slice(0, 3);
+
+                displayUpcomingEvents(upcomingEvents);
             } catch (error) {
                 console.error('Error loading upcoming events:', error);
                 document.getElementById('upcoming-events-container').innerHTML = `
@@ -1212,124 +1614,30 @@
             }).join('');
         }
 
-        // Navigate to event on Events page
         window.navigateToEvent = function(eventId) {
-            // Store event ID to highlight
             sessionStorage.setItem('highlightEvent', eventId);
             window.location.href = 'Events.html#event-' + eventId;
         }
 
-        // Calculate most popular interests from all users
-        async function getMostPopularInterests() {
-            try {
-                const usersCol = collection(db, 'Users');
-                const usersSnapshot = await getDocs(usersCol);
-                
-                const interestCount = {};
-
-                usersSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    const interests = data.Interests || [];
-                    
-                    interests.forEach(interest => {
-                        interestCount[interest] = (interestCount[interest] || 0) + 1;
-                    });
-                });
-
-                // Sort interests by count and return top ones
-                const sortedInterests = Object.entries(interestCount)
-                    .sort((a, b) => b[1] - a[1])
-                    .map(entry => entry[0]);
-
-                console.log('Popular interests ranking:', sortedInterests);
-                return sortedInterests;
-            } catch (error) {
-                console.error('Error getting popular interests:', error);
-                return [];
-            }
-        }
-
-        // Load Featured Exhibitions based on most popular interests
+        // Load Featured Exhibitions
         async function loadFeaturedExhibitions() {
             try {
-                // Get most popular interests
-                const popularInterests = await getMostPopularInterests();
-
-                // Get all artworks
-                const artworksCol = collection(db, 'Museum_Collection');
-                const artworksSnapshot = await getDocs(artworksCol);
-                
                 const exhibitionCounts = {};
 
-                // FIRST: Count ALL artworks per exhibition (accurate counts)
-                artworksSnapshot.forEach(doc => {
-                    const data = doc.data();
-                    let exhibition = data.Exhibition;
-                    
-                    if (!exhibition) return;
-
-                    // Normalize exhibition name (trim spaces, consistent capitalization)
-                    exhibition = exhibition.trim();
-                    
-                    // Map common variations to standard names
-                    const exhibitionMap = {
-                        'arab heritage': 'Arab Heritage',
-                        'persian heritage': 'Persian Heritage',
-                        'indian heritage': 'Indian Heritage',
-                        'andalusian heritage': 'Andalusian Heritage',
-                        'turkish heritage': 'Turkish Heritage',
-                        'others': 'Others'
-                    };
-                    
-                    const normalizedKey = exhibition.toLowerCase();
-                    const standardName = exhibitionMap[normalizedKey] || exhibition;
-
-                    // Initialize if new exhibition
-                    if (!exhibitionCounts[standardName]) {
-                        exhibitionCounts[standardName] = {
-                            count: 0,
-                            popularityScore: 0
-                        };
+                allArtworks.forEach(artwork => {
+                    const exhibition = artwork.Exhibition?.trim();
+                    if (exhibition) {
+                        exhibitionCounts[exhibition] = (exhibitionCounts[exhibition] || 0) + 1;
                     }
-
-                    // Count EVERY artwork in this exhibition
-                    exhibitionCounts[standardName].count++;
                 });
 
-                // SECOND: Add popularity score based on user interests
-                Object.keys(exhibitionCounts).forEach(exhibition => {
-                    popularInterests.forEach((interest, index) => {
-                        const mappedExhibition = interestToExhibitionMap[interest];
-                        if (mappedExhibition === exhibition) {
-                            // Higher score for more popular interests (diminishing weight)
-                            exhibitionCounts[exhibition].popularityScore += (popularInterests.length - index);
-                        }
-                    });
-                });
-
-                // Sort exhibitions by popularity score, then by count
                 const sortedExhibitions = Object.entries(exhibitionCounts)
-                    .sort((a, b) => {
-                        // First sort by popularity score
-                        if (b[1].popularityScore !== a[1].popularityScore) {
-                            return b[1].popularityScore - a[1].popularityScore;
-                        }
-                        // Then by artwork count
-                        return b[1].count - a[1].count;
-                    })
+                    .sort((a, b) => b[1] - a[1])
                     .slice(0, 3);
 
-                console.log('Exhibition counts (normalized):', exhibitionCounts);
-                console.log('Top 3 featured:', sortedExhibitions);
-                
                 displayFeaturedExhibitions(sortedExhibitions);
             } catch (error) {
                 console.error('Error loading featured exhibitions:', error);
-                document.getElementById('featured-exhibitions-container').innerHTML = `
-                    <p style="color: var(--text-light); text-align: center; padding: 2rem;">
-                        Unable to load exhibitions
-                    </p>
-                `;
             }
         }
 
@@ -1345,299 +1653,22 @@
                 return;
             }
 
-            container.innerHTML = exhibitions.map(([name, data]) => {
-                const artworkCount = data.count;
-                const description = getExhibitionDescription(name);
-
+            container.innerHTML = exhibitions.map(([name, count]) => {
                 return `
                     <div class="exhibition-item" onclick="navigateToExhibition('${encodeURIComponent(name)}')" style="cursor: pointer;">
                         <h3>${name}</h3>
-                        <span class="event-date">${artworkCount} artwork${artworkCount !== 1 ? 's' : ''}${data.popularityScore > 0 ? ' • Popular Choice' : ''}</span>
-                        <p>${description}</p>
+                        <span class="event-date">${count} artwork${count !== 1 ? 's' : ''}</span>
+                        <p>${getExhibitionDescription(name)}</p>
                     </div>
                 `;
             }).join('');
         }
 
-        // Navigate to exhibition details page
         window.navigateToExhibition = function(exhibitionName) {
-            // Navigate to ExhibitionDetails page with exhibition name as parameter
             window.location.href = 'ExhibitionDetails.html?exhibition=' + exhibitionName;
         }
 
-        // Helper function to get exhibition descriptions
-        function getExhibitionDescription(exhibitionName) {
-            const descriptions = {
-                'Arab Heritage': 'Explore the rich cultural treasures of Arab civilization through stunning artifacts and art.',
-                'Persian Heritage': 'Discover the art and history of ancient Persia, from intricate textiles to masterful ceramics.',
-                'Indian Heritage': 'Journey through thousands of years of Indian civilization and artistic achievement.',
-                'Andalusian Heritage': 'Experience the golden age of Andalusian culture and its lasting influence.',
-                'Turkish Heritage': 'Discover the treasures of the Ottoman Empire and Turkish artistic traditions.',
-                'Others': 'Echoes of Islamic Civilization - A diverse collection spanning the Islamic world.'
-            };
-
-            return descriptions[exhibitionName] || 'A remarkable collection showcasing artistic and cultural heritage.';
-        }
-
-        // Search Data Structure
-        function buildSearchIndex() {
-            searchData = [];
-
-            // Add exhibitions - navigate to ExhibitionDetails page
-            const exhibitions = [
-                { name: 'Arab Heritage', url: 'ExhibitionDetails.html?exhibition=Arab%20Heritage', type: 'exhibition', description: 'Explore Arab cultural treasures' },
-                { name: 'Persian Heritage', url: 'ExhibitionDetails.html?exhibition=Persian%20Heritage', type: 'exhibition', description: 'Discover Persian art and history' },
-                { name: 'Indian Heritage', url: 'ExhibitionDetails.html?exhibition=Indian%20Heritage', type: 'exhibition', description: 'Journey through Indian civilization' },
-                { name: 'Andalusian Heritage', url: 'ExhibitionDetails.html?exhibition=Andalusian%20Heritage', type: 'exhibition', description: 'Experience Andalusian culture' },
-                { name: 'Turkish Heritage', url: 'ExhibitionDetails.html?exhibition=Turkish%20Heritage', type: 'exhibition', description: 'Discover Ottoman treasures' },
-                { name: 'Others', url: 'ExhibitionDetails.html?exhibition=Others', type: 'exhibition', description: 'Echoes of Islamic Civilization' }
-            ];
-
-            // Add events with section targeting
-            const events = [
-                { name: 'Ancient Egypt Night Tour', url: 'Home.html#upcoming-events', type: 'event', date: 'October 25, 2025', description: 'After-hours guided tour', section: 'upcoming-events' },
-                { name: 'Renaissance Art Workshop', url: 'Home.html#upcoming-events', type: 'event', date: 'November 12, 2025', description: 'Learn painting techniques', section: 'upcoming-events' },
-                { name: 'Family Discovery Day', url: 'Home.html#upcoming-events', type: 'event', date: 'November 28, 2025', description: 'Interactive family event', section: 'upcoming-events' }
-            ];
-
-            // Add pages
-            const pages = [
-                { name: 'Gallery', url: 'Gallery.html', type: 'page', description: 'Browse our complete art collection' },
-                { name: 'Events', url: 'Events.html', type: 'page', description: 'View upcoming museum events' },
-                { name: 'News', url: 'News.html', type: 'page', description: 'Latest museum news and updates' },
-                { name: 'About Us', url: 'AboutUs.html', type: 'page', description: 'Learn about our museum' },
-                { name: 'Ticketing', url: 'Ticketing.html', type: 'page', description: 'Purchase museum tickets' },
-                { name: 'Account', url: 'Account.html', type: 'page', description: 'Manage your account' }
-            ];
-
-            searchData = [...exhibitions, ...events, ...pages];
-
-            // Add artworks from database
-            allArtworks.forEach(artwork => {
-                searchData.push({
-                    name: artwork.title || 'Untitled',
-                    url: `ArtDetails.html?id=${artwork.id}`,
-                    type: 'artwork',
-                    description: `${artwork.artist || artwork.artistName || 'Unknown Artist'} • ${artwork.Exhibition || 'Museum Collection'}`,
-                    keywords: [
-                        artwork.title,
-                        artwork.artist,
-                        artwork.artistName,
-                        artwork.Exhibition,
-                        artwork.classification
-                    ].filter(Boolean).join(' ').toLowerCase()
-                });
-            });
-        }
-
-        // Search functionality
-        function performSearch(query) {
-            if (!query || query.trim().length < 2) {
-                return [];
-            }
-
-            const lowerQuery = query.toLowerCase().trim();
-            const results = [];
-
-            searchData.forEach(item => {
-                const searchText = `${item.name} ${item.description} ${item.keywords || ''}`.toLowerCase();
-                
-                if (searchText.includes(lowerQuery)) {
-                    // Calculate relevance score
-                    let score = 0;
-                    if (item.name.toLowerCase().startsWith(lowerQuery)) {
-                        score = 100; // Exact match at start
-                    } else if (item.name.toLowerCase().includes(lowerQuery)) {
-                        score = 50; // Contains in name
-                    } else {
-                        score = 10; // Contains in description/keywords
-                    }
-
-                    results.push({ ...item, score });
-                }
-            });
-
-            // Sort by relevance and limit results
-            return results
-                .sort((a, b) => b.score - a.score)
-                .slice(0, 8);
-        }
-
-        // Display search suggestions
-        function displaySuggestions(results) {
-            const dropdown = document.getElementById('suggestions-dropdown');
-            
-            if (results.length === 0) {
-                dropdown.innerHTML = `
-                    <div class="no-results">
-                        <span class="material-icons">search_off</span>
-                        <p>No results found</p>
-                    </div>
-                `;
-                dropdown.classList.add('show');
-                return;
-            }
-
-            // Group results by type
-            const grouped = {
-                exhibition: [],
-                event: [],
-                artwork: [],
-                page: []
-            };
-
-            results.forEach(result => {
-                grouped[result.type].push(result);
-            });
-
-            let html = '';
-
-            // Display each category
-            if (grouped.exhibition.length > 0) {
-                html += '<div class="suggestion-category">Exhibitions</div>';
-                grouped.exhibition.forEach(item => {
-                    html += createSuggestionHTML(item, 'museum');
-                });
-            }
-
-            if (grouped.event.length > 0) {
-                html += '<div class="suggestion-category">Events</div>';
-                grouped.event.forEach(item => {
-                    html += createSuggestionHTML(item, 'event');
-                });
-            }
-
-            if (grouped.artwork.length > 0) {
-                html += '<div class="suggestion-category">Artworks</div>';
-                grouped.artwork.forEach(item => {
-                    html += createSuggestionHTML(item, 'palette');
-                });
-            }
-
-            if (grouped.page.length > 0) {
-                html += '<div class="suggestion-category">Pages</div>';
-                grouped.page.forEach(item => {
-                    html += createSuggestionHTML(item, 'article');
-                });
-            }
-
-            dropdown.innerHTML = html;
-            dropdown.classList.add('show');
-
-            // Add click handlers - direct navigation
-            dropdown.querySelectorAll('.suggestion-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    const url = this.dataset.url;
-                    window.location.href = url;
-                });
-            });
-        }
-
-        function createSuggestionHTML(item, icon) {
-            return `
-                <div class="suggestion-item" data-url="${item.url}">
-                    <span class="material-icons suggestion-icon">${icon}</span>
-                    <div class="suggestion-content">
-                        <div class="suggestion-title">${item.name}</div>
-                        <div class="suggestion-meta">${item.description}${item.date ? ' • ' + item.date : ''}</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // Search input handler
-        const searchInput = document.getElementById('hero-search');
-        const dropdown = document.getElementById('suggestions-dropdown');
-
-        let searchTimeout;
-        searchInput.addEventListener('input', function() {
-            clearTimeout(searchTimeout);
-            const query = this.value;
-
-            if (query.trim().length < 2) {
-                dropdown.classList.remove('show');
-                return;
-            }
-
-            searchTimeout = setTimeout(() => {
-                const results = performSearch(query);
-                displaySuggestions(results);
-            }, 300);
-        });
-
-        // Enter key - do nothing, user must click a suggestion
-        searchInput.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                e.preventDefault(); // Prevent form submission
-            }
-        });
-
-        // Close dropdown when clicking outside
-        document.addEventListener('click', function(e) {
-            if (!e.target.closest('.search-container')) {
-                dropdown.classList.remove('show');
-            }
-        });
-
-        function calculateAge(dateOfBirth) {
-            if (!dateOfBirth) return null;
-            const birthDate = dateOfBirth.toDate ? dateOfBirth.toDate() : new Date(dateOfBirth);
-            const today = new Date();
-            let age = today.getFullYear() - birthDate.getFullYear();
-            const monthDiff = today.getMonth() - birthDate.getMonth();
-            if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
-                age--;
-            }
-            return age;
-        }
-
-        function getAgeGroup(age) {
-            if (age < 13) return 'child';
-            if (age <= 25) return 'youth';
-            if (age <= 59) return 'adult';
-            return 'senior';
-        }
-
-        async function loadData() {
-            try {
-                const [artworksSnap, usersSnap] = await Promise.all([
-                    getDocs(collection(db, "Museum_Collection")),
-                    getDocs(collection(db, "Users"))
-                ]);
-
-                allArtworks = artworksSnap.docs.map(doc => {
-                    const data = doc.data();
-                    let cleanImageURL = (data.imageURL || data.ImageURL || '').trim();
-                    cleanImageURL = cleanImageURL.replace(/\n/g, '').replace(/\r/g, '');
-
-                    return {
-                        id: doc.id,
-                        ...data,
-                        imageURL: cleanImageURL
-                    };
-                });
-
-                allUsers = usersSnap.docs.map(doc => {
-                    const data = doc.data();
-                    const age = calculateAge(data['Date of Birth']);
-                    return {
-                        id: doc.id,
-                        ...data,
-                        age: age,
-                        ageGroup: age ? getAgeGroup(age) : 'unknown'
-                    };
-                });
-
-                // Build search index after loading data
-                buildSearchIndex();
-
-                console.log('Loaded artworks:', allArtworks.length);
-                console.log('Search index built with', searchData.length, 'items');
-            } catch (error) {
-                console.error('Error loading data:', error);
-            }
-        }
-
+        // Recommendations system
         function generateRecommendations() {
             if (!userData || !userData.Interests || allArtworks.length === 0) {
                 return [];
@@ -1674,18 +1705,6 @@
                     if (ageGroupLikes >= 2) {
                         score += 2;
                         reasons.push(`Popular with your age group`);
-                    }
-                }
-
-                if (userCountry && artwork.likedBy && artwork.likedBy.length > 0) {
-                    const countryLikes = artwork.likedBy.filter(userId => {
-                        const user = allUsers.find(u => u.uid === userId);
-                        return user && user.Country === userCountry;
-                    }).length;
-
-                    if (countryLikes >= 2) {
-                        score += 2;
-                        reasons.push(`Popular in ${userCountry}`);
                     }
                 }
 
@@ -1738,8 +1757,7 @@
             container.innerHTML = recommendations.map(rec => {
                 const badgeType = getBadgeType(rec.reasons);
                 const badgeText = badgeType === 'trending' ? '🔥 Trending' :
-                    badgeType === 'interest' ? '✨ For You' :
-                        '⭐ Popular';
+                    badgeType === 'interest' ? '✨ For You' : '⭐ Popular';
 
                 const imageURL = rec.imageURL || '';
                 const hasImage = imageURL && imageURL.trim() !== '';
@@ -1747,7 +1765,7 @@
                 let imageHTML = '';
                 if (hasImage) {
                     imageHTML = `
-                        <div class="recommendation-image" style="background-image: url('${imageURL}'); background-size: cover; background-position: center;">
+                        <div class="recommendation-image" style="background-image: url('${imageURL}');">
                             <span class="recommendation-badge badge-${badgeType}">${badgeText}</span>
                         </div>
                     `;
@@ -1778,14 +1796,17 @@
             }).join('');
         }
 
+        // Initialize
         onAuthStateChanged(auth, async (user) => {
+            // Load search data for everyone (logged in or not)
+            await loadAllSearchableData();
+            
             if (user) {
                 currentUser = user;
                 try {
                     const userDoc = await getDoc(doc(db, "Users", user.uid));
                     if (userDoc.exists()) {
                         userData = userDoc.data();
-                        await loadData();
 
                         setTimeout(() => {
                             const recommendations = generateRecommendations();
@@ -1797,29 +1818,25 @@
                     document.getElementById('recommendations-section').style.display = 'none';
                 }
             } else {
-                // Load data even if user is not logged in (for search functionality)
-                await loadData();
                 document.getElementById('recommendations-section').style.display = 'none';
             }
 
-            // Load upcoming events and featured exhibitions (works for both logged in and guests)
+            // Load events and exhibitions
             loadUpcomingEvents();
             loadFeaturedExhibitions();
         });
 
-        // Navigation scroll effect
+        // Navigation effects
         window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
                 nav.style.padding = '0.7rem 0';
-                nav.style.boxShadow = '0 4px 10px rgba(0, 0, 0, 0.1)';
             } else {
                 nav.style.padding = '1rem 0';
-                nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
             }
         });
 
-        // Set active navigation link
+        // Set active nav link
         document.addEventListener('DOMContentLoaded', function () {
             const currentPage = window.location.pathname.split('/').pop();
             const navLinks = document.querySelectorAll('.nav-links a');
@@ -1833,80 +1850,9 @@
 
             if (currentPage === '' || currentPage === 'index.html' || currentPage === 'Home.html') {
                 const homeLink = document.querySelector('a[href="Home.html"]');
-                if (homeLink) {
-                    homeLink.classList.add('active');
-                }
+                if (homeLink) homeLink.classList.add('active');
             }
         });
-
-        // Animation for elements on scroll
-        function animateOnScroll() {
-            const items = document.querySelectorAll('.event-item, .exhibition-item, .stat-box');
-            items.forEach(item => {
-                const itemTop = item.getBoundingClientRect().top;
-                const itemVisible = 150;
-
-                if (itemTop < window.innerHeight - itemVisible) {
-                    item.style.opacity = '1';
-                    item.style.transform = 'translateY(0)';
-                }
-            });
-        }
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const items = document.querySelectorAll('.event-item, .exhibition-item, .stat-box');
-            items.forEach(item => {
-                item.style.opacity = '0';
-                item.style.transform = 'translateY(20px)';
-                item.style.transition = 'all 0.6s ease';
-            });
-
-            setTimeout(animateOnScroll, 100);
-        });
-
-        window.addEventListener('scroll', animateOnScroll);
-
-        // Check for section to highlight on page load
-        document.addEventListener('DOMContentLoaded', function() {
-            const sectionToHighlight = sessionStorage.getItem('highlightSection');
-            
-            if (sectionToHighlight) {
-                // Clear the storage
-                sessionStorage.removeItem('highlightSection');
-                
-                // Wait a bit for page to fully render
-                setTimeout(() => {
-                    const targetElement = document.getElementById(sectionToHighlight);
-                    
-                    if (targetElement) {
-                        // Scroll to the element with smooth behavior
-                        targetElement.scrollIntoView({ 
-                            behavior: 'smooth', 
-                            block: 'center' 
-                        });
-                        
-                        // Add highlight class
-                        targetElement.classList.add('highlight-section');
-                        
-                        // Remove highlight after animation completes
-                        setTimeout(() => {
-                            targetElement.classList.remove('highlight-section');
-                        }, 2000);
-                    }
-                }, 500);
-            }
-        });
-
-        // Add spin animation for loading icon
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
-        `;
-        document.head.appendChild(style);
     </script>
 </body>
-
 </html>

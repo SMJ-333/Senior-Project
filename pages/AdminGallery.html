@@ -691,13 +691,12 @@
                     <label class="form-label">Category *</label>
                     <select class="form-select" id="artwork-category" required>
                         <option value="">Select Category</option>
-                        <option value="codices">Codices</option>
-                        <option value="arms">Arms</option>
-                        <option value="boxes">Boxes</option>
-                        <option value="bottles">Bottles</option>
+                        <option value="Codices">Codices</option>
+                        <option value="Arms">Arms</option>
+                        <option value="Boxes">Boxes</option>
+                        <option value="Bottles">Bottles</option>
                     </select>
                 </div>
-
 
                 <div class="form-group">
                     <label class="form-label">Description</label>
@@ -710,18 +709,38 @@
                     <img id="image-preview" class="image-preview" alt="Preview">
                 </div>
 
-                 <div class="form-group">
-                <label class="form-label">Exhibition *</label>
-                <select class="form-select" id="artwork-exhibition" required>
-                    <option value="">Select Exhibition</option>
-                    <option value="Arab Heritage">Arab Heritage</option>
-                    <option value="Persian Heritage">Persian Heritage</option>
-                    <option value="Indian Heritage">Indian Heritage</option>
-                    <option value="Andalusian Heritage">Andalusian Heritage</option>
-                    <option value="Turkish Heritage">Turkish Heritage</option>
-                    <option value="Others">Others</option>
-                </select>
-            </div>
+                <div class="form-group">
+                    <label class="form-label">Geography</label>
+                    <input type="text" class="form-input" id="artwork-geography">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Material</label>
+                    <input type="text" class="form-input" id="artwork-material">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Dimensions</label>
+                    <input type="text" class="form-input" id="artwork-dimensions">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Year</label>
+                    <input type="text" class="form-input" id="artwork-year">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">Exhibition *</label>
+                    <select class="form-select" id="artwork-exhibition" required>
+                        <option value="">Select Exhibition</option>
+                        <option value="Arab Heritage">Arab Heritage</option>
+                        <option value="Persian Heritage">Persian Heritage</option>
+                        <option value="Indian Heritage">Indian Heritage</option>
+                        <option value="Andalusian Heritage">Andalusian Heritage</option>
+                        <option value="Turkish Heritage">Turkish Heritage</option>
+                        <option value="Others">Others</option>
+                    </select>
+                </div>
 
                 <div class="form-actions">
                     <button type="button" class="btn btn-secondary" onclick="closeModal()">Cancel</button>
@@ -818,33 +837,41 @@
             grid.innerHTML = html;
         }
 
-        // Update statistics
+        // Update statistics - FIXED: Use proper capitalization
         function updateStats() {
             document.getElementById('total-items').textContent = allArtworks.length;
             
             let totalLikes = 0;
             const categoryLikes = {
-                codices: 0,
-                arms: 0,
-                boxes: 0,
-                bottles: 0
+                Codices: 0,
+                Arms: 0,
+                Boxes: 0,
+                Bottles: 0
             };
 
             allArtworks.forEach(item => {
                 const likes = parseInt(item.likesCount || 0);
                 totalLikes += likes;
 
-                const cat = (item.classification || '').toLowerCase().trim();
-                if (categoryLikes.hasOwnProperty(cat)) {
-                    categoryLikes[cat] += likes;
+                const cat = item.classification || '';
+                const catLower = cat.trim().toLowerCase();
+                
+                if (catLower === 'codices') {
+                    categoryLikes.Codices += likes;
+                } else if (catLower === 'arms') {
+                    categoryLikes.Arms += likes;
+                } else if (catLower === 'boxes') {
+                    categoryLikes.Boxes += likes;
+                } else if (catLower === 'bottles') {
+                    categoryLikes.Bottles += likes;
                 }
             });
 
             document.getElementById('total-likes').textContent = totalLikes;
-            document.getElementById('codices-likes').textContent = categoryLikes.codices;
-            document.getElementById('arms-likes').textContent = categoryLikes.arms;
-            document.getElementById('boxes-likes').textContent = categoryLikes.boxes;
-            document.getElementById('bottles-likes').textContent = categoryLikes.bottles;
+            document.getElementById('codices-likes').textContent = categoryLikes.Codices;
+            document.getElementById('arms-likes').textContent = categoryLikes.Arms;
+            document.getElementById('boxes-likes').textContent = categoryLikes.Boxes;
+            document.getElementById('bottles-likes').textContent = categoryLikes.Bottles;
         }
 
         // Render popular items with optimization
@@ -892,7 +919,7 @@
             container.innerHTML = html;
         }
 
-        // Update chart
+        // Update chart - FIXED: Use proper capitalization
         let categoryChart = null;
         function updateChart() {
             const ctx = document.getElementById('categoryChart').getContext('2d');
@@ -906,17 +933,18 @@
             };
 
             allArtworks.forEach(item => {
-                const cat = (item.classification || '').toLowerCase().trim();
+                const cat = item.classification || '';
+                const catLower = cat.trim().toLowerCase();
                 
-                if (cat === 'codices') {
+                if (catLower === 'codices') {
                     counts['Codices']++;
-                } else if (cat === 'arms') {
+                } else if (catLower === 'arms') {
                     counts['Arms']++;
-                } else if (cat === 'boxes') {
+                } else if (catLower === 'boxes') {
                     counts['Boxes']++;
-                } else if (cat === 'bottles') {
+                } else if (catLower === 'bottles') {
                     counts['Bottles']++;
-                } else if (cat !== '') {
+                } else if (cat.trim() !== '') {
                     counts['Other']++;
                 }
             });
@@ -992,10 +1020,10 @@
             const ctx = document.getElementById('userInterestsChart').getContext('2d');
             
             const interestMapping = {
-                'Decorative Arts': 'bottles',
-                'Fine Arts': 'codices',
-                'Cultural Anthropology': 'boxes',
-                'Military History': 'arms'
+                'Decorative Arts': 'Bottles',
+                'Fine Arts': 'Codices',
+                'Cultural Anthropology': 'Boxes',
+                'Military History': 'Arms'
             };
 
             const interestCounts = {
@@ -1009,10 +1037,9 @@
                 if (user.Interests && Array.isArray(user.Interests)) {
                     user.Interests.forEach(interest => {
                         const category = interestMapping[interest];
-                        if (category === 'codices') interestCounts['Codices']++;
-                        else if (category === 'arms') interestCounts['Arms']++;
-                        else if (category === 'boxes') interestCounts['Boxes']++;
-                        else if (category === 'bottles') interestCounts['Bottles']++;
+                        if (interestCounts.hasOwnProperty(category)) {
+                            interestCounts[category]++;
+                        }
                     });
                 }
             });
@@ -1056,7 +1083,7 @@
             });
         }
 
-        // Smart Recommendations
+        // Smart Recommendations - FIXED: Use proper capitalization
         function updateRecommendations() {
             const container = document.getElementById('recommendations-list');
             
@@ -1066,17 +1093,17 @@
             }
 
             const interestMapping = {
-                'Decorative Arts': 'bottles',
-                'Fine Arts': 'codices',
-                'Cultural Anthropology': 'boxes',
-                'Military History': 'arms'
+                'Decorative Arts': 'Bottles',
+                'Fine Arts': 'Codices',
+                'Cultural Anthropology': 'Boxes',
+                'Military History': 'Arms'
             };
 
             const categoryInterests = {
-                'codices': 0,
-                'arms': 0,
-                'boxes': 0,
-                'bottles': 0
+                'Codices': 0,
+                'Arms': 0,
+                'Boxes': 0,
+                'Bottles': 0
             };
 
             allUsers.forEach(user => {
@@ -1091,16 +1118,24 @@
             });
 
             const categoryArtworks = {
-                'codices': 0,
-                'arms': 0,
-                'boxes': 0,
-                'bottles': 0
+                'Codices': 0,
+                'Arms': 0,
+                'Boxes': 0,
+                'Bottles': 0
             };
 
             allArtworks.forEach(item => {
-                const cat = (item.classification || '').toLowerCase().trim();
-                if (categoryArtworks.hasOwnProperty(cat)) {
-                    categoryArtworks[cat]++;
+                const cat = item.classification || '';
+                const catLower = cat.trim().toLowerCase();
+                
+                if (catLower === 'codices') {
+                    categoryArtworks['Codices']++;
+                } else if (catLower === 'arms') {
+                    categoryArtworks['Arms']++;
+                } else if (catLower === 'boxes') {
+                    categoryArtworks['Boxes']++;
+                } else if (catLower === 'bottles') {
+                    categoryArtworks['Bottles']++;
                 }
             });
 
@@ -1114,7 +1149,7 @@
                     const ratio = artworkCount / interestedUsers;
                     
                     let recommendation = {
-                        category: category.charAt(0).toUpperCase() + category.slice(1),
+                        category: category,
                         users: interestedUsers,
                         artworks: artworkCount,
                         ratio: ratio
@@ -1182,27 +1217,60 @@
             document.getElementById('artworkModal').classList.remove('active');
         };
 
+        // FIXED: editArtwork - Load all fields including new ones, no toLowerCase()
         window.editArtwork = function(id) {
             const artwork = allArtworks.find(item => item.id === id);
             if (!artwork) return;
 
+            // DEBUG: Log the entire artwork object to see what fields exist
+            console.log('=== EDITING ARTWORK ===');
+            console.log('Artwork ID:', id);
+            console.log('Full artwork data:', artwork);
+            console.log('Available fields:', Object.keys(artwork));
+            console.log('---');
+            console.log('title:', artwork.title);
+            console.log('artist:', artwork.artist);
+            console.log('artistName:', artwork.artistName);
+            console.log('classification:', artwork.classification);
+            console.log('description:', artwork.description);
+            console.log('imageURL:', artwork.imageURL);
+            console.log('Geography:', artwork.Geography);
+            console.log('material:', artwork.material);
+            console.log('dimensions:', artwork.dimensions);
+            console.log('year:', artwork.year);
+            console.log('Exhibition:', artwork.Exhibition);
+            console.log('=====================');
+
             currentEditId = id;
             document.getElementById('modal-title').textContent = 'Edit Artwork';
             document.getElementById('artwork-id').value = id;
-            document.getElementById('artwork-title').value = artwork.title || '';
-            document.getElementById('artwork-artist').value = artwork.artist || artwork.artistName || '';
-            document.getElementById('artwork-category').value = (artwork.classification || '').toLowerCase();
-            document.getElementById('artwork-description').value = artwork.description || '';
-            document.getElementById('artwork-image').value = artwork.imageURL || '';
-            document.getElementById('artwork-exhibition').value = artwork.Exhibition || '';
             
-            const preview = document.getElementById('image-preview');
-            if (artwork.imageURL) {
-                preview.src = artwork.imageURL;
-                preview.classList.add('active');
-            }
-
+            // Show modal first
             document.getElementById('artworkModal').classList.add('active');
+            
+            // Set values after a brief delay to ensure DOM is ready
+            setTimeout(() => {
+                document.getElementById('artwork-title').value = artwork.title || '';
+                document.getElementById('artwork-artist').value = artwork.artist || artwork.artistName || '';
+                document.getElementById('artwork-category').value = artwork.classification || '';
+                document.getElementById('artwork-description').value = artwork.description || '';
+                document.getElementById('artwork-image').value = artwork.imageURL || '';
+                document.getElementById('artwork-geography').value = artwork.Geography || '';
+                document.getElementById('artwork-material').value = artwork.material || '';
+                document.getElementById('artwork-dimensions').value = artwork.dimensions || '';
+                document.getElementById('artwork-year').value = artwork.year || '';
+                document.getElementById('artwork-exhibition').value = artwork.Exhibition || '';
+                
+                const preview = document.getElementById('image-preview');
+                if (artwork.imageURL) {
+                    preview.src = artwork.imageURL;
+                    preview.classList.add('active');
+                } else {
+                    preview.classList.remove('active');
+                }
+                
+                console.log('Form values set successfully');
+            }, 50);
         };
 
         window.deleteArtwork = async function(id) {
@@ -1242,21 +1310,25 @@
             }
         });
 
-        // Form submission with detailed change tracking
+        // FIXED: Form submission - Include all new fields
         document.getElementById('artworkForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
-            const artworkTitle = document.getElementById('artwork-title').value;
-            const artworkCategory = document.getElementById('artwork-category').value;
+            const artworkTitle = document.getElementById('artwork-title').value.trim();
+            const artworkCategory = document.getElementById('artwork-category').value.trim();
 
             const artworkData = {
                 title: artworkTitle,
-                artist: document.getElementById('artwork-artist').value,
-                artistName: document.getElementById('artwork-artist').value,
+                artist: document.getElementById('artwork-artist').value.trim(),
+                artistName: document.getElementById('artwork-artist').value.trim(),
                 classification: artworkCategory,
-                description: document.getElementById('artwork-description').value,
-                imageURL: document.getElementById('artwork-image').value,
-                Exhibition: document.getElementById('artwork-exhibition').value
+                description: document.getElementById('artwork-description').value.trim(),
+                imageURL: document.getElementById('artwork-image').value.trim(),
+                Exhibition: document.getElementById('artwork-exhibition').value.trim(),
+                Geography: document.getElementById('artwork-geography').value.trim(),
+                material: document.getElementById('artwork-material').value.trim(),
+                dimensions: document.getElementById('artwork-dimensions').value.trim(),
+                year: document.getElementById('artwork-year').value.trim()
             };
 
             const id = document.getElementById('artwork-id').value;
@@ -1270,7 +1342,7 @@
                     // Get original artwork data for comparison
                     const originalArtwork = allArtworks.find(item => item.id === id);
                     
-                    // Track changes
+                    // Track changes - FIXED: Include new fields
                     const changes = [];
                     const fieldMapping = {
                         title: 'title',
@@ -1278,7 +1350,11 @@
                         classification: 'category',
                         description: 'description',
                         imageURL: 'image',
-                        Exhibition: 'exhibition'
+                        Exhibition: 'exhibition',
+                        Geography: 'geography',
+                        material: 'material',
+                        dimensions: 'dimensions',
+                        year: 'year'
                     };
 
                     Object.keys(fieldMapping).forEach(field => {
