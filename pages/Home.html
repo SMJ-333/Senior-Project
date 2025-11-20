@@ -962,6 +962,91 @@
             border: 2px solid var(--accent) !important;
             border-radius: 12px;
         }
+
+        /* Floating controls button */
+        .accessibility-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .accessibility-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-dark);
+            color: var(--white);
+            border: 3px solid var(--accent);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .accessibility-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+
+        .accessibility-btn.active {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        /* Settings menu */
+        .accessibility-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            min-width: 250px;
+            display: none;
+        }
+
+        .accessibility-menu.show {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .accessibility-menu h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .menu-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--neutral-light);
+        }
+
+        .speed-control input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+        }
+
+        .sr-highlight {
+            outline: 3px solid var(--accent) !important;
+            outline-offset: 2px;
+            background-color: rgba(176, 141, 87, 0.1) !important;
+        }
     </style>
 </head>
 
@@ -2075,7 +2160,293 @@
             }
         `;
         document.head.appendChild(style);
+
+        class ScreenReaderSystem {
+    constructor() {
+        this.isEnabled = false;
+        this.isReading = false;
+        this.autoReadOnHover = false;
+        this.readOnClick = true;
+        this.speed = 1.0;
+        this.currentElement = null;
+        this.hoverTimeout = null;
+
+        this.init();
+    }
+
+    init() {
+        this.createAccessibilityControls();
+        this.loadSettings();
+        this.attachEventListeners();
+    }
+
+    createAccessibilityControls() {
+        const controls = document.createElement('div');
+        controls.className = 'accessibility-controls';
+        controls.innerHTML = `
+                <button class="accessibility-btn" id="accessibility-toggle" title="Screen Reader Controls" aria-label="Open screen reader controls">
+                    <span class="material-icons">accessibility_new</span>
+                </button>
+                <div class="accessibility-menu" id="accessibility-menu" role="menu">
+                    <h3>Screen Reader</h3>
+                    
+                    <div class="menu-option">
+                        <label for="enable-reader">Enable Reader</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="enable-reader">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="menu-option">
+                        <label for="auto-hover">Read on Hover</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="auto-hover">
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="menu-option">
+                        <label for="read-click">Read on Click</label>
+                        <label class="toggle-switch">
+                            <input type="checkbox" id="read-click" checked>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+
+                    <div class="speed-control">
+                        <div class="speed-label">
+                            <span>Speech Speed</span>
+                            <span id="speed-value">Normal</span>
+                        </div>
+                        <input type="range" id="speed-control" min="0.5" max="2" step="0.1" value="1">
+                    </div>
+
+                    <div class="menu-option">
+                        <button class="cta-button" style="width: 100%; padding: 0.8rem; font-size: 0.9rem;" id="stop-reading">
+                            <span class="material-icons" style="vertical-align: middle; font-size: 1.2rem;">stop_circle</span>
+                            Stop Reading
+                        </button>
+                    </div>
+                </div>
+            `;
+
+        document.body.appendChild(controls);
+    }
+
+    attachEventListeners() {
+        document.getElementById('accessibility-toggle').addEventListener('click', () => {
+            document.getElementById('accessibility-menu').classList.toggle('show');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('.accessibility-controls')) {
+                document.getElementById('accessibility-menu').classList.remove('show');
+            }
+        });
+
+        document.getElementById('enable-reader').addEventListener('change', (e) => {
+            this.isEnabled = e.target.checked;
+            this.saveSettings();
+            if (this.isEnabled) {
+                this.speak("Screen reader enabled");
+                this.enableReader();
+            } else {
+                this.speak("Screen reader disabled");
+                this.disableReader();
+            }
+        });
+
+        document.getElementById('auto-hover').addEventListener('change', (e) => {
+            this.autoReadOnHover = e.target.checked;
+            this.saveSettings();
+            if (this.autoReadOnHover) this.enableHoverReading();
+            else this.disableHoverReading();
+        });
+
+        document.getElementById('read-click').addEventListener('change', (e) => {
+            this.readOnClick = e.target.checked;
+            this.saveSettings();
+        });
+
+        document.getElementById('speed-control').addEventListener('input', (e) => {
+            this.speed = parseFloat(e.target.value);
+            this.updateSpeedLabel();
+            this.saveSettings();
+        });
+
+        document.getElementById('stop-reading').addEventListener('click', () => {
+            this.stopSpeaking();
+        });
+
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.altKey && e.key === 's') this.stopSpeaking();
+            if (e.altKey && e.key === 'r') {
+                const enable = document.getElementById('enable-reader');
+                enable.checked = !enable.checked;
+                enable.dispatchEvent(new Event('change'));
+            }
+        });
+
+        // Global click listener
+        document.addEventListener('click', (e) => {
+            if (this.isEnabled && this.readOnClick) {
+                this.readElement(e.target);
+            }
+        });
+    }
+
+    enableReader() {
+        document.body.style.cursor = 'help';
+        setTimeout(() => {
+            this.speak(`Welcome to ${document.title}. Click on any element to have it read aloud.`);
+        }, 500);
+    }
+
+    disableReader() {
+        document.body.style.cursor = 'default';
+        this.stopSpeaking();
+        this.disableHoverReading();
+    }
+
+    enableHoverReading() {
+        document.addEventListener('mouseover', this.handleHover);
+    }
+
+    disableHoverReading() {
+        document.removeEventListener('mouseover', this.handleHover);
+        clearTimeout(this.hoverTimeout);
+    }
+
+    handleHover = (e) => {
+        if (!this.isEnabled || !this.autoReadOnHover) return;
+
+        clearTimeout(this.hoverTimeout);
+
+        this.hoverTimeout = setTimeout(() => {
+            if (e.target !== this.currentElement) this.readElement(e.target);
+        }, 500);
+    }
+
+    readElement(element) {
+        if (!this.isEnabled) return;
+
+        if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(element.tagName)) return;
+        if (element.offsetParent === null && element.tagName !== 'BODY') return;
+
+        let textToRead = "";
+
+        if (element.getAttribute('aria-label')) {
+            textToRead = element.getAttribute('aria-label');
+        } else if (element.getAttribute('title')) {
+            textToRead = element.getAttribute('title');
+        } else if (element.tagName === 'IMG') {
+            textToRead = element.alt || "Image";
+        } else if (element.tagName === 'A') {
+            textToRead = `Link: ${element.textContent.trim()}`;
+        } else if (element.tagName === 'BUTTON') {
+            textToRead = `Button: ${element.textContent.trim()}`;
+        } else if (element.tagName === 'INPUT') {
+            const label = document.querySelector(`label[for="${element.id}"]`);
+            textToRead = `Input field: ${label ? label.textContent : element.placeholder}`;
+        } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
+            textToRead = `Heading: ${element.textContent.trim()}`;
+        } else {
+            textToRead = Array.from(element.childNodes)
+                .filter(n => n.nodeType === 3)
+                .map(n => n.textContent.trim())
+                .join(" ");
+        }
+
+        textToRead = textToRead.trim().replace(/\s+/g, ' ');
+
+        if (textToRead) {
+            this.speak(textToRead);
+            this.currentElement = element;
+            this.highlightElement(element);
+        }
+    }
+
+    highlightElement(element) {
+        document.querySelectorAll('.sr-highlight')
+            .forEach(el => el.classList.remove('sr-highlight'));
+
+        element.classList.add('sr-highlight');
+
+        setTimeout(() => {
+            element.classList.remove('sr-highlight');
+        }, 2000);
+    }
+
+    speak(text) {
+        this.stopSpeaking();
+
+        if (typeof responsiveVoice !== 'undefined') {
+            responsiveVoice.speak(text, "US English Female", { rate: this.speed, pitch: 1, volume: 1 });
+        } else {
+            const utter = new SpeechSynthesisUtterance(text);
+            utter.rate = this.speed;
+            utter.pitch = 1;
+            speechSynthesis.speak(utter);
+        }
+    }
+
+    stopSpeaking() {
+        if (typeof responsiveVoice !== 'undefined') {
+            responsiveVoice.cancel();
+        } else {
+            speechSynthesis.cancel();
+        }
+    }
+
+    updateSpeedLabel() {
+        const label = document.getElementById('speed-value');
+        label.textContent =
+            this.speed < 0.8 ? "Slow" :
+            this.speed > 1.2 ? "Fast" :
+            "Normal";
+    }
+
+    saveSettings() {
+        localStorage.setItem('screenReaderSettings', JSON.stringify({
+            enabled: this.isEnabled,
+            autoHover: this.autoReadOnHover,
+            readClick: this.readOnClick,
+            speed: this.speed
+        }));
+    }
+
+    loadSettings() {
+        const saved = localStorage.getItem('screenReaderSettings');
+        if (saved) {
+            const s = JSON.parse(saved);
+            this.isEnabled = s.enabled;
+            this.autoReadOnHover = s.autoHover;
+            this.readOnClick = s.readClick;
+            this.speed = s.speed;
+
+            document.getElementById('enable-reader').checked = this.isEnabled;
+            document.getElementById('auto-hover').checked = this.autoReadOnHover;
+            document.getElementById('read-click').checked = this.readOnClick;
+            document.getElementById('speed-control').value = this.speed;
+            this.updateSpeedLabel();
+
+            if (this.isEnabled) this.enableReader();
+            if (this.autoReadOnHover) this.enableHoverReading();
+        }
+    }
+}
+
+// Initialize system
+document.addEventListener('DOMContentLoaded', () => {
+    window.screenReader = new ScreenReaderSystem();
+});
+
     </script>
+
+            
+
 </body>
 
 </html>
