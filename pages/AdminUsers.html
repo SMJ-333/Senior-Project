@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manage Users - ATHAR Museum</title>
+    <title>User Analytics - ATHAR Museum</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
@@ -24,6 +24,8 @@
             --warning: #ecc94b;
             --danger: #f56565;
             --info: #4299e1;
+            --male: #4299e1;
+            --female: #ed64a6;
         }
 
         * {
@@ -94,7 +96,7 @@
 
         .stats-row {
             display: grid;
-            grid-template-columns: repeat(5, 1fr);
+            grid-template-columns: repeat(7, 1fr);
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -105,6 +107,12 @@
             border-radius: 12px;
             box-shadow: var(--shadow);
             text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
         }
 
         .stat-icon {
@@ -143,6 +151,16 @@
             color: var(--white);
         }
 
+        .stat-icon.male {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: var(--white);
+        }
+
+        .stat-icon.female {
+            background: linear-gradient(135deg, #ed64a6, #d53f8c);
+            color: var(--white);
+        }
+
         .stat-value {
             font-size: 2rem;
             font-weight: 700;
@@ -155,11 +173,90 @@
             font-size: 0.9rem;
         }
 
-        .charts-grid {
+        /* Growth metrics row */
+        .growth-row {
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 2rem;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
             margin-bottom: 2rem;
+        }
+
+        .growth-card {
+            background: var(--white);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .growth-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .growth-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.2rem;
+        }
+
+        .growth-icon.new {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: var(--white);
+        }
+
+        .growth-icon.rate {
+            background: linear-gradient(135deg, var(--accent), var(--accent-light));
+            color: var(--primary-dark);
+        }
+
+        .growth-icon.today {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: var(--white);
+        }
+
+        .growth-info {
+            flex: 1;
+        }
+
+        .growth-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .growth-label {
+            color: var(--text-light);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .growth-trend {
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.3rem 0.8rem;
+            border-radius: 12px;
+        }
+
+        .growth-trend.up {
+            background: rgba(72, 187, 120, 0.2);
+            color: var(--success);
+        }
+
+        .growth-trend.down {
+            background: rgba(245, 101, 101, 0.2);
+            color: var(--danger);
         }
 
         .section {
@@ -167,6 +264,7 @@
             padding: 2rem;
             border-radius: 12px;
             box-shadow: var(--shadow);
+            margin-bottom: 2rem;
         }
 
         .section-title {
@@ -182,134 +280,81 @@
             height: 300px;
         }
 
-        .filter-controls {
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
+        .charts-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
             margin-bottom: 2rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            flex-wrap: wrap;
         }
 
-        .search-input, .filter-select {
-            padding: 0.8rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-size: 0.95rem;
+        .charts-row {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Top active users */
+        .active-users-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .active-user-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem;
+            background: var(--neutral-light);
+            border-radius: 10px;
             transition: var(--transition);
         }
 
-        .search-input {
-            flex: 1;
-            min-width: 250px;
+        .active-user-item:hover {
+            background: var(--accent-light);
+            transform: translateX(5px);
         }
 
-        .search-input:focus, .filter-select:focus {
-            outline: none;
-            border-color: var(--accent);
-        }
-
-        .users-table-container {
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .users-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .users-table thead {
-            background: var(--primary-dark);
+        .user-rank {
+            width: 40px;
+            height: 40px;
+            background: var(--accent);
             color: var(--white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
         }
 
-        .users-table th {
-            padding: 1rem;
-            text-align: left;
+        .user-info {
+            flex: 1;
+            margin-left: 1rem;
+        }
+
+        .user-name {
             font-weight: 600;
+            color: var(--primary-dark);
+            margin-bottom: 0.2rem;
         }
 
-        .users-table td {
-            padding: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .users-table tbody tr:hover {
-            background: var(--neutral-light);
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 12px;
+        .user-meta {
             font-size: 0.85rem;
-            font-weight: 600;
+            color: var(--text-light);
         }
 
-        .status-badge.active {
-            background: rgba(72, 187, 120, 0.2);
-            color: var(--success);
-        }
-
-        .status-badge.inactive {
-            background: rgba(245, 101, 101, 0.2);
-            color: var(--danger);
-        }
-
-        .age-badge {
-            display: inline-block;
-            padding: 0.3rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
-            font-weight: 600;
-        }
-
-        .age-badge.youth {
-            background: rgba(66, 153, 225, 0.2);
-            color: var(--info);
-        }
-
-        .age-badge.adult {
-            background: rgba(176, 141, 87, 0.2);
+        .user-likes {
+            font-size: 1.3rem;
+            font-weight: 700;
             color: var(--accent);
         }
 
-        .age-badge.senior {
-            background: rgba(139, 26, 26, 0.2);
-            color: var(--primary-dark);
-        }
-
-        .action-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            padding: 0.3rem;
-            border-radius: 4px;
-            transition: var(--transition);
-            color: var(--text-dark);
-        }
-
-        .action-btn:hover {
-            background: rgba(0, 0, 0, 0.1);
-        }
-
-        .action-btn.view:hover {
-            color: var(--info);
-        }
-
-        .action-btn.toggle:hover {
-            color: var(--warning);
-        }
-
+        /* Insights grid */
         .insights-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(5, 1fr);
             gap: 1.5rem;
         }
 
@@ -327,10 +372,11 @@
             display: flex;
             align-items: center;
             gap: 0.5rem;
+            font-size: 0.9rem;
         }
 
         .insight-value {
-            font-size: 1.5rem;
+            font-size: 1.3rem;
             font-weight: 700;
             color: var(--accent);
             margin-bottom: 0.3rem;
@@ -338,89 +384,116 @@
 
         .insight-desc {
             color: var(--text-light);
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
+        /* Automated insights */
+        .alerts-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
         }
 
-        .modal.active {
+        .alert-item {
+            padding: 1.2rem;
+            border-radius: 10px;
             display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            border-left: 4px solid;
         }
 
-        .modal-content {
-            background: var(--white);
-            padding: 2rem;
-            border-radius: 12px;
-            max-width: 600px;
-            width: 90%;
-            max-height: 90vh;
-            overflow-y: auto;
+        .alert-item.warning {
+            background: rgba(236, 201, 75, 0.1);
+            border-left-color: var(--warning);
         }
 
-        .modal-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1.5rem;
+        .alert-item.info {
+            background: rgba(66, 153, 225, 0.1);
+            border-left-color: var(--info);
         }
 
-        .modal-title {
-            color: var(--primary-dark);
+        .alert-item.success {
+            background: rgba(72, 187, 120, 0.1);
+            border-left-color: var(--success);
+        }
+
+        .alert-icon {
             font-size: 1.5rem;
         }
 
-        .close-btn {
-            background: none;
-            border: none;
-            cursor: pointer;
-            color: var(--text-light);
-            padding: 0.5rem;
+        .alert-content {
+            flex: 1;
         }
 
-        .user-detail {
-            margin-bottom: 1rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid #e2e8f0;
-        }
-
-        .user-detail:last-child {
-            border-bottom: none;
-        }
-
-        .detail-label {
+        .alert-title {
             font-weight: 600;
-            color: var(--text-dark);
+            color: var(--primary-dark);
             margin-bottom: 0.3rem;
         }
 
-        .detail-value {
+        .alert-text {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        /* Heatmap */
+        .heatmap-container {
+            overflow-x: auto;
+        }
+
+        .heatmap-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .heatmap-table th,
+        .heatmap-table td {
+            padding: 1rem;
+            text-align: center;
+            border: 2px solid var(--white);
+        }
+
+        .heatmap-table th {
+            background: var(--primary-dark);
+            color: var(--white);
+            font-weight: 600;
+        }
+
+        .heatmap-table td {
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .heatmap-table td:hover {
+            transform: scale(1.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .heat-low {
+            background: rgba(176, 141, 87, 0.2);
             color: var(--text-light);
         }
 
-        .interests-list {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin-top: 0.5rem;
+        .heat-medium {
+            background: rgba(176, 141, 87, 0.5);
+            color: var(--primary-dark);
         }
 
-        .interest-tag {
-            background: var(--accent);
+        .heat-high {
+            background: rgba(176, 141, 87, 0.8);
             color: var(--white);
-            padding: 0.3rem 0.8rem;
-            border-radius: 12px;
-            font-size: 0.85rem;
+        }
+
+        @media (max-width: 1400px) {
+            .stats-row {
+                grid-template-columns: repeat(4, 1fr);
+            }
+
+            .insights-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
 
         @media (max-width: 1200px) {
@@ -432,7 +505,15 @@
                 grid-template-columns: 1fr;
             }
 
+            .charts-row {
+                grid-template-columns: 1fr;
+            }
+
             .insights-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .alerts-grid {
                 grid-template-columns: 1fr;
             }
         }
@@ -442,13 +523,12 @@
                 grid-template-columns: repeat(2, 1fr);
             }
 
-            .users-table {
-                font-size: 0.85rem;
+            .growth-row {
+                grid-template-columns: 1fr;
             }
 
-            .users-table th,
-            .users-table td {
-                padding: 0.7rem;
+            .insights-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -460,8 +540,8 @@
                 <span class="material-icons">arrow_back</span>
             </button>
             <div class="header-title">
-                <h1>User Management</h1>
-                <div class="header-subtitle">Monitor and manage museum members</div>
+                <h1>User Analytics Dashboard</h1>
+                <div class="header-subtitle">Insights and trends from your museum community</div>
             </div>
         </div>
     </header>
@@ -482,6 +562,20 @@
                 </div>
                 <div class="stat-value" id="active-users">0</div>
                 <div class="stat-label">Active Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon male">
+                    <span class="material-icons">man</span>
+                </div>
+                <div class="stat-value" id="male-users">0</div>
+                <div class="stat-label">Male Users</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon female">
+                    <span class="material-icons">woman</span>
+                </div>
+                <div class="stat-value" id="female-users">0</div>
+                <div class="stat-label">Female Users</div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon info">
@@ -506,12 +600,79 @@
             </div>
         </div>
 
-        <!-- Charts -->
+        <!-- Growth Metrics -->
+        <div class="growth-row">
+            <div class="growth-card">
+                <div class="growth-icon new">
+                    <span class="material-icons">person_add</span>
+                </div>
+                <div class="growth-info">
+                    <div class="growth-value" id="new-this-month">0</div>
+                    <div class="growth-label">New Members This Month</div>
+                    <span class="growth-trend up" id="monthly-trend">
+                        <span class="material-icons" style="font-size: 1rem;">trending_up</span>
+                        <span id="monthly-percentage">0%</span>
+                    </span>
+                </div>
+            </div>
+            <div class="growth-card">
+                <div class="growth-icon rate">
+                    <span class="material-icons">show_chart</span>
+                </div>
+                <div class="growth-info">
+                    <div class="growth-value" id="growth-rate">0%</div>
+                    <div class="growth-label">Growth Rate (vs Last Month)</div>
+                    <span class="growth-trend" id="growth-trend-badge">
+                        Calculating...
+                    </span>
+                </div>
+            </div>
+            <div class="growth-card">
+                <div class="growth-icon today">
+                    <span class="material-icons">today</span>
+                </div>
+                <div class="growth-info">
+                    <div class="growth-value" id="today-signups">0</div>
+                    <div class="growth-label">Sign-ups Today</div>
+                    <span class="growth-trend info" style="background: rgba(66, 153, 225, 0.1); color: var(--info);">
+                        <span class="material-icons" style="font-size: 1rem;">schedule</span>
+                        Live data
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Registration Trend & Top Active Users -->
         <div class="charts-grid">
             <div class="section">
                 <h2 class="section-title">
+                    <span class="material-icons">timeline</span>
+                    Registration Trend (Last 6 Months)
+                </h2>
+                <div class="chart-container">
+                    <canvas id="registrationTrendChart"></canvas>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="material-icons">emoji_events</span>
+                    Top 5 Most Active Users
+                </h2>
+                <div class="active-users-list" id="active-users-list">
+                    <div style="text-align: center; padding: 2rem; color: var(--text-light);">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Charts Row -->
+        <div class="charts-row">
+            <div class="section">
+                <h2 class="section-title">
                     <span class="material-icons">pie_chart</span>
-                    Category Preferences by Age Group
+                    Category Preferences
                 </h2>
                 <div class="chart-container">
                     <canvas id="categoryPreferencesChart"></canvas>
@@ -520,29 +681,39 @@
 
             <div class="section">
                 <h2 class="section-title">
-                    <span class="material-icons">timeline</span>
-                    Engagement by Age Group
+                    <span class="material-icons">bar_chart</span>
+                    Engagement by Age
                 </h2>
                 <div class="chart-container">
                     <canvas id="engagementChart"></canvas>
                 </div>
             </div>
+
+            <div class="section">
+                <h2 class="section-title">
+                    <span class="material-icons">public</span>
+                    Top Countries
+                </h2>
+                <div class="chart-container">
+                    <canvas id="nationalityChart"></canvas>
+                </div>
+            </div>
         </div>
 
         <!-- Key Insights -->
-        <div class="section" style="margin-bottom: 2rem;">
+        <div class="section">
             <h2 class="section-title">
                 <span class="material-icons">insights</span>
                 Key Insights
             </h2>
-            <div class="insights-grid" id="insights-grid">
+            <div class="insights-grid">
                 <div class="insight-card">
                     <div class="insight-title">
                         <span class="material-icons">trending_up</span>
                         Most Popular (Youth)
                     </div>
                     <div class="insight-value" id="youth-favorite">-</div>
-                    <div class="insight-desc">Most liked artwork by users aged 13-25</div>
+                    <div class="insight-desc">Most liked by 13-25 year olds</div>
                 </div>
                 <div class="insight-card">
                     <div class="insight-title">
@@ -550,7 +721,7 @@
                         Most Popular (Adults)
                     </div>
                     <div class="insight-value" id="adult-favorite">-</div>
-                    <div class="insight-desc">Most liked artwork by users aged 26-59</div>
+                    <div class="insight-desc">Most liked by 26-59 year olds</div>
                 </div>
                 <div class="insight-card">
                     <div class="insight-title">
@@ -558,89 +729,69 @@
                         Most Popular (Seniors)
                     </div>
                     <div class="insight-value" id="senior-favorite">-</div>
-                    <div class="insight-desc">Most liked artwork by users aged 60+</div>
+                    <div class="insight-desc">Most liked by 60+ year olds</div>
+                </div>
+                <div class="insight-card" style="border-left-color: #ed64a6;">
+                    <div class="insight-title">
+                        <span class="material-icons">woman</span>
+                        Popular Among Women
+                    </div>
+                    <div class="insight-value" id="female-favorite" style="color: #ed64a6;">-</div>
+                    <div class="insight-desc">Most liked by female users</div>
+                </div>
+                <div class="insight-card" style="border-left-color: #4299e1;">
+                    <div class="insight-title">
+                        <span class="material-icons">man</span>
+                        Popular Among Men
+                    </div>
+                    <div class="insight-value" id="male-favorite" style="color: #4299e1;">-</div>
+                    <div class="insight-desc">Most liked by male users</div>
                 </div>
             </div>
         </div>
 
-        <!-- Filter Controls -->
-        <div class="filter-controls">
-            <input type="text" class="search-input" id="search-input" placeholder="Search by name or email...">
-            <select class="filter-select" id="status-filter">
-                <option value="">All Status</option>
-                <option value="active">Active</option>
-                <option value="inactive">Inactive</option>
-            </select>
-            <select class="filter-select" id="age-filter">
-                <option value="">All Ages</option>
-                <option value="youth">Youth (13-25)</option>
-                <option value="adult">Adults (26-59)</option>
-                <option value="senior">Seniors (60+)</option>
-            </select>
-        </div>
-
-        <!-- Users Table -->
-        <div class="users-table-container">
-            <table class="users-table">
-                <thead>
-                    <tr>
-                        <th>Name</th>
-                        <th>Email</th>
-                        <th>Age Group</th>
-                        <th>Interests</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="users-table-body">
-                    <tr>
-                        <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-light);">
-                            Loading users...
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <!-- User Details Modal -->
-    <div class="modal" id="userModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title">User Details</h2>
-                <button class="close-btn" onclick="closeModal()">
-                    <span class="material-icons">close</span>
-                </button>
+        <!-- Automated Insights & Recommendations -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="material-icons">lightbulb</span>
+                Automated Insights & Recommendations
+            </h2>
+            <div class="alerts-grid" id="automated-insights">
+                <!-- Will be populated dynamically -->
             </div>
-            <div id="user-details-content"></div>
+        </div>
+
+        <!-- Interest Heatmap -->
+        <div class="section">
+            <h2 class="section-title">
+                <span class="material-icons">grid_on</span>
+                Interest Preferences Heatmap
+            </h2>
+            <div class="heatmap-container">
+                <table class="heatmap-table" id="heatmap-table">
+                    <thead>
+                        <tr>
+                            <th>Age / Category</th>
+                            <th>Codices</th>
+                            <th>Arms</th>
+                            <th>Boxes</th>
+                            <th>Bottles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Will be populated dynamically -->
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script type="module">
-        import { auth, db } from './firebase-config.js';
-        import { collection, getDocs, doc, updateDoc, addDoc, serverTimestamp, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
-
-        // ===== ACTIVITY LOGGING FUNCTION =====
-        async function logActivity(type, action, targetTitle, metadata = {}) {
-            try {
-                const user = auth.currentUser;
-                await addDoc(collection(db, "ActivityLog"), {
-                    type: type,
-                    action: action,
-                    targetTitle: targetTitle,
-                    userEmail: user?.email || 'Admin',
-                    timestamp: serverTimestamp(),
-                    metadata: metadata
-                });
-                console.log('✓ Activity logged:', type, action, targetTitle);
-            } catch (error) {
-                console.error('✗ Error logging activity:', error);
-            }
-        }
+        import { db } from './firebase-config.js';
+        import { collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         let allUsers = [];
         let allArtworks = [];
-        let filteredUsers = [];
         let usersUnsubscribe = null;
 
         function calculateAge(dateOfBirth) {
@@ -667,11 +818,9 @@
 
         async function loadData() {
             try {
-                // Load artworks once
                 const artworksSnap = await getDocs(collection(db, "Museum_Collection"));
                 allArtworks = artworksSnap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
-                // Listen to users in real-time
                 usersUnsubscribe = onSnapshot(collection(db, "Users"), (usersSnap) => {
                     allUsers = usersSnap.docs.map(doc => {
                         const data = doc.data();
@@ -683,15 +832,15 @@
                             ageGroup: age ? getAgeGroup(age) : 'unknown'
                         };
                     });
-
-                    filteredUsers = [...allUsers];
                     
-                    // Batch all UI updates
                     requestAnimationFrame(() => {
-                        renderUsers();
                         updateStats();
+                        updateGrowthMetrics();
+                        updateTopActiveUsers();
                         updateCharts();
                         updateInsights();
+                        updateAutomatedInsights();
+                        updateHeatmap();
                     });
                 });
             } catch (error) {
@@ -705,6 +854,11 @@
             const activeUsers = allUsers.filter(u => u['Is Active'] === true).length;
             document.getElementById('active-users').textContent = activeUsers;
 
+            const maleUsers = allUsers.filter(u => u.Gender === 'Male').length;
+            const femaleUsers = allUsers.filter(u => u.Gender === 'Female').length;
+            document.getElementById('male-users').textContent = maleUsers;
+            document.getElementById('female-users').textContent = femaleUsers;
+
             const youthUsers = allUsers.filter(u => u.ageGroup === 'youth').length;
             const adultUsers = allUsers.filter(u => u.ageGroup === 'adult').length;
             const seniorUsers = allUsers.filter(u => u.ageGroup === 'senior').length;
@@ -714,12 +868,186 @@
             document.getElementById('senior-users').textContent = seniorUsers;
         }
 
-        function updateCharts() {
-            updateCategoryPreferencesChart();
-            updateEngagementChart();
+        function updateGrowthMetrics() {
+            const now = new Date();
+            const currentMonth = now.getMonth();
+            const currentYear = now.getFullYear();
+            
+            // Users registered this month
+            const thisMonthUsers = allUsers.filter(u => {
+                if (!u['Created At']) return false;
+                const created = u['Created At'].toDate();
+                return created.getMonth() === currentMonth && created.getFullYear() === currentYear;
+            });
+            
+            document.getElementById('new-this-month').textContent = thisMonthUsers.length;
+            
+            // Users registered last month
+            const lastMonth = currentMonth === 0 ? 11 : currentMonth - 1;
+            const lastMonthYear = currentMonth === 0 ? currentYear - 1 : currentYear;
+            
+            const lastMonthUsers = allUsers.filter(u => {
+                if (!u['Created At']) return false;
+                const created = u['Created At'].toDate();
+                return created.getMonth() === lastMonth && created.getFullYear() === lastMonthYear;
+            });
+            
+            // Calculate growth rate
+            const growthRate = lastMonthUsers.length > 0 
+                ? (((thisMonthUsers.length - lastMonthUsers.length) / lastMonthUsers.length) * 100).toFixed(1)
+                : thisMonthUsers.length > 0 ? 100 : 0;
+            
+            document.getElementById('growth-rate').textContent = `${growthRate > 0 ? '+' : ''}${growthRate}%`;
+            
+            const trendBadge = document.getElementById('growth-trend-badge');
+            if (growthRate > 0) {
+                trendBadge.className = 'growth-trend up';
+                trendBadge.innerHTML = '<span class="material-icons" style="font-size: 1rem;">trending_up</span> Growing';
+            } else if (growthRate < 0) {
+                trendBadge.className = 'growth-trend down';
+                trendBadge.innerHTML = '<span class="material-icons" style="font-size: 1rem;">trending_down</span> Declining';
+            } else {
+                trendBadge.className = 'growth-trend';
+                trendBadge.style.background = 'rgba(176, 141, 87, 0.2)';
+                trendBadge.style.color = 'var(--accent)';
+                trendBadge.innerHTML = '<span class="material-icons" style="font-size: 1rem;">remove</span> Stable';
+            }
+            
+            document.getElementById('monthly-percentage').textContent = `${Math.abs(growthRate)}%`;
+            
+            // Today's signups
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const todaySignups = allUsers.filter(u => {
+                if (!u['Created At']) return false;
+                const created = u['Created At'].toDate();
+                created.setHours(0, 0, 0, 0);
+                return created.getTime() === today.getTime();
+            });
+            
+            document.getElementById('today-signups').textContent = todaySignups.length;
         }
 
-        // Category preferences by age group
+        function updateTopActiveUsers() {
+            // Calculate likes per user
+            const userLikes = allUsers.map(user => {
+                let likesCount = 0;
+                allArtworks.forEach(artwork => {
+                    if (artwork.likedBy && artwork.likedBy.includes(user.uid)) {
+                        likesCount++;
+                    }
+                });
+                
+                return {
+                    username: user.Username || 'Anonymous',
+                    gender: user.Gender || 'N/A',
+                    ageGroup: user.ageGroup || 'unknown',
+                    likes: likesCount
+                };
+            });
+            
+            // Sort and get top 5
+            const top5 = userLikes
+                .filter(u => u.likes > 0)
+                .sort((a, b) => b.likes - a.likes)
+                .slice(0, 5);
+            
+            const container = document.getElementById('active-users-list');
+            
+            if (top5.length === 0) {
+                container.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No active users yet</div>';
+                return;
+            }
+            
+            container.innerHTML = top5.map((user, index) => {
+                const ageLabel = user.ageGroup === 'youth' ? 'Youth' : 
+                               user.ageGroup === 'adult' ? 'Adult' : 
+                               user.ageGroup === 'senior' ? 'Senior' : 'Unknown';
+                
+                const genderIcon = user.gender === 'Male' ? '👨' : user.gender === 'Female' ? '👩' : '👤';
+                
+                return `
+                    <div class="active-user-item">
+                        <div class="user-rank">${index + 1}</div>
+                        <div class="user-info">
+                            <div class="user-name">${user.username}</div>
+                            <div class="user-meta">${genderIcon} ${user.gender} • ${ageLabel}</div>
+                        </div>
+                        <div class="user-likes">${user.likes}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateCharts() {
+            updateRegistrationTrendChart();
+            updateCategoryPreferencesChart();
+            updateEngagementChart();
+            updateNationalityChart();
+        }
+
+        function updateRegistrationTrendChart() {
+            const ctx = document.getElementById('registrationTrendChart').getContext('2d');
+            
+            // Get last 6 months
+            const months = [];
+            const counts = [];
+            const now = new Date();
+            
+            for (let i = 5; i >= 0; i--) {
+                const date = new Date(now.getFullYear(), now.getMonth() - i, 1);
+                const monthName = date.toLocaleDateString('en-US', { month: 'short', year: 'numeric' });
+                months.push(monthName);
+                
+                const monthUsers = allUsers.filter(u => {
+                    if (!u['Created At']) return false;
+                    const created = u['Created At'].toDate();
+                    return created.getMonth() === date.getMonth() && 
+                           created.getFullYear() === date.getFullYear();
+                });
+                
+                counts.push(monthUsers.length);
+            }
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: months,
+                    datasets: [{
+                        label: 'New Registrations',
+                        data: counts,
+                        borderColor: '#b08d57',
+                        backgroundColor: 'rgba(176, 141, 87, 0.1)',
+                        tension: 0.4,
+                        fill: true,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                        pointBackgroundColor: '#b08d57',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         function updateCategoryPreferencesChart() {
             const ctx = document.getElementById('categoryPreferencesChart').getContext('2d');
 
@@ -750,7 +1078,7 @@
                     labels: ['Codices', 'Arms', 'Boxes', 'Bottles'],
                     datasets: [
                         {
-                            label: 'Youth (13-25)',
+                            label: 'Youth',
                             data: [
                                 categoryLikes.youth.codices,
                                 categoryLikes.youth.arms,
@@ -760,7 +1088,7 @@
                             backgroundColor: '#4299e1'
                         },
                         {
-                            label: 'Adults (26-59)',
+                            label: 'Adults',
                             data: [
                                 categoryLikes.adult.codices,
                                 categoryLikes.adult.arms,
@@ -770,7 +1098,7 @@
                             backgroundColor: '#b08d57'
                         },
                         {
-                            label: 'Seniors (60+)',
+                            label: 'Seniors',
                             data: [
                                 categoryLikes.senior.codices,
                                 categoryLikes.senior.arms,
@@ -787,10 +1115,6 @@
                     plugins: {
                         legend: {
                             position: 'bottom'
-                        },
-                        title: {
-                            display: true,
-                            text: 'Which categories each age group prefers'
                         }
                     },
                     scales: {
@@ -805,7 +1129,6 @@
             });
         }
 
-        // Engagement chart - average likes per user by age group
         function updateEngagementChart() {
             const ctx = document.getElementById('engagementChart').getContext('2d');
 
@@ -838,18 +1161,14 @@
                 (engagement.senior.totalLikes / engagement.senior.userCount).toFixed(1) : 0;
 
             new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: {
-                    labels: ['Youth (13-25)', 'Adults (26-59)', 'Seniors (60+)'],
+                    labels: ['Youth', 'Adults', 'Seniors'],
                     datasets: [{
-                        label: 'Average Likes per User',
+                        label: 'Avg Likes/User',
                         data: [avgYouth, avgAdult, avgSenior],
-                        borderColor: '#b08d57',
-                        backgroundColor: 'rgba(176, 141, 87, 0.1)',
-                        tension: 0.4,
-                        fill: true,
-                        pointRadius: 6,
-                        pointHoverRadius: 8
+                        backgroundColor: ['#4299e1', '#b08d57', '#8b1a1a'],
+                        borderRadius: 8
                     }]
                 },
                 options: {
@@ -858,10 +1177,6 @@
                     plugins: {
                         legend: {
                             display: false
-                        },
-                        title: {
-                            display: true,
-                            text: 'Average engagement level by age group'
                         }
                     },
                     scales: {
@@ -876,50 +1191,107 @@
             });
         }
 
+        function updateNationalityChart() {
+            const ctx = document.getElementById('nationalityChart').getContext('2d');
+
+            const countryCounts = {};
+            allUsers.forEach(user => {
+                const country = user.Country || 'Others';
+                countryCounts[country] = (countryCounts[country] || 0) + 1;
+            });
+
+            const sortedCountries = Object.entries(countryCounts)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            const labels = sortedCountries.map(([country]) => country);
+            const data = sortedCountries.map(([, count]) => count);
+
+            const colors = ['#b08d57', '#4299e1', '#48bb78', '#ed64a6', '#ecc94b'];
+
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        data: data,
+                        backgroundColor: colors.slice(0, labels.length),
+                        borderWidth: 3,
+                        borderColor: '#fdfaf4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom',
+                            labels: {
+                                padding: 10,
+                                font: {
+                                    size: 11
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         function updateInsights() {
             const getMostLikedByCategory = (ageGroup) => {
-                const categoryLikes = {
-                    codices: { count: 0, artworks: {} },
-                    arms: { count: 0, artworks: {} },
-                    boxes: { count: 0, artworks: {} },
-                    bottles: { count: 0, artworks: {} }
-                };
+                const artworkLikes = {};
                 
                 allArtworks.forEach(artwork => {
                     if (artwork.likedBy && artwork.likedBy.length > 0) {
-                        const category = (artwork.classification || '').toLowerCase().trim();
+                        let count = 0;
                         
-                        if (categoryLikes[category]) {
-                            let count = 0;
-                            artwork.likedBy.forEach(userId => {
-                                const user = allUsers.find(u => u.uid === userId);
-                                if (user && user.ageGroup === ageGroup) {
-                                    count++;
-                                }
-                            });
-                            
-                            if (count > 0) {
-                                categoryLikes[category].count += count;
-                                categoryLikes[category].artworks[artwork.title || 'Untitled'] = count;
+                        artwork.likedBy.forEach(userId => {
+                            const user = allUsers.find(u => u.uid === userId);
+                            if (user && user.ageGroup === ageGroup) {
+                                count++;
                             }
+                        });
+                        
+                        if (count > 0) {
+                            const title = artwork.title || 'Untitled';
+                            artworkLikes[title] = count;
                         }
                     }
                 });
 
-                let mostLikedCategory = null;
-                let maxLikes = 0;
+                if (Object.keys(artworkLikes).length === 0) return 'No data';
+
+                const topArtwork = Object.entries(artworkLikes)
+                    .sort((a, b) => b[1] - a[1])[0];
+
+                return topArtwork ? topArtwork[0] : 'No data';
+            };
+
+            const getMostLikedByGender = (gender) => {
+                const artworkLikes = {};
                 
-                Object.keys(categoryLikes).forEach(cat => {
-                    if (categoryLikes[cat].count > maxLikes) {
-                        maxLikes = categoryLikes[cat].count;
-                        mostLikedCategory = cat;
+                allArtworks.forEach(artwork => {
+                    if (artwork.likedBy && artwork.likedBy.length > 0) {
+                        let genderLikes = 0;
+                        
+                        artwork.likedBy.forEach(userId => {
+                            const user = allUsers.find(u => u.uid === userId);
+                            if (user && user.Gender === gender) {
+                                genderLikes++;
+                            }
+                        });
+                        
+                        if (genderLikes > 0) {
+                            const title = artwork.title || 'Untitled';
+                            artworkLikes[title] = genderLikes;
+                        }
                     }
                 });
 
-                if (!mostLikedCategory || maxLikes === 0) return 'No data';
+                if (Object.keys(artworkLikes).length === 0) return 'No data';
 
-                const artworks = categoryLikes[mostLikedCategory].artworks;
-                const topArtwork = Object.entries(artworks)
+                const topArtwork = Object.entries(artworkLikes)
                     .sort((a, b) => b[1] - a[1])[0];
 
                 return topArtwork ? topArtwork[0] : 'No data';
@@ -928,190 +1300,201 @@
             document.getElementById('youth-favorite').textContent = getMostLikedByCategory('youth');
             document.getElementById('adult-favorite').textContent = getMostLikedByCategory('adult');
             document.getElementById('senior-favorite').textContent = getMostLikedByCategory('senior');
+            document.getElementById('female-favorite').textContent = getMostLikedByGender('Female');
+            document.getElementById('male-favorite').textContent = getMostLikedByGender('Male');
         }
 
-        function renderUsers() {
-            const tbody = document.getElementById('users-table-body');
+        function updateAutomatedInsights() {
+            const insights = [];
             
-            if (filteredUsers.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-light);">No users found</td></tr>';
+            // Calculate various metrics
+            const now = new Date();
+            const thisMonth = now.getMonth();
+            const thisYear = now.getFullYear();
+            
+            const thisMonthUsers = allUsers.filter(u => {
+                if (!u['Created At']) return false;
+                const created = u['Created At'].toDate();
+                return created.getMonth() === thisMonth && created.getFullYear() === thisYear;
+            });
+            
+            // Insight 1: New members alert
+            if (thisMonthUsers.length > 10) {
+                insights.push({
+                    type: 'success',
+                    icon: '🎉',
+                    title: 'Strong Growth',
+                    text: `${thisMonthUsers.length} new members joined this month! Community is growing steadily.`
+                });
+            } else if (thisMonthUsers.length > 0) {
+                insights.push({
+                    type: 'info',
+                    icon: '📊',
+                    title: 'Moderate Growth',
+                    text: `${thisMonthUsers.length} new members this month. Consider promotional campaigns to boost signups.`
+                });
+            }
+            
+            // Insight 2: Gender distribution
+            const males = allUsers.filter(u => u.Gender === 'Male').length;
+            const females = allUsers.filter(u => u.Gender === 'Female').length;
+            const total = males + females;
+            
+            if (total > 0) {
+                const malePercent = ((males / total) * 100).toFixed(0);
+                const femalePercent = ((females / total) * 100).toFixed(0);
+                
+                if (Math.abs(males - females) > total * 0.3) {
+                    const dominant = males > females ? 'male' : 'female';
+                    const dominantPercent = males > females ? malePercent : femalePercent;
+                    insights.push({
+                        type: 'warning',
+                        icon: '⚖️',
+                        title: 'Gender Imbalance',
+                        text: `${dominantPercent}% of users are ${dominant}. Consider targeted marketing to balance demographics.`
+                    });
+                } else {
+                    insights.push({
+                        type: 'success',
+                        icon: '✅',
+                        title: 'Balanced Demographics',
+                        text: `Great gender balance: ${malePercent}% male, ${femalePercent}% female.`
+                    });
+                }
+            }
+            
+            // Insight 3: Most engaging category
+            const categoryLikes = { codices: 0, arms: 0, boxes: 0, bottles: 0 };
+            
+            allArtworks.forEach(artwork => {
+                const category = (artwork.classification || '').toLowerCase().trim();
+                if (categoryLikes[category] !== undefined && artwork.likedBy) {
+                    categoryLikes[category] += artwork.likedBy.length;
+                }
+            });
+            
+            const topCategory = Object.entries(categoryLikes).sort((a, b) => b[1] - a[1])[0];
+            if (topCategory && topCategory[1] > 0) {
+                const categoryName = topCategory[0].charAt(0).toUpperCase() + topCategory[0].slice(1);
+                insights.push({
+                    type: 'info',
+                    icon: '🎨',
+                    title: 'Popular Category',
+                    text: `${categoryName} is the most popular category with ${topCategory[1]} total likes. Consider adding more content in this category.`
+                });
+            }
+            
+            // Insight 4: Age group engagement
+            const youthEngagement = allUsers.filter(u => u.ageGroup === 'youth').length;
+            const adultEngagement = allUsers.filter(u => u.ageGroup === 'adult').length;
+            const seniorEngagement = allUsers.filter(u => u.ageGroup === 'senior').length;
+            
+            const totalEngaged = youthEngagement + adultEngagement + seniorEngagement;
+            if (totalEngaged > 0) {
+                if (youthEngagement > totalEngaged * 0.5) {
+                    insights.push({
+                        type: 'info',
+                        icon: '👥',
+                        title: 'Youth Dominated',
+                        text: `${((youthEngagement/totalEngaged)*100).toFixed(0)}% of users are youth (13-25). Tailor content to younger audiences.`
+                    });
+                } else if (seniorEngagement < totalEngaged * 0.1 && seniorEngagement > 0) {
+                    insights.push({
+                        type: 'warning',
+                        icon: '👴',
+                        title: 'Low Senior Engagement',
+                        text: `Only ${seniorEngagement} senior users. Consider accessibility features and classic content to attract this demographic.`
+                    });
+                }
+            }
+            
+            // Render insights
+            const container = document.getElementById('automated-insights');
+            
+            if (insights.length === 0) {
+                container.innerHTML = '<div style="grid-column: 1 / -1; text-align: center; padding: 2rem; color: var(--text-light);">Collecting data for insights...</div>';
                 return;
             }
-
-            const html = filteredUsers.map(user => {
-                const ageGroupClass = user.ageGroup === 'youth' ? 'youth' : 
-                                     user.ageGroup === 'adult' ? 'adult' : 
-                                     user.ageGroup === 'senior' ? 'senior' : '';
-                
-                const ageGroupLabel = user.ageGroup === 'youth' ? 'Youth' : 
-                                     user.ageGroup === 'adult' ? 'Adult' : 
-                                     user.ageGroup === 'senior' ? 'Senior' : 'Unknown';
-
-                const interests = user.Interests && user.Interests.length > 0 
-                    ? user.Interests.slice(0, 2).join(', ') + (user.Interests.length > 2 ? '...' : '')
-                    : 'None';
-
-                return `
-                    <tr>
-                        <td>${user.Username || 'N/A'}</td>
-                        <td>${user['Email Address'] || 'N/A'}</td>
-                        <td><span class="age-badge ${ageGroupClass}">${ageGroupLabel} (${user.age || '?'})</span></td>
-                        <td>${interests}</td>
-                        <td><span class="status-badge ${user['Is Active'] ? 'active' : 'inactive'}">${user['Is Active'] ? 'Active' : 'Inactive'}</span></td>
-                        <td>
-                            <button class="action-btn view" onclick="viewUser('${user.id}')" title="View Details">
-                                <span class="material-icons">visibility</span>
-                            </button>
-                            <button class="action-btn toggle" onclick="toggleUserStatus('${user.id}')" title="Toggle Status">
-                                <span class="material-icons">toggle_${user['Is Active'] ? 'on' : 'off'}</span>
-                            </button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-
-            tbody.innerHTML = html;
-        }
-
-        window.viewUser = function(userId) {
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return;
-
-            const content = document.getElementById('user-details-content');
-            const birthDate = user['Date of Birth'] ? 
-                (user['Date of Birth'].toDate ? user['Date of Birth'].toDate() : new Date(user['Date of Birth'])).toLocaleDateString() : 
-                'N/A';
-
-            content.innerHTML = `
-                <div class="user-detail">
-                    <div class="detail-label">Username</div>
-                    <div class="detail-value">${user.Username || 'N/A'}</div>
-                </div>
-                <div class="user-detail">
-                    <div class="detail-label">Email Address</div>
-                    <div class="detail-value">${user['Email Address'] || 'N/A'}</div>
-                </div>
-                <div class="user-detail">
-                    <div class="detail-label">Phone Number</div>
-                    <div class="detail-value">${user['Phone Number'] || 'N/A'}</div>
-                </div>
-                <div class="user-detail">
-                    <div class="detail-label">Date of Birth</div>
-                    <div class="detail-value">${birthDate}</div>
-                </div>
-                <div class="user-detail">
-                    <div class="detail-label">Age</div>
-                    <div class="detail-value">${user.age || 'Unknown'} years (${user.ageGroup || 'Unknown'} group)</div>
-                </div>
-                <div class="user-detail">
-                    <div class="detail-label">Account Status</div>
-                    <div class="detail-value">
-                        <span class="status-badge ${user['Is Active'] ? 'active' : 'inactive'}">
-                            ${user['Is Active'] ? 'Active' : 'Inactive'}
-                        </span>
-                    </div>
-                </div>
-                <div class="user-detail">
-                    <div class="detail-label">Created At</div>
-                    <div class="detail-value">${user['Created At'] ? new Date(user['Created At'].toDate()).toLocaleDateString() : 'N/A'}</div>
-                </div>
-                <div class="user-detail">
-                    <div class="detail-label">Interests</div>
-                    <div class="interests-list">
-                        ${user.Interests && user.Interests.length > 0 
-                            ? user.Interests.map(int => `<span class="interest-tag">${int}</span>`).join('') 
-                            : '<span style="color: var(--text-light);">No interests specified</span>'}
-                    </div>
-                </div>
-            `;
-
-            document.getElementById('userModal').classList.add('active');
-        };
-
-        window.closeModal = function() {
-            document.getElementById('userModal').classList.remove('active');
-        };
-
-        window.toggleUserStatus = async function(userId) {
-            const user = allUsers.find(u => u.id === userId);
-            if (!user) return;
-
-            const newStatus = !user['Is Active'];
-            const action = newStatus ? 'activated' : 'deactivated';
             
-            if (!confirm(`Are you sure you want to ${action === 'activated' ? 'activate' : 'deactivate'} this user?`)) return;
-
-            try {
-                await updateDoc(doc(db, "Users", userId), {
-                    'Is Active': newStatus
-                });
-                
-                // ===== LOG ACTIVITY: USER STATUS CHANGED =====
-                const userName = user.Username || 'User';
-                const userEmail = user['Email Address'] || 'unknown@email.com';
-                
-                // Create detailed activity description
-                const activityTitle = `${userName} (${userEmail}) - ${action}`;
-                
-                await logActivity('user', action, activityTitle, {
-                    userName: userName,
-                    userEmail: userEmail,
-                    previousStatus: !newStatus ? 'active' : 'inactive',
-                    newStatus: newStatus ? 'active' : 'inactive',
-                    userId: userId
-                });
-                
-                user['Is Active'] = newStatus;
-                filterUsers();
-                alert(`User ${action} successfully!`);
-            } catch (error) {
-                console.error('Error updating user status:', error);
-                alert('Error updating user status. Please try again.');
-            }
-        };
-
-        // Debounced filter function
-        let filterDebounceTimer;
-        function filterUsers() {
-            clearTimeout(filterDebounceTimer);
-            filterDebounceTimer = setTimeout(() => {
-                const searchTerm = document.getElementById('search-input').value.toLowerCase();
-                const statusFilter = document.getElementById('status-filter').value;
-                const ageFilter = document.getElementById('age-filter').value;
-
-                filteredUsers = allUsers.filter(user => {
-                    const matchesSearch = !searchTerm || 
-                        (user.Username && user.Username.toLowerCase().includes(searchTerm)) ||
-                        (user['Email Address'] && user['Email Address'].toLowerCase().includes(searchTerm));
-
-                    const matchesStatus = !statusFilter || 
-                        (statusFilter === 'active' && user['Is Active']) ||
-                        (statusFilter === 'inactive' && !user['Is Active']);
-
-                    const matchesAge = !ageFilter || user.ageGroup === ageFilter;
-
-                    return matchesSearch && matchesStatus && matchesAge;
-                });
-
-                renderUsers();
-            }, 300);
+            container.innerHTML = insights.map(insight => `
+                <div class="alert-item ${insight.type}">
+                    <div class="alert-icon">${insight.icon}</div>
+                    <div class="alert-content">
+                        <div class="alert-title">${insight.title}</div>
+                        <div class="alert-text">${insight.text}</div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        document.getElementById('search-input').addEventListener('input', filterUsers);
-        document.getElementById('status-filter').addEventListener('change', filterUsers);
-        document.getElementById('age-filter').addEventListener('change', filterUsers);
-
-        document.getElementById('userModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
+        function updateHeatmap() {
+            const heatmapData = {
+                youth: { codices: 0, arms: 0, boxes: 0, bottles: 0 },
+                adult: { codices: 0, arms: 0, boxes: 0, bottles: 0 },
+                senior: { codices: 0, arms: 0, boxes: 0, bottles: 0 }
+            };
+            
+            allArtworks.forEach(artwork => {
+                if (artwork.likedBy && artwork.likedBy.length > 0) {
+                    const category = (artwork.classification || '').toLowerCase().trim();
+                    
+                    if (heatmapData.youth[category] !== undefined) {
+                        artwork.likedBy.forEach(userId => {
+                            const user = allUsers.find(u => u.uid === userId);
+                            if (user && user.ageGroup && heatmapData[user.ageGroup]) {
+                                heatmapData[user.ageGroup][category]++;
+                            }
+                        });
+                    }
+                }
+            });
+            
+            // Find max value for normalization
+            let maxValue = 0;
+            Object.values(heatmapData).forEach(ageGroup => {
+                Object.values(ageGroup).forEach(val => {
+                    if (val > maxValue) maxValue = val;
+                });
+            });
+            
+            const getHeatClass = (value) => {
+                if (value === 0) return 'heat-low';
+                const normalized = value / maxValue;
+                if (normalized < 0.33) return 'heat-low';
+                if (normalized < 0.67) return 'heat-medium';
+                return 'heat-high';
+            };
+            
+            const tbody = document.querySelector('#heatmap-table tbody');
+            tbody.innerHTML = `
+                <tr>
+                    <th>Youth (13-25)</th>
+                    <td class="${getHeatClass(heatmapData.youth.codices)}">${heatmapData.youth.codices}</td>
+                    <td class="${getHeatClass(heatmapData.youth.arms)}">${heatmapData.youth.arms}</td>
+                    <td class="${getHeatClass(heatmapData.youth.boxes)}">${heatmapData.youth.boxes}</td>
+                    <td class="${getHeatClass(heatmapData.youth.bottles)}">${heatmapData.youth.bottles}</td>
+                </tr>
+                <tr>
+                    <th>Adults (26-59)</th>
+                    <td class="${getHeatClass(heatmapData.adult.codices)}">${heatmapData.adult.codices}</td>
+                    <td class="${getHeatClass(heatmapData.adult.arms)}">${heatmapData.adult.arms}</td>
+                    <td class="${getHeatClass(heatmapData.adult.boxes)}">${heatmapData.adult.boxes}</td>
+                    <td class="${getHeatClass(heatmapData.adult.bottles)}">${heatmapData.adult.bottles}</td>
+                </tr>
+                <tr>
+                    <th>Seniors (60+)</th>
+                    <td class="${getHeatClass(heatmapData.senior.codices)}">${heatmapData.senior.codices}</td>
+                    <td class="${getHeatClass(heatmapData.senior.arms)}">${heatmapData.senior.arms}</td>
+                    <td class="${getHeatClass(heatmapData.senior.boxes)}">${heatmapData.senior.boxes}</td>
+                    <td class="${getHeatClass(heatmapData.senior.bottles)}">${heatmapData.senior.bottles}</td>
+                </tr>
+            `;
+        }
 
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
         });
 
-        // Cleanup on page unload
         window.addEventListener('beforeunload', () => {
             if (usersUnsubscribe) {
                 usersUnsubscribe();

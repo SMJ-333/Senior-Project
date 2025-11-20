@@ -517,6 +517,22 @@
             color: white;
         }
 
+        .badge-country {
+            background: rgba(52, 152, 219, 0.9); /* أزرق */
+            color: white;
+        }
+
+        .badge-gender {
+            background: rgba(155, 89, 182, 0.9); /* بنفسجي */
+            color: white;
+        }
+
+        .badge-ageGroup {
+            background: rgba(241, 196, 15, 0.9); /* أصفر */
+            color: white;
+        }
+
+
         .recommendation-content {
             padding: 1.5rem;
         }
@@ -1639,84 +1655,216 @@
         }
 
         function generateRecommendations() {
-            if (!userData || !userData.Interests || allArtworks.length === 0) {
-                return [];
+    if (!userData || allArtworks.length === 0) {
+        return [];
+    }
+
+    const userInterests = userData.Interests || [];
+    const userAge = calculateAge(userData['Date of Birth']);
+    const userAgeGroup = userAge ? getAgeGroup(userAge) : null;
+    const userCountry = userData.Country || null;
+    const userGender = userData.Gender || null;
+    const userLikedArtworks = userData.likedArtworks || [];
+
+    // حساب الحد الديناميكي
+    const totalUsers = allUsers.length;
+    const minThreshold = totalUsers < 10 ? 1 : 2;
+    const trendingThreshold = totalUsers < 10 ? 3 : 5;
+
+    // فلترة الأعمال المعجب بها مسبقاً
+    const availableArtworks = allArtworks.filter(art => !userLikedArtworks.includes(art.id));
+
+    const selectedArtworks = new Map(); // لتجنب التكرار
+    const recommendations = [];
+
+    
+
+                    // ========== 1. الأكثر شهرة عموماً (Trending) ==========
+            const trendingArtwork = availableArtworks
+                .filter(art => art.likesCount >= trendingThreshold)
+                .sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0))[0];
+
+            if (trendingArtwork) {
+                selectedArtworks.set(trendingArtwork.id, {
+                    ...trendingArtwork,
+                    reasons: ['🔥 Most popular artwork overall'],
+                    category: 'trending'
+                });
             }
 
-            const recommendations = [];
-            const userInterests = userData.Interests || [];
-            const userAge = calculateAge(userData['Date of Birth']);
-            const userAgeGroup = userAge ? getAgeGroup(userAge) : null;
-            const userCountry = userData.Country || null;
-            const userLikedArtworks = userData.likedArtworks || [];
+            // ========== 2. الأكثر شهرة في الدولة ==========
+            if (userCountry) {
+                const countryPopular = availableArtworks
+                    .map(art => {
+                        const countryLikes = (art.likedBy || []).filter(userId => {
+                            const user = allUsers.find(u => u.uid === userId);
+                            return user && user.Country === userCountry;
+                        }).length;
+                        return { ...art, countryLikes };
+                    })
+                    .filter(art => art.countryLikes >= minThreshold && !selectedArtworks.has(art.id))
+                    .sort((a, b) => b.countryLikes - a.countryLikes)[0];
 
-            allArtworks.forEach(artwork => {
-                let score = 0;
-                let reasons = [];
-
-                userInterests.forEach(interest => {
-                    if (interestToExhibitionMap[interest] && artwork.Exhibition === interestToExhibitionMap[interest]) {
-                        score += 3;
-                        reasons.push(`Matches your interest in ${interest}`);
+                if (countryPopular) {
+                    const existing = selectedArtworks.get(countryPopular.id);
+                    if (existing) {
+                        existing.reasons.push(`⭐ Most popular in ${userCountry}`);
+                    } else {
+                        selectedArtworks.set(countryPopular.id, {
+                            ...countryPopular,
+                            reasons: [`⭐ Most popular in ${userCountry}`],
+                            category: 'country'
+                        });
                     }
-                    if (interestToCategoryMap[interest] && artwork.classification === interestToCategoryMap[interest]) {
-                        score += 3;
-                        reasons.push(`You like ${interest}`);
+                }
+            }
+
+            // ========== 3. الأكثر شهرة عند الجنس ==========
+            if (userGender) {
+                const genderPopular = availableArtworks
+                    .map(art => {
+                        const genderLikes = (art.likedBy || []).filter(userId => {
+                            const user = allUsers.find(u => u.uid === userId);
+                            return user && user.Gender === userGender;
+                        }).length;
+                        return { ...art, genderLikes };
+                    })
+                    .filter(art => art.genderLikes >= minThreshold && !selectedArtworks.has(art.id))
+                    .sort((a, b) => b.genderLikes - a.genderLikes)[0];
+
+                if (genderPopular) {
+                    const existing = selectedArtworks.get(genderPopular.id);
+                    const genderText = userGender === 'Female' ? 'women' : 'men';
+                    if (existing) {
+                        existing.reasons.push(`👥 Most popular among ${genderText}`);
+                    } else {
+                        selectedArtworks.set(genderPopular.id, {
+                            ...genderPopular,
+                            reasons: [`👥 Most popular among ${genderText}`],
+                            category: 'gender'
+                        });
+                    }
+                }
+            }
+
+            // ========== 4. الأكثر شهرة في الفئة العمرية ==========
+            if (userAgeGroup) {
+                const ageGroupPopular = availableArtworks
+                    .map(art => {
+                        const ageGroupLikes = (art.likedBy || []).filter(userId => {
+                            const user = allUsers.find(u => u.uid === userId);
+                            return user && user.ageGroup === userAgeGroup;
+                        }).length;
+                        return { ...art, ageGroupLikes };
+                    })
+                    .filter(art => art.ageGroupLikes >= minThreshold && !selectedArtworks.has(art.id))
+                    .sort((a, b) => b.ageGroupLikes - a.ageGroupLikes)[0];
+
+                if (ageGroupPopular) {
+                    const existing = selectedArtworks.get(ageGroupPopular.id);
+                    const ageGroupText = {
+                        'child': 'children',
+                        'youth': 'youth',
+                        'adult': 'adults',
+                        'senior': 'seniors'
+                    }[userAgeGroup] || 'your age group';
+
+                    if (existing) {
+                        existing.reasons.push(`🎯 Most popular among ${ageGroupText}`);
+                    } else {
+                        selectedArtworks.set(ageGroupPopular.id, {
+                            ...ageGroupPopular,
+                            reasons: [`🎯 Most popular among ${ageGroupText}`],
+                            category: 'ageGroup'
+                        });
+                    }
+                }
+            }
+
+            // ========== 5. الباقي من الاهتمامات ==========
+            if (userInterests.length > 0) {
+                const interestArtworks = availableArtworks
+                    .map(art => {
+                        let interestScore = 0;
+                        let interestReasons = [];
+
+                        userInterests.forEach(interest => {
+                            if (interestToExhibitionMap[interest] && art.Exhibition === interestToExhibitionMap[interest]) {
+                                interestScore += 3;
+                                interestReasons.push(`✨ From ${interest} exhibition`);
+                            }
+                            if (interestToCategoryMap[interest] && art.classification === interestToCategoryMap[interest]) {
+                                interestScore += 3;
+                                interestReasons.push(`✨ Matches your interest in ${interest}`);
+                            }
+                        });
+
+                        return { ...art, interestScore, interestReasons };
+                    })
+                    .filter(art => art.interestScore > 0 && !selectedArtworks.has(art.id))
+                    .sort((a, b) => b.interestScore - a.interestScore);
+
+                // إضافة الأعمال من الاهتمامات حتى نصل إلى 6
+                interestArtworks.forEach(art => {
+                    if (selectedArtworks.size < 6) {
+                        const existing = selectedArtworks.get(art.id);
+                        if (existing) {
+                            existing.reasons.push(...art.interestReasons);
+                        } else {
+                            selectedArtworks.set(art.id, {
+                                ...art,
+                                reasons: art.interestReasons,
+                                category: 'interest'
+                            });
+                        }
                     }
                 });
+            }
 
-                if (userAgeGroup && artwork.likedBy && artwork.likedBy.length > 0) {
-                    const ageGroupLikes = artwork.likedBy.filter(userId => {
-                        const user = allUsers.find(u => u.uid === userId);
-                        return user && user.ageGroup === userAgeGroup;
-                    }).length;
+            // ========== 6. إذا لم نصل إلى 6، نملأ بالأعمال الأكثر شهرة ==========
+            if (selectedArtworks.size < 6) {
+                const remainingArtworks = availableArtworks
+                    .filter(art => !selectedArtworks.has(art.id))
+                    .sort((a, b) => (b.likesCount || 0) - (a.likesCount || 0))
+                    .slice(0, 6 - selectedArtworks.size);
 
-                    if (ageGroupLikes >= 2) {
-                        score += 2;
-                        reasons.push(`Popular with your age group`);
-                    }
-                }
-
-                if (userCountry && artwork.likedBy && artwork.likedBy.length > 0) {
-                    const countryLikes = artwork.likedBy.filter(userId => {
-                        const user = allUsers.find(u => u.uid === userId);
-                        return user && user.Country === userCountry;
-                    }).length;
-
-                    if (countryLikes >= 2) {
-                        score += 2;
-                        reasons.push(`Popular in ${userCountry}`);
-                    }
-                }
-
-                if (artwork.likesCount && artwork.likesCount >= 5) {
-                    score += 1;
-                    reasons.push(`Trending artwork`);
-                }
-
-                if (userLikedArtworks.includes(artwork.id)) {
-                    score = 0;
-                }
-
-                if (score > 0) {
-                    recommendations.push({
-                        ...artwork,
-                        score: score,
-                        reasons: reasons
+                remainingArtworks.forEach(art => {
+                    selectedArtworks.set(art.id, {
+                        ...art,
+                        reasons: ['⭐ Popular choice'],
+                        category: 'general'
                     });
-                }
+                });
+            }
+
+            // تحويل Map إلى Array
+            selectedArtworks.forEach(artwork => {
+                recommendations.push(artwork);
             });
 
-            return recommendations
-                .sort((a, b) => b.score - a.score)
-                .slice(0, 6);
+            return recommendations.slice(0, 6);
+        }
+        
+
+       function getBadgeType(rec) {
+            switch (rec.category) {
+                case 'trending':
+                    return 'trending';
+                case 'interest':
+                    return 'interest';
+                case 'country':
+                    return 'country';
+                case 'gender':
+                    return 'gender';
+                case 'ageGroup':
+                    return 'ageGroup';
+                case 'general':
+                default:
+                    return 'popular';
+            }
         }
 
-        function getBadgeType(reasons) {
-            if (reasons.some(r => r.includes('Trending'))) return 'trending';
-            if (reasons.some(r => r.includes('interest'))) return 'interest';
-            return 'popular';
-        }
+
 
         function displayRecommendations(recommendations) {
             const loading = document.getElementById('recommendations-loading');
@@ -1736,10 +1884,29 @@
             section.style.display = 'block';
 
             container.innerHTML = recommendations.map(rec => {
-                const badgeType = getBadgeType(rec.reasons);
-                const badgeText = badgeType === 'trending' ? '🔥 Trending' :
-                    badgeType === 'interest' ? '✨ For You' :
-                        '⭐ Popular';
+                const badgeType = getBadgeType(rec);
+                let badgeText = '';
+
+            switch (badgeType) {
+                case 'trending':
+                    badgeText = '🔥 Trending';
+                    break;
+                case 'interest':
+                    badgeText = '✨ For You';
+                    break;
+                case 'country':
+                    badgeText = '🌍 Top by Country';
+                    break;
+                case 'gender':
+                    badgeText = '👥 Top by Gender';
+                    break;
+                case 'ageGroup':
+                    badgeText = '🎯 Top by Age';
+                    break;
+                default:
+                    badgeText = '⭐ Popular';
+            }
+
 
                 const imageURL = rec.imageURL || '';
                 const hasImage = imageURL && imageURL.trim() !== '';
@@ -1779,33 +1946,35 @@
         }
 
         onAuthStateChanged(auth, async (user) => {
-            if (user) {
-                currentUser = user;
-                try {
-                    const userDoc = await getDoc(doc(db, "Users", user.uid));
-                    if (userDoc.exists()) {
-                        userData = userDoc.data();
-                        await loadData();
-
-                        setTimeout(() => {
-                            const recommendations = generateRecommendations();
-                            displayRecommendations(recommendations);
-                        }, 500);
-                    }
-                } catch (error) {
-                    console.error('Error loading user data:', error);
-                    document.getElementById('recommendations-section').style.display = 'none';
-                }
-            } else {
-                // Load data even if user is not logged in (for search functionality)
+    if (user) {
+        currentUser = user;
+        try {
+            const userDoc = await getDoc(doc(db, "Users", user.uid));
+            if (userDoc.exists()) {
+                userData = userDoc.data();
+                
+                // 🆕 تأكدي من وجود الجنس
+                console.log('User Gender:', userData.Gender);
+                
                 await loadData();
-                document.getElementById('recommendations-section').style.display = 'none';
-            }
 
-            // Load upcoming events and featured exhibitions (works for both logged in and guests)
-            loadUpcomingEvents();
-            loadFeaturedExhibitions();
-        });
+                setTimeout(() => {
+                    const recommendations = generateRecommendations();
+                    displayRecommendations(recommendations);
+                }, 500);
+            }
+        } catch (error) {
+            console.error('Error loading user data:', error);
+            document.getElementById('recommendations-section').style.display = 'none';
+        }
+    } else {
+        await loadData();
+        document.getElementById('recommendations-section').style.display = 'none';
+    }
+
+    loadUpcomingEvents();
+    loadFeaturedExhibitions();
+});
 
         // Navigation scroll effect
         window.addEventListener('scroll', function () {
