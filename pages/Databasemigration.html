@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Database Migration Tool - ATHAR Museum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #1a202c;
+            margin-bottom: 0.5rem;
+            font-size: 2rem;
+        }
+
+        .subtitle {
+            color: #718096;
+            margin-bottom: 2rem;
+            font-size: 1rem;
+        }
+
+        .warning-box {
+            background: #fff3cd;
+            border-left: 4px solid #ffc107;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 4px;
+        }
+
+        .warning-box h3 {
+            color: #856404;
+            margin-bottom: 0.5rem;
+        }
+
+        .warning-box p {
+            color: #856404;
+            margin: 0.5rem 0;
+        }
+
+        .info-box {
+            background: #d1ecf1;
+            border-left: 4px solid #17a2b8;
+            padding: 1rem;
+            margin-bottom: 2rem;
+            border-radius: 4px;
+        }
+
+        .info-box h3 {
+            color: #0c5460;
+            margin-bottom: 0.5rem;
+        }
+
+        .info-box ul {
+            color: #0c5460;
+            margin-left: 1.5rem;
+        }
+
+        .info-box li {
+            margin: 0.25rem 0;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: #48bb78;
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+        }
+
+        .btn-danger {
+            background: #f56565;
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+        }
+
+        button:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .progress-section {
+            margin-top: 2rem;
+            display: none;
+        }
+
+        .progress-section.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 30px;
+            background: #e2e8f0;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #667eea 0%, #764ba2 100%);
+            transition: width 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 600;
+        }
+
+        .log-section {
+            background: #1a202c;
+            color: #68d391;
+            padding: 1rem;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 1rem;
+        }
+
+        .log-entry {
+            margin: 0.25rem 0;
+            padding: 0.25rem 0;
+            border-bottom: 1px solid #2d3748;
+        }
+
+        .log-entry.success {
+            color: #68d391;
+        }
+
+        .log-entry.error {
+            color: #fc8181;
+        }
+
+        .log-entry.info {
+            color: #63b3ed;
+        }
+
+        .log-entry.warning {
+            color: #fbd38d;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-card {
+            background: #f7fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: #718096;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Database Migration Tool</h1>
+        <p class="subtitle">Fix missing fields in your artwork database</p>
+
+        <div class="warning-box">
+            <h3>⚠️ Important Notice</h3>
+            <p><strong>This tool will modify your database.</strong></p>
+            <p>It's recommended to backup your data before running migrations.</p>
+            <p>The migration will add missing fields to all artworks that don't have them.</p>
+        </div>
+
+        <div class="info-box">
+            <h3>📋 What This Tool Does:</h3>
+            <ul>
+                <li><strong>Analyzes</strong> all artworks to find missing fields</li>
+                <li><strong>Adds</strong> missing fields with empty values</li>
+                <li><strong>Normalizes</strong> category capitalization (codices → Codices)</li>
+                <li><strong>Trims</strong> whitespace from all text fields</li>
+                <li><strong>Preserves</strong> all existing data</li>
+            </ul>
+        </div>
+
+        <div class="stats-grid" id="initial-stats" style="display: none;">
+            <div class="stat-card">
+                <div class="stat-value" id="total-artworks">0</div>
+                <div class="stat-label">Total Artworks</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="needs-update">0</div>
+                <div class="stat-label">Needs Update</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-value" id="up-to-date">0</div>
+                <div class="stat-label">Up to Date</div>
+            </div>
+        </div>
+
+        <div class="button-group">
+            <button class="btn-primary" onclick="analyzeDatabase()" id="analyze-btn">
+                📊 Analyze Database
+            </button>
+            <button class="btn-secondary" onclick="runMigration()" id="migrate-btn" disabled>
+                ✨ Run Migration
+            </button>
+            <button class="btn-danger" onclick="location.href='AdminDashboard.html'">
+                ← Back to Dashboard
+            </button>
+        </div>
+
+        <div class="progress-section" id="progress-section">
+            <h3>Migration Progress:</h3>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill" style="width: 0%">0%</div>
+            </div>
+            <div class="log-section" id="log-section"></div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { db } from './firebase-config.js';
+        import { collection, getDocs, updateDoc, doc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        let artworksToUpdate = [];
+
+        function log(message, type = 'info') {
+            const logSection = document.getElementById('log-section');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            const timestamp = new Date().toLocaleTimeString();
+            entry.textContent = `[${timestamp}] ${message}`;
+            logSection.appendChild(entry);
+            logSection.scrollTop = logSection.scrollHeight;
+        }
+
+        window.analyzeDatabase = async function() {
+            document.getElementById('analyze-btn').disabled = true;
+            document.getElementById('progress-section').classList.add('active');
+            document.getElementById('log-section').innerHTML = '';
+            
+            log('Starting database analysis...', 'info');
+
+            try {
+                const snapshot = await getDocs(collection(db, "Museum_Collection"));
+                const allArtworks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                
+                log(`Found ${allArtworks.length} artworks in database`, 'success');
+
+                const requiredFields = [
+                    'title', 'artist', 'artistName', 'classification', 
+                    'description', 'imageURL', 'Exhibition', 
+                    'Geography', 'material', 'dimensions', 'year',
+                    'likesCount', 'likedBy'
+                ];
+
+                artworksToUpdate = [];
+                let upToDate = 0;
+
+                allArtworks.forEach(artwork => {
+                    const missingFields = [];
+                    const issuesFound = [];
+
+                    // Check for missing fields
+                    requiredFields.forEach(field => {
+                        if (artwork[field] === undefined) {
+                            missingFields.push(field);
+                        }
+                    });
+
+                    // Check for whitespace in classification
+                    if (artwork.classification && artwork.classification !== artwork.classification.trim()) {
+                        issuesFound.push('whitespace in classification');
+                    }
+
+                    // Check for lowercase classification
+                    const cat = (artwork.classification || '').trim().toLowerCase();
+                    if (cat && !['codices', 'arms', 'boxes', 'bottles'].includes(cat)) {
+                        issuesFound.push('invalid classification');
+                    } else if (cat && artwork.classification !== cat.charAt(0).toUpperCase() + cat.slice(1)) {
+                        issuesFound.push('lowercase classification');
+                    }
+
+                    if (missingFields.length > 0 || issuesFound.length > 0) {
+                        artworksToUpdate.push({
+                            id: artwork.id,
+                            title: artwork.title || 'Untitled',
+                            missingFields,
+                            issuesFound,
+                            data: artwork
+                        });
+                    } else {
+                        upToDate++;
+                    }
+                });
+
+                log(`Analysis complete!`, 'success');
+                log(`${artworksToUpdate.length} artworks need updates`, 'warning');
+                log(`${upToDate} artworks are up to date`, 'success');
+
+                // Show stats
+                document.getElementById('initial-stats').style.display = 'grid';
+                document.getElementById('total-artworks').textContent = allArtworks.length;
+                document.getElementById('needs-update').textContent = artworksToUpdate.length;
+                document.getElementById('up-to-date').textContent = upToDate;
+
+                // Show details
+                artworksToUpdate.forEach(artwork => {
+                    const issues = [...artwork.missingFields, ...artwork.issuesFound].join(', ');
+                    log(`"${artwork.title}" needs: ${issues}`, 'warning');
+                });
+
+                if (artworksToUpdate.length > 0) {
+                    document.getElementById('migrate-btn').disabled = false;
+                    log('✅ Ready to run migration. Click "Run Migration" when ready.', 'info');
+                } else {
+                    log('✅ All artworks are up to date! No migration needed.', 'success');
+                }
+
+            } catch (error) {
+                log(`Error analyzing database: ${error.message}`, 'error');
+                console.error(error);
+            }
+
+            document.getElementById('analyze-btn').disabled = false;
+        };
+
+        window.runMigration = async function() {
+            if (!confirm(`This will update ${artworksToUpdate.length} artworks. Continue?`)) {
+                return;
+            }
+
+            document.getElementById('migrate-btn').disabled = true;
+            document.getElementById('analyze-btn').disabled = true;
+            
+            log('Starting migration...', 'info');
+
+            let updated = 0;
+            let errors = 0;
+
+            for (let i = 0; i < artworksToUpdate.length; i++) {
+                const artwork = artworksToUpdate[i];
+                const progress = Math.round(((i + 1) / artworksToUpdate.length) * 100);
+                
+                document.getElementById('progress-fill').style.width = progress + '%';
+                document.getElementById('progress-fill').textContent = progress + '%';
+
+                try {
+                    const updatedData = { ...artwork.data };
+
+                    // Add missing fields with empty values
+                    if (updatedData.artist === undefined) updatedData.artist = '';
+                    if (updatedData.artistName === undefined) updatedData.artistName = '';
+                    if (updatedData.title === undefined) updatedData.title = '';
+                    if (updatedData.description === undefined) updatedData.description = '';
+                    if (updatedData.imageURL === undefined) updatedData.imageURL = '';
+                    if (updatedData.Geography === undefined) updatedData.Geography = '';
+                    if (updatedData.material === undefined) updatedData.material = '';
+                    if (updatedData.dimensions === undefined) updatedData.dimensions = '';
+                    if (updatedData.year === undefined) updatedData.year = '';
+                    if (updatedData.Exhibition === undefined) updatedData.Exhibition = '';
+                    if (updatedData.likesCount === undefined) updatedData.likesCount = 0;
+                    if (updatedData.likedBy === undefined) updatedData.likedBy = [];
+
+                    // Normalize classification (trim and capitalize)
+                    if (updatedData.classification) {
+                        const cat = updatedData.classification.trim().toLowerCase();
+                        if (cat === 'codices') updatedData.classification = 'Codices';
+                        else if (cat === 'arms') updatedData.classification = 'Arms';
+                        else if (cat === 'boxes') updatedData.classification = 'Boxes';
+                        else if (cat === 'bottles') updatedData.classification = 'Bottles';
+                    } else {
+                        updatedData.classification = '';
+                    }
+
+                    // Trim all string fields
+                    Object.keys(updatedData).forEach(key => {
+                        if (typeof updatedData[key] === 'string') {
+                            updatedData[key] = updatedData[key].trim();
+                        }
+                    });
+
+                    // Remove the 'id' field before updating
+                    delete updatedData.id;
+
+                    // Update in database
+                    await updateDoc(doc(db, "Museum_Collection", artwork.id), updatedData);
+                    
+                    updated++;
+                    log(`✓ Updated: "${artwork.title}"`, 'success');
+
+                } catch (error) {
+                    errors++;
+                    log(`✗ Error updating "${artwork.title}": ${error.message}`, 'error');
+                    console.error(error);
+                }
+            }
+
+            log('─────────────────────────────', 'info');
+            log(`Migration complete!`, 'success');
+            log(`✓ Successfully updated: ${updated} artworks`, 'success');
+            if (errors > 0) {
+                log(`✗ Errors: ${errors}`, 'error');
+            }
+            log('─────────────────────────────', 'info');
+            log('You can now close this page and return to the dashboard.', 'info');
+
+            document.getElementById('analyze-btn').disabled = false;
+        };
+    </script>
+</body>
+</html>
