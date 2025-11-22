@@ -9,6 +9,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
     <style>
         :root {
             --primary-dark: #653025;
@@ -165,7 +166,7 @@
             background-size: cover;
             background-position: center;
         }
-        
+
         .page-hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -441,6 +442,12 @@
             cursor: not-allowed;
         }
 
+        #add-guests-btn:hover {
+            background: var(--accent-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(176, 141, 87, 0.3);
+        }
+
         .counter-value {
             font-size: 1.2rem;
             font-weight: 600;
@@ -514,6 +521,22 @@
             font-size: 2rem;
         }
 
+        .event-full-notice {
+            background: linear-gradient(135deg, #fee 0%, #fdd 100%);
+            border-left: 4px solid var(--danger);
+            padding: 1rem;
+            border-radius: 6px;
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .event-full-notice .material-icons {
+            color: var(--danger);
+            font-size: 2rem;
+        }
+
         .hidden {
             display: none !important;
         }
@@ -565,6 +588,7 @@
                 transform: translateY(-100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -575,9 +599,11 @@
             0% {
                 transform: scale(0);
             }
+
             50% {
                 transform: scale(1.2);
             }
+
             100% {
                 transform: scale(1);
             }
@@ -634,6 +660,201 @@
                 flex-direction: column;
                 text-align: center;
                 gap: 1rem;
+            }
+        }
+
+        .accessibility-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .accessibility-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-dark);
+            color: var(--white);
+            border: 3px solid var(--accent);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .accessibility-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+
+        .accessibility-btn.active {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        .accessibility-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            min-width: 250px;
+            display: none;
+        }
+
+        .accessibility-menu.show {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .accessibility-menu h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .menu-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--neutral-light);
+            transition: var(--transition);
+        }
+
+        .menu-option:last-child {
+            border-bottom: none;
+        }
+
+        .menu-option label {
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .menu-option:has(input:disabled) {
+            opacity: 0.5;
+        }
+
+        .menu-option:has(input:disabled) label {
+            cursor: not-allowed;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--accent);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-switch input:disabled+.slider {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .toggle-switch input:disabled+.slider:before {
+            background-color: #f5f5f5;
+        }
+
+        .speed-control {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.8rem 0;
+        }
+
+        .speed-control input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+        }
+
+        .speed-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .sr-highlight {
+            outline: 3px solid var(--accent) !important;
+            outline-offset: 2px;
+            background-color: rgba(176, 141, 87, 0.1) !important;
+        }
+
+        @media (max-width: 768px) {
+            .accessibility-controls {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .accessibility-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .accessibility-menu {
+                right: -10px;
+                min-width: 220px;
             }
         }
     </style>
@@ -715,18 +936,20 @@
                         <option value="">-- Loading events... --</option>
                     </select>
                 </div>
+
+                <!-- Event Full Notice -->
+                <div id="event-full-notice" class="event-full-notice hidden">
+                    <span class="material-icons">error</span>
+                    <div>
+                        <strong>Event Fully Booked</strong>
+                        <p style="margin: 0; font-size: 0.9rem;">This event has reached maximum capacity. Please select
+                            another event.</p>
+                    </div>
+                </div>
             </div>
 
             <div id="booking-section" class="booking-section hidden">
-                <div id="member-benefit" class="member-benefit-note hidden">
-                    <span class="material-icons">card_giftcard</span>
-                    <div>
-                        <strong>Member Benefit Applied!</strong>
-                        <p style="margin: 0; font-size: 0.9rem;">Your general admission is free as a museum member.</p>
-                    </div>
-                </div>
-
-                <h3 style="margin-bottom: 1.5rem;">Select Date & Time</h3>
+                <h3 style="margin-bottom: 1.5rem;">Select Date<span id="time-heading"> & Time</span></h3>
 
                 <div class="calendar">
                     <div class="calendar-header">
@@ -740,7 +963,7 @@
                     <div class="calendar-grid" id="calendar-grid"></div>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group" id="time-group">
                     <label class="form-label">Visit Time</label>
                     <select class="form-select" id="time-select">
                         <option value="">-- Select Time --</option>
@@ -751,20 +974,33 @@
 
                 <div id="visitor-counters">
                     <!-- For Members: Single visitor notice -->
-                    <div id="member-single-visitor" class="hidden" style="background: var(--neutral-light); padding: 1.5rem; border-radius: 8px; text-align: center;">
-                        <div style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
+                    <div id="member-single-visitor" class="hidden"
+                        style="background: var(--neutral-light); padding: 1.5rem; border-radius: 8px; text-align: center;">
+                        <div
+                            style="display: flex; align-items: center; justify-content: center; gap: 1rem; margin-bottom: 1rem;">
                             <span class="material-icons" style="font-size: 3rem; color: var(--accent);">person</span>
                             <div style="text-align: left;">
-                                <h3 style="color: var(--primary-dark); margin: 0;">Single Member Visit</h3>
-                                <p style="color: var(--text-light); margin: 0.3rem 0 0 0;">This free visit is for you only</p>
+                                <h3 style="color: var(--primary-dark); margin: 0;">Your Free Member Visit</h3>
+                                <p style="color: var(--text-light); margin: 0.3rem 0 0 0;">1 Adult (You) - Included free
+                                    with membership</p>
                             </div>
                         </div>
-                        <div style="background: linear-gradient(135deg, #e6f7ed 0%, #d4f4dd 100%); border-left: 4px solid var(--success); padding: 1rem; border-radius: 6px;">
+                        <div
+                            style="background: linear-gradient(135deg, #e6f7ed 0%, #d4f4dd 100%); border-left: 4px solid var(--success); padding: 1rem; border-radius: 6px; margin-bottom: 1rem;">
                             <div style="display: flex; align-items: center; gap: 0.5rem; justify-content: center;">
                                 <span class="material-icons" style="color: var(--success);">card_giftcard</span>
-                                <strong style="color: var(--success);">Member Benefit: Free Admission</strong>
+                                <strong style="color: var(--success);">Your admission: $0.00 (Member Benefit)</strong>
                             </div>
                         </div>
+
+                        <!-- Add Guests Button -->
+                        <button id="add-guests-btn" onclick="showGuestCounters()"
+                            style="background: var(--accent); color: var(--primary-dark); border: none; padding: 0.8rem 1.5rem; border-radius: 8px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 0.5rem; margin: 0 auto; transition: var(--transition);">
+                            <span class="material-icons">person_add</span>
+                            Bringing Guests? Add Them Here
+                        </button>
+                        <p style="color: var(--text-light); font-size: 0.9rem; margin-top: 0.8rem;">Additional guests
+                            pay regular admission rates</p>
                     </div>
 
                     <!-- For Non-Members: Show counters -->
@@ -772,7 +1008,7 @@
                         <div class="counter-group">
                             <div class="counter-info">
                                 <div class="counter-label">Adults (18-64)</div>
-                                <div class="counter-price" id="adult-price">Free for members</div>
+                                <div class="counter-price" id="adult-price">$15 per person</div>
                             </div>
                             <div class="counter-controls">
                                 <button class="counter-btn" onclick="decrementCounter('adults')">−</button>
@@ -784,7 +1020,7 @@
                         <div class="counter-group">
                             <div class="counter-info">
                                 <div class="counter-label">Seniors (65+)</div>
-                                <div class="counter-price" id="senior-price">35% off</div>
+                                <div class="counter-price" id="senior-price">35% off ($9.75)</div>
                             </div>
                             <div class="counter-controls">
                                 <button class="counter-btn" onclick="decrementCounter('seniors')">−</button>
@@ -817,7 +1053,8 @@
                 </div>
 
                 <!-- Member Button (Free Visit) -->
-                <button class="btn hidden" id="member-confirm-btn" onclick="confirmMemberBooking()" style="margin-top: 2rem; background: var(--accent-light); display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
+                <button class="btn hidden" id="member-confirm-btn" onclick="confirmMemberBooking()"
+                    style="margin-top: 2rem; background: var(--accent-light); display: flex; align-items: center; justify-content: center; gap: 0.5rem;">
                     <span class="material-icons">check_circle</span>
                     Confirm Free Booking
                 </button>
@@ -865,14 +1102,13 @@
             getDocs,
             addDoc,
             doc,
-            getDoc
+            getDoc,
+            query,
+            where
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import './notification-system.js';
 
-        
-
-        // Import notification function
         let sendBookingConfirmationNotification;
         try {
             const notifModule = await import('./notification-system.js');
@@ -893,11 +1129,50 @@
         let maxDate = new Date();
         maxDate.setMonth(maxDate.getMonth() + 3);
         let allEvents = [];
+        let eventBookingCounts = {};
+        let memberAddingGuests = false; // Track if member is adding guests
 
         const visitors = {
             adults: 0,
             children: 0,
             seniors: 0
+        };
+
+        // Function to show guest counters for members
+        window.showGuestCounters = function () {
+            memberAddingGuests = true;
+            const memberSingleVisitor = document.getElementById('member-single-visitor');
+            const nonMemberCounters = document.getElementById('non-member-counters');
+            const summaryCard = document.getElementById('summary-card');
+            const memberConfirmBtn = document.getElementById('member-confirm-btn');
+            const checkoutBtn = document.getElementById('checkout-btn');
+
+            // Hide single visitor notice
+            if (memberSingleVisitor) memberSingleVisitor.style.display = 'none';
+
+            // Show counters and summary
+            if (nonMemberCounters) nonMemberCounters.style.display = 'block';
+            if (summaryCard) summaryCard.style.display = 'block';
+
+            // Hide member free booking button, show checkout button
+            if (memberConfirmBtn) {
+                memberConfirmBtn.classList.add('hidden');
+                memberConfirmBtn.style.display = 'none';
+            }
+            if (checkoutBtn) {
+                checkoutBtn.style.display = 'block';
+                checkoutBtn.disabled = true; // Will be enabled when visitors added
+            }
+
+            // Reset visitor counts
+            visitors.adults = 0;
+            visitors.children = 0;
+            visitors.seniors = 0;
+            document.getElementById('adults-count').textContent = '0';
+            document.getElementById('children-count').textContent = '0';
+            document.getElementById('seniors-count').textContent = '0';
+
+            calculateTotal();
         };
 
         onAuthStateChanged(auth, (user) => {
@@ -910,27 +1185,33 @@
         function showSuccessBanner(message, subtitle) {
             const banner = document.getElementById('successBanner');
             const content = banner.querySelector('.success-banner-content');
-            
+
             content.innerHTML = `
                 <h3>${message}</h3>
                 <p>${subtitle}</p>
             `;
-            
+
             banner.classList.add('active');
-            
+
             setTimeout(() => {
                 banner.classList.remove('active');
             }, 5000);
         }
 
-        window.confirmMemberBooking = async function() {
+        window.confirmMemberBooking = async function () {
             if (!currentUser) {
                 alert('Please log in to book your free visit.');
                 return;
             }
 
-            if (!selectedDate || !selectedTime) {
-                alert('Please select date and time for your visit.');
+            if (!selectedDate) {
+                alert('Please select a date for your visit.');
+                return;
+            }
+
+            // For general visits, time is required
+            if (selectedVisitType === 'general' && !selectedTime) {
+                alert('Please select a time for your visit.');
                 return;
             }
 
@@ -951,8 +1232,11 @@
                     day: 'numeric'
                 });
 
-                const timeSelect = document.getElementById('time-select');
-                const timeStr = timeSelect.options[timeSelect.selectedIndex].text;
+                let timeStr = 'Event Time';
+                if (selectedVisitType === 'general') {
+                    const timeSelect = document.getElementById('time-select');
+                    timeStr = timeSelect.options[timeSelect.selectedIndex].text;
+                }
 
                 const bookingData = {
                     userId: currentUser.uid,
@@ -1007,7 +1291,7 @@
             } catch (error) {
                 console.error('Error creating member booking:', error);
                 alert('Failed to confirm booking. Please try again.');
-                
+
                 if (confirmBtn) {
                     confirmBtn.disabled = false;
                     confirmBtn.innerHTML = '<span class="material-icons">check_circle</span> Confirm Free Booking';
@@ -1036,6 +1320,28 @@
             return 'past';
         }
 
+        async function getEventBookingCount(eventId) {
+            try {
+                const bookingsQuery = query(
+                    collection(db, "Bookings"),
+                    where("selectedEvent", "==", eventId),
+                    where("status", "==", "confirmed")
+                );
+                const snapshot = await getDocs(bookingsQuery);
+
+                let totalAttendees = 0;
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    totalAttendees += (data.adults || 0) + (data.children || 0) + (data.seniors || 0);
+                });
+
+                return totalAttendees;
+            } catch (error) {
+                console.error('Error counting event bookings:', error);
+                return 0;
+            }
+        }
+
         async function loadCurrentEvents() {
             const eventSelect = document.getElementById('event-select');
             eventSelect.innerHTML = '<option value="">-- Loading events... --</option>';
@@ -1045,15 +1351,33 @@
                 const snapshot = await getDocs(eventsCol);
 
                 allEvents = [];
+                eventBookingCounts = {};
 
-                snapshot.forEach((docSnap) => {
+                for (const docSnap of snapshot.docs) {
                     const data = docSnap.data();
                     const status = getEventStatus(data.startDate, data.endDate);
 
                     if (status === 'current' || status === 'upcoming') {
-                        allEvents.push({ id: docSnap.id, ...data });
+                        const eventId = docSnap.id;
+                        const currentBookings = await getEventBookingCount(eventId);
+                        const maxAttendees = data.maxAttendees || 100;
+                        const availableSpots = maxAttendees - currentBookings;
+
+                        eventBookingCounts[eventId] = {
+                            current: currentBookings,
+                            max: maxAttendees,
+                            available: availableSpots,
+                            isFull: availableSpots <= 0
+                        };
+
+                        allEvents.push({
+                            id: eventId,
+                            ...data,
+                            currentBookings,
+                            availableSpots
+                        });
                     }
-                });
+                }
 
                 if (allEvents.length === 0) {
                     eventSelect.innerHTML = '<option value="">-- No current or upcoming events available --</option>';
@@ -1064,12 +1388,24 @@
 
                 eventSelect.innerHTML = '<option value="">-- Select an Event --</option>';
                 allEvents.forEach(event => {
+                    const bookingInfo = eventBookingCounts[event.id];
                     const option = document.createElement('option');
                     option.value = event.id;
-                    option.textContent = `${event.title} - ${formatDate(event.startDate)} (${event.price || 20})`;
+
+                    let displayText = `${event.title} - ${formatDate(event.startDate)} ($${event.price || 20})`;
+                    if (bookingInfo.isFull) {
+                        displayText += ' - SOLD OUT';
+                        option.disabled = true;
+                        option.style.color = '#999';
+                    } else if (bookingInfo.available < 10) {
+                        displayText += ` - Only ${bookingInfo.available} spots left!`;
+                    }
+
+                    option.textContent = displayText;
                     option.dataset.price = event.price || 20;
                     option.dataset.title = event.title;
                     option.dataset.location = event.location || 'Museum';
+                    option.dataset.isFull = bookingInfo.isFull;
                     eventSelect.appendChild(option);
                 });
 
@@ -1108,52 +1444,80 @@
         }
 
         document.querySelectorAll('.visit-type-card').forEach(card => {
-    card.addEventListener('click', async function () { // ðŸ‘ˆ Ø£Ø¶Ù async
-        document.querySelectorAll('.visit-type-card').forEach(c => c.classList.remove('selected'));
-        this.classList.add('selected');
-        selectedVisitType = this.dataset.type;
+            card.addEventListener('click', async function () {
+                document.querySelectorAll('.visit-type-card').forEach(c => c.classList.remove('selected'));
+                this.classList.add('selected');
+                selectedVisitType = this.dataset.type;
 
-        const eventSection = document.getElementById('event-section');
-        const bookingSection = document.getElementById('booking-section');
-        const memberBenefit = document.getElementById('member-benefit');
+                const eventSection = document.getElementById('event-section');
+                const bookingSection = document.getElementById('booking-section');
+                const timeGroup = document.getElementById('time-group');
+                const timeHeading = document.getElementById('time-heading');
 
-        if (selectedVisitType === 'event') {
-            console.log('🎪 Special Event selected'); 
-            eventSection.classList.remove('hidden');
-            bookingSection.classList.add('hidden');
-            memberBenefit.classList.add('hidden');
-            
-            
-            console.log('📞 Calling loadCurrentEvents...');
-            await loadCurrentEvents();
-            
-        } else {
-            console.log('🏛️ General Visit selected');
-            eventSection.classList.add('hidden');
-            bookingSection.classList.remove('hidden');
+                // Reset member guests flag when changing visit type
+                memberAddingGuests = false;
 
-            if (isMember) {
-                memberBenefit.classList.remove('hidden');
-            } else {
-                memberBenefit.classList.add('hidden');
-            }
+                // Always reset calendar to current month when selecting visit type
+                currentMonth = new Date();
 
-            selectedEvent = null;
-            selectedEventData = null;
-            updatePriceDisplay();
-            updateTimeOptions();
-            renderCalendar();
-        }
-    });
-});
+                if (selectedVisitType === 'event') {
+                    console.log('🎪 Special Event selected');
+                    eventSection.classList.remove('hidden');
+                    bookingSection.classList.add('hidden');
+
+                    // Hide time selector for events
+                    if (timeGroup) timeGroup.classList.add('hidden');
+                    if (timeHeading) timeHeading.textContent = '';
+
+                    console.log('📞 Calling loadCurrentEvents...');
+                    await loadCurrentEvents();
+
+                } else {
+                    console.log('🏛️ General Visit selected');
+                    eventSection.classList.add('hidden');
+                    bookingSection.classList.remove('hidden');
+
+                    // Show time selector for general visits
+                    if (timeGroup) timeGroup.classList.remove('hidden');
+                    if (timeHeading) timeHeading.textContent = ' & Time';
+
+                    selectedEvent = null;
+                    selectedEventData = null;
+
+                    // Reset visitor counts
+                    visitors.adults = 0;
+                    visitors.children = 0;
+                    visitors.seniors = 0;
+                    document.getElementById('adults-count').textContent = '0';
+                    document.getElementById('children-count').textContent = '0';
+                    document.getElementById('seniors-count').textContent = '0';
+
+                    updatePriceDisplay();
+                    updateTimeOptions();
+                    renderCalendar();
+                    updateCheckoutButton();
+                }
+            });
+        });
 
         document.getElementById('event-select').addEventListener('change', function () {
             selectedEvent = this.value;
-            
-            console.log('ðŸŽª Event selected:', selectedEvent);
-            
+            const eventFullNotice = document.getElementById('event-full-notice');
+
+            console.log('🎪 Event selected:', selectedEvent);
+
             if (selectedEvent) {
                 const selectedOption = this.options[this.selectedIndex];
+                const isFull = selectedOption.dataset.isFull === 'true';
+
+                if (isFull) {
+                    eventFullNotice.classList.remove('hidden');
+                    document.getElementById('booking-section').classList.add('hidden');
+                    return;
+                }
+
+                eventFullNotice.classList.add('hidden');
+
                 const eventPrice = parseInt(selectedOption.dataset.price);
                 const event = allEvents.find(e => e.id === selectedEvent);
 
@@ -1168,27 +1532,42 @@
                     startDate: event.startDate,
                     endDate: event.endDate,
                     startTime: event.startTime,
-                    endTime: event.endTime
+                    endTime: event.endTime,
+                    maxAttendees: event.maxAttendees || 100,
+                    currentBookings: event.currentBookings || 0,
+                    availableSpots: event.availableSpots || 100
                 };
 
                 document.getElementById('booking-section').classList.remove('hidden');
-                document.getElementById('member-benefit').classList.add('hidden'); 
-                
-                
+
                 visitors.adults = 0;
                 visitors.children = 0;
                 visitors.seniors = 0;
                 document.getElementById('adults-count').textContent = '0';
                 document.getElementById('children-count').textContent = '0';
                 document.getElementById('seniors-count').textContent = '0';
-                
+
                 updatePriceDisplay(eventPrice);
-                updateTimeOptions();
+
+                // Set calendar to event start date
+                const eventStartDate = event.startDate.toDate();
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+
+                if (eventStartDate > today) {
+                    currentMonth = new Date(eventStartDate.getFullYear(), eventStartDate.getMonth(), 1);
+                } else {
+                    currentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+                }
+
                 renderCalendar();
-                
+
             } else {
+                eventFullNotice.classList.add('hidden');
                 document.getElementById('booking-section').classList.add('hidden');
                 selectedEventData = null;
+                // Reset calendar to today when no event selected
+                currentMonth = new Date();
             }
         });
 
@@ -1250,6 +1629,14 @@
 
         function updateTimeOptions() {
             const timeSelect = document.getElementById('time-select');
+
+            // Skip time update for events
+            if (selectedVisitType === 'event') {
+                timeSelect.innerHTML = '';
+                selectedTime = 'event-time';
+                return;
+            }
+
             timeSelect.innerHTML = '';
 
             const now = new Date();
@@ -1260,24 +1647,8 @@
                 selectedDate.getMonth() === now.getMonth() &&
                 selectedDate.getFullYear() === now.getFullYear();
 
-            let start, end;
-
-            if (selectedVisitType === 'event' && selectedEventData) {
-                const startDate = toDateSafe(selectedEventData.startDate);
-                const endDate = toDateSafe(selectedEventData.endDate);
-
-                if (isNaN(startDate) || isNaN(endDate)) {
-                    console.error('Invalid event dates:', selectedEventData);
-                    timeSelect.innerHTML = '<option value="" disabled>-- No available times --</option>';
-                    return;
-                }
-
-                start = startDate.getHours();
-                end = endDate.getHours();
-            } else {
-                start = 9;
-                end = 17;
-            }
+            let start = 9;
+            let end = 17;
 
             timeSelect.innerHTML = '<option value="">-- Select Time --</option>';
 
@@ -1301,35 +1672,37 @@
         }
 
         function updatePriceDisplay(eventPrice = null) {
-    const adultPrice = document.getElementById('adult-price');
-    const seniorPrice = document.getElementById('senior-price');
+            const adultPrice = document.getElementById('adult-price');
+            const seniorPrice = document.getElementById('senior-price');
 
-    console.log('ðŸ’° updatePriceDisplay called');
-    console.log('  selectedVisitType:', selectedVisitType);
-    console.log('  isMember:', isMember);
-    console.log('  eventPrice:', eventPrice);
+            console.log('💰 updatePriceDisplay called');
+            console.log('  selectedVisitType:', selectedVisitType);
+            console.log('  isMember:', isMember);
+            console.log('  eventPrice:', eventPrice);
 
-    if (selectedVisitType === 'general' && isMember) {
-        // Ø²ÙŠØ§Ø±Ø© Ø¹Ø§Ù…Ø© Ù„Ù„Ø£Ø¹Ø¶Ø§Ø¡ = Ù…Ø¬Ø§Ù†ÙŠ
-        adultPrice.textContent = 'Free for members';
-        seniorPrice.textContent = 'Free for members';
-        
-    } else if (selectedVisitType === 'general' && !isMember) {
-        // Ø²ÙŠØ§Ø±Ø© Ø¹Ø§Ù…Ø© Ù„ØºÙŠØ± Ø§Ù„Ø£Ø¹Ø¶Ø§Ø¡ = $15
-        adultPrice.textContent = '$15 per person';
-        seniorPrice.textContent = '35% off ($9.75)';
-        
-    } else if (selectedVisitType === 'event' && eventPrice) {
-        // Ø­Ø¯Ø« Ø®Ø§Øµ = Ø³Ø¹Ø± Ø§Ù„Ø­Ø¯Ø« (Ù„Ù„Ø¬Ù…ÙŠØ¹ØŒ Ø£Ø¹Ø¶Ø§Ø¡ ÙˆØºÙŠØ± Ø£Ø¹Ø¶Ø§Ø¡)
-        const seniorDiscountPrice = (eventPrice * 0.65).toFixed(2);
-        adultPrice.textContent = `$${eventPrice} per person`;
-        seniorPrice.textContent = `35% off ($${seniorDiscountPrice})`;
-    }
+            if (selectedVisitType === 'general') {
+                // Members pay for additional guests at regular price
+                adultPrice.textContent = '$15 per person';
+                seniorPrice.textContent = '35% off ($9.75)';
 
-    calculateTotal();
-}
+            } else if (selectedVisitType === 'event' && eventPrice) {
+                const seniorDiscountPrice = (eventPrice * 0.65).toFixed(2);
+                adultPrice.textContent = `$${eventPrice} per person`;
+                seniorPrice.textContent = `35% off ($${seniorDiscountPrice})`;
+            }
+
+            calculateTotal();
+        }
 
         window.incrementCounter = function (type) {
+            if (selectedVisitType === 'event' && selectedEventData) {
+                const totalVisitors = visitors.adults + visitors.children + visitors.seniors;
+                if (totalVisitors >= selectedEventData.availableSpots) {
+                    alert(`Only ${selectedEventData.availableSpots} spots remaining for this event!`);
+                    return;
+                }
+            }
+
             visitors[type]++;
             document.getElementById(`${type}-count`).textContent = visitors[type];
             calculateTotal();
@@ -1347,63 +1720,61 @@
             let total = 0;
             let items = [];
 
-            console.log('ðŸ§® calculateTotal called');
+            console.log('🧮 calculateTotal called');
             console.log('  visitors:', visitors);
             console.log('  selectedVisitType:', selectedVisitType);
             console.log('  isMember:', isMember);
+            console.log('  memberAddingGuests:', memberAddingGuests);
 
             const seniorPriceLabel = document.getElementById('senior-price');
-            
-            // Ø­Ø³Ø§Ø¨ Ø§Ù„Ø³Ø¹Ø± Ø­Ø³Ø¨ Ù†ÙˆØ¹ Ø§Ù„Ø²ÙŠØ§Ø±Ø©
+
             let adultPrice = 0;
             let seniorPrice = 0;
             let itemLabel = '';
 
             if (selectedVisitType === 'general') {
-                if (isMember) {
-                    // Ø£Ø¹Ø¶Ø§Ø¡ - Ø²ÙŠØ§Ø±Ø© Ø¹Ø§Ù…Ø© = Ù…Ø¬Ø§Ù†ÙŠ
-                    adultPrice = 0;
-                    seniorPrice = 0;
-                    itemLabel = 'General Admission (Member Benefit)';
-                } else {
-                    // ØºÙŠØ± Ø£Ø¹Ø¶Ø§Ø¡ - Ø²ÙŠØ§Ø±Ø© Ø¹Ø§Ù…Ø© = $15
-                    adultPrice = 15;
-                    seniorPrice = 15 * 0.65; // $9.75
-                    itemLabel = 'General Admission';
-                }
-                seniorPriceLabel.textContent = isMember ? 'Free for members' : '35% off ($9.75)';
-                
+                // Members pay regular price for any additional guests
+                adultPrice = 15;
+                seniorPrice = 15 * 0.65; // $9.75
+                itemLabel = 'General Admission';
+                seniorPriceLabel.textContent = '35% off ($9.75)';
+
             } else if (selectedVisitType === 'event' && selectedEventData) {
-                // Ø­Ø¯Ø« Ø®Ø§Øµ = Ø³Ø¹Ø± Ø§Ù„Ø­Ø¯Ø« (Ù„Ù„Ø¬Ù…ÙŠØ¹)
                 adultPrice = selectedEventData.price;
                 seniorPrice = selectedEventData.price * 0.65;
                 itemLabel = selectedEventData.title + ' Ticket';
                 seniorPriceLabel.textContent = `35% off ($${seniorPrice.toFixed(2)})`;
             }
 
-            // Ø­Ø³Ø§Ø¨ Adults
+            // Add member's free ticket to summary if adding guests
+            if (isMember && memberAddingGuests && selectedVisitType === 'general') {
+                items.push({
+                    label: `1 × Member ${itemLabel} (You)`,
+                    price: 0,
+                    note: 'FREE - Member Benefit'
+                });
+            }
+
             if (visitors.adults > 0) {
                 const cost = visitors.adults * adultPrice;
                 total += cost;
-                
+
                 items.push({
                     label: `${visitors.adults} × Adult ${itemLabel}`,
                     price: cost
                 });
             }
 
-            // Ø­Ø³Ø§Ø¨ Seniors
             if (visitors.seniors > 0) {
                 const cost = visitors.seniors * seniorPrice;
                 total += cost;
-                
+
                 items.push({
                     label: `${visitors.seniors} × Senior ${itemLabel} (35% off)`,
                     price: cost
                 });
             }
 
-            // Ø­Ø³Ø§Ø¨ Children (Ø¯Ø§Ø¦Ù…Ø§Ù‹ Ù…Ø¬Ø§Ù†ÙŠ)
             if (visitors.children > 0) {
                 items.push({
                     label: `${visitors.children} × Children (Free)`,
@@ -1411,23 +1782,51 @@
                 });
             }
 
-            // Ø¹Ø±Ø¶ Ø§Ù„Ù…Ù„Ø®Øµ
             const summaryItems = document.getElementById('summary-items');
             summaryItems.innerHTML = '';
 
             items.forEach(item => {
-                summaryItems.innerHTML += `
-                    <div class="summary-item">
-                        <span>${item.label}</span>
-                        <span>$${item.price.toFixed(2)}</span>
-                    </div>
-                `;
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'summary-item';
+                itemDiv.style.flexDirection = 'column';
+                itemDiv.style.alignItems = 'flex-start';
+
+                const mainRow = document.createElement('div');
+                mainRow.style.display = 'flex';
+                mainRow.style.justifyContent = 'space-between';
+                mainRow.style.width = '100%';
+
+                const label = document.createElement('span');
+                label.textContent = item.label;
+
+                const price = document.createElement('span');
+                if (item.price === 0 && item.note) {
+                    price.innerHTML = `<span style="color: var(--success); font-weight: 600;">$0.00</span>`;
+                } else {
+                    price.textContent = `$${item.price.toFixed(2)}`;
+                }
+
+                mainRow.appendChild(label);
+                mainRow.appendChild(price);
+                itemDiv.appendChild(mainRow);
+
+                if (item.note) {
+                    const note = document.createElement('div');
+                    note.style.fontSize = '0.85rem';
+                    note.style.color = 'var(--success)';
+                    note.style.fontWeight = '600';
+                    note.style.marginTop = '0.2rem';
+                    note.textContent = item.note;
+                    itemDiv.appendChild(note);
+                }
+
+                summaryItems.appendChild(itemDiv);
             });
 
             document.getElementById('total-price').textContent = `$${total.toFixed(2)}`;
-            
+
             console.log('  Total calculated:', total);
-            
+
             updateCheckoutButton();
         }
 
@@ -1437,52 +1836,68 @@
             const memberSingleVisitor = document.getElementById('member-single-visitor');
             const nonMemberCounters = document.getElementById('non-member-counters');
             const summaryCard = document.getElementById('summary-card');
-            
+
             const hasVisitType = selectedVisitType !== null;
             const hasDate = selectedDate !== null;
-            const hasTime = document.getElementById('time-select').value !== '';
+            const hasTime = selectedVisitType === 'event' || document.getElementById('time-select').value !== '';
             const hasValidEvent = selectedVisitType !== 'event' || (selectedVisitType === 'event' && selectedEvent);
 
-            console.log('ðŸ”„ updateCheckoutButton called');
+            console.log('📄 updateCheckoutButton called');
             console.log('  isMember:', isMember);
             console.log('  selectedVisitType:', selectedVisitType);
-            console.log('  selectedEvent:', selectedEvent);
+            console.log('  memberAddingGuests:', memberAddingGuests);
 
-            if (isMember && selectedVisitType === 'general') {
+            // Member is adding guests - show payment flow
+            if (isMember && memberAddingGuests && selectedVisitType === 'general') {
+                console.log('  💳 Member adding guests mode');
 
-                console.log('  âœ… Member free visit mode');
-
-                if (memberSingleVisitor) memberSingleVisitor.classList.remove('hidden');
-                if (nonMemberCounters) nonMemberCounters.style.display = 'none';
-                if (summaryCard) summaryCard.style.display = 'none';
-                
-                if (memberBtn) {
-                    memberBtn.classList.remove('hidden');
-                    memberBtn.style.display = 'flex';
-                    memberBtn.disabled = !(hasDate && hasTime);
-                }
-                if (checkoutBtn) checkoutBtn.style.display = 'none';
-            } else {
-                console.log('  ðŸ’³ Payment required mode');
                 if (memberSingleVisitor) memberSingleVisitor.classList.add('hidden');
-                if (nonMemberCounters) nonMemberCounters.style.display = 'block';
-                if (summaryCard) summaryCard.style.display = 'block';
-                
+                if (nonMemberCounters) nonMemberCounters.classList.remove('hidden');
+                if (summaryCard) summaryCard.classList.remove('hidden');
+
                 if (memberBtn) {
                     memberBtn.classList.add('hidden');
-                    memberBtn.style.display = 'none';
                 }
                 if (checkoutBtn) {
-                    checkoutBtn.style.display = 'block';
-                    
+                    checkoutBtn.classList.remove('hidden');
+
                     const hasVisitors = visitors.adults > 0 || visitors.children > 0 || visitors.seniors > 0;
                     const canCheckout = hasVisitType && hasDate && hasTime && hasValidEvent && hasVisitors;
-                    
+
                     checkoutBtn.disabled = !canCheckout;
-                    
-                    console.log('  Checkout button enabled:', canCheckout);
-                    console.log('    hasVisitors:', hasVisitors);
-                    console.log('    visitors:', visitors);
+                }
+            }
+            // Member solo visit - free booking
+            else if (isMember && !memberAddingGuests && selectedVisitType === 'general') {
+                console.log('  ✅ Member free visit mode');
+
+                if (memberSingleVisitor) memberSingleVisitor.classList.remove('hidden');
+                if (nonMemberCounters) nonMemberCounters.classList.add('hidden');
+                if (summaryCard) summaryCard.classList.add('hidden');
+
+                if (memberBtn) {
+                    memberBtn.classList.remove('hidden');
+                    memberBtn.disabled = !(hasDate && hasTime);
+                }
+                if (checkoutBtn) checkoutBtn.classList.add('hidden');
+            }
+            // Non-member or event booking
+            else {
+                console.log('  💳 Payment required mode');
+                if (memberSingleVisitor) memberSingleVisitor.classList.add('hidden');
+                if (nonMemberCounters) nonMemberCounters.classList.remove('hidden');
+                if (summaryCard) summaryCard.classList.remove('hidden');
+
+                if (memberBtn) {
+                    memberBtn.classList.add('hidden');
+                }
+                if (checkoutBtn) {
+                    checkoutBtn.classList.remove('hidden');
+
+                    const hasVisitors = visitors.adults > 0 || visitors.children > 0 || visitors.seniors > 0;
+                    const canCheckout = hasVisitType && hasDate && hasTime && hasValidEvent && hasVisitors;
+
+                    checkoutBtn.disabled = !canCheckout;
                 }
             }
         }
@@ -1568,7 +1983,16 @@
             const prevMonthDate = new Date(currentMonth);
             prevMonthDate.setMonth(prevMonthDate.getMonth() - 1);
 
-            if (prevMonthDate < firstDayOfCurrentMonth) {
+            // For events, allow navigation to event start date
+            let minAllowedDate = firstDayOfCurrentMonth;
+            if (selectedVisitType === 'event' && selectedEventData) {
+                const eventStart = selectedEventData.startDate?.toDate();
+                if (eventStart) {
+                    minAllowedDate = new Date(eventStart.getFullYear(), eventStart.getMonth(), 1);
+                }
+            }
+
+            if (prevMonthDate < minAllowedDate) {
                 prevBtn.disabled = true;
             } else {
                 prevBtn.disabled = false;
@@ -1577,7 +2001,16 @@
             const nextMonthDate = new Date(currentMonth);
             nextMonthDate.setMonth(nextMonthDate.getMonth() + 1);
 
-            if (nextMonthDate > maxDate) {
+            // For events, limit to event end date
+            let maxAllowedDate = maxDate;
+            if (selectedVisitType === 'event' && selectedEventData) {
+                const eventEnd = selectedEventData.endDate?.toDate();
+                if (eventEnd) {
+                    maxAllowedDate = new Date(eventEnd.getFullYear(), eventEnd.getMonth() + 1, 0);
+                }
+            }
+
+            if (nextMonthDate > maxAllowedDate) {
                 nextBtn.disabled = true;
             } else {
                 nextBtn.disabled = false;
@@ -1589,9 +2022,16 @@
             newMonth.setMonth(newMonth.getMonth() - 1);
 
             const today = new Date();
-            const firstDayOfCurrentMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+            let firstAllowedMonth = new Date(today.getFullYear(), today.getMonth(), 1);
 
-            if (newMonth >= firstDayOfCurrentMonth) {
+            if (selectedVisitType === 'event' && selectedEventData) {
+                const eventStart = selectedEventData.startDate?.toDate();
+                if (eventStart) {
+                    firstAllowedMonth = new Date(eventStart.getFullYear(), eventStart.getMonth(), 1);
+                }
+            }
+
+            if (newMonth >= firstAllowedMonth) {
                 currentMonth = newMonth;
                 renderCalendar();
             }
@@ -1601,7 +2041,15 @@
             const newMonth = new Date(currentMonth);
             newMonth.setMonth(newMonth.getMonth() + 1);
 
-            if (newMonth <= maxDate) {
+            let maxAllowedDate = maxDate;
+            if (selectedVisitType === 'event' && selectedEventData) {
+                const eventEnd = selectedEventData.endDate?.toDate();
+                if (eventEnd) {
+                    maxAllowedDate = new Date(eventEnd.getFullYear(), eventEnd.getMonth() + 1, 0);
+                }
+            }
+
+            if (newMonth <= maxAllowedDate) {
                 currentMonth = newMonth;
                 renderCalendar();
             }
@@ -1620,8 +2068,11 @@
                 day: 'numeric'
             });
 
-            const timeSelect = document.getElementById('time-select');
-            const timeStr = timeSelect.options[timeSelect.selectedIndex].text;
+            let timeStr = 'Event Time';
+            if (selectedVisitType === 'general') {
+                const timeSelect = document.getElementById('time-select');
+                timeStr = timeSelect.options[timeSelect.selectedIndex].text;
+            }
 
             let visitInfo = '';
             if (selectedVisitType === 'general') {
@@ -1630,7 +2081,18 @@
                 visitInfo = selectedEventData.title;
             }
 
-            const totalVisitors = visitors.adults + visitors.children + visitors.seniors;
+            // Calculate total visitors - include member if adding guests
+            let totalVisitors = visitors.adults + visitors.children + visitors.seniors;
+            let adultsCount = visitors.adults;
+            let childrenCount = visitors.children;
+            let seniorsCount = visitors.seniors;
+
+            // If member is adding guests, add the member themselves to the adult count
+            if (isMember && memberAddingGuests && selectedVisitType === 'general') {
+                totalVisitors += 1;
+                adultsCount += 1; // Member counts as 1 adult
+            }
+
             const total = document.getElementById('total-price').textContent;
 
             const bookingData = {
@@ -1638,12 +2100,13 @@
                 visitInfo: visitInfo,
                 date: dateStr,
                 time: timeStr,
-                adults: visitors.adults,
-                children: visitors.children,
-                seniors: visitors.seniors,
+                adults: adultsCount,  // Includes member if adding guests
+                children: childrenCount,
+                seniors: seniorsCount,
                 totalVisitors: totalVisitors,
                 total: total,
                 isMember: isMember,
+                memberAddingGuests: memberAddingGuests,
                 selectedEvent: selectedEvent,
                 selectedEventData: selectedEventData
             };
@@ -1691,10 +2154,432 @@
                         dateTimeHeader.scrollIntoView({ behavior: 'smooth' });
                     }
                 } else {
-                    console.warn('⚠  Could not auto-select event:', eventTitle);
+                    console.warn('⚠️  Could not auto-select event:', eventTitle);
                 }
             }
         });
+
+        // ===== SCREEN READER ACCESSIBILITY SYSTEM =====
+        class ScreenReaderSystem {
+            constructor() {
+                this.isEnabled = false;
+                this.isReading = false;
+                this.autoReadOnHover = false;
+                this.readOnClick = false;
+                this.speed = 1.0;
+                this.currentElement = null;
+                this.hoverTimeout = null;
+
+                this.init();
+            }
+
+            init() {
+                this.createAccessibilityControls();
+                this.loadSettings();
+                this.attachEventListeners();
+            }
+
+            createAccessibilityControls() {
+                const controls = document.createElement('div');
+                controls.className = 'accessibility-controls';
+                controls.innerHTML = `
+            <button class="accessibility-btn" id="accessibility-toggle" title="Screen Reader Controls" aria-label="Open screen reader controls">
+                <span class="material-icons">accessibility_new</span>
+            </button>
+            <div class="accessibility-menu" id="accessibility-menu" role="menu">
+                <h3>Screen Reader</h3>
+                
+                <div class="menu-option">
+                    <label for="enable-reader">Enable Reader</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="enable-reader">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="menu-option">
+                    <label for="auto-hover">Read on Hover</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-hover" disabled>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="menu-option">
+                    <label for="read-click">Read on Click</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="read-click" disabled>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="speed-control">
+                    <div class="speed-label">
+                        <span>Speech Speed</span>
+                        <span id="speed-value">Normal</span>
+                    </div>
+                    <input type="range" id="speed-control" min="0.5" max="2" step="0.1" value="1">
+                </div>
+            </div>
+        `;
+                document.body.appendChild(controls);
+            }
+
+            attachEventListeners() {
+                // Toggle menu
+                document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                    const menu = document.getElementById('accessibility-menu');
+                    menu.classList.toggle('show');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.accessibility-controls')) {
+                        document.getElementById('accessibility-menu').classList.remove('show');
+                    }
+                });
+
+                // Enable/Disable reader
+                document.getElementById('enable-reader').addEventListener('change', (e) => {
+                    this.isEnabled = e.target.checked;
+                    const hoverCheckbox = document.getElementById('auto-hover');
+                    const clickCheckbox = document.getElementById('read-click');
+
+                    if (this.isEnabled) {
+                        hoverCheckbox.disabled = false;
+                        clickCheckbox.disabled = false;
+
+                        this.autoReadOnHover = true;
+                        this.readOnClick = true;
+                        hoverCheckbox.checked = true;
+                        clickCheckbox.checked = true;
+
+                        this.speak("Screen reader enabled");
+                        this.enableReader();
+                        this.enableHoverReading();
+                    } else {
+                        hoverCheckbox.disabled = true;
+                        clickCheckbox.disabled = true;
+                        hoverCheckbox.checked = false;
+                        clickCheckbox.checked = false;
+
+                        this.autoReadOnHover = false;
+                        this.readOnClick = false;
+
+                        this.speak("Screen reader disabled");
+                        this.disableReader();
+                    }
+
+                    this.saveSettings();
+                });
+
+                // Auto hover
+                document.getElementById('auto-hover').addEventListener('change', (e) => {
+                    this.autoReadOnHover = e.target.checked;
+                    this.saveSettings();
+                    if (this.autoReadOnHover) {
+                        this.enableHoverReading();
+                    } else {
+                        this.disableHoverReading();
+                    }
+                });
+
+                // Read on click
+                document.getElementById('read-click').addEventListener('change', (e) => {
+                    this.readOnClick = e.target.checked;
+                    this.saveSettings();
+                });
+
+                // Speed control
+                document.getElementById('speed-control').addEventListener('input', (e) => {
+                    this.speed = parseFloat(e.target.value);
+                    this.updateSpeedLabel();
+                    this.saveSettings();
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.altKey && e.key === 's') {
+                        e.preventDefault();
+                        this.stopSpeaking();
+                    }
+                    if (e.altKey && e.key === 'r') {
+                        e.preventDefault();
+                        const enableCheckbox = document.getElementById('enable-reader');
+                        enableCheckbox.checked = !enableCheckbox.checked;
+                        enableCheckbox.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+
+            enableReader() {
+                document.body.style.cursor = 'help';
+            }
+
+            disableReader() {
+                document.body.style.cursor = 'default';
+                this.stopSpeaking();
+                this.disableHoverReading();
+            }
+
+            enableHoverReading() {
+                document.addEventListener('mouseover', this.handleHover);
+            }
+
+            disableHoverReading() {
+                document.removeEventListener('mouseover', this.handleHover);
+                clearTimeout(this.hoverTimeout);
+            }
+
+            handleHover = (e) => {
+                if (!this.isEnabled || !this.autoReadOnHover) return;
+
+                clearTimeout(this.hoverTimeout);
+
+                this.hoverTimeout = setTimeout(() => {
+                    const element = e.target;
+                    if (element && element !== this.currentElement) {
+                        this.readElement(element);
+                    }
+                }, 500);
+            }
+
+            readElement(element) {
+                if (!this.isEnabled) return;
+
+                // Skip script, style, and hidden elements
+                if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(element.tagName)) return;
+                if (element.offsetParent === null && element.tagName !== 'BODY') return;
+
+                let textToRead = '';
+                let isClickable = false;
+
+                // Check if element is clickable
+                const hasClickHandler = element.onclick !== null ||
+                    element.hasAttribute('onclick') ||
+                    element.style.cursor === 'pointer' ||
+                    element.classList.contains('clickable') ||
+                    element.hasAttribute('role') && element.getAttribute('role') === 'button';
+
+                // Get aria-label or title first (highest priority)
+                if (element.getAttribute('aria-label')) {
+                    textToRead = element.getAttribute('aria-label');
+                    isClickable = hasClickHandler;
+                } else if (element.getAttribute('title')) {
+                    textToRead = element.getAttribute('title');
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'IMG') {
+                    textToRead = element.alt || 'Image';
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'A') {
+                    textToRead = `Link: ${element.textContent.trim()}`;
+                    isClickable = true;
+                } else if (element.tagName === 'BUTTON') {
+                    textToRead = `Button: ${element.textContent.trim()}`;
+                    isClickable = true;
+                } else if (element.tagName === 'INPUT') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    textToRead = `Input field: ${label ? label.textContent : element.placeholder || 'Text input'}`;
+                    isClickable = true;
+                } else if (element.tagName === 'TEXTAREA') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    textToRead = `Text area: ${label ? label.textContent : element.placeholder || 'Text area'}`;
+                    isClickable = true;
+                } else if (element.tagName === 'SELECT') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    textToRead = `Dropdown: ${label ? label.textContent : 'Select option'}`;
+                    isClickable = true;
+                } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
+                    textToRead = element.textContent.trim();
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'P') {
+                    textToRead = element.textContent.trim();
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'NAV') {
+                    textToRead = 'Navigation menu';
+                    isClickable = false;
+                } else if (element.tagName === 'FOOTER') {
+                    textToRead = 'Footer section';
+                    isClickable = false;
+                } else if (element.tagName === 'HEADER') {
+                    textToRead = 'Header section';
+                    isClickable = false;
+                } else if (element.tagName === 'SECTION') {
+                    // For sections, try to find the main heading to read
+                    const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+                    if (heading) {
+                        textToRead = heading.textContent.trim();
+                    } else {
+                        return;
+                    }
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'DIV') {
+                    // Check if div is clickable (cards, containers)
+                    if (hasClickHandler) {
+                        // Try to find meaningful text inside
+                        const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+                        if (heading) {
+                            textToRead = heading.textContent.trim();
+                        } else {
+                            // Get first meaningful text
+                            const firstText = element.textContent.trim().substring(0, 100);
+                            textToRead = firstText;
+                        }
+                        isClickable = true;
+                    } else {
+                        return;
+                    }
+                } else {
+                    // Get direct text content only (not nested elements)
+                    textToRead = Array.from(element.childNodes)
+                        .filter(node => node.nodeType === Node.TEXT_NODE)
+                        .map(node => node.textContent.trim())
+                        .filter(text => text.length > 0)
+                        .join(' ');
+
+                    isClickable = hasClickHandler;
+                }
+
+                // Clean up text
+                textToRead = textToRead.trim().replace(/\s+/g, ' ');
+
+                // Add "clickable" announcement if element is interactive
+                if (isClickable && textToRead && !textToRead.toLowerCase().includes('button') && !textToRead.toLowerCase().includes('link')) {
+                    textToRead = `Clickable: ${textToRead}`;
+                }
+
+                if (textToRead && textToRead.length > 1) {
+                    this.speak(textToRead);
+                    this.currentElement = element;
+                    this.highlightElement(element);
+                }
+            }
+
+            highlightElement(element) {
+                // Remove previous highlight
+                document.querySelectorAll('.sr-highlight').forEach(el => {
+                    el.classList.remove('sr-highlight');
+                });
+
+                // Add temporary highlight
+                element.classList.add('sr-highlight');
+                setTimeout(() => {
+                    element.classList.remove('sr-highlight');
+                }, 2000);
+            }
+
+            speak(text) {
+                if (!text || text.trim().length === 0) return;
+
+                // Stop current speech
+                this.stopSpeaking();
+
+                // Use ResponsiveVoice if available, otherwise use browser's SpeechSynthesis
+                if (typeof responsiveVoice !== 'undefined') {
+                    responsiveVoice.speak(text, "US English Female", {
+                        rate: this.speed,
+                        pitch: 1,
+                        volume: 1
+                    });
+                } else {
+                    // Fallback to browser's built-in speech synthesis
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = this.speed;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    window.speechSynthesis.speak(utterance);
+                }
+
+                this.isReading = true;
+            }
+
+            stopSpeaking() {
+                if (typeof responsiveVoice !== 'undefined') {
+                    responsiveVoice.cancel();
+                } else {
+                    window.speechSynthesis.cancel();
+                }
+                this.isReading = false;
+                this.currentElement = null;
+            }
+
+            updateSpeedLabel() {
+                const label = document.getElementById('speed-value');
+                if (this.speed < 0.8) {
+                    label.textContent = 'Slow';
+                } else if (this.speed > 1.2) {
+                    label.textContent = 'Fast';
+                } else {
+                    label.textContent = 'Normal';
+                }
+            }
+
+            saveSettings() {
+                localStorage.setItem('screenReaderSettings', JSON.stringify({
+                    enabled: this.isEnabled,
+                    autoHover: this.autoReadOnHover,
+                    readClick: this.readOnClick,
+                    speed: this.speed
+                }));
+            }
+
+            loadSettings() {
+                const saved = localStorage.getItem('screenReaderSettings');
+                if (saved) {
+                    const settings = JSON.parse(saved);
+                    this.isEnabled = settings.enabled || false;
+                    this.autoReadOnHover = settings.autoHover || false;
+                    this.readOnClick = settings.readClick || false;
+                    this.speed = settings.speed || 1.0;
+
+                    const hoverCheckbox = document.getElementById('auto-hover');
+                    const clickCheckbox = document.getElementById('read-click');
+
+                    document.getElementById('enable-reader').checked = this.isEnabled;
+                    document.getElementById('speed-control').value = this.speed;
+                    this.updateSpeedLabel();
+
+                    if (this.isEnabled) {
+                        hoverCheckbox.disabled = false;
+                        clickCheckbox.disabled = false;
+                        hoverCheckbox.checked = this.autoReadOnHover;
+                        clickCheckbox.checked = this.readOnClick;
+
+                        this.enableReader();
+                        if (this.autoReadOnHover) {
+                            this.enableHoverReading();
+                        }
+                    } else {
+                        hoverCheckbox.disabled = true;
+                        clickCheckbox.disabled = true;
+                        hoverCheckbox.checked = false;
+                        clickCheckbox.checked = false;
+                    }
+                }
+            }
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.screenReader = new ScreenReaderSystem();
+
+                // Add click listeners to all clickable elements
+                document.addEventListener('click', (e) => {
+                    if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
+                        window.screenReader.readElement(e.target);
+                    }
+                });
+            });
+        } else {
+            window.screenReader = new ScreenReaderSystem();
+
+            document.addEventListener('click', (e) => {
+                if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
+                    window.screenReader.readElement(e.target);
+                }
+            });
+        }
     </script>
 </body>
 

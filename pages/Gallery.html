@@ -9,7 +9,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
     <style>
         :root {
             --primary-dark: #653025;
@@ -822,6 +822,201 @@
                 transform: scale(1.1);
             }
         }
+
+        .accessibility-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .accessibility-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-dark);
+            color: var(--white);
+            border: 3px solid var(--accent);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .accessibility-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+
+        .accessibility-btn.active {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        .accessibility-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            min-width: 250px;
+            display: none;
+        }
+
+        .accessibility-menu.show {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .accessibility-menu h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .menu-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--neutral-light);
+            transition: var(--transition);
+        }
+
+        .menu-option:last-child {
+            border-bottom: none;
+        }
+
+        .menu-option label {
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .menu-option:has(input:disabled) {
+            opacity: 0.5;
+        }
+
+        .menu-option:has(input:disabled) label {
+            cursor: not-allowed;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--accent);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-switch input:disabled+.slider {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .toggle-switch input:disabled+.slider:before {
+            background-color: #f5f5f5;
+        }
+
+        .speed-control {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.8rem 0;
+        }
+
+        .speed-control input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+        }
+
+        .speed-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .sr-highlight {
+            outline: 3px solid var(--accent) !important;
+            outline-offset: 2px;
+            background-color: rgba(176, 141, 87, 0.1) !important;
+        }
+
+        @media (max-width: 768px) {
+            .accessibility-controls {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .accessibility-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .accessibility-menu {
+                right: -10px;
+                min-width: 220px;
+            }
+        }
     </style>
 </head>
 
@@ -866,54 +1061,54 @@
             <div class="controls-section">
                 <div class="search-filter-container">
                     <button id="visual-search-btn" class="visual-search-btn">
-                            <span class="material-icons">photo_camera</span>
-                            Search by Image
-                        </button>
+                        <span class="material-icons">photo_camera</span>
+                        Search by Image
+                    </button>
                     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
 
                     <!-- Modal للبحث بالصورة -->
-<div id="visual-search-modal" class="visual-search-modal">
-    <div class="visual-search-content">
-        <div class="modal-header">
-            <h2>
-                <span class="material-icons">image_search</span>
-                Visual Search
-            </h2>
-            <button class="close-modal-btn" id="close-visual-modal">
-                <span class="material-icons">close</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div id="upload-area" class="upload-area">
-                <div class="upload-icon">
-                    <span class="material-icons" style="font-size: inherit;">cloud_upload</span>
-                </div>
-                <div class="upload-text">Drop an image here or click to browse</div>
-                <div class="upload-hint">Supported: JPG, PNG, WEBP (Max 5MB)</div>
-                <input type="file" id="image-input" class="file-input" accept="image/*">
-            </div>
+                    <div id="visual-search-modal" class="visual-search-modal">
+                        <div class="visual-search-content">
+                            <div class="modal-header">
+                                <h2>
+                                    <span class="material-icons">image_search</span>
+                                    Visual Search
+                                </h2>
+                                <button class="close-modal-btn" id="close-visual-modal">
+                                    <span class="material-icons">close</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div id="upload-area" class="upload-area">
+                                    <div class="upload-icon">
+                                        <span class="material-icons" style="font-size: inherit;">cloud_upload</span>
+                                    </div>
+                                    <div class="upload-text">Drop an image here or click to browse</div>
+                                    <div class="upload-hint">Supported: JPG, PNG, WEBP (Max 5MB)</div>
+                                    <input type="file" id="image-input" class="file-input" accept="image/*">
+                                </div>
 
-            <div id="preview-container" class="preview-container">
-                <img id="image-preview" class="image-preview" alt="Preview">
-                <div class="preview-info">
-                    <span id="file-name" style="color: var(--text-dark); font-weight: 500;"></span>
-                    <button class="search-btn" id="search-similar-btn" style="margin: 0;">
-                        <span class="material-icons">search</span>
-                        Find Similar
-                    </button>
-                </div>
-            </div>
+                                <div id="preview-container" class="preview-container">
+                                    <img id="image-preview" class="image-preview" alt="Preview">
+                                    <div class="preview-info">
+                                        <span id="file-name" style="color: var(--text-dark); font-weight: 500;"></span>
+                                        <button class="search-btn" id="search-similar-btn" style="margin: 0;">
+                                            <span class="material-icons">search</span>
+                                            Find Similar
+                                        </button>
+                                    </div>
+                                </div>
 
-            <div id="processing-indicator" class="processing-indicator">
-                <div class="spinner"></div>
-                <p>Analyzing image with AI...</p>
-                <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
-                    This may take a few seconds
-                </p>
-            </div>
-        </div>
-    </div>
-</div>
+                                <div id="processing-indicator" class="processing-indicator">
+                                    <div class="spinner"></div>
+                                    <p>Analyzing image with AI...</p>
+                                    <p style="font-size: 0.9rem; color: var(--text-light); margin-top: 0.5rem;">
+                                        This may take a few seconds
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
                     <div class="search-wrapper">
                         <i class="fas fa-search search-icon"></i>
@@ -1019,7 +1214,7 @@
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import './notification-system.js';
-        
+
         let allCollections = [];
         let filteredCollections = [];
 
@@ -1298,305 +1493,728 @@
 
         // استبدل قسم Visual Search في Gallery.html بهذا الكود المحسّن:
 
-// 🔍 Visual Search System
-let mobilenetModel = null;
-let imageFeatures = new Map(); // Store features for all artworks
+        // 🔍 Visual Search System
+        let mobilenetModel = null;
+        let imageFeatures = new Map(); // Store features for all artworks
 
-// Load MobileNet model
-async function loadModel() {
-    try {
-        console.log('🤖 Loading AI model...');
-        mobilenetModel = await mobilenet.load();
-        console.log('✅ AI model loaded successfully!');
-        return true;
-    } catch (error) {
-        console.error('❌ Error loading model:', error);
-        return false;
-    }
-}
-
-// Extract features from image
-async function extractFeatures(imageElement) {
-    if (!mobilenetModel) {
-        await loadModel();
-    }
-    
-    try {
-        const activation = mobilenetModel.infer(imageElement, true);
-        const features = await activation.data();
-        activation.dispose();
-        return Array.from(features);
-    } catch (error) {
-        console.error('Error extracting features:', error);
-        return null;
-    }
-}
-
-// Calculate cosine similarity
-function cosineSimilarity(vec1, vec2) {
-    if (!vec1 || !vec2 || vec1.length !== vec2.length) return 0;
-    
-    let dotProduct = 0;
-    let norm1 = 0;
-    let norm2 = 0;
-    
-    for (let i = 0; i < vec1.length; i++) {
-        dotProduct += vec1[i] * vec2[i];
-        norm1 += vec1[i] * vec1[i];
-        norm2 += vec2[i] * vec2[i];
-    }
-    
-    if (norm1 === 0 || norm2 === 0) return 0;
-    return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
-}
-
-// Find similar artworks
-async function findSimilarArtworks(uploadedImageFeatures) {
-    const similarities = [];
-    
-    for (const [artworkId, features] of imageFeatures.entries()) {
-        const similarity = cosineSimilarity(uploadedImageFeatures, features);
-        similarities.push({
-            artwork: allCollections.find(c => c.id === artworkId),
-            similarity: similarity
-        });
-    }
-    
-    // Sort by similarity (highest first)
-    similarities.sort((a, b) => b.similarity - a.similarity);
-    
-    // Return top 10 results with similarity > 0.3
-    return similarities.filter(s => s.similarity > 0.3).slice(0, 10);
-}
-
-// Preload features for all artworks
-async function preloadArtworkFeatures() {
-    if (!mobilenetModel) {
-        await loadModel();
-    }
-    
-    console.log('🔄 Preloading artwork features...');
-    
-    for (const artwork of allCollections) {
-        if (artwork.imageURL && !imageFeatures.has(artwork.id)) {
+        // Load MobileNet model
+        async function loadModel() {
             try {
-                const img = new Image();
-                img.crossOrigin = 'anonymous';
-                
-                await new Promise((resolve, reject) => {
-                    img.onload = resolve;
-                    img.onerror = reject;
-                    img.src = artwork.imageURL;
+                console.log('🤖 Loading AI model...');
+                mobilenetModel = await mobilenet.load();
+                console.log('✅ AI model loaded successfully!');
+                return true;
+            } catch (error) {
+                console.error('❌ Error loading model:', error);
+                return false;
+            }
+        }
+
+        // Extract features from image
+        async function extractFeatures(imageElement) {
+            if (!mobilenetModel) {
+                await loadModel();
+            }
+
+            try {
+                const activation = mobilenetModel.infer(imageElement, true);
+                const features = await activation.data();
+                activation.dispose();
+                return Array.from(features);
+            } catch (error) {
+                console.error('Error extracting features:', error);
+                return null;
+            }
+        }
+
+        // Calculate cosine similarity
+        function cosineSimilarity(vec1, vec2) {
+            if (!vec1 || !vec2 || vec1.length !== vec2.length) return 0;
+
+            let dotProduct = 0;
+            let norm1 = 0;
+            let norm2 = 0;
+
+            for (let i = 0; i < vec1.length; i++) {
+                dotProduct += vec1[i] * vec2[i];
+                norm1 += vec1[i] * vec1[i];
+                norm2 += vec2[i] * vec2[i];
+            }
+
+            if (norm1 === 0 || norm2 === 0) return 0;
+            return dotProduct / (Math.sqrt(norm1) * Math.sqrt(norm2));
+        }
+
+        // Find similar artworks
+        async function findSimilarArtworks(uploadedImageFeatures) {
+            const similarities = [];
+
+            for (const [artworkId, features] of imageFeatures.entries()) {
+                const similarity = cosineSimilarity(uploadedImageFeatures, features);
+                similarities.push({
+                    artwork: allCollections.find(c => c.id === artworkId),
+                    similarity: similarity
                 });
-                
-                const features = await extractFeatures(img);
-                if (features) {
-                    imageFeatures.set(artwork.id, features);
+            }
+
+            // Sort by similarity (highest first)
+            similarities.sort((a, b) => b.similarity - a.similarity);
+
+            // Return top 10 results with similarity > 0.3
+            return similarities.filter(s => s.similarity > 0.3).slice(0, 10);
+        }
+
+        // Preload features for all artworks
+        async function preloadArtworkFeatures() {
+            if (!mobilenetModel) {
+                await loadModel();
+            }
+
+            console.log('🔄 Preloading artwork features...');
+
+            for (const artwork of allCollections) {
+                if (artwork.imageURL && !imageFeatures.has(artwork.id)) {
+                    try {
+                        const img = new Image();
+                        img.crossOrigin = 'anonymous';
+
+                        await new Promise((resolve, reject) => {
+                            img.onload = resolve;
+                            img.onerror = reject;
+                            img.src = artwork.imageURL;
+                        });
+
+                        const features = await extractFeatures(img);
+                        if (features) {
+                            imageFeatures.set(artwork.id, features);
+                        }
+                    } catch (error) {
+                        console.warn(`Failed to extract features for ${artwork.title}:`, error);
+                    }
+                }
+            }
+
+            console.log(`✅ Loaded features for ${imageFeatures.size} artworks`);
+        }
+
+        // UI Handlers
+        const visualSearchBtn = document.getElementById('visual-search-btn');
+        const visualSearchModal = document.getElementById('visual-search-modal');
+        const closeVisualModal = document.getElementById('close-visual-modal');
+        const uploadArea = document.getElementById('upload-area');
+        const imageInput = document.getElementById('image-input');
+        const previewContainer = document.getElementById('preview-container');
+        const imagePreview = document.getElementById('image-preview');
+        const fileName = document.getElementById('file-name');
+        const searchSimilarBtn = document.getElementById('search-similar-btn');
+        const processingIndicator = document.getElementById('processing-indicator');
+
+        let uploadedImage = null;
+        let uploadedImageFeatures = null;
+
+        visualSearchBtn.addEventListener('click', async () => {
+            visualSearchModal.classList.add('active');
+
+            // Load model on first open
+            if (!mobilenetModel) {
+                await loadModel();
+            }
+
+            // Preload features if not done yet
+            if (imageFeatures.size === 0) {
+                setTimeout(preloadArtworkFeatures, 1000);
+            }
+        });
+
+        closeVisualModal.addEventListener('click', () => {
+            visualSearchModal.classList.remove('active');
+            resetUploadState();
+        });
+
+        visualSearchModal.addEventListener('click', (e) => {
+            if (e.target === visualSearchModal) {
+                visualSearchModal.classList.remove('active');
+                resetUploadState();
+            }
+        });
+
+        uploadArea.addEventListener('click', () => {
+            imageInput.click();
+        });
+
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('dragover');
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('dragover');
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('dragover');
+
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                handleImageUpload(file);
+            }
+        });
+
+        imageInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                handleImageUpload(file);
+            }
+        });
+
+        async function handleImageUpload(file) {
+            if (file.size > 5 * 1024 * 1024) {
+                alert('Image size must be less than 5MB');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                uploadedImage = new Image();
+                uploadedImage.onload = async () => {
+                    imagePreview.src = e.target.result;
+                    fileName.textContent = file.name;
+                    previewContainer.classList.add('active');
+                    uploadArea.style.display = 'none';
+
+                    // Extract features immediately
+                    processingIndicator.classList.add('active');
+                    uploadedImageFeatures = await extractFeatures(uploadedImage);
+                    processingIndicator.classList.remove('active');
+
+                    if (!uploadedImageFeatures) {
+                        alert('Failed to analyze image. Please try another one.');
+                    }
+                };
+                uploadedImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        searchSimilarBtn.addEventListener('click', async () => {
+            if (!uploadedImageFeatures) {
+                alert('Please wait for image analysis to complete');
+                return;
+            }
+
+            processingIndicator.classList.add('active');
+            searchSimilarBtn.disabled = true;
+
+            try {
+                const similarArtworks = await findSimilarArtworks(uploadedImageFeatures);
+
+                visualSearchModal.classList.remove('active');
+                resetUploadState();
+
+                // Show results
+                if (similarArtworks.length > 0) {
+                    // Add visual search badge to button
+                    let badge = visualSearchBtn.querySelector('.results-badge');
+                    if (!badge) {
+                        badge = document.createElement('span');
+                        badge.className = 'results-badge';
+                        visualSearchBtn.style.position = 'relative';
+                        visualSearchBtn.appendChild(badge);
+                    }
+                    badge.textContent = similarArtworks.length;
+
+                    // Display similar artworks
+                    const artworksToShow = similarArtworks.map(s => s.artwork);
+                    renderCollections(artworksToShow);
+
+                    // Add similarity badges to cards
+                    setTimeout(() => {
+                        similarArtworks.forEach((item, index) => {
+                            const card = document.querySelector(`[data-artwork-id="${item.artwork.id}"]`);
+                            if (card) {
+                                const badge = document.createElement('div');
+                                badge.className = 'similarity-badge';
+                                badge.textContent = `${Math.round(item.similarity * 100)}% Match`;
+                                card.style.position = 'relative';
+                                card.appendChild(badge);
+                            }
+                        });
+                    }, 100);
+
+                    // Update results info
+                    resultsInfo.style.display = 'block';
+                    resultsCount.textContent = similarArtworks.length;
+
+                    // Scroll to results
+                    collectionsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                } else {
+                    alert('No similar artworks found. Try another image!');
                 }
             } catch (error) {
-                console.warn(`Failed to extract features for ${artwork.title}:`, error);
+                console.error('Error finding similar artworks:', error);
+                alert('An error occurred. Please try again.');
+            } finally {
+                processingIndicator.classList.remove('active');
+                searchSimilarBtn.disabled = false;
             }
+        });
+
+        function resetUploadState() {
+            uploadArea.style.display = 'block';
+            previewContainer.classList.remove('active');
+            imageInput.value = '';
+            uploadedImage = null;
+            uploadedImageFeatures = null;
         }
-    }
-    
-    console.log(`✅ Loaded features for ${imageFeatures.size} artworks`);
-}
 
-// UI Handlers
-const visualSearchBtn = document.getElementById('visual-search-btn');
-const visualSearchModal = document.getElementById('visual-search-modal');
-const closeVisualModal = document.getElementById('close-visual-modal');
-const uploadArea = document.getElementById('upload-area');
-const imageInput = document.getElementById('image-input');
-const previewContainer = document.getElementById('preview-container');
-const imagePreview = document.getElementById('image-preview');
-const fileName = document.getElementById('file-name');
-const searchSimilarBtn = document.getElementById('search-similar-btn');
-const processingIndicator = document.getElementById('processing-indicator');
-
-let uploadedImage = null;
-let uploadedImageFeatures = null;
-
-visualSearchBtn.addEventListener('click', async () => {
-    visualSearchModal.classList.add('active');
-    
-    // Load model on first open
-    if (!mobilenetModel) {
-        await loadModel();
-    }
-    
-    // Preload features if not done yet
-    if (imageFeatures.size === 0) {
-        setTimeout(preloadArtworkFeatures, 1000);
-    }
-});
-
-closeVisualModal.addEventListener('click', () => {
-    visualSearchModal.classList.remove('active');
-    resetUploadState();
-});
-
-visualSearchModal.addEventListener('click', (e) => {
-    if (e.target === visualSearchModal) {
-        visualSearchModal.classList.remove('active');
-        resetUploadState();
-    }
-});
-
-uploadArea.addEventListener('click', () => {
-    imageInput.click();
-});
-
-uploadArea.addEventListener('dragover', (e) => {
-    e.preventDefault();
-    uploadArea.classList.add('dragover');
-});
-
-uploadArea.addEventListener('dragleave', () => {
-    uploadArea.classList.remove('dragover');
-});
-
-uploadArea.addEventListener('drop', (e) => {
-    e.preventDefault();
-    uploadArea.classList.remove('dragover');
-    
-    const file = e.dataTransfer.files[0];
-    if (file && file.type.startsWith('image/')) {
-        handleImageUpload(file);
-    }
-});
-
-imageInput.addEventListener('change', (e) => {
-    const file = e.target.files[0];
-    if (file) {
-        handleImageUpload(file);
-    }
-});
-
-async function handleImageUpload(file) {
-    if (file.size > 5 * 1024 * 1024) {
-        alert('Image size must be less than 5MB');
-        return;
-    }
-    
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-        uploadedImage = new Image();
-        uploadedImage.onload = async () => {
-            imagePreview.src = e.target.result;
-            fileName.textContent = file.name;
-            previewContainer.classList.add('active');
-            uploadArea.style.display = 'none';
-            
-            // Extract features immediately
-            processingIndicator.classList.add('active');
-            uploadedImageFeatures = await extractFeatures(uploadedImage);
-            processingIndicator.classList.remove('active');
-            
-            if (!uploadedImageFeatures) {
-                alert('Failed to analyze image. Please try another one.');
+        // Clear visual search results when using other filters
+        function clearVisualSearchResults() {
+            const badge = visualSearchBtn.querySelector('.results-badge');
+            if (badge) {
+                badge.remove();
             }
+
+            // Remove similarity badges
+            document.querySelectorAll('.similarity-badge').forEach(b => b.remove());
+        }
+
+        // Update existing filter functions
+        const originalFilterAndSearch = filterAndSearch;
+        filterAndSearch = function () {
+            clearVisualSearchResults();
+            originalFilterAndSearch();
         };
-        uploadedImage.src = e.target.result;
-    };
-    reader.readAsDataURL(file);
-}
 
-searchSimilarBtn.addEventListener('click', async () => {
-    if (!uploadedImageFeatures) {
-        alert('Please wait for image analysis to complete');
-        return;
-    }
-    
-    processingIndicator.classList.add('active');
-    searchSimilarBtn.disabled = true;
-    
-    try {
-        const similarArtworks = await findSimilarArtworks(uploadedImageFeatures);
-        
-        visualSearchModal.classList.remove('active');
-        resetUploadState();
-        
-        // Show results
-        if (similarArtworks.length > 0) {
-            // Add visual search badge to button
-            let badge = visualSearchBtn.querySelector('.results-badge');
-            if (!badge) {
-                badge = document.createElement('span');
-                badge.className = 'results-badge';
-                visualSearchBtn.style.position = 'relative';
-                visualSearchBtn.appendChild(badge);
+        const originalClearAllFilters = clearAllFilters;
+        clearAllFilters = function () {
+            clearVisualSearchResults();
+            originalClearAllFilters();
+        };
+
+        // ===== SCREEN READER ACCESSIBILITY SYSTEM =====
+        class ScreenReaderSystem {
+            constructor() {
+                this.isEnabled = false;
+                this.isReading = false;
+                this.autoReadOnHover = false;
+                this.readOnClick = false;
+                this.speed = 1.0;
+                this.currentElement = null;
+                this.hoverTimeout = null;
+
+                this.init();
             }
-            badge.textContent = similarArtworks.length;
-            
-            // Display similar artworks
-            const artworksToShow = similarArtworks.map(s => s.artwork);
-            renderCollections(artworksToShow);
-            
-            // Add similarity badges to cards
-            setTimeout(() => {
-                similarArtworks.forEach((item, index) => {
-                    const card = document.querySelector(`[data-artwork-id="${item.artwork.id}"]`);
-                    if (card) {
-                        const badge = document.createElement('div');
-                        badge.className = 'similarity-badge';
-                        badge.textContent = `${Math.round(item.similarity * 100)}% Match`;
-                        card.style.position = 'relative';
-                        card.appendChild(badge);
+
+            init() {
+                this.createAccessibilityControls();
+                this.loadSettings();
+                this.attachEventListeners();
+            }
+
+            createAccessibilityControls() {
+                const controls = document.createElement('div');
+                controls.className = 'accessibility-controls';
+                controls.innerHTML = `
+            <button class="accessibility-btn" id="accessibility-toggle" title="Screen Reader Controls" aria-label="Open screen reader controls">
+                <span class="material-icons">accessibility_new</span>
+            </button>
+            <div class="accessibility-menu" id="accessibility-menu" role="menu">
+                <h3>Screen Reader</h3>
+                
+                <div class="menu-option">
+                    <label for="enable-reader">Enable Reader</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="enable-reader">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="menu-option">
+                    <label for="auto-hover">Read on Hover</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-hover" disabled>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="menu-option">
+                    <label for="read-click">Read on Click</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="read-click" disabled>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="speed-control">
+                    <div class="speed-label">
+                        <span>Speech Speed</span>
+                        <span id="speed-value">Normal</span>
+                    </div>
+                    <input type="range" id="speed-control" min="0.5" max="2" step="0.1" value="1">
+                </div>
+            </div>
+        `;
+                document.body.appendChild(controls);
+            }
+
+            attachEventListeners() {
+                // Toggle menu
+                document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                    const menu = document.getElementById('accessibility-menu');
+                    menu.classList.toggle('show');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.accessibility-controls')) {
+                        document.getElementById('accessibility-menu').classList.remove('show');
                     }
                 });
-            }, 100);
-            
-            // Update results info
-            resultsInfo.style.display = 'block';
-            resultsCount.textContent = similarArtworks.length;
-            
-            // Scroll to results
-            collectionsGrid.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-            alert('No similar artworks found. Try another image!');
+
+                // Enable/Disable reader
+                document.getElementById('enable-reader').addEventListener('change', (e) => {
+                    this.isEnabled = e.target.checked;
+                    const hoverCheckbox = document.getElementById('auto-hover');
+                    const clickCheckbox = document.getElementById('read-click');
+
+                    if (this.isEnabled) {
+                        hoverCheckbox.disabled = false;
+                        clickCheckbox.disabled = false;
+
+                        this.autoReadOnHover = true;
+                        this.readOnClick = true;
+                        hoverCheckbox.checked = true;
+                        clickCheckbox.checked = true;
+
+                        this.speak("Screen reader enabled");
+                        this.enableReader();
+                        this.enableHoverReading();
+                    } else {
+                        hoverCheckbox.disabled = true;
+                        clickCheckbox.disabled = true;
+                        hoverCheckbox.checked = false;
+                        clickCheckbox.checked = false;
+
+                        this.autoReadOnHover = false;
+                        this.readOnClick = false;
+
+                        this.speak("Screen reader disabled");
+                        this.disableReader();
+                    }
+
+                    this.saveSettings();
+                });
+
+                // Auto hover
+                document.getElementById('auto-hover').addEventListener('change', (e) => {
+                    this.autoReadOnHover = e.target.checked;
+                    this.saveSettings();
+                    if (this.autoReadOnHover) {
+                        this.enableHoverReading();
+                    } else {
+                        this.disableHoverReading();
+                    }
+                });
+
+                // Read on click
+                document.getElementById('read-click').addEventListener('change', (e) => {
+                    this.readOnClick = e.target.checked;
+                    this.saveSettings();
+                });
+
+                // Speed control
+                document.getElementById('speed-control').addEventListener('input', (e) => {
+                    this.speed = parseFloat(e.target.value);
+                    this.updateSpeedLabel();
+                    this.saveSettings();
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.altKey && e.key === 's') {
+                        e.preventDefault();
+                        this.stopSpeaking();
+                    }
+                    if (e.altKey && e.key === 'r') {
+                        e.preventDefault();
+                        const enableCheckbox = document.getElementById('enable-reader');
+                        enableCheckbox.checked = !enableCheckbox.checked;
+                        enableCheckbox.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+
+            enableReader() {
+                document.body.style.cursor = 'help';
+            }
+
+            disableReader() {
+                document.body.style.cursor = 'default';
+                this.stopSpeaking();
+                this.disableHoverReading();
+            }
+
+            enableHoverReading() {
+                document.addEventListener('mouseover', this.handleHover);
+            }
+
+            disableHoverReading() {
+                document.removeEventListener('mouseover', this.handleHover);
+                clearTimeout(this.hoverTimeout);
+            }
+
+            handleHover = (e) => {
+                if (!this.isEnabled || !this.autoReadOnHover) return;
+
+                clearTimeout(this.hoverTimeout);
+
+                this.hoverTimeout = setTimeout(() => {
+                    const element = e.target;
+                    if (element && element !== this.currentElement) {
+                        this.readElement(element);
+                    }
+                }, 500);
+            }
+
+            readElement(element) {
+                if (!this.isEnabled) return;
+
+                // Skip script, style, and hidden elements
+                if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(element.tagName)) return;
+                if (element.offsetParent === null && element.tagName !== 'BODY') return;
+
+                let textToRead = '';
+                let isClickable = false;
+
+                // Check if element is clickable
+                const hasClickHandler = element.onclick !== null ||
+                    element.hasAttribute('onclick') ||
+                    element.style.cursor === 'pointer' ||
+                    element.classList.contains('clickable') ||
+                    element.hasAttribute('role') && element.getAttribute('role') === 'button';
+
+                // Get aria-label or title first (highest priority)
+                if (element.getAttribute('aria-label')) {
+                    textToRead = element.getAttribute('aria-label');
+                    isClickable = hasClickHandler;
+                } else if (element.getAttribute('title')) {
+                    textToRead = element.getAttribute('title');
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'IMG') {
+                    textToRead = element.alt || 'Image';
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'A') {
+                    textToRead = `Link: ${element.textContent.trim()}`;
+                    isClickable = true;
+                } else if (element.tagName === 'BUTTON') {
+                    textToRead = `Button: ${element.textContent.trim()}`;
+                    isClickable = true;
+                } else if (element.tagName === 'INPUT') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    textToRead = `Input field: ${label ? label.textContent : element.placeholder || 'Text input'}`;
+                    isClickable = true;
+                } else if (element.tagName === 'TEXTAREA') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    textToRead = `Text area: ${label ? label.textContent : element.placeholder || 'Text area'}`;
+                    isClickable = true;
+                } else if (element.tagName === 'SELECT') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    textToRead = `Dropdown: ${label ? label.textContent : 'Select option'}`;
+                    isClickable = true;
+                } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
+                    textToRead = element.textContent.trim();
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'P') {
+                    textToRead = element.textContent.trim();
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'NAV') {
+                    textToRead = 'Navigation menu';
+                    isClickable = false;
+                } else if (element.tagName === 'FOOTER') {
+                    textToRead = 'Footer section';
+                    isClickable = false;
+                } else if (element.tagName === 'HEADER') {
+                    textToRead = 'Header section';
+                    isClickable = false;
+                } else if (element.tagName === 'SECTION') {
+                    // For sections, try to find the main heading to read
+                    const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+                    if (heading) {
+                        textToRead = heading.textContent.trim();
+                    } else {
+                        return;
+                    }
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'DIV') {
+                    // Check if div is clickable (cards, containers)
+                    if (hasClickHandler) {
+                        // Try to find meaningful text inside
+                        const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+                        if (heading) {
+                            textToRead = heading.textContent.trim();
+                        } else {
+                            // Get first meaningful text
+                            const firstText = element.textContent.trim().substring(0, 100);
+                            textToRead = firstText;
+                        }
+                        isClickable = true;
+                    } else {
+                        return;
+                    }
+                } else {
+                    // Get direct text content only (not nested elements)
+                    textToRead = Array.from(element.childNodes)
+                        .filter(node => node.nodeType === Node.TEXT_NODE)
+                        .map(node => node.textContent.trim())
+                        .filter(text => text.length > 0)
+                        .join(' ');
+
+                    isClickable = hasClickHandler;
+                }
+
+                // Clean up text
+                textToRead = textToRead.trim().replace(/\s+/g, ' ');
+
+                // Add "clickable" announcement if element is interactive
+                if (isClickable && textToRead && !textToRead.toLowerCase().includes('button') && !textToRead.toLowerCase().includes('link')) {
+                    textToRead = `Clickable: ${textToRead}`;
+                }
+
+                if (textToRead && textToRead.length > 1) {
+                    this.speak(textToRead);
+                    this.currentElement = element;
+                    this.highlightElement(element);
+                }
+            }
+
+            highlightElement(element) {
+                // Remove previous highlight
+                document.querySelectorAll('.sr-highlight').forEach(el => {
+                    el.classList.remove('sr-highlight');
+                });
+
+                // Add temporary highlight
+                element.classList.add('sr-highlight');
+                setTimeout(() => {
+                    element.classList.remove('sr-highlight');
+                }, 2000);
+            }
+
+            speak(text) {
+                if (!text || text.trim().length === 0) return;
+
+                // Stop current speech
+                this.stopSpeaking();
+
+                // Use ResponsiveVoice if available, otherwise use browser's SpeechSynthesis
+                if (typeof responsiveVoice !== 'undefined') {
+                    responsiveVoice.speak(text, "US English Female", {
+                        rate: this.speed,
+                        pitch: 1,
+                        volume: 1
+                    });
+                } else {
+                    // Fallback to browser's built-in speech synthesis
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = this.speed;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    window.speechSynthesis.speak(utterance);
+                }
+
+                this.isReading = true;
+            }
+
+            stopSpeaking() {
+                if (typeof responsiveVoice !== 'undefined') {
+                    responsiveVoice.cancel();
+                } else {
+                    window.speechSynthesis.cancel();
+                }
+                this.isReading = false;
+                this.currentElement = null;
+            }
+
+            updateSpeedLabel() {
+                const label = document.getElementById('speed-value');
+                if (this.speed < 0.8) {
+                    label.textContent = 'Slow';
+                } else if (this.speed > 1.2) {
+                    label.textContent = 'Fast';
+                } else {
+                    label.textContent = 'Normal';
+                }
+            }
+
+            saveSettings() {
+                localStorage.setItem('screenReaderSettings', JSON.stringify({
+                    enabled: this.isEnabled,
+                    autoHover: this.autoReadOnHover,
+                    readClick: this.readOnClick,
+                    speed: this.speed
+                }));
+            }
+
+            loadSettings() {
+                const saved = localStorage.getItem('screenReaderSettings');
+                if (saved) {
+                    const settings = JSON.parse(saved);
+                    this.isEnabled = settings.enabled || false;
+                    this.autoReadOnHover = settings.autoHover || false;
+                    this.readOnClick = settings.readClick || false;
+                    this.speed = settings.speed || 1.0;
+
+                    const hoverCheckbox = document.getElementById('auto-hover');
+                    const clickCheckbox = document.getElementById('read-click');
+
+                    document.getElementById('enable-reader').checked = this.isEnabled;
+                    document.getElementById('speed-control').value = this.speed;
+                    this.updateSpeedLabel();
+
+                    if (this.isEnabled) {
+                        hoverCheckbox.disabled = false;
+                        clickCheckbox.disabled = false;
+                        hoverCheckbox.checked = this.autoReadOnHover;
+                        clickCheckbox.checked = this.readOnClick;
+
+                        this.enableReader();
+                        if (this.autoReadOnHover) {
+                            this.enableHoverReading();
+                        }
+                    } else {
+                        hoverCheckbox.disabled = true;
+                        clickCheckbox.disabled = true;
+                        hoverCheckbox.checked = false;
+                        clickCheckbox.checked = false;
+                    }
+                }
+            }
         }
-    } catch (error) {
-        console.error('Error finding similar artworks:', error);
-        alert('An error occurred. Please try again.');
-    } finally {
-        processingIndicator.classList.remove('active');
-        searchSimilarBtn.disabled = false;
-    }
-});
 
-function resetUploadState() {
-    uploadArea.style.display = 'block';
-    previewContainer.classList.remove('active');
-    imageInput.value = '';
-    uploadedImage = null;
-    uploadedImageFeatures = null;
-}
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.screenReader = new ScreenReaderSystem();
 
-// Clear visual search results when using other filters
-function clearVisualSearchResults() {
-    const badge = visualSearchBtn.querySelector('.results-badge');
-    if (badge) {
-        badge.remove();
-    }
-    
-    // Remove similarity badges
-    document.querySelectorAll('.similarity-badge').forEach(b => b.remove());
-}
+                // Add click listeners to all clickable elements
+                document.addEventListener('click', (e) => {
+                    if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
+                        window.screenReader.readElement(e.target);
+                    }
+                });
+            });
+        } else {
+            window.screenReader = new ScreenReaderSystem();
 
-// Update existing filter functions
-const originalFilterAndSearch = filterAndSearch;
-filterAndSearch = function() {
-    clearVisualSearchResults();
-    originalFilterAndSearch();
-};
-
-const originalClearAllFilters = clearAllFilters;
-clearAllFilters = function() {
-    clearVisualSearchResults();
-    originalClearAllFilters();
-};
+            document.addEventListener('click', (e) => {
+                if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
+                    window.screenReader.readElement(e.target);
+                }
+            });
+        }
     </script>
-    
+
 </body>
+
 </html>

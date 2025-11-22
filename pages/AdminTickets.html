@@ -185,22 +185,6 @@
             font-size: 0.9rem;
         }
 
-        .stat-trend {
-            font-size: 0.85rem;
-            margin-top: 0.3rem;
-            display: flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .stat-trend.positive {
-            color: var(--success);
-        }
-
-        .stat-trend.negative {
-            color: var(--danger);
-        }
-
         .action-bar {
             background: var(--white);
             padding: 1.5rem;
@@ -270,47 +254,52 @@
             border-color: var(--accent);
         }
 
-        .add-btn {
-            background: var(--accent);
-            color: var(--primary-dark);
-            border: none;
-            padding: 0.8rem 1.5rem;
+        .filter-select {
+            background: var(--white);
+            color: var(--text-dark);
+            border: 2px solid #e2e8f0;
+            padding: 0.6rem 1rem;
             border-radius: 8px;
-            font-weight: 600;
+            font-weight: 500;
             cursor: pointer;
             transition: var(--transition);
+            font-size: 0.9rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .filter-select:hover {
+            border-color: var(--accent);
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.1);
+        }
+
+        .clear-btn {
+            background: var(--accent);
+            color: var(--white);
+            border: none;
+            padding: 0.6rem 1.2rem;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 0.9rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
-        .add-btn:hover {
-            background: var(--accent-light);
+        .clear-btn:hover {
+            background: #9a7835;
             transform: translateY(-2px);
         }
 
-        .tickets-table-container {
-            background: var(--white);
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-            overflow: hidden;
-        }
-
-        .table-header {
-            padding: 1.5rem;
-            border-bottom: 2px solid var(--neutral-light);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .table-header h2 {
-            color: var(--primary-dark);
-        }
-
         .export-btn {
-            background: var(--info);
-            color: var(--white);
+            background: #ffffff;
+            color: var(--text-dark);
             border: none;
             padding: 0.6rem 1.2rem;
             border-radius: 8px;
@@ -323,7 +312,52 @@
         }
 
         .export-btn:hover {
-            background: #3182ce;
+            /* background: #dfddd6; */
+            color: var(--info);
+        }
+
+        .tickets-table-container {
+            background: var(--white);
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .table-wrapper {
+            max-height: 450px;
+            overflow-y: auto;
+            overflow-x: auto;
+        }
+
+        .table-wrapper::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-track {
+            background: var(--neutral-light);
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 4px;
+        }
+
+        .table-wrapper::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid var(--neutral-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-header h2 {
+            color: var(--primary-dark);
         }
 
         table {
@@ -366,34 +400,14 @@
             font-weight: 600;
         }
 
-        .badge-vip {
-            background: #fef3c7;
+        .badge-general {
+            background: #dad5cd;
             color: #92400e;
         }
 
-        .badge-regular {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .badge-student {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .badge-senior {
-            background: #fce7f3;
-            color: #831843;
-        }
-
-        .badge-general {
-            background: #e0e7ff;
+        .badge-event {
+            background: #c2d3e1;
             color: #3730a3;
-        }
-
-        .badge-family {
-            background: #fef3c7;
-            color: #78350f;
         }
 
         .status-badge {
@@ -404,12 +418,12 @@
             font-weight: 600;
         }
 
-        .status-active {
+        .status-confirmed {
             background: #d1fae5;
             color: #065f46;
         }
 
-        .status-inactive {
+        .status-cancelled {
             background: #fee2e2;
             color: #991b1b;
         }
@@ -423,41 +437,23 @@
             width: 36px;
             height: 36px;
             border: none;
+            background: transparent;
             border-radius: 6px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: var(--transition);
-        }
-
-        .btn-edit {
-            background: var(--primary-light);
-            color: var(--white);
-        }
-
-        .btn-edit:hover {
-            background: var(--primary-dark);
-            transform: scale(1.05);
-        }
-
-        .btn-delete {
-            background: var(--danger);
-            color: var(--white);
-        }
-
-        .btn-delete:hover {
-            background: #e53e3e;
-            transform: scale(1.05);
-        }
-
-        .btn-view {
-            background: var(--info);
-            color: var(--white);
+            color: var(--text-dark);
         }
 
         .btn-view:hover {
-            background: #3182ce;
+            background: var(--neutral-light);
+            transform: scale(1.05);
+        }
+
+        .btn-status:hover {
+            background: var(--neutral-light);
             transform: scale(1.05);
         }
 
@@ -482,139 +478,146 @@
 
         .modal-content {
             background: var(--white);
-            border-radius: 12px;
-            max-width: 700px;
+            border-radius: 16px;
+            max-width: 900px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4);
             animation: slideIn 0.3s ease;
         }
 
         @keyframes slideIn {
             from {
                 opacity: 0;
-                transform: translateY(-20px);
+                transform: translateY(-30px) scale(0.95);
             }
 
             to {
                 opacity: 1;
-                transform: translateY(0);
+                transform: translateY(0) scale(1);
             }
         }
 
         .modal-header {
-            padding: 1.5rem 2rem;
+            padding: 2rem 2.5rem;
             border-bottom: 2px solid var(--neutral-light);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            background: linear-gradient(135deg, var(--neutral-light) 0%, var(--white) 100%);
         }
 
         .modal-header h2 {
             color: var(--primary-dark);
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .modal-header h2::before {
+            content: '📋';
+            font-size: 1.5rem;
         }
 
         .close-modal {
-            background: none;
+            background: var(--neutral-light);
             border: none;
-            font-size: 1.8rem;
-            color: var(--text-light);
+            font-size: 1.5rem;
+            color: var(--text-dark);
             cursor: pointer;
             transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .close-modal:hover {
-            color: var(--danger);
-            transform: rotate(90deg);
+            background: var(--danger);
+            color: var(--white);
         }
 
         .modal-body {
-            padding: 2rem;
+            padding: 2.5rem;
+            background: var(--white);
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        .detail-section {
+            margin-bottom: 2rem;
+            padding-bottom: 2rem;
+            border-bottom: 2px solid var(--neutral-light);
         }
 
-        .form-label {
-            display: block;
+        .detail-section:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+
+        .section-heading {
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .section-heading::before {
+            content: '';
+            width: 4px;
+            height: 20px;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        .detail-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.25rem;
+        }
+
+        .detail-item {
+            padding: 1.25rem;
+            background: linear-gradient(135deg, var(--neutral-light) 0%, #faf8f0 100%);
+            border-radius: 12px;
+            border-left: 4px solid var(--neutral-dark);
+            transition: var(--transition);
+        }
+
+        .detail-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .detail-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
             margin-bottom: 0.5rem;
             font-weight: 600;
-            color: var(--text-dark);
-        }
-
-        .form-label .required {
-            color: var(--danger);
-        }
-
-        .form-input,
-        .form-textarea,
-        .form-select {
-            width: 100%;
-            padding: 0.8rem 1rem;
-            border: 2px solid #e2e8f0;
-            border-radius: 8px;
-            font-family: 'Inter', sans-serif;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .form-input:focus,
-        .form-textarea:focus,
-        .form-select:focus {
-            outline: none;
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.1);
-        }
-
-        .form-hint {
-            font-size: 0.85rem;
-            color: var(--text-light);
-            margin-top: 0.3rem;
-        }
-
-        .form-actions {
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
             display: flex;
-            gap: 1rem;
-            justify-content: flex-end;
-            padding-top: 1rem;
-            border-top: 2px solid var(--neutral-light);
+            align-items: center;
+            gap: 0.4rem;
         }
 
-        .btn {
-            padding: 0.8rem 1.8rem;
-            border: none;
-            border-radius: 8px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
+        .detail-label::before {
+            content: '•';
+            color: var(--accent);
+            font-size: 1.2rem;
         }
 
-        .btn-primary {
-            background: var(--accent);
-            color: var(--primary-dark);
-        }
-
-        .btn-primary:hover {
-            background: var(--accent-light);
-            transform: translateY(-2px);
-        }
-
-        .btn-primary:disabled {
-            background: #e2e8f0;
-            color: var(--text-light);
-            cursor: not-allowed;
-            transform: none;
-        }
-
-        .btn-secondary {
-            background: var(--neutral-light);
+        .detail-value {
+            font-size: 1.15rem;
             color: var(--text-dark);
-        }
-
-        .btn-secondary:hover {
-            background: #e2e8f0;
+            font-weight: 600;
+            word-wrap: break-word;
         }
 
         .loading {
@@ -646,32 +649,6 @@
             font-size: 0.9rem;
         }
 
-        .sold-cell {
-            font-weight: 600;
-            color: var(--accent);
-            font-size: 1.1rem;
-        }
-
-        .sales-progress {
-            display: flex;
-            flex-direction: column;
-            gap: 0.3rem;
-        }
-
-        .progress-bar {
-            width: 100px;
-            height: 6px;
-            background: #e2e8f0;
-            border-radius: 3px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--success), var(--accent));
-            transition: width 0.3s ease;
-        }
-
         @media (max-width: 768px) {
             .action-bar {
                 flex-direction: column;
@@ -698,6 +675,85 @@
             .stats-grid {
                 grid-template-columns: 1fr;
             }
+
+            .detail-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .charts-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .analytics-section {
+            margin-top: 5rem;
+        }
+
+        .charts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
+            gap: 2rem;
+            max-width: 1400px;
+        } 
+
+        .chart-card {
+            background: var(--white);
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: var(--shadow);
+        }
+
+        .chart-title {
+            font-size: 1.3rem;
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-weight: 600;
+            font-family: 'Playfair Display', serif;
+        }
+
+        .chart-controls {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+            justify-content: center;
+        }
+
+        .chart-btn {
+            background: var(--neutral-light);
+            color: var(--text-dark);
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .chart-btn:hover {
+            background: #e2e8f0;
+        }
+
+        .chart-btn.active {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        /* Fixed: Revenue chart container with fixed height */
+        .revenue-chart-wrapper {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+
+        .revenue-chart-container {
+            position: relative;
+            height: 100%;
+            width: 100%;
+        }
+
+        .chart-card canvas {
+            max-height: 300px;
         }
 
         @keyframes spin {
@@ -719,8 +775,8 @@
                 <span class="material-icons">arrow_back</span>
             </button>
             <div class="header-title">
-                <h1>Manage Tickets</h1>
-                <div class="header-subtitle">Manage ticket prices, sales dates, and statistics</div>
+                <h1>Ticket Sales Management</h1>
+                <div class="header-subtitle">View and manage all ticket purchases</div>
             </div>
         </div>
         <div class="header-actions">
@@ -735,52 +791,38 @@
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon primary">
-                    <span class="material-icons">confirmation_number</span>
+                    <span class="material-icons">payments</span>
                 </div>
                 <div class="stat-info">
-                    <h3 id="total-sales">$0.00</h3>
-                    <p>Total Sales Revenue</p>
-                    <div class="stat-trend positive">
-                        <span class="material-icons" style="font-size: 1rem;">trending_up</span>
-                        <span>+12.5% this month</span>
-                    </div>
+                    <h3 id="total-revenue">$0.00</h3>
+                    <p>Total Revenue</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon accent">
-                    <span class="material-icons">shopping_cart</span>
+                    <span class="material-icons">confirmation_number</span>
                 </div>
                 <div class="stat-info">
-                    <h3 id="tickets-sold">0</h3>
-                    <p>Tickets Sold</p>
-                    <div class="stat-trend positive">
-                        <span class="material-icons" style="font-size: 1rem;">trending_up</span>
-                        <span>+8.3% this month</span>
-                    </div>
+                    <h3 id="total-bookings">0</h3>
+                    <p>Total Bookings</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon success">
-                    <span class="material-icons">category</span>
+                    <span class="material-icons">people</span>
                 </div>
                 <div class="stat-info">
-                    <h3 id="active-tickets">0</h3>
-                    <p>Active Ticket Types</p>
-                    <div class="stat-trend">
-                        <span style="color: var(--text-light);">Available for sale</span>
-                    </div>
+                    <h3 id="total-visitors">0</h3>
+                    <p>Total Visitors</p>
                 </div>
             </div>
             <div class="stat-card">
                 <div class="stat-icon warning">
-                    <span class="material-icons">payments</span>
+                    <span class="material-icons">event</span>
                 </div>
                 <div class="stat-info">
-                    <h3 id="avg-price">$0.00</h3>
-                    <p>Average Ticket Price</p>
-                    <div class="stat-trend">
-                        <span style="color: var(--text-light);">Across all types</span>
-                    </div>
+                    <h3 id="event-bookings">0</h3>
+                    <p>Event Bookings</p>
                 </div>
             </div>
         </div>
@@ -788,22 +830,30 @@
         <div class="action-bar">
             <div class="search-box">
                 <span class="material-icons search-icon">search</span>
-                <input type="text" class="search-input" id="search-input" placeholder="Search tickets...">
+                <input type="text" class="search-input" id="search-input"
+                    placeholder="Search by name, email, or booking ID...">
             </div>
             <div class="filter-controls">
-                <button class="filter-btn active" data-filter="all">All</button>
-                <button class="filter-btn" data-filter="active">Active</button>
-                <button class="filter-btn" data-filter="inactive">Inactive</button>
+                <select class="filter-select" id="type-filter">
+                    <option value="all">All Types</option>
+                    <option value="general">General Visit</option>
+                    <option value="event">Event</option>
+                </select>
+                <select class="filter-select" id="status-filter">
+                    <option value="all">All Status</option>
+                    <option value="confirmed">Confirmed</option>
+                    <option value="cancelled">Cancelled</option>
+                </select>
+                <button class="clear-btn" id="clear-filters-btn">
+                    <span class="material-icons">clear</span>
+                    Clear Filters
+                </button>
             </div>
-            <button class="add-btn" id="add-ticket-btn">
-                <span class="material-icons">add</span>
-                Add New Ticket
-            </button>
         </div>
 
         <div class="tickets-table-container">
             <div class="table-header">
-                <h2>All Ticket Types</h2>
+                <h2>All Bookings</h2>
                 <button class="export-btn" id="export-btn">
                     <span class="material-icons">download</span>
                     Export Data
@@ -812,119 +862,243 @@
 
             <div id="loading" class="loading">
                 <span class="material-icons" style="font-size: 3rem; animation: spin 1s linear infinite;">refresh</span>
-                <p>Loading tickets...</p>
+                <p>Loading bookings...</p>
             </div>
 
             <div id="empty-state" class="empty-state" style="display: none;">
                 <span class="material-icons">confirmation_number</span>
-                <h3>No Tickets Yet</h3>
-                <p>Click "Add New Ticket" to create your first ticket type</p>
+                <h3>No Bookings Yet</h3>
+                <p>Ticket purchases will appear here</p>
             </div>
 
-            <table id="tickets-table" style="display: none;">
-                <thead>
-                    <tr>
-                        <th>Ticket Type</th>
-                        <th>Price</th>
-                        <th>Sales Start</th>
-                        <th>Sales End</th>
-                        <th>Sold</th>
-                        <th>Status</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody id="tickets-tbody">
-                </tbody>
-            </table>
+            <div class="table-wrapper">
+                <table id="tickets-table" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>User ID</th>
+                            <th>Type</th>
+                            <th>Ticket Price</th>
+                            <th>Visit Date</th>
+                            <th>Visitors</th>
+                            <th>Total</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tickets-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Analytics Section -->
+        <div class="analytics-section">
+            <h2
+                style="font-family: 'Playfair Display', serif; color: var(--primary-dark); margin-bottom: 2rem; margin-left: 1rem;">
+                Booking
+                Analytics</h2>
+
+            <div class="charts-grid">
+                <!-- Revenue Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Revenue Overview</h3>
+                    <div class="chart-controls">
+                        <button class="chart-btn active" data-period="day"
+                            onclick="changeRevenuePeriod('day')">Daily</button>
+                        <button class="chart-btn" data-period="month"
+                            onclick="changeRevenuePeriod('month')">Monthly</button>
+                        <button class="chart-btn" data-period="year"
+                            onclick="changeRevenuePeriod('year')">Yearly</button>
+                    </div>
+                    <div class="revenue-chart-wrapper">
+                        <div class="revenue-chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ticket Types Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Ticket Types Distribution</h3>
+                    <canvas id="ticketTypesChart"></canvas>
+                </div>
+
+                <!-- Status Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Booking Status</h3>
+                    <canvas id="statusChart"></canvas>
+                </div>
+
+                <!-- Visitors Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Visitor Types Breakdown</h3>
+                    <canvas id="visitorsChart"></canvas>
+                </div>
+
+                <!-- Event Tickets Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Tickets Sold by Event</h3>
+                    <canvas id="eventTicketsChart"></canvas>
+                </div>
+
+                <!-- Busiest Times Chart -->
+                <div class="chart-card">
+                    <h3 class="chart-title">Busiest Visit Times</h3>
+                    <canvas id="busiestTimesChart"></canvas>
+                </div>
+            </div>
         </div>
     </div>
 
-    <!-- Add/Edit Modal -->
-    <div class="modal" id="ticket-modal">
+    <!-- View Details Modal -->
+    <div class="modal" id="view-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 id="modal-title">Add Ticket Type</h2>
+                <h2>Booking Details</h2>
                 <button class="close-modal" id="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <form id="ticket-form">
-                    <input type="hidden" id="ticket-id">
-
-                    <div class="form-group">
-                        <label class="form-label">Ticket Type <span class="required">*</span></label>
-                        <input type="text" class="form-input" id="ticket-type" required
-                            placeholder="e.g., VIP Pass, Regular Pass, Student Pass">
-                        <div class="form-hint">Choose a clear, descriptive name for this ticket type</div>
+                <!-- Customer Information Group -->
+                <div class="detail-section">
+                    <h3 class="section-heading">Customer Information</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">User ID</div>
+                            <div class="detail-value" id="detail-user-id">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Customer Name</div>
+                            <div class="detail-value" id="detail-customer-name">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Email</div>
+                            <div class="detail-value" id="detail-email">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Phone</div>
+                            <div class="detail-value" id="detail-phone">-</div>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Price (USD) <span class="required">*</span></label>
-                        <input type="number" class="form-input" id="ticket-price" required step="0.01" min="0"
-                            placeholder="0.00">
-                        <div class="form-hint">Enter the ticket price (use 0 for free admission)</div>
+                <!-- Booking Information Group -->
+                <div class="detail-section">
+                    <h3 class="section-heading">Booking Information</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Booking ID</div>
+                            <div class="detail-value" id="detail-booking-id">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Ticket Type</div>
+                            <div class="detail-value" id="detail-ticket-type">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Event Name</div>
+                            <div class="detail-value" id="detail-event-name">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Ticket Price</div>
+                            <div class="detail-value" id="detail-ticket-price">-</div>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Sales Start Date <span class="required">*</span></label>
-                        <input type="date" class="form-input" id="sales-start" required>
-                        <div class="form-hint">When tickets become available for purchase</div>
+                <!-- Visit Details Group -->
+                <div class="detail-section">
+                    <h3 class="section-heading">Visit Details</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Visit Date</div>
+                            <div class="detail-value" id="detail-visit-date">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Visit Time</div>
+                            <div class="detail-value" id="detail-visit-time">-</div>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Sales End Date <span class="required">*</span></label>
-                        <input type="date" class="form-input" id="sales-end" required>
-                        <div class="form-hint">Last day tickets can be purchased</div>
+                <!-- Visitors Breakdown Group -->
+                <div class="detail-section">
+                    <h3 class="section-heading">Visitors Breakdown</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Adults</div>
+                            <div class="detail-value" id="detail-adults">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Seniors</div>
+                            <div class="detail-value" id="detail-seniors">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Children</div>
+                            <div class="detail-value" id="detail-children">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Total Visitors</div>
+                            <div class="detail-value" id="detail-total-visitors">-</div>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Status <span class="required">*</span></label>
-                        <select class="form-select" id="ticket-status" required>
-                            <option value="active">Active (Available for purchase)</option>
-                            <option value="inactive">Inactive (Hidden from users)</option>
-                        </select>
+                <!-- Payment Information Group -->
+                <div class="detail-section">
+                    <h3 class="section-heading">Payment Information</h3>
+                    <div class="detail-grid">
+                        <div class="detail-item">
+                            <div class="detail-label">Total Price</div>
+                            <div class="detail-value" id="detail-total-price">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Payment Method</div>
+                            <div class="detail-value" id="detail-payment-method">-</div>
+                        </div>
+                        <div class="detail-item">
+                            <div class="detail-label">Purchase Date</div>
+                            <div class="detail-value" id="detail-purchase-date">-</div>
+                        </div>
                     </div>
+                </div>
 
-                    <div class="form-group">
-                        <label class="form-label">Description</label>
-                        <textarea class="form-input" id="ticket-description" rows="3"
-                            style="min-height: 80px; resize: vertical;"
-                            placeholder="Brief description of this ticket type and what it includes"></textarea>
-                        <div class="form-hint">This will be shown to customers when selecting tickets</div>
+                <!-- Status Group -->
+                <div class="detail-section">
+                    <h3 class="section-heading">Status</h3>
+                    <div class="detail-grid" style="grid-template-columns: 1fr;">
+                        <div class="detail-item">
+                            <div class="detail-label">Booking Status</div>
+                            <div class="detail-value" id="detail-status">-</div>
+                        </div>
                     </div>
-
-                    <div class="form-actions">
-                        <button type="button" class="btn btn-secondary" id="cancel-btn">Cancel</button>
-                        <button type="submit" class="btn btn-primary" id="submit-btn">Save Ticket</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, query, orderBy, onSnapshot, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { collection, getDocs, deleteDoc, doc, query, orderBy, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
-        let allTickets = [];
-        let filteredTickets = [];
-        let currentEditId = null;
+        let allBookings = [];
+        let filteredBookings = [];
         let currentUser = null;
-        let currentFilter = 'all';
+        let currentTypeFilter = 'all';
+        let currentStatusFilter = 'all';
 
-        const ticketModal = document.getElementById('ticket-modal');
+        const viewModal = document.getElementById('view-modal');
         const closeModalBtn = document.getElementById('close-modal');
-        const cancelBtn = document.getElementById('cancel-btn');
-        const ticketForm = document.getElementById('ticket-form');
-        const modalTitle = document.getElementById('modal-title');
-        const submitBtn = document.getElementById('submit-btn');
         const ticketsTbody = document.getElementById('tickets-tbody');
         const ticketsTable = document.getElementById('tickets-table');
         const loading = document.getElementById('loading');
         const emptyState = document.getElementById('empty-state');
-        const addTicketBtn = document.getElementById('add-ticket-btn');
         const searchInput = document.getElementById('search-input');
         const exportBtn = document.getElementById('export-btn');
+        const typeFilter = document.getElementById('type-filter');
+        const statusFilter = document.getElementById('status-filter');
+        const clearFiltersBtn = document.getElementById('clear-filters-btn');
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -939,33 +1113,40 @@
             return date.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
         }
 
-        function getBadgeClass(type) {
-            const lowerType = type.toLowerCase();
-            if (lowerType.includes('vip')) return 'badge-vip';
-            if (lowerType.includes('student')) return 'badge-student';
-            if (lowerType.includes('senior')) return 'badge-senior';
-            if (lowerType.includes('general')) return 'badge-general';
-            if (lowerType.includes('family')) return 'badge-family';
-            return 'badge-regular';
+        function formatTimestamp(timestamp) {
+            if (!timestamp) return 'N/A';
+            let date;
+            if (timestamp.toDate) {
+                date = timestamp.toDate();
+            } else {
+                date = new Date(timestamp);
+            }
+            return date.toLocaleString('en-US', {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
         }
 
         function updateStats() {
-            const activeTickets = allTickets.filter(t => t.status === 'active');
-            const totalSales = allTickets.reduce((sum, ticket) => sum + ((ticket.price || 0) * (ticket.sold || 0)), 0);
-            const ticketsSold = allTickets.reduce((sum, ticket) => sum + (ticket.sold || 0), 0);
-            const avgPrice = allTickets.length > 0 ? allTickets.reduce((sum, ticket) => sum + (ticket.price || 0), 0) / allTickets.length : 0;
+            const totalRevenue = allBookings.reduce((sum, booking) => sum + (booking.totalPrice || 0), 0);
+            const totalBookings = allBookings.length;
+            const totalVisitors = allBookings.reduce((sum, booking) => sum + (booking.totalVisitors || 0), 0);
+            const eventBookings = allBookings.filter(b => b.ticketType === 'event').length;
 
-            document.getElementById('total-sales').textContent = `${totalSales.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
-            document.getElementById('tickets-sold').textContent = ticketsSold.toLocaleString();
-            document.getElementById('active-tickets').textContent = activeTickets.length;
-            document.getElementById('avg-price').textContent = `${avgPrice.toFixed(2)}`;
+            document.getElementById('total-revenue').textContent = `${totalRevenue.toFixed(2)}`;
+            document.getElementById('total-bookings').textContent = totalBookings;
+            document.getElementById('total-visitors').textContent = totalVisitors;
+            document.getElementById('event-bookings').textContent = eventBookings;
         }
 
-        function renderTicketsTable(ticketsList) {
+        function renderBookingsTable(bookingsList) {
             loading.style.display = 'none';
             ticketsTbody.innerHTML = '';
 
-            if (ticketsList.length === 0) {
+            if (bookingsList.length === 0) {
                 ticketsTable.style.display = 'none';
                 emptyState.style.display = 'block';
                 return;
@@ -974,33 +1155,53 @@
             ticketsTable.style.display = 'table';
             emptyState.style.display = 'none';
 
-            ticketsList.forEach(ticket => {
-                const badgeClass = getBadgeClass(ticket.type);
-                const maxSales = 1000; // You can make this dynamic per ticket
-                const salesPercentage = ticket.sold ? Math.min((ticket.sold / maxSales) * 100, 100) : 0;
+            bookingsList.forEach((booking, index) => {
+                const badgeClass = booking.ticketType === 'event' ? 'badge-event' : 'badge-general';
+                const typeText = booking.ticketType === 'event' ? 'Event' : 'General Visit';
+
+                const userIdDisplay = booking.userId === 'guest'
+                    ? '<span style="color: #969ca7; padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.85rem; font-weight: 600;">Guest</span>'
+                    : `<code style="background: var(--neutral-light); padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.85rem;">${booking.userId.substring(0, 8)}...</code>`;
+
+                let ticketPriceDisplay;
+                if (booking.ticketType === 'general') {
+                    ticketPriceDisplay = '<div class="price-cell" style="font-size: 0.95rem;">$15.00</div>';
+                } else if (booking.eventPrice) {
+                    ticketPriceDisplay = `<div class="price-cell" style="font-size: 0.95rem;">${booking.eventPrice.toFixed(2)}</div>`;
+                } else {
+                    ticketPriceDisplay = '<span style="color: var(--text-light); font-size: 0.85rem;">N/A</span>';
+                }
 
                 const row = document.createElement('tr');
                 row.innerHTML = `
-                    <td><span class="ticket-type-badge ${badgeClass}">${ticket.type}</span></td>
-                    <td><div class="price-cell">${(ticket.price || 0).toFixed(2)}</div></td>
-                    <td><div class="date-cell">${formatDate(ticket.salesStart)}</div></td>
-                    <td><div class="date-cell">${formatDate(ticket.salesEnd)}</div></td>
                     <td>
-                        <div class="sales-progress">
-                            <div class="sold-cell">${ticket.sold || 0}</div>
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: ${salesPercentage}%"></div>
-                            </div>
+                        <div style="font-weight: 600;">${booking.userName || 'N/A'}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-light);">${booking.userEmail || 'N/A'}</div>
+                    </td>
+                    <td>${userIdDisplay}</td>
+                    <td><span class="ticket-type-badge ${badgeClass}">${typeText}</span></td>
+                    <td>${ticketPriceDisplay}</td>
+                    <td>
+                        <div class="date-cell">${formatDate(booking.visitDate)}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-light);">${booking.visitTime || 'N/A'}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">${booking.totalVisitors || 0} visitors</div>
+                        <div style="font-size: 0.8rem; color: var(--text-light);">
+                            A: ${booking.visitors?.adults?.count || 0} | 
+                            S: ${booking.visitors?.seniors?.count || 0} | 
+                            C: ${booking.visitors?.children?.count || 0}
                         </div>
                     </td>
-                    <td><span class="status-badge status-${ticket.status || 'active'}">${(ticket.status || 'active').charAt(0).toUpperCase() + (ticket.status || 'active').slice(1)}</span></td>
+                    <td><div class="price-cell">${(booking.totalPrice || 0).toFixed(2)}</div></td>
+                    <td><span class="status-badge status-${booking.status || 'confirmed'}">${(booking.status || 'confirmed').charAt(0).toUpperCase() + (booking.status || 'confirmed').slice(1)}</span></td>
                     <td>
                         <div class="action-buttons">
-                            <button class="btn-icon btn-edit" data-id="${ticket.id}" title="Edit">
-                                <span class="material-icons">edit</span>
+                            <button class="btn-icon btn-view" data-id="${booking.id}" title="View Details">
+                                <span class="material-icons" style="font-size: 1.2rem;">edit</span>
                             </button>
-                            <button class="btn-icon btn-delete" data-id="${ticket.id}" title="Delete">
-                                <span class="material-icons">delete</span>
+                            <button class="btn-icon btn-status" data-id="${booking.id}" data-status="${booking.status || 'confirmed'}" title="Change Status">
+                                <span class="material-icons" style="font-size: 1.2rem;">delete</span>
                             </button>
                         </div>
                     </td>
@@ -1008,160 +1209,149 @@
                 ticketsTbody.appendChild(row);
             });
 
-            document.querySelectorAll('.btn-edit').forEach(btn => {
-                btn.addEventListener('click', handleEdit);
+            document.querySelectorAll('.btn-view').forEach(btn => {
+                btn.addEventListener('click', handleView);
             });
 
-            document.querySelectorAll('.btn-delete').forEach(btn => {
-                btn.addEventListener('click', handleDelete);
+            document.querySelectorAll('.btn-status').forEach(btn => {
+                btn.addEventListener('click', handleStatusChange);
             });
         }
 
-        function loadTickets() {
+        function loadBookings() {
             try {
-                const q = query(collection(db, "Tickets"), orderBy("type", "asc"));
+                const q = query(collection(db, "Ticketing"), orderBy("purchaseDate", "desc"));
 
                 onSnapshot(q, (snapshot) => {
-                    allTickets = snapshot.docs.map(doc => ({
+                    allBookings = snapshot.docs.map(doc => ({
                         id: doc.id,
                         ...doc.data()
                     }));
 
+                    console.log('✅ Loaded bookings:', allBookings);
                     applyFilters();
                     updateStats();
+                    initializeCharts();
                 }, (error) => {
-                    console.error("Error listening to tickets:", error);
-                    loading.innerHTML = '<p style="color: var(--danger);">Error loading tickets. Please refresh the page.</p>';
+                    console.error("Error listening to bookings:", error);
+                    loading.innerHTML = '<p style="color: var(--danger);">Error loading bookings. Please refresh the page.</p>';
                 });
 
             } catch (error) {
-                console.error("Error loading tickets:", error);
-                loading.innerHTML = '<p style="color: var(--danger);">Error loading tickets. Please refresh the page.</p>';
+                console.error("Error loading bookings:", error);
+                loading.innerHTML = '<p style="color: var(--danger);">Error loading bookings. Please refresh the page.</p>';
             }
         }
 
         function applyFilters() {
-            let tickets = [...allTickets];
+            let bookings = [...allBookings];
 
-            // Apply status filter
-            if (currentFilter === 'active') {
-                tickets = tickets.filter(t => t.status === 'active');
-            } else if (currentFilter === 'inactive') {
-                tickets = tickets.filter(t => t.status === 'inactive');
+            if (currentTypeFilter === 'general') {
+                bookings = bookings.filter(b => b.ticketType === 'general');
+            } else if (currentTypeFilter === 'event') {
+                bookings = bookings.filter(b => b.ticketType === 'event');
             }
 
-            // Apply search filter
+            if (currentStatusFilter === 'confirmed') {
+                bookings = bookings.filter(b => b.status === 'confirmed');
+            } else if (currentStatusFilter === 'cancelled') {
+                bookings = bookings.filter(b => b.status === 'cancelled');
+            }
+
             const searchTerm = searchInput.value.toLowerCase().trim();
             if (searchTerm) {
-                tickets = tickets.filter(ticket =>
-                    ticket.type.toLowerCase().includes(searchTerm) ||
-                    (ticket.description && ticket.description.toLowerCase().includes(searchTerm))
+                bookings = bookings.filter(booking =>
+                    booking.userName?.toLowerCase().includes(searchTerm) ||
+                    booking.userEmail?.toLowerCase().includes(searchTerm) ||
+                    booking.id.toLowerCase().includes(searchTerm) ||
+                    booking.eventName?.toLowerCase().includes(searchTerm) ||
+                    booking.userId?.toLowerCase().includes(searchTerm)
                 );
             }
 
-            filteredTickets = tickets;
-            renderTicketsTable(filteredTickets);
+            filteredBookings = bookings;
+            renderBookingsTable(filteredBookings);
         }
 
-        function openModal(editMode = false, ticketData = null) {
-            if (editMode && ticketData) {
-                modalTitle.textContent = 'Edit Ticket Type';
-                submitBtn.textContent = 'Update Ticket';
-                currentEditId = ticketData.id;
-                document.getElementById('ticket-id').value = ticketData.id;
-                document.getElementById('ticket-type').value = ticketData.type || '';
-                document.getElementById('ticket-price').value = ticketData.price || 0;
-                document.getElementById('sales-start').value = ticketData.salesStart || '';
-                document.getElementById('sales-end').value = ticketData.salesEnd || '';
-                document.getElementById('ticket-status').value = ticketData.status || 'active';
-                document.getElementById('ticket-description').value = ticketData.description || '';
+        function handleView(e) {
+            const bookingId = e.currentTarget.getAttribute('data-id');
+            const booking = allBookings.find(b => b.id === bookingId);
+
+            if (!booking) return;
+
+            document.getElementById('detail-booking-id').textContent = booking.id;
+
+            const userIdElement = document.getElementById('detail-user-id');
+            if (booking.userId === 'guest') {
+                userIdElement.innerHTML = '<span style="background: #e2e8f0; color: #4a5568; padding: 0.4rem 0.8rem; border-radius: 8px; font-size: 0.95rem; font-weight: 600;">Guest User</span>';
             } else {
-                modalTitle.textContent = 'Add Ticket Type';
-                submitBtn.textContent = 'Save Ticket';
-                currentEditId = null;
-                ticketForm.reset();
-                
-                // Set default dates (today to 1 year from now)
-                const today = new Date().toISOString().split('T')[0];
-                const nextYear = new Date();
-                nextYear.setFullYear(nextYear.getFullYear() + 1);
-                const nextYearStr = nextYear.toISOString().split('T')[0];
-                
-                document.getElementById('sales-start').value = today;
-                document.getElementById('sales-end').value = nextYearStr;
+                userIdElement.textContent = booking.userId || 'N/A';
             }
-            ticketModal.classList.add('active');
+
+            document.getElementById('detail-customer-name').textContent = booking.userName || 'N/A';
+            document.getElementById('detail-email').textContent = booking.userEmail || 'N/A';
+            document.getElementById('detail-phone').textContent = booking.userPhone || 'N/A';
+            document.getElementById('detail-ticket-type').textContent =
+                booking.ticketType === 'event' ? 'Event Ticket' : 'General Visit';
+            document.getElementById('detail-event-name').textContent = booking.eventName || 'N/A';
+
+            if (booking.ticketType === 'general') {
+                document.getElementById('detail-ticket-price').textContent = '$15.00';
+            } else if (booking.eventPrice) {
+                document.getElementById('detail-ticket-price').textContent = `${booking.eventPrice.toFixed(2)}`;
+            } else {
+                document.getElementById('detail-ticket-price').textContent = 'N/A';
+            }
+
+            document.getElementById('detail-visit-date').textContent = formatDate(booking.visitDate);
+            document.getElementById('detail-visit-time').textContent = booking.visitTime || 'N/A';
+            document.getElementById('detail-adults').textContent =
+                `${booking.visitors?.adults?.count || 0} (Total: $${(booking.visitors?.adults?.total || 0).toFixed(2)})`;
+            document.getElementById('detail-seniors').textContent =
+                `${booking.visitors?.seniors?.count || 0} (Total: $${(booking.visitors?.seniors?.total || 0).toFixed(2)})`;
+            document.getElementById('detail-children').textContent =
+                `${booking.visitors?.children?.count || 0} (Free)`;
+            document.getElementById('detail-total-visitors').textContent = booking.totalVisitors || 0;
+            document.getElementById('detail-total-price').textContent = `$${(booking.totalPrice || 0).toFixed(2)}`;
+            document.getElementById('detail-payment-method').textContent =
+                booking.paymentDetails?.method ? booking.paymentDetails.method.charAt(0).toUpperCase() + booking.paymentDetails.method.slice(1) : 'N/A';
+            document.getElementById('detail-purchase-date').textContent = formatTimestamp(booking.purchaseDate);
+
+            const statusElement = document.getElementById('detail-status');
+            const status = booking.status || 'confirmed';
+            const statusText = status.charAt(0).toUpperCase() + status.slice(1);
+            statusElement.innerHTML = `<span class="status-badge status-${status}" style="font-size: 0.9rem; padding: 0.5rem 1rem;">${statusText}</span>`;
+
+            viewModal.classList.add('active');
         }
 
         function closeModalFn() {
-            ticketModal.classList.remove('active');
-            ticketForm.reset();
-            currentEditId = null;
+            viewModal.classList.remove('active');
         }
 
-        async function handleSubmit(e) {
-            e.preventDefault();
+        async function handleStatusChange(e) {
+            const bookingId = e.currentTarget.getAttribute('data-id');
+            const currentStatus = e.currentTarget.getAttribute('data-status');
+            const booking = allBookings.find(b => b.id === bookingId);
 
-            const ticketData = {
-                type: document.getElementById('ticket-type').value.trim(),
-                price: parseFloat(document.getElementById('ticket-price').value),
-                salesStart: document.getElementById('sales-start').value,
-                salesEnd: document.getElementById('sales-end').value,
-                status: document.getElementById('ticket-status').value,
-                description: document.getElementById('ticket-description').value.trim()
-            };
+            if (!booking) return;
 
-            // Validate dates
-            if (new Date(ticketData.salesStart) > new Date(ticketData.salesEnd)) {
-                alert('Sales start date must be before end date');
-                return;
-            }
+            const newStatus = currentStatus === 'confirmed' ? 'cancelled' : 'confirmed';
+            const newStatusText = newStatus.charAt(0).toUpperCase() + newStatus.slice(1);
+            const currentStatusText = currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1);
 
-            submitBtn.disabled = true;
-            submitBtn.textContent = currentEditId ? 'Updating...' : 'Saving...';
-
-            try {
-                if (currentEditId) {
-                    await updateDoc(doc(db, "Tickets", currentEditId), ticketData);
-                    alert('Ticket updated successfully!');
-                } else {
-                    ticketData.sold = 0;
-                    ticketData.createdAt = new Date().toISOString();
-                    await addDoc(collection(db, "Tickets"), ticketData);
-                    alert('Ticket added successfully!');
-                }
-                closeModalFn();
-            } catch (error) {
-                console.error("Error saving ticket:", error);
-                alert('Error saving ticket: ' + error.message);
-            } finally {
-                submitBtn.disabled = false;
-                submitBtn.textContent = currentEditId ? 'Update Ticket' : 'Save Ticket';
-            }
-        }
-
-        function handleEdit(e) {
-            const ticketId = e.currentTarget.getAttribute('data-id');
-            const ticketData = allTickets.find(t => t.id === ticketId);
-            if (ticketData) {
-                openModal(true, ticketData);
-            }
-        }
-
-        async function handleDelete(e) {
-            const ticketId = e.currentTarget.getAttribute('data-id');
-            const ticketData = allTickets.find(t => t.id === ticketId);
-
-            if (!confirm(`Are you sure you want to delete "${ticketData.type}"?\n\nThis action cannot be undone and will remove all ticket data.`)) {
+            if (!confirm(`Change booking status from "${currentStatusText}" to "${newStatusText}"?\n\nBooking ID: ${bookingId}\nCustomer: ${booking.userName}`)) {
                 return;
             }
 
             try {
-                await deleteDoc(doc(db, "Tickets", ticketId));
-                alert('Ticket deleted successfully!');
+                await updateDoc(doc(db, "Ticketing", bookingId), {
+                    status: newStatus
+                });
+                alert(`Booking status changed to "${newStatusText}" successfully!`);
             } catch (error) {
-                console.error("Error deleting ticket:", error);
-                alert('Error deleting ticket: ' + error.message);
+                console.error("Error updating booking status:", error);
+                alert('Error updating booking status: ' + error.message);
             }
         }
 
@@ -1170,76 +1360,376 @@
         }
 
         function exportToCSV() {
-            if (allTickets.length === 0) {
-                alert('No tickets to export');
+            if (allBookings.length === 0) {
+                alert('No bookings to export');
                 return;
             }
 
-            // Create CSV content
-            const headers = ['Ticket Type', 'Price', 'Sales Start', 'Sales End', 'Tickets Sold', 'Status', 'Description'];
-            const rows = allTickets.map(ticket => [
-                ticket.type,
-                ticket.price || 0,
-                ticket.salesStart || '',
-                ticket.salesEnd || '',
-                ticket.sold || 0,
-                ticket.status || 'active',
-                (ticket.description || '').replace(/,/g, ';') // Replace commas to avoid CSV issues
-            ]);
+            const headers = ['Booking ID', 'User ID', 'Customer Name', 'Email', 'Phone', 'Type', 'Event Name', 'Ticket Price', 'Visit Date', 'Visit Time', 'Adults', 'Seniors', 'Children', 'Total Visitors', 'Total Price', 'Payment Method', 'Status', 'Purchase Date'];
+
+            const rows = allBookings.map(booking => {
+                let ticketPrice;
+                if (booking.ticketType === 'general') {
+                    ticketPrice = '15.00';
+                } else if (booking.eventPrice) {
+                    ticketPrice = booking.eventPrice.toFixed(2);
+                } else {
+                    ticketPrice = 'N/A';
+                }
+
+                return [
+                    booking.id,
+                    booking.userId || 'N/A',
+                    booking.userName || 'N/A',
+                    booking.userEmail || 'N/A',
+                    booking.userPhone || 'N/A',
+                    booking.ticketType || 'general',
+                    booking.eventName || 'N/A',
+                    ticketPrice,
+                    booking.visitDate || 'N/A',
+                    booking.visitTime || 'N/A',
+                    booking.visitors?.adults?.count || 0,
+                    booking.visitors?.seniors?.count || 0,
+                    booking.visitors?.children?.count || 0,
+                    booking.totalVisitors || 0,
+                    booking.totalPrice || 0,
+                    booking.paymentDetails?.method || 'N/A',
+                    booking.status || 'confirmed',
+                    formatTimestamp(booking.purchaseDate)
+                ];
+            });
 
             let csvContent = headers.join(',') + '\n';
             rows.forEach(row => {
-                csvContent += row.join(',') + '\n';
+                csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
             });
 
-            // Create download link
             const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
             const link = document.createElement('a');
             const url = URL.createObjectURL(blob);
-            
+
             link.setAttribute('href', url);
-            link.setAttribute('download', `tickets_export_${new Date().toISOString().split('T')[0]}.csv`);
+            link.setAttribute('download', `ticket_sales_${new Date().toISOString().split('T')[0]}.csv`);
             link.style.visibility = 'hidden';
-            
+
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
 
-        // Event Listeners
-        addTicketBtn.addEventListener('click', () => openModal(false));
         closeModalBtn.addEventListener('click', closeModalFn);
-        cancelBtn.addEventListener('click', closeModalFn);
-        ticketForm.addEventListener('submit', handleSubmit);
         searchInput.addEventListener('input', handleSearch);
         exportBtn.addEventListener('click', exportToCSV);
 
-        // Filter buttons
-        document.querySelectorAll('.filter-btn').forEach(btn => {
-            btn.addEventListener('click', function () {
-                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-                this.classList.add('active');
-                currentFilter = this.dataset.filter;
-                applyFilters();
-            });
+        typeFilter.addEventListener('change', function () {
+            currentTypeFilter = this.value;
+            applyFilters();
         });
 
-        // Close modal when clicking outside
-        ticketModal.addEventListener('click', (e) => {
-            if (e.target === ticketModal) {
+        statusFilter.addEventListener('change', function () {
+            currentStatusFilter = this.value;
+            applyFilters();
+        });
+
+        clearFiltersBtn.addEventListener('click', function () {
+            typeFilter.value = 'all';
+            statusFilter.value = 'all';
+            currentTypeFilter = 'all';
+            currentStatusFilter = 'all';
+            searchInput.value = '';
+            applyFilters();
+        });
+
+        viewModal.addEventListener('click', (e) => {
+            if (e.target === viewModal) {
                 closeModalFn();
             }
         });
 
-        // Keyboard shortcuts
         document.addEventListener('keydown', (e) => {
-            if (e.key === 'Escape' && ticketModal.classList.contains('active')) {
+            if (e.key === 'Escape' && viewModal.classList.contains('active')) {
                 closeModalFn();
             }
         });
 
-        // Initialize
-        document.addEventListener('DOMContentLoaded', loadTickets);
+        document.addEventListener('DOMContentLoaded', loadBookings);
+
+        let revenueChart, ticketTypesChart, statusChart, visitorsChart, eventTicketsChart, busiestTimesChart;
+        let currentRevenuePeriod = 'day';
+
+        window.changeRevenuePeriod = function (period) {
+            currentRevenuePeriod = period;
+
+            document.querySelectorAll('.chart-btn[data-period]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.querySelector(`.chart-btn[data-period="${period}"]`).classList.add('active');
+
+            initializeRevenueChart();
+        }
+
+        function initializeRevenueChart() {
+            const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+            let labels = [];
+            let data = [];
+
+            if (currentRevenuePeriod === 'day') {
+                const revenueByDay = {};
+                const last30Days = [];
+                const today = new Date();
+
+                for (let i = 29; i >= 0; i--) {
+                    const date = new Date(today);
+                    date.setDate(date.getDate() - i);
+                    const dayKey = date.toISOString().split('T')[0];
+                    last30Days.push(dayKey);
+                    revenueByDay[dayKey] = 0;
+                }
+
+                allBookings.forEach(booking => {
+                    if (booking.purchaseDate) {
+                        const date = booking.purchaseDate.toDate ? booking.purchaseDate.toDate() : new Date(booking.purchaseDate);
+                        const dayKey = date.toISOString().split('T')[0];
+                        if (revenueByDay.hasOwnProperty(dayKey)) {
+                            revenueByDay[dayKey] += (booking.totalPrice || 0);
+                        }
+                    }
+                });
+
+                labels = last30Days.map(d => {
+                    const date = new Date(d);
+                    return `${date.getMonth() + 1}/${date.getDate()}`;
+                });
+                data = last30Days.map(d => revenueByDay[d]);
+
+            } else if (currentRevenuePeriod === 'month') {
+                const revenueByMonth = {};
+                allBookings.forEach(booking => {
+                    if (booking.purchaseDate) {
+                        const date = booking.purchaseDate.toDate ? booking.purchaseDate.toDate() : new Date(booking.purchaseDate);
+                        const monthYear = `${date.getMonth() + 1}/${date.getFullYear()}`;
+                        revenueByMonth[monthYear] = (revenueByMonth[monthYear] || 0) + (booking.totalPrice || 0);
+                    }
+                });
+
+                const sortedMonths = Object.keys(revenueByMonth).sort((a, b) => {
+                    const [m1, y1] = a.split('/').map(Number);
+                    const [m2, y2] = b.split('/').map(Number);
+                    return y1 === y2 ? m1 - m2 : y1 - y2;
+                });
+
+                labels = sortedMonths;
+                data = sortedMonths.map(m => revenueByMonth[m]);
+
+            } else if (currentRevenuePeriod === 'year') {
+                const revenueByYear = {};
+                allBookings.forEach(booking => {
+                    if (booking.purchaseDate) {
+                        const date = booking.purchaseDate.toDate ? booking.purchaseDate.toDate() : new Date(booking.purchaseDate);
+                        const year = date.getFullYear().toString();
+                        revenueByYear[year] = (revenueByYear[year] || 0) + (booking.totalPrice || 0);
+                    }
+                });
+
+                const sortedYears = Object.keys(revenueByYear).sort();
+                labels = sortedYears;
+                data = sortedYears.map(y => revenueByYear[y]);
+            }
+
+            if (revenueChart) revenueChart.destroy();
+            revenueChart = new Chart(revenueCtx, {
+                type: 'line',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: 'Revenue ($)',
+                        data: data,
+                        borderColor: '#653025',
+                        backgroundColor: 'rgba(101, 48, 37, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
+
+        function initializeCharts() {
+            initializeRevenueChart();
+
+            const ticketTypesCtx = document.getElementById('ticketTypesChart').getContext('2d');
+            const generalCount = allBookings.filter(b => b.ticketType === 'general').length;
+            const eventCount = allBookings.filter(b => b.ticketType === 'event').length;
+
+            if (ticketTypesChart) ticketTypesChart.destroy();
+            ticketTypesChart = new Chart(ticketTypesCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['General Visit', 'Event'],
+                    datasets: [{
+                        data: [generalCount, eventCount],
+                        backgroundColor: ['#856A41', '#3781BF'],
+                        borderWidth: 2,
+                        borderColor: '#fdfaf4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            const confirmedCount = allBookings.filter(b => b.status === 'confirmed').length;
+            const cancelledCount = allBookings.filter(b => b.status === 'cancelled').length;
+
+            if (statusChart) statusChart.destroy();
+            statusChart = new Chart(statusCtx, {
+                type: 'pie',
+                data: {
+                    labels: ['Confirmed', 'Cancelled'],
+                    datasets: [{
+                        data: [confirmedCount, cancelledCount],
+                        backgroundColor: ['#45BA76', '#f56565'],
+                        borderWidth: 2,
+                        borderColor: '#fdfaf4'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { position: 'bottom' }
+                    }
+                }
+            });
+
+            const visitorsCtx = document.getElementById('visitorsChart').getContext('2d');
+            let totalAdults = 0, totalSeniors = 0, totalChildren = 0;
+            allBookings.forEach(booking => {
+                totalAdults += booking.visitors?.adults?.count || 0;
+                totalSeniors += booking.visitors?.seniors?.count || 0;
+                totalChildren += booking.visitors?.children?.count || 0;
+            });
+
+            if (visitorsChart) visitorsChart.destroy();
+            visitorsChart = new Chart(visitorsCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Adults', 'Seniors', 'Children'],
+                    datasets: [{
+                        label: 'Visitor Count',
+                        data: [totalAdults, totalSeniors, totalChildren],
+                        backgroundColor: ['#b08d57', '#8b1a1a', '#4299e1'],
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+
+            const eventTicketsCtx = document.getElementById('eventTicketsChart').getContext('2d');
+            const eventBookings = allBookings.filter(b => b.ticketType === 'event');
+            const eventTicketCounts = {};
+
+            eventBookings.forEach(booking => {
+                const eventName = booking.eventName || 'Unknown Event';
+                eventTicketCounts[eventName] = (eventTicketCounts[eventName] || 0) + 1;
+            });
+
+            const eventNames = Object.keys(eventTicketCounts);
+            const eventCounts = Object.values(eventTicketCounts);
+
+            if (eventTicketsChart) eventTicketsChart.destroy();
+            eventTicketsChart = new Chart(eventTicketsCtx, {
+                type: 'bar',
+                data: {
+                    labels: eventNames.length > 0 ? eventNames : ['No Events'],
+                    datasets: [{
+                        label: 'Tickets Sold',
+                        data: eventCounts.length > 0 ? eventCounts : [0],
+                        backgroundColor: '#3781BF',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        x: { beginAtZero: true }
+                    }
+                }
+            });
+
+            const busiestTimesCtx = document.getElementById('busiestTimesChart').getContext('2d');
+            const timeSlots = {
+                '9:00 AM': 0, '10:00 AM': 0, '11:00 AM': 0, '12:00 PM': 0,
+                '1:00 PM': 0, '2:00 PM': 0, '3:00 PM': 0, '4:00 PM': 0, '5:00 PM': 0
+            };
+
+            allBookings.forEach(booking => {
+                const visitTime = booking.visitTime;
+                if (visitTime) {
+                    if (visitTime.includes('9')) timeSlots['9:00 AM']++;
+                    else if (visitTime.includes('10')) timeSlots['10:00 AM']++;
+                    else if (visitTime.includes('11')) timeSlots['11:00 AM']++;
+                    else if (visitTime.includes('12')) timeSlots['12:00 PM']++;
+                    else if (visitTime.includes('1') || visitTime.includes('13')) timeSlots['1:00 PM']++;
+                    else if (visitTime.includes('2') || visitTime.includes('14')) timeSlots['2:00 PM']++;
+                    else if (visitTime.includes('3') || visitTime.includes('15')) timeSlots['3:00 PM']++;
+                    else if (visitTime.includes('4') || visitTime.includes('16')) timeSlots['4:00 PM']++;
+                    else if (visitTime.includes('5') || visitTime.includes('17')) timeSlots['5:00 PM']++;
+                }
+            });
+
+            if (busiestTimesChart) busiestTimesChart.destroy();
+            busiestTimesChart = new Chart(busiestTimesCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(timeSlots),
+                    datasets: [{
+                        label: 'Bookings',
+                        data: Object.values(timeSlots),
+                        backgroundColor: '#856A41',
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: true,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    scales: {
+                        y: { beginAtZero: true }
+                    }
+                }
+            });
+        }
     </script>
 </body>
 
