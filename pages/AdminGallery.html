@@ -119,7 +119,7 @@
 
         .stats-row {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(4, 1fr);
             gap: 1.5rem;
             margin-bottom: 2rem;
         }
@@ -130,6 +130,43 @@
             border-radius: 12px;
             box-shadow: var(--shadow);
             text-align: center;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .stat-icon {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 1rem;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+        }
+
+        .stat-icon.primary {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary-dark));
+            color: var(--white);
+        }
+
+        .stat-icon.success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: var(--white);
+        }
+
+        .stat-icon.info {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: var(--white);
+        }
+
+        .stat-icon.warning {
+            background: linear-gradient(135deg, #ecc94b, #d69e2e);
+            color: var(--white);
         }
 
         .stat-value {
@@ -149,10 +186,6 @@
             grid-template-columns: 2fr 1fr;
             gap: 2rem;
             margin-bottom: 2rem;
-        }
-
-        .full-width-section {
-            grid-column: 1 / -1;
         }
 
         .section {
@@ -194,6 +227,121 @@
         .add-btn:hover {
             background: #38a169;
             transform: translateY(-2px);
+        }
+
+        .artwork-filters {
+            background: var(--neutral-light);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            position: relative;
+            flex: 1;
+            min-width: 250px;
+        }
+
+        .search-icon-input {
+            position: absolute;
+            left: 0.8rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+            font-size: 1.2rem;
+            pointer-events: none;
+        }
+
+        .filter-input {
+            width: 100%;
+            padding: 0.7rem 0.7rem 0.7rem 2.5rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .filter-input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.1);
+        }
+
+        .filter-select-small {
+            padding: 0.7rem 2rem 0.7rem 0.8rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            background: var(--white);
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: var(--transition);
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%237c6f57' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem center;
+            min-width: 150px;
+        }
+
+        .filter-select-small:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.1);
+        }
+
+        .clear-filter-btn {
+            background: var(--danger);
+            color: var(--white);
+            border: none;
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .clear-filter-btn:hover {
+            background: #e53e3e;
+            transform: translateY(-1px);
+        }
+
+        .results-count {
+            margin-top: 1rem;
+            padding: 0.6rem 1rem;
+            background: var(--white);
+            border-radius: 6px;
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            text-align: center;
+            border-left: 4px solid var(--accent);
+        }
+
+        .results-count strong {
+            color: var(--primary-dark);
+            font-weight: 700;
+        }
+
+        .no-artworks-found {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--text-light);
+        }
+
+        .no-artworks-found .material-icons {
+            font-size: 4rem;
+            opacity: 0.3;
+            margin-bottom: 1rem;
         }
 
         .items-grid {
@@ -240,6 +388,12 @@
             margin-bottom: 0.3rem;
         }
 
+        .item-meta {
+            display: flex;
+            gap: 0.8rem;
+            align-items: center;
+        }
+
         .item-category {
             display: inline-block;
             background: var(--accent);
@@ -247,6 +401,15 @@
             padding: 0.2rem 0.6rem;
             border-radius: 12px;
             font-size: 0.8rem;
+        }
+
+        .item-likes {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            color: var(--danger);
+            font-size: 0.85rem;
+            font-weight: 600;
         }
 
         .item-actions {
@@ -532,19 +695,32 @@
             }
 
             .stats-row {
-                grid-template-columns: repeat(3, 1fr);
+                grid-template-columns: repeat(2, 1fr);
             }
         }
 
         @media (max-width: 768px) {
             .stats-row {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 480px) {
-            .stats-row {
                 grid-template-columns: 1fr;
+            }
+            
+            .filter-row {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .search-box {
+                min-width: auto;
+            }
+            
+            .filter-select-small {
+                min-width: auto;
+                width: 100%;
+            }
+            
+            .clear-filter-btn {
+                width: 100%;
+                justify-content: center;
             }
         }
     </style>
@@ -571,28 +747,32 @@
     <div class="container">
         <div class="stats-row">
             <div class="stat-card">
+                <div class="stat-icon primary">
+                    <span class="material-icons">collections</span>
+                </div>
                 <div class="stat-value" id="total-items">0</div>
                 <div class="stat-label">Total Artworks</div>
             </div>
             <div class="stat-card">
+                <div class="stat-icon success">
+                    <span class="material-icons">favorite</span>
+                </div>
                 <div class="stat-value" id="total-likes">0</div>
                 <div class="stat-label">Total Likes</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="codices-likes">0</div>
-                <div class="stat-label">Codices Likes</div>
+                <div class="stat-icon info">
+                    <span class="material-icons">show_chart</span>
+                </div>
+                <div class="stat-value" id="avg-likes">0</div>
+                <div class="stat-label">Avg Likes per Artwork</div>
             </div>
             <div class="stat-card">
-                <div class="stat-value" id="arms-likes">0</div>
-                <div class="stat-label">Arms Likes</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="boxes-likes">0</div>
-                <div class="stat-label">Boxes Likes</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value" id="bottles-likes">0</div>
-                <div class="stat-label">Bottles Likes</div>
+                <div class="stat-icon warning">
+                    <span class="material-icons">heart_broken</span>
+                </div>
+                <div class="stat-value" id="unloved-items">0</div>
+                <div class="stat-label">Artworks with No Likes</div>
             </div>
         </div>
 
@@ -608,6 +788,40 @@
                         Add Artwork
                     </button>
                 </div>
+                
+                <!-- Search and Filter Controls -->
+                <div class="artwork-filters">
+                    <div class="filter-row">
+                        <div class="search-box">
+                            <span class="material-icons search-icon-input">search</span>
+                            <input type="text" id="artwork-search" class="filter-input" placeholder="Search by title or artist...">
+                        </div>
+                        <select id="artwork-category-filter" class="filter-select-small">
+                            <option value="">All Categories</option>
+                            <option value="codices">Codices</option>
+                            <option value="arms">Arms</option>
+                            <option value="boxes">Boxes</option>
+                            <option value="bottles">Bottles</option>
+                        </select>
+                        <select id="artwork-exhibition-filter" class="filter-select-small">
+                            <option value="">All Exhibitions</option>
+                            <option value="Arab Heritage">Arab Heritage</option>
+                            <option value="Persian Heritage">Persian Heritage</option>
+                            <option value="Indian Heritage">Indian Heritage</option>
+                            <option value="Andalusian Heritage">Andalusian Heritage</option>
+                            <option value="Turkish Heritage">Turkish Heritage</option>
+                            <option value="Others">Others</option>
+                        </select>
+                        <button class="clear-filter-btn" id="clear-artwork-filters">
+                            <span class="material-icons">clear</span>
+                            Clear
+                        </button>
+                    </div>
+                    <div class="results-count" id="artwork-results-count">
+                        Showing <strong id="shown-count">0</strong> of <strong id="total-count">0</strong> artworks
+                    </div>
+                </div>
+                
                 <div class="items-grid" id="items-grid">
                     <div style="text-align: center; padding: 2rem; color: var(--text-light);">
                         Loading artworks...
@@ -644,10 +858,10 @@
             <div class="section">
                 <h2 class="section-title">
                     <span class="material-icons">psychology</span>
-                    User Interests Analytics
+                    Category Popularity
                 </h2>
                 <div class="chart-container">
-                    <canvas id="userInterestsChart"></canvas>
+                    <canvas id="categoryLikesChart"></canvas>
                 </div>
             </div>
 
@@ -754,7 +968,6 @@
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-        // ===== ACTIVITY LOGGING FUNCTION =====
         async function logActivity(type, action, targetTitle, metadata = {}) {
             try {
                 const user = auth.currentUser;
@@ -774,54 +987,99 @@
 
         let allArtworks = [];
         let allUsers = [];
+        let filteredArtworks = [];
         let currentEditId = null;
 
-        // Load all artworks with optimized rendering
-        function loadArtworks() {
-            const unsubscribe = onSnapshot(collection(db, "Museum_Collection"), (snapshot) => {
+        // Load artworks with real-time updates
+        function initArtworks() {
+            console.log('🔄 Initializing artworks...');
+            onSnapshot(collection(db, "Museum_Collection"), (snapshot) => {
                 allArtworks = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 
-                // Batch all UI updates in a single frame
-                requestAnimationFrame(() => {
-                    renderArtworks();
-                    updateStats();
-                    renderPopularItems();
-                    updateChart();
-                    updateRecommendations();
-                });
+                console.log('✅ Artworks loaded:', allArtworks.length);
+                
+                // Apply filters
+                applyFilters();
+                
+                // Update all UI
+                updateStats();
+                renderPopularItems();
+                updateCharts();
+            }, (error) => {
+                console.error('❌ Error loading artworks:', error);
             });
         }
 
-        // Load all users
-        async function loadUsers() {
+        // Load users
+        async function initUsers() {
             try {
                 const usersSnapshot = await getDocs(collection(db, "Users"));
                 allUsers = usersSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-                
-                requestAnimationFrame(() => {
-                    updateUserInterestsChart();
-                    updateRecommendations();
-                });
+                console.log('✅ Users loaded:', allUsers.length);
+                updateRecommendations();
             } catch (error) {
-                console.error("Error loading users:", error);
+                console.error("❌ Error loading users:", error);
             }
         }
 
-        // Render artworks list with performance optimization
+        // Apply filters
+        function applyFilters() {
+            const searchTerm = document.getElementById('artwork-search').value.toLowerCase().trim();
+            const categoryFilter = document.getElementById('artwork-category-filter').value.toLowerCase();
+            const exhibitionFilter = document.getElementById('artwork-exhibition-filter').value.toLowerCase();
+
+            filteredArtworks = allArtworks.filter(item => {
+                const title = (item.title || '').toLowerCase();
+                const artist = (item.artist || item.artistName || '').toLowerCase();
+                const category = (item.classification || '').toLowerCase().trim();
+                const exhibition = (item.Exhibition || '').toLowerCase().trim();
+
+                const matchesSearch = !searchTerm || title.includes(searchTerm) || artist.includes(searchTerm);
+                const matchesCategory = !categoryFilter || category === categoryFilter;
+                const matchesExhibition = !exhibitionFilter || exhibition === exhibitionFilter;
+
+                return matchesSearch && matchesCategory && matchesExhibition;
+            });
+
+            renderArtworks();
+            updateResultsCount();
+        }
+
+        // Render artworks
         function renderArtworks() {
             const grid = document.getElementById('items-grid');
-            if (allArtworks.length === 0) {
-                grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No artworks found</div>';
+            
+            if (filteredArtworks.length === 0) {
+                if (allArtworks.length === 0) {
+                    grid.innerHTML = '<div style="text-align: center; padding: 2rem; color: var(--text-light);">No artworks found</div>';
+                } else {
+                    grid.innerHTML = `
+                        <div class="no-artworks-found">
+                            <span class="material-icons">search_off</span>
+                            <h3>No artworks match your filters</h3>
+                            <p>Try adjusting your search or filter criteria</p>
+                        </div>
+                    `;
+                }
                 return;
             }
 
-            const html = allArtworks.map(item => `
+            const html = filteredArtworks.map(item => {
+                const likes = item.likedBy ? item.likedBy.length : 0;
+                
+                return `
                 <div class="item-card">
                     <img src="${item.imageURL || 'https://via.placeholder.com/80'}" alt="${item.title}" class="item-image">
                     <div class="item-info">
                         <div class="item-title">${item.title || 'Untitled'}</div>
                         <div class="item-artist">${item.artist || item.artistName || 'Unknown'}</div>
-                        <span class="item-category">${item.classification || 'Uncategorized'}</span>
+                        <div class="item-meta">
+                            <span class="item-category">${item.classification || 'Uncategorized'}</span>
+                            <span class="item-likes">
+                                <span class="material-icons" style="font-size: 1rem;">favorite</span>
+                                ${likes}
+                            </span>
+                        </div>
                     </div>
                     <div class="item-actions">
                         <button class="icon-btn edit" onclick="editArtwork('${item.id}')" title="Edit">
@@ -832,59 +1090,54 @@
                         </button>
                     </div>
                 </div>
-            `).join('');
+            `}).join('');
             
             grid.innerHTML = html;
         }
 
-        // Update statistics - FIXED: Use proper capitalization
+        // Update results count
+        function updateResultsCount() {
+            const shownCount = document.getElementById('shown-count');
+            const totalCount = document.getElementById('total-count');
+            
+            if (shownCount && totalCount) {
+                shownCount.textContent = filteredArtworks.length;
+                totalCount.textContent = allArtworks.length;
+            }
+        }
+
+        // Update statistics
         function updateStats() {
             document.getElementById('total-items').textContent = allArtworks.length;
             
             let totalLikes = 0;
-            const categoryLikes = {
-                Codices: 0,
-                Arms: 0,
-                Boxes: 0,
-                Bottles: 0
-            };
-
+            let artworksWithLikes = 0;
+            
             allArtworks.forEach(item => {
-                const likes = parseInt(item.likesCount || 0);
+                const likes = item.likedBy ? item.likedBy.length : 0;
                 totalLikes += likes;
-
-                const cat = item.classification || '';
-                const catLower = cat.trim().toLowerCase();
-                
-                if (catLower === 'codices') {
-                    categoryLikes.Codices += likes;
-                } else if (catLower === 'arms') {
-                    categoryLikes.Arms += likes;
-                } else if (catLower === 'boxes') {
-                    categoryLikes.Boxes += likes;
-                } else if (catLower === 'bottles') {
-                    categoryLikes.Bottles += likes;
-                }
+                if (likes > 0) artworksWithLikes++;
             });
 
+            const unlovedArtworks = allArtworks.length - artworksWithLikes;
+            const avgLikes = allArtworks.length > 0 ? (totalLikes / allArtworks.length).toFixed(1) : 0;
+
             document.getElementById('total-likes').textContent = totalLikes;
-            document.getElementById('codices-likes').textContent = categoryLikes.Codices;
-            document.getElementById('arms-likes').textContent = categoryLikes.Arms;
-            document.getElementById('boxes-likes').textContent = categoryLikes.Boxes;
-            document.getElementById('bottles-likes').textContent = categoryLikes.Bottles;
+            document.getElementById('avg-likes').textContent = avgLikes;
+            document.getElementById('unloved-items').textContent = unlovedArtworks;
         }
 
-        // Render popular items with optimization
+        // Render popular items
         function renderPopularItems() {
             const itemsWithLikes = allArtworks.filter(item => {
-                const likes = item.likesCount || 0;
-                return parseInt(likes) > 0;
+                const likes = item.likedBy ? item.likedBy.length : 0;
+                return likes > 0;
             });
 
             const popular = itemsWithLikes
                 .sort((a, b) => {
-                    const likesA = parseInt(a.likesCount || 0);
-                    const likesB = parseInt(b.likesCount || 0);
+                    const likesA = a.likedBy ? a.likedBy.length : 0;
+                    const likesB = b.likedBy ? b.likedBy.length : 0;
                     return likesB - likesA;
                 })
                 .slice(0, 5);
@@ -897,7 +1150,7 @@
             }
 
             const html = popular.map((item, index) => {
-                const likes = item.likesCount || 0;
+                const likes = item.likedBy ? item.likedBy.length : 0;
                 return `
                     <div class="popular-item">
                         <div class="popular-rank">#${index + 1}</div>
@@ -919,9 +1172,16 @@
             container.innerHTML = html;
         }
 
-        // Update chart - FIXED: Use proper capitalization
+        // Update charts
         let categoryChart = null;
-        function updateChart() {
+        let categoryLikesChart = null;
+
+        function updateCharts() {
+            updateCategoryChart();
+            updateCategoryLikesChart();
+        }
+
+        function updateCategoryChart() {
             const ctx = document.getElementById('categoryChart').getContext('2d');
             
             const counts = {
@@ -973,12 +1233,6 @@
             }
 
             if (data.length === 0) {
-                ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-                const text = 'No data available';
-                ctx.font = '16px Inter';
-                ctx.fillStyle = '#7c6f57';
-                ctx.textAlign = 'center';
-                ctx.fillText(text, ctx.canvas.width / 2, ctx.canvas.height / 2);
                 return;
             }
 
@@ -997,64 +1251,49 @@
                     plugins: {
                         legend: {
                             position: 'bottom'
-                        },
-                        tooltip: {
-                            callbacks: {
-                                label: function(context) {
-                                    const label = context.label || '';
-                                    const value = context.parsed || 0;
-                                    const total = context.dataset.data.reduce((a, b) => a + b, 0);
-                                    const percentage = ((value / total) * 100).toFixed(1);
-                                    return `${label}: ${value} (${percentage}%)`;
-                                }
-                            }
                         }
                     }
                 }
             });
         }
 
-        // User Interests Chart
-        let userInterestsChart = null;
-        function updateUserInterestsChart() {
-            const ctx = document.getElementById('userInterestsChart').getContext('2d');
+        function updateCategoryLikesChart() {
+            const ctx = document.getElementById('categoryLikesChart').getContext('2d');
             
-            const interestMapping = {
-                'Decorative Arts': 'Bottles',
-                'Fine Arts': 'Codices',
-                'Cultural Anthropology': 'Boxes',
-                'Military History': 'Arms'
-            };
-
-            const interestCounts = {
+            const categoryLikes = {
                 'Codices': 0,
                 'Arms': 0,
                 'Boxes': 0,
                 'Bottles': 0
             };
 
-            allUsers.forEach(user => {
-                if (user.Interests && Array.isArray(user.Interests)) {
-                    user.Interests.forEach(interest => {
-                        const category = interestMapping[interest];
-                        if (interestCounts.hasOwnProperty(category)) {
-                            interestCounts[category]++;
-                        }
-                    });
+            allArtworks.forEach(item => {
+                const cat = item.classification || '';
+                const catLower = cat.trim().toLowerCase();
+                const likes = item.likedBy ? item.likedBy.length : 0;
+                
+                if (catLower === 'codices') {
+                    categoryLikes['Codices'] += likes;
+                } else if (catLower === 'arms') {
+                    categoryLikes['Arms'] += likes;
+                } else if (catLower === 'boxes') {
+                    categoryLikes['Boxes'] += likes;
+                } else if (catLower === 'bottles') {
+                    categoryLikes['Bottles'] += likes;
                 }
             });
 
-            if (userInterestsChart) {
-                userInterestsChart.destroy();
+            if (categoryLikesChart) {
+                categoryLikesChart.destroy();
             }
 
-            userInterestsChart = new Chart(ctx, {
+            categoryLikesChart = new Chart(ctx, {
                 type: 'bar',
                 data: {
-                    labels: Object.keys(interestCounts),
+                    labels: Object.keys(categoryLikes),
                     datasets: [{
-                        label: 'Users Interested',
-                        data: Object.values(interestCounts),
+                        label: 'Total Likes',
+                        data: Object.values(categoryLikes),
                         backgroundColor: [
                             '#8b1a1a',
                             '#b08d57',
@@ -1083,7 +1322,7 @@
             });
         }
 
-        // Smart Recommendations - FIXED: Use proper capitalization
+        // Update recommendations
         function updateRecommendations() {
             const container = document.getElementById('recommendations-list');
             
@@ -1217,38 +1456,16 @@
             document.getElementById('artworkModal').classList.remove('active');
         };
 
-        // FIXED: editArtwork - Load all fields including new ones, no toLowerCase()
         window.editArtwork = function(id) {
             const artwork = allArtworks.find(item => item.id === id);
             if (!artwork) return;
-
-            // DEBUG: Log the entire artwork object to see what fields exist
-            console.log('=== EDITING ARTWORK ===');
-            console.log('Artwork ID:', id);
-            console.log('Full artwork data:', artwork);
-            console.log('Available fields:', Object.keys(artwork));
-            console.log('---');
-            console.log('title:', artwork.title);
-            console.log('artist:', artwork.artist);
-            console.log('artistName:', artwork.artistName);
-            console.log('classification:', artwork.classification);
-            console.log('description:', artwork.description);
-            console.log('imageURL:', artwork.imageURL);
-            console.log('Geography:', artwork.Geography);
-            console.log('material:', artwork.material);
-            console.log('dimensions:', artwork.dimensions);
-            console.log('year:', artwork.year);
-            console.log('Exhibition:', artwork.Exhibition);
-            console.log('=====================');
 
             currentEditId = id;
             document.getElementById('modal-title').textContent = 'Edit Artwork';
             document.getElementById('artwork-id').value = id;
             
-            // Show modal first
             document.getElementById('artworkModal').classList.add('active');
             
-            // Set values after a brief delay to ensure DOM is ready
             setTimeout(() => {
                 document.getElementById('artwork-title').value = artwork.title || '';
                 document.getElementById('artwork-artist').value = artwork.artist || artwork.artistName || '';
@@ -1268,8 +1485,6 @@
                 } else {
                     preview.classList.remove('active');
                 }
-                
-                console.log('Form values set successfully');
             }, 50);
         };
 
@@ -1282,7 +1497,6 @@
                 
                 await deleteDoc(doc(db, "Museum_Collection", id));
                 
-                // ===== LOG ACTIVITY: ARTWORK DELETED =====
                 await logActivity('gallery', 'deleted', artworkTitle, {
                     category: artwork?.classification || 'Unknown'
                 });
@@ -1310,7 +1524,7 @@
             }
         });
 
-        // FIXED: Form submission - Include all new fields
+        // Form submission
         document.getElementById('artworkForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -1339,74 +1553,17 @@
 
             try {
                 if (id) {
-                    // Get original artwork data for comparison
-                    const originalArtwork = allArtworks.find(item => item.id === id);
-                    
-                    // Track changes - FIXED: Include new fields
-                    const changes = [];
-                    const fieldMapping = {
-                        title: 'title',
-                        artist: 'artist',
-                        classification: 'category',
-                        description: 'description',
-                        imageURL: 'image',
-                        Exhibition: 'exhibition',
-                        Geography: 'geography',
-                        material: 'material',
-                        dimensions: 'dimensions',
-                        year: 'year'
-                    };
-
-                    Object.keys(fieldMapping).forEach(field => {
-                        const oldValue = originalArtwork[field] || (field === 'artist' ? originalArtwork.artistName : '');
-                        const newValue = artworkData[field] || '';
-                        
-                        if (oldValue !== newValue) {
-                            changes.push({
-                                field: fieldMapping[field],
-                                from: oldValue,
-                                to: newValue
-                            });
-                        }
-                    });
-
-                    // Update existing
                     await updateDoc(doc(db, "Museum_Collection", id), artworkData);
-                    
-                    // ===== LOG ACTIVITY: ARTWORK UPDATED WITH DETAILED CHANGES =====
-                    if (changes.length > 0) {
-                        // Create a readable description of changes
-                        const changeDescriptions = changes.map(change => {
-                            if (change.field === 'title') {
-                                return `title from "${change.from}" to "${change.to}"`;
-                            } else if (change.field === 'image') {
-                                return `image URL`;
-                            } else if (change.field === 'description') {
-                                return `description`;
-                            } else {
-                                return `${change.field} from "${change.from}" to "${change.to}"`;
-                            }
-                        }).join(', ');
-
-                        await logActivity('gallery', 'updated', originalArtwork.title, {
-                            category: artworkCategory,
-                            changes: changes,
-                            changeDescription: changeDescriptions,
-                            newTitle: artworkTitle
-                        });
-                    }
-                    
+                    await logActivity('gallery', 'updated', artworkTitle, {
+                        category: artworkCategory
+                    });
                     alert('Artwork updated successfully!');
                 } else {
-                    // Add new
                     await addDoc(collection(db, "Museum_Collection"), artworkData);
-                    
-                    // ===== LOG ACTIVITY: ARTWORK CREATED =====
                     await logActivity('gallery', 'uploaded', artworkTitle, {
                         category: artworkCategory,
                         count: 1
                     });
-                    
                     alert('Artwork added successfully!');
                 }
 
@@ -1417,10 +1574,24 @@
             }
         });
 
-        // Initialize
+        // Initialize on DOM ready
         document.addEventListener('DOMContentLoaded', () => {
-            loadArtworks();
-            loadUsers();
+            console.log('🚀 Initializing Admin Gallery...');
+            
+            // Load data
+            initArtworks();
+            initUsers();
+            
+            // Add event listeners for filters
+            document.getElementById('artwork-search').addEventListener('input', applyFilters);
+            document.getElementById('artwork-category-filter').addEventListener('change', applyFilters);
+            document.getElementById('artwork-exhibition-filter').addEventListener('change', applyFilters);
+            document.getElementById('clear-artwork-filters').addEventListener('click', () => {
+                document.getElementById('artwork-search').value = '';
+                document.getElementById('artwork-category-filter').value = '';
+                document.getElementById('artwork-exhibition-filter').value = '';
+                applyFilters();
+            });
         });
 
         // Close modal on outside click
