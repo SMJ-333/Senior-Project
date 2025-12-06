@@ -20,7 +20,7 @@ export const NotificationType = {
     EVENT_REGISTRATION: 'event_registration',
     EVENT_REMINDER: 'event_reminder',
     EVENT_UPCOMING: 'event_upcoming',
-    BOOKING_CONFIRMATION: 'booking_confirmation'  // ← جديد
+    BOOKING_CONFIRMATION: 'booking_confirmation'
 };
 
 let notificationsUnsubscribe = null;
@@ -30,7 +30,6 @@ let currentUserId = null;
 
 // Create and add notification badge to account icon
 export function initializeNotificationBadge() {
-    // Wait for DOM to be ready
     const accountIcon = document.querySelector('.account-icon');
     
     if (!accountIcon) {
@@ -38,7 +37,6 @@ export function initializeNotificationBadge() {
         return null;
     }
 
-    // Check if badge already exists
     let badge = accountIcon.querySelector('.notification-badge');
     
     if (!badge) {
@@ -77,7 +75,6 @@ export function listenToNotificationCount(userId) {
         notificationsUnsubscribe();
     }
 
-    // Retry initialization if badge doesn't exist yet
     let retryCount = 0;
     const maxRetries = 5;
     
@@ -96,7 +93,6 @@ export function listenToNotificationCount(userId) {
             return;
         }
 
-        // Start listening to notifications
         const notificationsRef = collection(db, 'Notifications');
         const q = query(
             notificationsRef,
@@ -128,6 +124,11 @@ export function listenToNotificationCount(userId) {
 // Create new notification
 export async function createNotification(userId, type, title, message, relatedId, relatedTitle, category = null) {
     try {
+        console.log('📝 Creating notification for user:', userId);
+        console.log('   Type:', type);
+        console.log('   Title:', title);
+        console.log('   Category:', category);
+        
         const notificationData = {
             userId: userId,
             type: type,
@@ -139,15 +140,17 @@ export async function createNotification(userId, type, title, message, relatedId
             createdAt: Timestamp.now()
         };
 
-        if (category) {New
+        if (category) {
             notificationData.category = category;
         }
 
-        await addDoc(collection(db, "Notifications"), notificationData);
-        console.log('✅ Notification created successfully');
+        const docRef = await addDoc(collection(db, "Notifications"), notificationData);
+        console.log('✅ Notification created successfully with ID:', docRef.id);
         return true;
     } catch (error) {
         console.error('❌ Error creating notification:', error);
+        console.error('   Error code:', error.code);
+        console.error('   Error message:', error.message);
         return false;
     }
 }
@@ -155,6 +158,11 @@ export async function createNotification(userId, type, title, message, relatedId
 // Send news notification to users based on interests
 export async function sendNewsNotificationToUsers(newsId, newsTitle, newsCategory) {
     try {
+        console.log('📰 Starting to send news notifications...');
+        console.log('   News ID:', newsId);
+        console.log('   News Title:', newsTitle);
+        console.log('   News Category:', newsCategory);
+        
         const categoryToInterestMap = {
             'Exhibitions': ['Arab Heritage', 'Persian Heritage', 'Indian Heritage', 'Andalusian Heritage', 'Turkish Heritage', 'Echoes of Islamic Civilization'],
             'Events': ['Arab Heritage', 'Persian Heritage', 'Indian Heritage', 'Andalusian Heritage', 'Turkish Heritage'],
@@ -163,10 +171,16 @@ export async function sendNewsNotificationToUsers(newsId, newsTitle, newsCategor
             'Announcements': []
         };
 
+        console.log('🔍 Fetching all users from database...');
         const usersSnapshot = await getDocs(collection(db, "Users"));
+        console.log(`👥 Found ${usersSnapshot.size} users in database`);
+        
         const targetInterests = categoryToInterestMap[newsCategory] || [];
+        console.log('🎯 Target interests for category:', targetInterests);
         
         let notificationCount = 0;
+        let successCount = 0;
+        let errorCount = 0;
 
         for (const userDoc of usersSnapshot.docs) {
             const userData = userDoc.data();
@@ -177,23 +191,52 @@ export async function sendNewsNotificationToUsers(newsId, newsTitle, newsCategor
                              userInterests.some(interest => targetInterests.includes(interest));
 
             if (shouldSend) {
-                await createNotification(
+                notificationCount++;
+                console.log(`📨 Sending notification ${notificationCount} to user:`, userDoc.id);
+                
+                // Customize title and message based on category
+                let notificationTitle;
+                let notificationMessage;
+                
+                if (newsCategory === 'Announcements') {
+                    notificationTitle = '📢 New Announcement';
+                    notificationMessage = `Important announcement: "${newsTitle}". Check it out now!`;
+                } else {
+                    notificationTitle = '📰 New Article in Your Interests!';
+                    notificationMessage = `A new article has been published: "${newsTitle}" in ${newsCategory}. Don't miss it!`;
+                }
+                
+                const success = await createNotification(
                     userDoc.id,
                     NotificationType.NEWS,
-                    '📰  article in your interests!',
-                    `A new article has been published: "${newsTitle}" In class ${newsCategory}`,
+                    notificationTitle,
+                    notificationMessage,
                     newsId,
                     newsTitle,
                     newsCategory
                 );
-                notificationCount++;
+                
+                if (success) {
+                    successCount++;
+                } else {
+                    errorCount++;
+                    console.error(`❌ Failed to create notification for user: ${userDoc.id}`);
+                }
             }
         }
 
-        console.log(`✅ Sent ${notificationCount} news notifications`);
-        return notificationCount;
+        console.log('📊 Notification Summary:');
+        console.log(`   Total users checked: ${usersSnapshot.size}`);
+        console.log(`   Notifications attempted: ${notificationCount}`);
+        console.log(`   Successfully created: ${successCount}`);
+        console.log(`   Failed: ${errorCount}`);
+        
+        return successCount;
     } catch (error) {
-        console.error('❌ Error sending news notifications:', error);
+        console.error('❌ Fatal error in sendNewsNotificationToUsers:', error);
+        console.error('   Error code:', error.code);
+        console.error('   Error message:', error.message);
+        console.error('   Full error:', error);
         return 0;
     }
 }
@@ -481,7 +524,6 @@ export function startNotificationScheduler() {
 
 // ==================== AUTO-INITIALIZATION ====================
 
-// Wait for DOM to be ready before initializing
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeSystem);
 } else {
@@ -491,7 +533,6 @@ if (document.readyState === 'loading') {
 function initializeSystem() {
     console.log('📦 Notification system initializing...');
     
-    // Initialize badge on auth state change
     onAuthStateChanged(auth, (user) => {
         if (user) {
             console.log('👤 User logged in:', user.email);
@@ -512,7 +553,6 @@ function initializeSystem() {
         }
     });
 
-    // Cleanup on page unload
     window.addEventListener('beforeunload', () => {
         if (notificationsUnsubscribe) {
             notificationsUnsubscribe();
