@@ -592,6 +592,7 @@
             try {
                 const alerts = [];
 
+                // ========== تنبيهات الأحداث (Events) ==========
                 const eventsSnapshot = await getDocs(collection(db, "Events"));
                 const now = new Date();
                 const sevenDaysFromNow = new Date(now.getTime() + (7 * 24 * 60 * 60 * 1000));
@@ -624,6 +625,7 @@
                     }
                 });
 
+                // ========== تنبيهات الإعلانات (News) ==========
                 const newsSnapshot = await getDocs(collection(db, "News"));
                 const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
 
@@ -657,6 +659,7 @@
                     }
                 });
 
+                // ========== تنبيهات سعة الأحداث ==========
                 eventsSnapshot.docs.forEach(doc => {
                     const data = doc.data();
                     const maxAttendees = data.maxAttendees || 0;
@@ -692,6 +695,75 @@
                     }
                 });
 
+                // ========== تنبيهات المعارض (NEW!) ==========
+                // جمع إحصائيات المعارض من القطع الفنية
+                const artworksSnapshot = await getDocs(collection(db, "Museum_Collection"));
+                const exhibitionStats = {};
+                const exhibitionLikes = {};
+
+                artworksSnapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const exhibition = data.Exhibition ? data.Exhibition.trim() : 'Others';
+                    
+                    if (!exhibitionStats[exhibition]) {
+                        exhibitionStats[exhibition] = 0;
+                        exhibitionLikes[exhibition] = 0;
+                    }
+                    
+                    exhibitionStats[exhibition]++;
+                    
+                    // حساب الإعجابات
+                    let likes = 0;
+                    if (data.likedBy && Array.isArray(data.likedBy)) {
+                        likes = data.likedBy.length;
+                    } else if (data.likes && typeof data.likes === 'number') {
+                        likes = data.likes;
+                    }
+                    exhibitionLikes[exhibition] += likes;
+                });
+
+                // التحقق من المعارض وإضافة التنبيهات
+                Object.keys(exhibitionStats).forEach(exhibitionName => {
+                    const count = exhibitionStats[exhibitionName];
+                    const likes = exhibitionLikes[exhibitionName];
+
+                    // تنبيه: معرض فارغ (0 قطع)
+                    if (count === 0) {
+                        alerts.push({
+                            type: 'warning',
+                            icon: 'warning',
+                            title: 'Empty Exhibition',
+                            description: `"${exhibitionName}" has no artworks`,
+                            priority: 5,
+                            timestamp: now
+                        });
+                    }
+                    // تنبيه: معرض قليل المحتوى (أقل من 10 قطع)
+                    else if (count < 10) {
+                        alerts.push({
+                            type: 'info',
+                            icon: 'info',
+                            title: 'Low Content Exhibition',
+                            description: `"${exhibitionName}" has only ${count} artwork${count === 1 ? '' : 's'}`,
+                            priority: 8,
+                            timestamp: now
+                        });
+                    }
+
+                    // تنبيه: معرض بدون إعجابات
+                    if (count > 0 && likes === 0) {
+                        alerts.push({
+                            type: 'info',
+                            icon: 'favorite_border',
+                            title: 'Exhibition with No Engagement',
+                            description: `"${exhibitionName}" has ${count} artwork${count === 1 ? '' : 's'} but no likes yet`,
+                            priority: 12,
+                            timestamp: now
+                        });
+                    }
+                });
+
+                // ========== ترتيب وعرض التنبيهات ==========
                 alerts.sort((a, b) => a.priority - b.priority);
 
                 if (alerts.length === 0) {

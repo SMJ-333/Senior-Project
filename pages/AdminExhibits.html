@@ -680,7 +680,7 @@
                     </div>
                     <div class="stat-info">
                         <h3 id="most-viewed">-</h3>
-                        <p>Most Viewed</p>
+                        <p>Most Viewed </p> 
                     </div>
                 </div>
             </div>
@@ -807,9 +807,28 @@
         </div>
     </div>
 
-    <script type="module">
-        import { db } from './firebase-config.js';
-        import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+   <script type="module">
+        import { auth, db } from './firebase-config.js';
+        import { collection, getDocs, doc, setDoc, updateDoc, deleteDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // دالة لتسجيل النشاط
+        async function logActivity(type, action, targetTitle, metadata = {}) {
+            try {
+                const user = auth.currentUser;
+                await addDoc(collection(db, "ActivityLog"), {
+                    type: type,
+                    action: action,
+                    targetTitle: targetTitle,
+                    userEmail: user?.email || 'Admin',
+                    timestamp: serverTimestamp(),
+                    metadata: metadata
+                });
+                console.log('✓ Activity logged:', type, action, targetTitle);
+            } catch (error) {
+                console.error('✗ Error logging activity:', error);
+            }
+        }
+
 
         let exhibitionsData = {
             'Arab Heritage': {
@@ -888,6 +907,9 @@
                 const querySnapshot = await getDocs(collection(db, "Museum_Collection"));
                 const stats = {};
                 const categories = new Set();
+                const exhibitionLikes = {};
+
+                console.log('Total documents:', querySnapshot.size);
 
                 querySnapshot.docs.forEach(doc => {
                     const data = doc.data();
@@ -898,15 +920,38 @@
                             count: 0,
                             categories: new Set()
                         };
+                        exhibitionLikes[exhibition] = 0;
                     }
                     
                     stats[exhibition].count++;
+                    
+                    // جمع الإعجابات - التحقق من وجود حقل likedBy أو likes
+                    let likesCount = 0;
+                    if (data.likedBy && Array.isArray(data.likedBy)) {
+                        // إذا كان الإعجاب مخزن كمصفوفة من المستخدمين
+                        likesCount = data.likedBy.length;
+                    } else if (data.likes && typeof data.likes === 'number') {
+                        // إذا كان الإعجاب مخزن كرقم مباشر
+                        likesCount = data.likes;
+                    } else if (data.Likes && typeof data.Likes === 'number') {
+                        // تجربة بحرف كبير
+                        likesCount = data.Likes;
+                    }
+                    
+                    exhibitionLikes[exhibition] += likesCount;
+                    
+                    // طباعة للتأكد من البيانات
+                    if (likesCount > 0) {
+                        console.log(`${data.Title || 'Unknown'} in ${exhibition}: ${likesCount} likes`);
+                    }
                     
                     if (data.classification) {
                         stats[exhibition].categories.add(data.classification);
                         categories.add(data.classification);
                     }
                 });
+
+                console.log('Exhibition Likes:', exhibitionLikes);
 
                 exhibitionStats = stats;
 
@@ -917,16 +962,24 @@
                 document.getElementById('total-artifacts').textContent = totalArtifacts;
                 document.getElementById('total-categories').textContent = totalCategories;
 
-                // Find most viewed (highest artifact count)
-                let maxCount = 0;
+                // إيجاد المعرض الحاصل على أعلى عدد إعجابات
+                let maxLikes = 0;
                 let mostViewed = '-';
-                Object.keys(stats).forEach(name => {
-                    if (stats[name].count > maxCount) {
-                        maxCount = stats[name].count;
+                Object.keys(exhibitionLikes).forEach(name => {
+                    if (exhibitionLikes[name] > maxLikes) {
+                        maxLikes = exhibitionLikes[name];
                         mostViewed = name;
                     }
                 });
-                document.getElementById('most-viewed').textContent = mostViewed;
+                
+                console.log('Most liked exhibition:', mostViewed, 'with', maxLikes, 'likes');
+                
+                // عرض اسم المعرض مع عدد الإعجابات
+                if (maxLikes > 0) {
+                    document.getElementById('most-viewed').textContent = `${mostViewed} `;
+                } else {
+                    document.getElementById('most-viewed').textContent = '-';
+                }
 
                 renderExhibitions();
             } catch (error) {
@@ -1072,6 +1125,11 @@
                 // Save to localStorage
                 saveExhibitionsData();
                 
+                // تسجيل النشاط
+                logActivity('exhibit', 'deleted', currentDeleteExhibition, {
+                    timestamp: new Date().toISOString()
+                });
+                
                 // Update total exhibitions count
                 document.getElementById('total-exhibitions').textContent = Object.keys(exhibitionsData).length;
                 
@@ -1092,7 +1150,7 @@
         }
 
         // Form submission
-        document.getElementById('exhibition-form').addEventListener('submit', function(e) {
+        document.getElementById('exhibition-form').addEventListener('submit', async function(e) {
             e.preventDefault();
             
             const name = document.getElementById('exhibition-name').value.trim();
@@ -1115,6 +1173,22 @@
                 return;
             }
 
+            // تحديد نوع العملية
+            const isEdit = !!originalName;
+            const action = isEdit ? 'updated' : 'created';
+            
+            // تتبع التغييرات للتحديثات
+            let changes = [];
+            if (isEdit && originalName) {
+                const oldData = exhibitionsData[originalName];
+                if (originalName !== name) changes.push(`Name changed from "${originalName}" to "${name}"`);
+                if (oldData.icon !== icon) changes.push(`Icon updated`);
+                if (oldData.timeline !== timeline) changes.push(`Timeline updated to "${timeline}"`);
+                if (oldData.description !== description) changes.push(`Description modified`);
+                if (oldData.detailedDescription !== (detailed || description)) changes.push(`Detailed description modified`);
+                if (oldData.curatorNote !== curator) changes.push(`Curator's note modified`);
+            }
+
             // If editing and name changed, delete old entry
             if (originalName && originalName !== name) {
                 delete exhibitionsData[originalName];
@@ -1132,6 +1206,18 @@
             // Save to localStorage
             saveExhibitionsData();
             
+            // تسجيل النشاط
+            const metadata = {
+                timeline: timeline,
+                timestamp: new Date().toISOString()
+            };
+            
+            if (isEdit && changes.length > 0) {
+                metadata.changes = changes.join('; ');
+            }
+            
+            await logActivity('exhibit', action, name, metadata);
+            
             // Update total exhibitions count
             document.getElementById('total-exhibitions').textContent = Object.keys(exhibitionsData).length;
             
@@ -1139,8 +1225,8 @@
             renderExhibitions();
             
             // Show success message
-            const action = originalName ? 'updated' : 'added';
-            alert(`Exhibition "${name}" has been ${action} successfully!`);
+            const actionText = isEdit ? 'updated' : 'added';
+            alert(`Exhibition "${name}" has been ${actionText} successfully!`);
             
             // Close modal
             closeModal();
@@ -1160,6 +1246,7 @@
         }
         
         initialize();
+        
     </script>
 </body>
 

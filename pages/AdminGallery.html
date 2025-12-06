@@ -1120,10 +1120,10 @@
             });
 
             const unlovedArtworks = allArtworks.length - artworksWithLikes;
-            const avgLikes = allArtworks.length > 0 ? (totalLikes / allArtworks.length).toFixed(1) : 0;
+            const avgLikes = allArtworks.length > 0 ? ((totalLikes / allArtworks.length)*100).toFixed(1) : 0;
 
             document.getElementById('total-likes').textContent = totalLikes;
-            document.getElementById('avg-likes').textContent = avgLikes;
+            document.getElementById('avg-likes').textContent = avgLikes + '%';
             document.getElementById('unloved-items').textContent = unlovedArtworks;
         }
 

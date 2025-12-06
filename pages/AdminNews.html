@@ -625,6 +625,18 @@
             opacity: 0.3;
         }
 
+        .filters select {
+            padding: 0.6rem;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            cursor: pointer;
+        }
+        .filters select:focus {
+            border-color: var(--accent);
+            outline: none;
+        }
+
+
         @media (max-width: 768px) {
             .action-bar {
                 flex-direction: column;
@@ -658,6 +670,71 @@
                 transform: rotate(360deg);
             }
         }
+
+       #reset-filters {
+            background: var(--neutral-light);
+            color: var(--text-dark);
+            transition: 0.2s;
+        }
+
+        #reset-filters:hover {
+            background: #d6d3c8;
+        }
+
+        /* FILTERS STYLE */
+        .filters select {
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+            background: var(--white);
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .filters select:hover,
+        .filters select:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.25);
+            outline: none;
+        }
+
+        /* RESET BUTTON */
+        #reset-filters {
+            padding: 0.7rem 1rem;
+            border-radius: 8px;
+            background: rgba(176, 141, 87, 0.15); /* accent خفيف */
+            color: var(--primary-dark);
+            border: 2px solid var(--accent);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        #reset-filters:hover {
+            background: var(--accent-light);
+            color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        #reset-filters:active {
+            transform: translateY(0);
+        }
+
+
+        .filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filters select,
+            #reset-filters {
+                min-width: 150px;
+            }
+
     </style>
 </head>
 
@@ -703,10 +780,47 @@
         </div>
 
         <div class="action-bar">
+
             <div class="search-box">
                 <span class="material-icons search-icon">search</span>
                 <input type="text" class="search-input" id="search-input" placeholder="Search news articles...">
             </div>
+
+            <!-- FILTERS -->
+            <div class="filters" style="display:flex; gap:10px;">
+
+                <select id="filter-category" class="form-select" style="width:150px;">
+                    <option value="">Category</option>
+                    <option value="Exhibitions">Exhibitions</option>
+                    <option value="Events">Events</option>
+                    <option value="Collections">Collections</option>
+                    <option value="Research">Research</option>
+                    <option value="Announcements">Announcements</option>
+                </select>
+
+                <select id="filter-status" class="form-select" style="width:150px;">
+                    <option value="">Status</option>
+                    <option value="featured">Featured</option>
+                    <option value="new">New</option>
+                    <option value="normal">Normal</option>
+                </select>
+
+                <select id="filter-date" class="form-select" style="width:150px;">
+                    <option value="">Published Date</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                </select>
+
+                <!-- RESET BUTTON -->
+                <button id="reset-filters">
+                    <span class="material-icons" style="font-size:18px;">restart_alt</span>
+                    Reset
+                </button>
+
+
+            </div>
+
             <button class="add-btn" id="add-news-btn">
                 <span class="material-icons">add</span>
                 Add New Article
@@ -1307,6 +1421,59 @@
             }, 300);
         }
 
+        function applyFilters() {
+            const searchTerm = searchInput.value.toLowerCase().trim();
+            const category = document.getElementById('filter-category').value;
+            const status = document.getElementById('filter-status').value;
+            const date = document.getElementById('filter-date').value;
+
+            const activeNews = allNews.filter(news => !news.isDeleted);
+
+            filteredNews = activeNews.filter(news => {
+
+                // ============= TEXT SEARCH =============
+                const matchesSearch =
+                    news.title.toLowerCase().includes(searchTerm) ||
+                    news.content.toLowerCase().includes(searchTerm);
+
+                // ============= CATEGORY FILTER =============
+                const matchesCategory =
+                    !category || news.category === category;
+
+                // ============= STATUS FILTER =============
+                let matchesStatus = true;
+                if (status === "featured") matchesStatus = news.isFeatured === true;
+                if (status === "new") matchesStatus = news.isNew === true;
+                if (status === "normal") matchesStatus = !news.isFeatured && !news.isNew;
+
+                // ============= DATE FILTER =============
+                let matchesDate = true;
+                if (date) {
+                    const articleDate = news.publishedAt?.toDate();
+                    const now = new Date();
+
+                    if (date === "today") {
+                        matchesDate = articleDate.toDateString() === now.toDateString();
+                    }
+                    if (date === "week") {
+                        const weekAgo = new Date();
+                        weekAgo.setDate(now.getDate() - 7);
+                        matchesDate = articleDate >= weekAgo;
+                    }
+                    if (date === "month") {
+                        matchesDate =
+                            articleDate.getMonth() === now.getMonth() &&
+                            articleDate.getFullYear() === now.getFullYear();
+                    }
+                }
+
+                return matchesSearch && matchesCategory && matchesStatus && matchesDate;
+            });
+
+            renderNewsTable(filteredNews);
+        }
+
+
         imageInput.addEventListener('input', function () {
             const url = this.value.trim();
             if (url) {
@@ -1334,6 +1501,27 @@
         });
 
         document.addEventListener('DOMContentLoaded', loadNews);
+        document.getElementById('filter-category').addEventListener('change', applyFilters);
+        document.getElementById('filter-status').addEventListener('change', applyFilters);
+        document.getElementById('filter-date').addEventListener('change', applyFilters);
+        searchInput.addEventListener('input', applyFilters);
+        document.getElementById("reset-filters").addEventListener("click", () => {
+        // إعادة الفلاتر للقيمة الافتراضية
+        document.getElementById("filter-category").value = "";
+        document.getElementById("filter-status").value = "";
+        document.getElementById("filter-date").value = "";
+
+        // إعادة البحث إلى فارغ
+        searchInput.value = "";
+
+        // إعادة عرض كل الأخبار
+        const activeNews = allNews.filter(news => !news.isDeleted);
+        filteredNews = [...activeNews];
+
+        renderNewsTable(filteredNews);
+    });
+
+
     </script>
 </body>
 

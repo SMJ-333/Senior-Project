@@ -769,6 +769,8 @@
                 <!-- Will be populated dynamically -->
             </div>
         </div>
+
+        
     </div>
 
     <script type="module">
@@ -1105,14 +1107,14 @@
                     labels: ['Male', 'Female', 'Youth (13-25)', 'Adults (26-59)', 'Seniors (60+)'],
                     datasets: [{
                         label: 'Gender',
-                        data: [males, females],
-                        backgroundColor: ['#4299e1', '#ed64a6'],
+                        data: [males, females, 0, 0, 0],
+                        backgroundColor: ['#4299e1', '#ed64a6', 'transparent', 'transparent', 'transparent'],
                         borderWidth: 3,
                         borderColor: '#fdfaf4'
                     }, {
                         label: 'Age Groups',
-                        data: [youth, adults, seniors],
-                        backgroundColor: ['#48bb78', '#b08d57', '#8b1a1a'],
+                        data: [0, 0, youth, adults, seniors],
+                        backgroundColor: ['transparent', 'transparent', '#48bb78', '#b08d57', '#8b1a1a'],
                         borderWidth: 3,
                         borderColor: '#fdfaf4'
                     }]
@@ -1129,7 +1131,6 @@
                                     size: 10
                                 },
                                 generateLabels: function(chart) {
-                                    const data = chart.data;
                                     return [
                                         { text: `Male: ${males}`, fillStyle: '#4299e1' },
                                         { text: `Female: ${females}`, fillStyle: '#ed64a6' },
@@ -1137,6 +1138,20 @@
                                         { text: `Adults: ${adults}`, fillStyle: '#b08d57' },
                                         { text: `Seniors: ${seniors}`, fillStyle: '#8b1a1a' }
                                     ];
+                                }
+                            }
+                        },
+                        tooltip: {
+                            filter: function(tooltipItem) {
+                                // Only show tooltip for non-zero values
+                                return tooltipItem.parsed > 0;
+                            },
+                            callbacks: {
+                                label: function(context) {
+                                    const label = context.label || '';
+                                    const value = context.parsed || 0;
+                                    if (value === 0) return null;
+                                    return `${label}: ${value}`;
                                 }
                             }
                         }
@@ -1465,10 +1480,23 @@
             const thirtyDaysAgo = new Date();
             thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
             
+            // Count users with any activity (likes OR login)
             const activeInLast30Days = allUsers.filter(u => {
-                if (!u['Last Login']) return false;
-                const lastLogin = u['Last Login'].toDate ? u['Last Login'].toDate() : new Date(u['Last Login']);
-                return lastLogin >= thirtyDaysAgo;
+                // Check Last Login if exists
+                if (u['Last Login']) {
+                    const lastLogin = u['Last Login'].toDate ? u['Last Login'].toDate() : new Date(u['Last Login']);
+                    if (lastLogin >= thirtyDaysAgo) return true;
+                }
+                
+                // Check if user has liked any artwork (ANY like = active!)
+                let hasActivity = false;
+                allArtworks.forEach(artwork => {
+                    if (artwork.likedBy && artwork.likedBy.includes(u.uid)) {
+                        hasActivity = true;
+                    }
+                });
+                
+                return hasActivity;
             }).length;
             
             const retentionRate = allUsers.length > 0 ? ((activeInLast30Days / allUsers.length) * 100).toFixed(0) : 0;
@@ -1478,14 +1506,21 @@
                     type: 'danger',
                     icon: '⚠️',
                     title: 'Low Retention Rate',
-                    text: `Only ${retentionRate}% of users were active in the last 30 days. Implement re-engagement campaigns.`
+                    text: `Only ${retentionRate}% of users have activity (likes or logins). Implement re-engagement campaigns.`
                 });
             } else if (retentionRate > 70) {
                 insights.push({
                     type: 'success',
                     icon: '✅',
                     title: 'Excellent Retention',
-                    text: `${retentionRate}% retention rate! Users are highly engaged with your content.`
+                    text: `${retentionRate}% of users are active! Users are highly engaged with your content.`
+                });
+            } else if (retentionRate >= 30) {
+                insights.push({
+                    type: 'info',
+                    icon: '📊',
+                    title: 'Good Retention',
+                    text: `${retentionRate}% of users are active. Keep engaging content coming!`
                 });
             }
             
