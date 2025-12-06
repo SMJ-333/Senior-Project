@@ -283,8 +283,6 @@
         }
 
         .add-btn {
-            /* background: var(--text-light); */
-            /* border-color: #3b2f23; */
             color: var(--text-dark);
             border: none;
             padding: 0.8rem 1.5rem;
@@ -674,18 +672,6 @@
             opacity: 0.3;
         }
 
-        .filters select {
-            padding: 0.6rem;
-            border-radius: 8px;
-            border: 2px solid #e2e8f0;
-            cursor: pointer;
-        }
-        .filters select:focus {
-            border-color: var(--accent);
-            outline: none;
-        }
-
-
         @media (max-width: 768px) {
             .action-bar {
                 flex-direction: column;
@@ -723,71 +709,6 @@
                 transform: rotate(360deg);
             }
         }
-
-       #reset-filters {
-            background: var(--neutral-light);
-            color: var(--text-dark);
-            transition: 0.2s;
-        }
-
-        #reset-filters:hover {
-            background: #d6d3c8;
-        }
-
-        /* FILTERS STYLE */
-        .filters select {
-            padding: 0.7rem 1rem;
-            border-radius: 8px;
-            border: 2px solid #e2e8f0;
-            background: var(--white);
-            color: var(--text-dark);
-            font-size: 0.95rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .filters select:hover,
-        .filters select:focus {
-            border-color: var(--accent);
-            box-shadow: 0 0 0 3px rgba(176, 141, 87, 0.25);
-            outline: none;
-        }
-
-        /* RESET BUTTON */
-        #reset-filters {
-            padding: 0.7rem 1rem;
-            border-radius: 8px;
-            background: rgba(176, 141, 87, 0.15); /* accent خفيف */
-            color: var(--primary-dark);
-            border: 2px solid var(--accent);
-            font-size: 0.9rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        #reset-filters:hover {
-            background: var(--accent-light);
-            color: var(--primary-dark);
-            transform: translateY(-2px);
-        }
-
-        #reset-filters:active {
-            transform: translateY(0);
-        }
-
-
-        .filters {
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
-
-        .filters select,
-            #reset-filters {
-                min-width: 150px;
-            }
-
     </style>
 </head>
 
@@ -833,51 +754,29 @@
         </div>
 
         <div class="action-bar">
-
             <div class="search-box">
                 <span class="material-icons search-icon">search</span>
                 <input type="text" class="search-input" id="search-input" placeholder="Search news articles...">
             </div>
-
-            <!-- FILTERS -->
-            <div class="filters" style="display:flex; gap:10px;">
-
-                <select id="filter-category" class="form-select" style="width:150px;">
-                    <option value="">Category</option>
+            <div class="filter-controls">
+                <select class="filter-select" id="category-filter">
+                    <option value="all">All Categories</option>
                     <option value="Exhibitions">Exhibitions</option>
                     <option value="Events">Events</option>
                     <option value="Collections">Collections</option>
                     <option value="Research">Research</option>
                     <option value="Announcements">Announcements</option>
                 </select>
-
-                <select id="filter-status" class="form-select" style="width:150px;">
-                    <option value="">Status</option>
+                <select class="filter-select" id="status-filter">
+                    <option value="all">All Status</option>
                     <option value="featured">Featured</option>
                     <option value="new">New</option>
-                    <option value="normal">Normal</option>
                 </select>
-
-                <select id="filter-date" class="form-select" style="width:150px;">
-                    <option value="">Published Date</option>
-                    <option value="today">Today</option>
-                    <option value="week">This Week</option>
-                    <option value="month">This Month</option>
-                </select>
-
-                <!-- RESET BUTTON -->
-                <button id="reset-filters">
-                    <span class="material-icons" style="font-size:18px;">restart_alt</span>
-                    Reset
+                <button class="clear-btn" id="clear-filters-btn">
+                    <span class="material-icons">clear</span>
+                    Clear Filters
                 </button>
-
-
             </div>
-
-            <button class="add-btn" id="add-news-btn">
-                <span class="material-icons">add</span>
-                Add New Article
-            </button>
         </div>
 
         <div class="news-table-container">
@@ -1011,10 +910,23 @@
     </div>
 
     <script type="module">
-        import { sendNewsNotificationToUsers } from './notification-system.js';
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // Import notification system with error handling
+        let sendNewsNotificationToUsers = null;
+        let notificationSystemAvailable = false;
+
+        try {
+            const notificationModule = await import('./notification-system.js');
+            sendNewsNotificationToUsers = notificationModule.sendNewsNotificationToUsers;
+            notificationSystemAvailable = true;
+            console.log('✅ Notification system loaded successfully');
+        } catch (error) {
+            console.warn('⚠️ Notification system not available:', error.message);
+            console.log('📝 News will be published without notifications');
+        }
 
         // ===== ACTIVITY LOGGING FUNCTION =====
         async function logActivity(type, action, targetTitle, metadata = {}) {
@@ -1230,7 +1142,6 @@
 
                     filteredNews = [...activeNews];
                     
-                    // Batch updates in animation frame
                     requestAnimationFrame(() => {
                         applyFilters();
                         renderDeletedTable();
@@ -1250,19 +1161,16 @@
         function applyFilters() {
             let newsList = allNews.filter(news => !news.isDeleted);
 
-            // Apply category filter
             if (currentCategoryFilter !== 'all') {
                 newsList = newsList.filter(news => news.category === currentCategoryFilter);
             }
 
-            // Apply status filter
             if (currentStatusFilter === 'featured') {
                 newsList = newsList.filter(news => news.isFeatured);
             } else if (currentStatusFilter === 'new') {
                 newsList = newsList.filter(news => news.isNew);
             }
 
-            // Apply search filter
             const searchTerm = searchInput.value.toLowerCase().trim();
             if (searchTerm) {
                 newsList = newsList.filter(news =>
@@ -1339,11 +1247,9 @@
                 };
 
                 if (currentEditId) {
-                    // Get the original article data for comparison
                     const originalArticle = allNews.find(n => n.id === currentEditId);
                     const changes = [];
                     
-                    // Track what changed
                     if (originalArticle.title !== title) {
                         changes.push(`title from "${originalArticle.title}" to "${title}"`);
                     }
@@ -1368,7 +1274,6 @@
                     
                     await updateDoc(doc(db, "News", currentEditId), newsData);
                     
-                    // ===== LOG ACTIVITY: NEWS UPDATED WITH CHANGES =====
                     const changeDescription = changes.length > 0 
                         ? changes.join(', ') 
                         : 'no changes detected';
@@ -1380,29 +1285,46 @@
                     
                     alert('News article updated successfully!');
                 } else {
+                    // NEW ARTICLE - SEND NOTIFICATIONS
                     newsData.publishedAt = Timestamp.now();
                     const docRef = await addDoc(collection(db, "News"), newsData);
                     
-                    // ===== LOG ACTIVITY: NEWS CREATED =====
+                    console.log('📰 News article created with ID:', docRef.id);
+                    console.log('📝 Title:', title);
+                    console.log('📁 Category:', category);
+                    
                     await logActivity('news', 'created', title, {
                         category: category
                     });
                     
                     // 🔔 Send notifications to interested users
-                    submitBtn.textContent = 'Sending notifications...';
-                    const notificationCount = await sendNewsNotificationToUsers(
-                        docRef.id,
-                        title,
-                        category
-                    );
-                    
-                    alert(`News article published successfully!\n${notificationCount} notifications sent to interested users.`);
+                    if (notificationSystemAvailable && sendNewsNotificationToUsers) {
+                        try {
+                            console.log('📨 Attempting to send notifications...');
+                            submitBtn.textContent = 'Sending notifications...';
+                            
+                            const notificationCount = await sendNewsNotificationToUsers(
+                                docRef.id,
+                                title,
+                                category
+                            );
+                            
+                            console.log(`✅ ${notificationCount} notifications sent successfully!`);
+                            alert(`✅ News article published successfully!\n🔔 ${notificationCount} notifications sent to interested users.`);
+                        } catch (notifError) {
+                            console.error('❌ Error sending notifications:', notifError);
+                            alert(`✅ News article published successfully!\n⚠️ However, notifications could not be sent.\n\nError: ${notifError.message}`);
+                        }
+                    } else {
+                        console.warn('⚠️ Notification system not available');
+                        alert('✅ News article published successfully!\n⚠️ Notification system is not available.');
+                    }
                 }
 
                 closeModalFn();
             } catch (error) {
-                console.error("Error saving news:", error);
-                alert('Error saving news: ' + error.message);
+                console.error("❌ Error saving news:", error);
+                alert('❌ Error saving news: ' + error.message);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = currentEditId ? 'Update Article' : 'Publish Article';
@@ -1433,7 +1355,6 @@
                     deletedBy: deletedBy
                 });
                 
-                // ===== LOG ACTIVITY: NEWS DELETED =====
                 await logActivity('news', 'deleted', newsData.title, {
                     category: newsData.category || 'Uncategorized'
                 });
@@ -1460,7 +1381,6 @@
                     deletedBy: null
                 });
                 
-                // ===== LOG ACTIVITY: NEWS RESTORED =====
                 await logActivity('news', 'updated', newsData.title, {
                     category: newsData.category || 'Uncategorized',
                     action: 'restored'
@@ -1490,80 +1410,13 @@
             }
         }
 
-        // Debounced search function
         let searchDebounceTimer;
         function handleSearch() {
             clearTimeout(searchDebounceTimer);
             searchDebounceTimer = setTimeout(() => {
-                const searchTerm = searchInput.value.toLowerCase().trim();
-                const activeNews = allNews.filter(news => !news.isDeleted);
-
-                if (!searchTerm) {
-                    filteredNews = [...activeNews];
-                } else {
-                    filteredNews = activeNews.filter(news =>
-                        news.title.toLowerCase().includes(searchTerm) ||
-                        news.content.toLowerCase().includes(searchTerm) ||
-                        (news.category && news.category.toLowerCase().includes(searchTerm))
-                    );
-                }
-
-                renderNewsTable(filteredNews);
+                applyFilters();
             }, 300);
         }
-
-        function applyFilters() {
-            const searchTerm = searchInput.value.toLowerCase().trim();
-            const category = document.getElementById('filter-category').value;
-            const status = document.getElementById('filter-status').value;
-            const date = document.getElementById('filter-date').value;
-
-            const activeNews = allNews.filter(news => !news.isDeleted);
-
-            filteredNews = activeNews.filter(news => {
-
-                // ============= TEXT SEARCH =============
-                const matchesSearch =
-                    news.title.toLowerCase().includes(searchTerm) ||
-                    news.content.toLowerCase().includes(searchTerm);
-
-                // ============= CATEGORY FILTER =============
-                const matchesCategory =
-                    !category || news.category === category;
-
-                // ============= STATUS FILTER =============
-                let matchesStatus = true;
-                if (status === "featured") matchesStatus = news.isFeatured === true;
-                if (status === "new") matchesStatus = news.isNew === true;
-                if (status === "normal") matchesStatus = !news.isFeatured && !news.isNew;
-
-                // ============= DATE FILTER =============
-                let matchesDate = true;
-                if (date) {
-                    const articleDate = news.publishedAt?.toDate();
-                    const now = new Date();
-
-                    if (date === "today") {
-                        matchesDate = articleDate.toDateString() === now.toDateString();
-                    }
-                    if (date === "week") {
-                        const weekAgo = new Date();
-                        weekAgo.setDate(now.getDate() - 7);
-                        matchesDate = articleDate >= weekAgo;
-                    }
-                    if (date === "month") {
-                        matchesDate =
-                            articleDate.getMonth() === now.getMonth() &&
-                            articleDate.getFullYear() === now.getFullYear();
-                    }
-                }
-
-                return matchesSearch && matchesCategory && matchesStatus && matchesDate;
-            });
-
-            renderNewsTable(filteredNews);
-        }
-
 
         imageInput.addEventListener('input', function () {
             const url = this.value.trim();
@@ -1585,7 +1438,6 @@
         newsForm.addEventListener('submit', handleSubmit);
         searchInput.addEventListener('input', handleSearch);
 
-        // Dropdown filter listeners
         categoryFilter.addEventListener('change', function () {
             currentCategoryFilter = this.value;
             applyFilters();
@@ -1596,18 +1448,12 @@
             applyFilters();
         });
 
-        // Clear filters button
         clearFiltersBtn.addEventListener('click', function () {
-            // Reset dropdowns
             categoryFilter.value = 'all';
             statusFilter.value = 'all';
             currentCategoryFilter = 'all';
             currentStatusFilter = 'all';
-            
-            // Clear search
             searchInput.value = '';
-            
-            // Reapply filters (which will show all)
             applyFilters();
         });
 
@@ -1617,28 +1463,8 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', loadNews);
-        document.getElementById('filter-category').addEventListener('change', applyFilters);
-        document.getElementById('filter-status').addEventListener('change', applyFilters);
-        document.getElementById('filter-date').addEventListener('change', applyFilters);
-        searchInput.addEventListener('input', applyFilters);
-        document.getElementById("reset-filters").addEventListener("click", () => {
-        // إعادة الفلاتر للقيمة الافتراضية
-        document.getElementById("filter-category").value = "";
-        document.getElementById("filter-status").value = "";
-        document.getElementById("filter-date").value = "";
-
-        // إعادة البحث إلى فارغ
-        searchInput.value = "";
-
-        // إعادة عرض كل الأخبار
-        const activeNews = allNews.filter(news => !news.isDeleted);
-        filteredNews = [...activeNews];
-
-        renderNewsTable(filteredNews);
-    });
-
-
+        // Initialize - load news immediately
+        loadNews();
     </script>
 </body>
 
