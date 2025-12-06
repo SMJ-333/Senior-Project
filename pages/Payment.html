@@ -9,6 +9,7 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
     <style>
         :root {
             --primary-dark: #653025;
@@ -480,11 +481,207 @@
             opacity: 0.95;
         }
 
+        .accessibility-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .accessibility-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-dark);
+            color: var(--white);
+            border: 3px solid var(--accent);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .accessibility-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+
+        .accessibility-btn.active {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        .accessibility-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            min-width: 250px;
+            display: none;
+        }
+
+        .accessibility-menu.show {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .accessibility-menu h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .menu-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--neutral-light);
+            transition: var(--transition);
+        }
+
+        .menu-option:last-child {
+            border-bottom: none;
+        }
+
+        .menu-option label {
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .menu-option:has(input:disabled) {
+            opacity: 0.5;
+        }
+
+        .menu-option:has(input:disabled) label {
+            cursor: not-allowed;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--accent);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-switch input:disabled+.slider {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .toggle-switch input:disabled+.slider:before {
+            background-color: #f5f5f5;
+        }
+
+        .speed-control {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.8rem 0;
+        }
+
+        .speed-control input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+        }
+
+        .speed-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .sr-highlight {
+            outline: 3px solid var(--accent) !important;
+            outline-offset: 2px;
+            background-color: rgba(176, 141, 87, 0.1) !important;
+        }
+
+        @media (max-width: 768px) {
+            .accessibility-controls {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .accessibility-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .accessibility-menu {
+                right: -10px;
+                min-width: 220px;
+            }
+        }
+
         @keyframes slideDown {
             from {
                 transform: translateY(-100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -495,9 +692,11 @@
             0% {
                 transform: scale(0);
             }
+
             50% {
                 transform: scale(1.2);
             }
+
             100% {
                 transform: scale(1);
             }
@@ -507,8 +706,21 @@
             0% {
                 transform: rotate(0deg);
             }
+
             100% {
                 transform: rotate(360deg);
+            }
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
             }
         }
 
@@ -519,6 +731,294 @@
 
             .summary-card {
                 position: static;
+            }
+        }
+
+        /* Order Summary Pop-up Modal */
+        .order-summary-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 10001;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .order-summary-overlay.active {
+            display: flex;
+        }
+
+        .order-summary-modal {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 2.5rem;
+            max-width: 600px;
+            width: 90%;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: slideUpModal 0.4s ease-out;
+            position: relative;
+        }
+
+        .order-summary-modal::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .order-summary-modal::-webkit-scrollbar-track {
+            background: var(--neutral-light);
+            border-radius: 10px;
+        }
+
+        .order-summary-modal::-webkit-scrollbar-thumb {
+            background: var(--accent);
+            border-radius: 10px;
+        }
+
+        .modal-close-btn {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: transparent;
+            border: none;
+            font-size: 2rem;
+            color: var(--text-light);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+
+        .modal-close-btn:hover {
+            background: var(--neutral-light);
+            color: var(--primary-dark);
+            transform: rotate(90deg);
+        }
+
+        .order-success-icon {
+            text-align: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 1rem;
+            background: linear-gradient(135deg, var(--success) 0%, #38a169 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            animation: scaleInBounce 0.5s ease;
+        }
+
+        .success-checkmark .material-icons {
+            font-size: 3rem;
+            color: white;
+        }
+
+        .order-success-icon h2 {
+            color: var(--primary-dark);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .order-success-icon p {
+            color: var(--text-light);
+            font-size: 1rem;
+        }
+
+        .order-details-section {
+            margin: 2rem 0;
+        }
+
+        .order-details-section h3 {
+            color: var(--primary-dark);
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--neutral-light);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .order-info-grid {
+            display: grid;
+            gap: 0.8rem;
+        }
+
+        .order-info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem;
+            background: var(--neutral-light);
+            border-radius: 8px;
+        }
+
+        .order-info-label {
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .order-info-value {
+            color: var(--text-dark);
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .order-summary-items {
+            background: var(--neutral-light);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+        }
+
+        .order-summary-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .order-summary-item:last-child {
+            border-bottom: none;
+        }
+
+        .order-total {
+            display: flex;
+            justify-content: space-between;
+            padding: 1.5rem 0 0.5rem;
+            margin-top: 1rem;
+            border-top: 2px solid var(--primary-dark);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+        }
+
+        .booking-reference {
+            background: linear-gradient(135deg, var(--accent-light) 0%, var(--accent) 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            margin: 2rem 0;
+        }
+
+        .booking-reference-label {
+            color: var(--primary-dark);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .booking-reference-code {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-dark);
+            font-family: 'Courier New', monospace;
+            letter-spacing: 2px;
+        }
+
+        .modal-actions {
+            display: grid;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btn {
+            padding: 1rem;
+            border: none;
+            border-radius: 10px;
+            font-size: 1.05rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .modal-btn-primary {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--primary-dark);
+        }
+
+        .modal-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(176, 141, 87, 0.3);
+        }
+
+        .modal-btn-secondary {
+            background: var(--white);
+            color: var(--primary-dark);
+            border: 2px solid var(--accent);
+        }
+
+        .modal-btn-secondary:hover {
+            background: var(--neutral-light);
+        }
+
+        .important-note {
+            background: #fff9e6;
+            border-left: 4px solid var(--accent);
+            padding: 1rem;
+            border-radius: 8px;
+            margin-top: 1.5rem;
+        }
+
+        .important-note p {
+            color: var(--text-dark);
+            font-size: 0.9rem;
+            line-height: 1.5;
+        }
+
+        .important-note strong {
+            color: var(--primary-dark);
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideUpModal {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes scaleInBounce {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
             }
         }
 
@@ -537,6 +1037,279 @@
 
             .payment-methods {
                 grid-template-columns: 1fr;
+            }
+
+            .accessibility-controls {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .accessibility-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .accessibility-menu {
+                right: -10px;
+                min-width: 220px;
+            }
+
+            .order-summary-modal {
+                padding: 2rem 1.5rem;
+                width: 95%;
+            }
+
+            .order-success-icon h2 {
+                font-size: 1.5rem;
+            }
+
+            .booking-reference-code {
+                font-size: 1.3rem;
+            }
+        }
+
+        /* Print Styles for Order Summary */
+        @media print {
+
+            /* Hide everything except the order summary */
+            body * {
+                visibility: hidden;
+            }
+
+            .order-summary-overlay,
+            .order-summary-overlay * {
+                visibility: visible;
+            }
+
+            /* Reset overlay styles for printing */
+            .order-summary-overlay {
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: auto;
+                background: white !important;
+                display: block !important;
+                padding: 0;
+                margin: 0;
+            }
+
+            /* Reset modal styles for printing */
+            .order-summary-modal {
+                position: static;
+                width: 100%;
+                max-width: 100%;
+                box-shadow: none !important;
+                padding: 30px 30px 20px 30px !important;
+                max-height: none;
+                border-radius: 0;
+                margin: 0;
+                background: white !important;
+                height: auto !important;
+            }
+
+            /* Hide interactive elements */
+            .modal-close-btn,
+            .modal-actions,
+            nav,
+            .accessibility-controls,
+            .success-banner {
+                display: none !important;
+                visibility: hidden !important;
+            }
+
+            /* Print-friendly header */
+            .order-success-icon {
+                text-align: center;
+                margin-bottom: 20px;
+                page-break-after: avoid;
+            }
+
+            .success-checkmark {
+                width: 60px;
+                height: 60px;
+                background: #48bb78 !important;
+                border-radius: 50%;
+                margin: 0 auto 15px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .success-checkmark .material-icons {
+                font-size: 2.5rem;
+                color: white !important;
+            }
+
+            .order-success-icon h2 {
+                color: #653025 !important;
+                font-size: 1.8rem;
+                margin-bottom: 5px;
+            }
+
+            .order-success-icon p {
+                color: #7c6f57 !important;
+                font-size: 0.95rem;
+            }
+
+            /* Booking reference */
+            .booking-reference {
+                background: #f4f1e3 !important;
+                border: 2px solid #653025 !important;
+                border-radius: 10px;
+                padding: 20px;
+                text-align: center;
+                margin: 20px 0;
+                page-break-inside: avoid;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .booking-reference-label {
+                color: #653025 !important;
+                font-size: 0.9rem;
+                font-weight: 600;
+                margin-bottom: 8px;
+            }
+
+            .booking-reference-code {
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #653025 !important;
+                font-family: 'Courier New', monospace;
+                letter-spacing: 2px;
+            }
+
+            /* Section styling */
+            .order-details-section {
+                margin: 20px 0;
+                page-break-inside: avoid;
+            }
+
+            .order-details-section h3 {
+                color: #653025 !important;
+                font-size: 1.2rem;
+                margin-bottom: 15px;
+                padding-bottom: 8px;
+                border-bottom: 2px solid #e2e8f0 !important;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .order-details-section h3 .material-icons {
+                font-size: 1.3rem;
+            }
+
+            /* Info grid */
+            .order-info-grid {
+                display: block;
+            }
+
+            .order-info-row {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 15px;
+                background: #f4f1e3 !important;
+                border-radius: 6px;
+                margin-bottom: 8px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .order-info-label {
+                color: #7c6f57 !important;
+                font-weight: 500;
+            }
+
+            .order-info-value {
+                color: #3b2f23 !important;
+                font-weight: 600;
+                text-align: right;
+            }
+
+            /* Order summary items */
+            .order-summary-items {
+                background: #f4f1e3 !important;
+                border-radius: 10px;
+                padding: 20px;
+                margin-top: 15px;
+                -webkit-print-color-adjust: exact;
+                print-color-adjust: exact;
+            }
+
+            .order-summary-item {
+                display: flex;
+                justify-content: space-between;
+                padding: 10px 0;
+                border-bottom: 1px solid #e2e8f0 !important;
+            }
+
+            .order-summary-item:last-child {
+                border-bottom: none !important;
+            }
+
+            .order-total {
+                display: flex;
+                justify-content: space-between;
+                padding: 20px 0 10px;
+                margin-top: 15px;
+                border-top: 3px solid #653025 !important;
+                font-size: 1.4rem;
+                font-weight: 700;
+                color: #653025 !important;
+            }
+
+            /* Add print header */
+            .order-summary-modal::before {
+                content: "ATHAR Museum - Order Confirmation";
+                display: block;
+                text-align: center;
+                font-size: 1.5rem;
+                font-weight: 700;
+                color: #653025 !important;
+                margin-bottom: 10px;
+                padding-bottom: 10px;
+                border-bottom: 2px solid #653025 !important;
+            }
+
+            /* Add print footer with no extra space */
+            .order-summary-modal::after {
+                content: "Thank you for your booking! Please present this confirmation at the museum entrance.";
+                display: block;
+                text-align: center;
+                margin-top: 25px;
+                margin-bottom: 0;
+                padding-top: 15px;
+                padding-bottom: 0;
+                border-top: 1px solid #e2e8f0 !important;
+                color: #7c6f57 !important;
+                font-size: 0.9rem;
+            }
+
+            /* Ensure colors print correctly */
+            * {
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+
+            /* Page break control */
+            .order-details-section,
+            .booking-reference {
+                page-break-inside: avoid;
+            }
+
+            /* Remove extra space at bottom */
+            @page {
+                margin: 1cm;
+            }
+
+            html,
+            body {
+                height: auto !important;
+                overflow: visible !important;
             }
         }
     </style>
@@ -613,8 +1386,10 @@
 
                             <div class="form-group">
                                 <label class="form-label" for="cardNumber">Card Number</label>
-                                <input type="text" id="cardNumber" class="form-input" placeholder="1234 5678 9012 3456" maxlength="19" required>
-                                <div class="form-error" id="cardNumberError">Please enter a valid 16-digit card number</div>
+                                <input type="text" id="cardNumber" class="form-input" placeholder="1234 5678 9012 3456"
+                                    maxlength="19" required>
+                                <div class="form-error" id="cardNumberError">Please enter a valid 16-digit card number
+                                </div>
                             </div>
 
                             <div class="form-grid">
@@ -645,8 +1420,9 @@
 
                                 <div class="form-group">
                                     <label class="form-label" for="cvv">CVV</label>
-                                    <input type="text" id="cvv" class="form-input" placeholder="123" maxlength="4" required>
-                                    <div class="form-error" id="cvvError">Invalid CVV (3-4 digits)</div>
+                                    <input type="text" id="cvv" class="form-input" placeholder="123" maxlength="3"
+                                        required>
+                                    <div class="form-error" id="cvvError">Invalid CVV (3 digits required)</div>
                                 </div>
                             </div>
                         </form>
@@ -655,21 +1431,25 @@
                         <form id="paypalForm" class="payment-form-section" style="display: none;">
                             <div class="form-group">
                                 <label class="form-label" for="paypalEmail">PayPal Email</label>
-                                <input type="email" id="paypalEmail" class="form-input" placeholder="your.email@example.com">
+                                <input type="email" id="paypalEmail" class="form-input"
+                                    placeholder="your.email@example.com">
                                 <div class="form-error" id="paypalEmailError">Please enter a valid PayPal email</div>
                             </div>
 
                             <div class="form-group">
                                 <label class="form-label" for="paypalPassword">PayPal Password</label>
-                                <input type="password" id="paypalPassword" class="form-input" placeholder="Enter your PayPal password">
+                                <input type="password" id="paypalPassword" class="form-input"
+                                    placeholder="Enter your PayPal password">
                                 <div class="form-error" id="paypalPasswordError">Please enter your PayPal password</div>
                             </div>
 
-                            <div style="background: #e8f4fd; border: 1px solid #4299e1; border-radius: 8px; padding: 1rem; margin-top: 1rem; display: flex; gap: 0.75rem; align-items: flex-start;">
+                            <div
+                                style="background: #e8f4fd; border: 1px solid #4299e1; border-radius: 8px; padding: 1rem; margin-top: 1rem; display: flex; gap: 0.75rem; align-items: flex-start;">
                                 <span class="material-icons" style="color: #4299e1; font-size: 1.5rem;">info</span>
                                 <div style="font-size: 0.9rem; color: var(--text-dark);">
                                     <strong>Secure PayPal Payment</strong><br>
-                                    Your PayPal credentials are encrypted and secure. You'll be redirected to complete the payment.
+                                    Your PayPal credentials are encrypted and secure. You'll be redirected to complete
+                                    the payment.
                                 </div>
                             </div>
                         </form>
@@ -696,7 +1476,45 @@
 
                             <div class="form-group">
                                 <label class="form-label" for="phone">Phone Number</label>
-                                <input type="tel" id="phone" class="form-input" placeholder="+973 1234 5678" required>
+                                <div style="display: grid; grid-template-columns: 200px 1fr; gap: 0.5rem;">
+                                    <select id="countryCode" class="form-input">
+                                        <option value="+93">🇦🇫 Afghanistan (+93)</option>
+                                        <option value="+355">🇦🇱 Albania (+355)</option>
+                                        <option value="+213">🇩🇿 Algeria (+213)</option>
+                                        <option value="+973" selected>🇧🇭 Bahrain (+973)</option>
+                                        <option value="+880">🇧🇩 Bangladesh (+880)</option>
+                                        <option value="+20">🇪🇬 Egypt (+20)</option>
+                                        <option value="+33">🇫🇷 France (+33)</option>
+                                        <option value="+49">🇩🇪 Germany (+49)</option>
+                                        <option value="+91">🇮🇳 India (+91)</option>
+                                        <option value="+62">🇮🇩 Indonesia (+62)</option>
+                                        <option value="+964">🇮🇶 Iraq (+964)</option>
+                                        <option value="+98">🇮🇷 Iran (+98)</option>
+                                        <option value="+39">🇮🇹 Italy (+39)</option>
+                                        <option value="+81">🇯🇵 Japan (+81)</option>
+                                        <option value="+962">🇯🇴 Jordan (+962)</option>
+                                        <option value="+965">🇰🇼 Kuwait (+965)</option>
+                                        <option value="+961">🇱🇧 Lebanon (+961)</option>
+                                        <option value="+218">🇱🇾 Libya (+218)</option>
+                                        <option value="+60">🇲🇾 Malaysia (+60)</option>
+                                        <option value="+212">🇲🇦 Morocco (+212)</option>
+                                        <option value="+968">🇴🇲 Oman (+968)</option>
+                                        <option value="+92">🇵🇰 Pakistan (+92)</option>
+                                        <option value="+63">🇵🇭 Philippines (+63)</option>
+                                        <option value="+974">🇶🇦 Qatar (+974)</option>
+                                        <option value="+966">🇸🇦 Saudi Arabia (+966)</option>
+                                        <option value="+34">🇪🇸 Spain (+34)</option>
+                                        <option value="+249">🇸🇩 Sudan (+249)</option>
+                                        <option value="+963">🇸🇾 Syria (+963)</option>
+                                        <option value="+216">🇹🇳 Tunisia (+216)</option>
+                                        <option value="+90">🇹🇷 Turkey (+90)</option>
+                                        <option value="+971">🇦🇪 United Arab Emirates (+971)</option>
+                                        <option value="+44">🇬🇧 United Kingdom (+44)</option>
+                                        <option value="+1">🇺🇸 United States (+1)</option>
+                                        <option value="+967">🇾🇪 Yemen (+967)</option>
+                                    </select>
+                                    <input type="tel" id="phone" class="form-input" placeholder="12345678" required>
+                                </div>
                                 <div class="form-error" id="phoneError">Please enter a valid phone number</div>
                             </div>
                         </form>
@@ -749,6 +1567,112 @@
         </div>
     </div>
 
+    <!-- Order Summary Pop-up Modal -->
+    <div id="orderSummaryOverlay" class="order-summary-overlay">
+        <div class="order-summary-modal">
+            <button class="modal-close-btn" id="closeOrderSummary" aria-label="Close order summary">
+                <span class="material-icons">close</span>
+            </button>
+
+            <div class="order-success-icon">
+                <div class="success-checkmark">
+                    <span class="material-icons">check</span>
+                </div>
+                <h2>Payment Successful!</h2>
+                <p>Your booking has been confirmed</p>
+            </div>
+
+            <div class="booking-reference">
+                <div class="booking-reference-label">Booking Reference</div>
+                <div class="booking-reference-code" id="bookingReferenceCode">-</div>
+            </div>
+
+            <div class="order-details-section">
+                <h3>
+                    <span class="material-icons">calendar_today</span>
+                    Visit Details
+                </h3>
+                <div class="order-info-grid">
+                    <div class="order-info-row">
+                        <span class="order-info-label">Visit Type:</span>
+                        <span class="order-info-value" id="modalVisitType">-</span>
+                    </div>
+                    <div class="order-info-row">
+                        <span class="order-info-label">Date:</span>
+                        <span class="order-info-value" id="modalVisitDate">-</span>
+                    </div>
+                    <div class="order-info-row">
+                        <span class="order-info-label">Time:</span>
+                        <span class="order-info-value" id="modalVisitTime">-</span>
+                    </div>
+                    <div class="order-info-row">
+                        <span class="order-info-label">Total Visitors:</span>
+                        <span class="order-info-value" id="modalTotalVisitors">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-details-section">
+                <h3>
+                    <span class="material-icons">person</span>
+                    Contact Information
+                </h3>
+                <div class="order-info-grid">
+                    <div class="order-info-row">
+                        <span class="order-info-label">Name:</span>
+                        <span class="order-info-value" id="modalContactName">-</span>
+                    </div>
+                    <div class="order-info-row">
+                        <span class="order-info-label">Email:</span>
+                        <span class="order-info-value" id="modalContactEmail">-</span>
+                    </div>
+                    <div class="order-info-row">
+                        <span class="order-info-label">Phone:</span>
+                        <span class="order-info-value" id="modalContactPhone">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-details-section">
+                <h3>
+                    <span class="material-icons">receipt</span>
+                    Order Summary
+                </h3>
+                <div class="order-summary-items">
+                    <div id="modalSummaryItems"></div>
+                    <div class="order-total">
+                        <span>Total Paid</span>
+                        <span id="modalTotalPrice">$0.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="order-details-section">
+                <h3>
+                    <span class="material-icons">payment</span>
+                    Payment Method
+                </h3>
+                <div class="order-info-grid">
+                    <div class="order-info-row">
+                        <span class="order-info-label">Method:</span>
+                        <span class="order-info-value" id="modalPaymentMethod">-</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-actions">
+                <button class="modal-btn modal-btn-primary" id="printOrderSummary">
+                    <span class="material-icons">print</span>
+                    Print Summary
+                </button>
+                <button class="modal-btn modal-btn-secondary" id="returnToHome">
+                    <span class="material-icons">home</span>
+                    Return to Home
+                </button>
+            </div>
+        </div>
+    </div>
+
     <!-- Loading Overlay -->
     <div id="loadingOverlay" class="loading-overlay">
         <div class="loading-content">
@@ -767,44 +1691,140 @@
         let bookingData = null;
         let selectedPaymentMethod = 'credit';
 
-        // Import notification system with proper error handling
         let sendBookingConfirmationNotification = null;
-        
+
         try {
             const notifModule = await import('./notification-system.js');
             sendBookingConfirmationNotification = notifModule.sendBookingConfirmationNotification;
             console.log('✅ Notification system loaded successfully');
         } catch (error) {
             console.warn('⚠️ Notification system not available:', error);
-            // Create a fallback function if import fails
             sendBookingConfirmationNotification = async () => {
                 console.log('📢 Notification system not available - skipping notification');
                 return true;
             };
         }
 
-        // Show success banner
+        function showOrderSummaryPopup(orderData) {
+            // Populate booking reference
+            document.getElementById('bookingReferenceCode').textContent = orderData.bookingId.substring(0, 8).toUpperCase();
+
+            // Populate visit details
+            document.getElementById('modalVisitType').textContent = orderData.visitInfo;
+            document.getElementById('modalVisitDate').textContent = orderData.date;
+            document.getElementById('modalVisitTime').textContent = orderData.time;
+            document.getElementById('modalTotalVisitors').textContent = orderData.totalVisitors;
+
+            // Populate contact information
+            document.getElementById('modalContactName').textContent = orderData.contactName;
+            document.getElementById('modalContactEmail').textContent = orderData.contactEmail;
+            document.getElementById('modalContactPhone').textContent = orderData.contactPhone;
+
+            // Populate payment method
+            const paymentMethodText = orderData.paymentMethod === 'credit' ? 'Credit Card' :
+                orderData.paymentMethod === 'debit' ? 'Debit Card' : 'PayPal';
+            document.getElementById('modalPaymentMethod').textContent = paymentMethodText;
+
+            // Populate order summary items
+            const modalSummaryItems = document.getElementById('modalSummaryItems');
+            modalSummaryItems.innerHTML = '';
+
+            if (orderData.adults > 0) {
+                const adultPrice = orderData.adultPrice || 15;
+                const adultTotal = orderData.adultTotal || (orderData.adults * adultPrice);
+                modalSummaryItems.innerHTML += `
+                    <div class="order-summary-item">
+                        <span>${orderData.adults}× Adult${orderData.adults > 1 ? 's' : ''} ($${adultPrice.toFixed(2)} each)</span>
+                        <span>$${adultTotal.toFixed(2)}</span>
+                    </div>
+                `;
+            }
+
+            if (orderData.seniors > 0) {
+                const seniorPrice = orderData.seniorPrice || 9.75;
+                const seniorTotal = orderData.seniorTotal || (orderData.seniors * seniorPrice);
+                modalSummaryItems.innerHTML += `
+                    <div class="order-summary-item">
+                        <span>${orderData.seniors}× Senior${orderData.seniors > 1 ? 's' : ''} ($${seniorPrice.toFixed(2)} each)</span>
+                        <span>$${seniorTotal.toFixed(2)}</span>
+                    </div>
+                `;
+            }
+
+            if (orderData.children > 0) {
+                modalSummaryItems.innerHTML += `
+                    <div class="order-summary-item">
+                        <span>${orderData.children}× Child${orderData.children > 1 ? 'ren' : ''}</span>
+                        <span style="color: var(--success);">Free</span>
+                    </div>
+                `;
+            }
+
+            // Populate total
+            document.getElementById('modalTotalPrice').textContent = `$${orderData.total}`;
+
+            // Show the modal
+            const overlay = document.getElementById('orderSummaryOverlay');
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeOrderSummaryPopup() {
+            const overlay = document.getElementById('orderSummaryOverlay');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+
+        // Close modal handlers
+        document.getElementById('closeOrderSummary').addEventListener('click', closeOrderSummaryPopup);
+
+        document.getElementById('orderSummaryOverlay').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closeOrderSummaryPopup();
+            }
+        });
+
+        // Print handler
+        document.getElementById('printOrderSummary').addEventListener('click', function () {
+            window.print();
+        });
+
+        // Return to home handler
+        document.getElementById('returnToHome').addEventListener('click', function () {
+            closeOrderSummaryPopup();
+            window.location.href = 'Home.html';
+        });
+
+        // ESC key to close
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                const overlay = document.getElementById('orderSummaryOverlay');
+                if (overlay.classList.contains('active')) {
+                    closeOrderSummaryPopup();
+                }
+            }
+        });
+
         function showSuccessBanner(bookingDetails) {
             const banner = document.getElementById('successBanner');
             const content = banner.querySelector('.success-banner-content');
-            
+
             content.innerHTML = `
                 <h3>🎉 Payment Successful!</h3>
                 <p>Your booking for ${bookingDetails.visitInfo} has been confirmed. Check your notifications for details.</p>
             `;
-            
+
             banner.classList.add('active');
-            
+
             setTimeout(() => {
                 banner.classList.remove('active');
             }, 5000);
         }
 
-        // Initialize expiry year dropdown
         function initializeExpiryYears() {
             const yearSelect = document.getElementById('expiryYear');
             const currentYear = new Date().getFullYear();
-            
+
             for (let i = 0; i < 20; i++) {
                 const year = currentYear + i;
                 const option = document.createElement('option');
@@ -814,7 +1834,6 @@
             }
         }
 
-        // Validation Functions
         function validateCardholderName(name) {
             const nameRegex = /^[A-Z\s]{3,50}$/;
             return nameRegex.test(name.trim()) && name.trim().split(' ').length >= 2;
@@ -822,45 +1841,28 @@
 
         function validateCardNumber(cardNumber) {
             const cleanNumber = cardNumber.replace(/\s/g, '');
-            if (!/^\d{16}$/.test(cleanNumber)) return false;
-            
-            // Luhn algorithm for card validation
-            let sum = 0;
-            let isEven = false;
-            
-            for (let i = cleanNumber.length - 1; i >= 0; i--) {
-                let digit = parseInt(cleanNumber[i]);
-                
-                if (isEven) {
-                    digit *= 2;
-                    if (digit > 9) digit -= 9;
-                }
-                
-                sum += digit;
-                isEven = !isEven;
-            }
-            
-            return sum % 10 === 0;
+            // Just check if it's exactly 16 digits
+            return /^\d{16}$/.test(cleanNumber);
         }
 
         function validateExpiryDate(month, year) {
             if (!month || !year) return false;
-            
+
             const currentDate = new Date();
             const currentYear = currentDate.getFullYear() % 100;
             const currentMonth = currentDate.getMonth() + 1;
-            
+
             const expYear = parseInt(year);
             const expMonth = parseInt(month);
-            
+
             if (expYear < currentYear) return false;
             if (expYear === currentYear && expMonth < currentMonth) return false;
-            
+
             return true;
         }
 
         function validateCVV(cvv) {
-            return /^\d{3,4}$/.test(cvv);
+            return /^\d{3}$/.test(cvv);
         }
 
         function validateFullName(name) {
@@ -875,15 +1877,15 @@
 
         function validatePhone(phone) {
             const cleanPhone = phone.replace(/[\s\-\(\)]/g, '');
-            return /^(\+973)?[0-9]{8}$/.test(cleanPhone);
+            return /^[0-9]{7,15}$/.test(cleanPhone);
         }
 
         function showError(inputId, errorId, message) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            
+
             if (!input || !error) return;
-            
+
             input.classList.add('error');
             input.classList.remove('success');
             error.textContent = message;
@@ -893,9 +1895,9 @@
         function showSuccess(inputId, errorId) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            
+
             if (!input || !error) return;
-            
+
             input.classList.remove('error');
             input.classList.add('success');
             error.classList.remove('active');
@@ -904,14 +1906,13 @@
         function clearValidation(inputId, errorId) {
             const input = document.getElementById(inputId);
             const error = document.getElementById(errorId);
-            
+
             if (!input || !error) return;
-            
+
             input.classList.remove('error', 'success');
             error.classList.remove('active');
         }
 
-        // Load booking data from session storage
         function loadBookingData() {
             const storedData = sessionStorage.getItem('bookingData');
             console.log('📥 Loading booking data from sessionStorage');
@@ -924,7 +1925,6 @@
                 bookingData = JSON.parse(storedData);
                 console.log('✅ Booking data parsed:', bookingData);
 
-                // Verify required data
                 if (!bookingData.visitInfo || !bookingData.date || !bookingData.time) {
                     console.error('❌ Missing required data');
                     alert('Invalid booking data. Please try again.');
@@ -932,47 +1932,65 @@
                     return;
                 }
 
-                // Clean total value
-                const cleanTotal = bookingData.total 
-                    ? bookingData.total.replace(',', '') 
-                    : '0.00';
-
+                const cleanTotal = bookingData.total ? bookingData.total.replace(/[$,]/g, '') : '0.00';
                 document.getElementById('totalPrice').textContent = `$${cleanTotal}`;
 
-
-                // Update UI with booking data
                 document.getElementById('visitType').textContent = bookingData.visitInfo;
                 document.getElementById('visitDate').textContent = bookingData.date;
                 document.getElementById('visitTime').textContent = bookingData.time;
                 document.getElementById('totalVisitors').textContent = bookingData.totalVisitors;
 
-                // Build summary items
                 const summaryItems = document.getElementById('summaryItems');
                 summaryItems.innerHTML = '';
 
-                if (bookingData.adults > 0) {
+                let adultPrice = 15;
+                let seniorPrice = 9.75;
+
+                if (bookingData.visitType === 'event' && bookingData.selectedEventData) {
+                    adultPrice = bookingData.selectedEventData.price || 20;
+                    seniorPrice = adultPrice * 0.65;
+                }
+
+                let displayAdults = bookingData.adults || 0;
+                let displaySeniors = bookingData.seniors || 0;
+                let displayChildren = bookingData.children || 0;
+
+                if (bookingData.isMember && bookingData.memberAddingGuests && displayAdults > 0) {
+                    displayAdults -= 1;
+
                     summaryItems.innerHTML += `
-                        <div class="summary-item">
-                            <span>${bookingData.adults}× Adults</span>
-                            <span>Included</span>
+                        <div class="summary-item" style="border-left: 3px solid var(--success); padding-left: 0.5rem; background: linear-gradient(135deg, #e6f7ed 0%, #d4f4dd 100%);">
+                            <span>1× Member (You - Free)</span>
+                            <span style="color: var(--success); font-weight: 600;">$0.00</span>
                         </div>
                     `;
                 }
 
-                if (bookingData.seniors > 0) {
+                if (displayAdults > 0) {
+                    const adultTotal = displayAdults * adultPrice;
                     summaryItems.innerHTML += `
                         <div class="summary-item">
-                            <span>${bookingData.seniors}× Seniors</span>
-                            <span>Included</span>
+                            <span>${displayAdults}× Adult${displayAdults > 1 ? 's' : ''} ($${adultPrice.toFixed(2)} each)</span>
+                            <span>$${adultTotal.toFixed(2)}</span>
                         </div>
                     `;
                 }
 
-                if (bookingData.children > 0) {
+                if (displaySeniors > 0) {
+                    const seniorTotal = displaySeniors * seniorPrice;
                     summaryItems.innerHTML += `
                         <div class="summary-item">
-                            <span>${bookingData.children}× Children</span>
-                            <span>Free</span>
+                            <span>${displaySeniors}× Senior${displaySeniors > 1 ? 's' : ''} ($${seniorPrice.toFixed(2)} each - 35% off)</span>
+                            <span>$${seniorTotal.toFixed(2)}</span>
+                        </div>
+                    `;
+                }
+
+                if (displayChildren > 0) {
+                    summaryItems.innerHTML += `
+                        <div class="summary-item">
+                            <span>${displayChildren}× Child${displayChildren > 1 ? 'ren' : ''}</span>
+                            <span style="color: var(--success);">Free</span>
                         </div>
                     `;
                 }
@@ -981,10 +1999,9 @@
                 console.error('❌ Error parsing:', error);
                 alert('Error loading booking data.');
                 window.location.href = 'Ticketing.html';
-            } 
+            }
         }
 
-        // Load user data
         async function loadUserData() {
             if (!currentUser) return;
 
@@ -994,30 +2011,56 @@
                     const userData = userDoc.data();
                     document.getElementById('fullName').value = userData.Username || '';
                     document.getElementById('email').value = userData["Email Address"] || currentUser.email;
-                    document.getElementById('phone').value = userData["Phone Number"] || '';
+
+                    const userPhone = userData["Phone Number"] || '';
+                    if (userPhone) {
+                        // Handle formats: "+973 12345678" or "+97312345678"
+                        let foundMatch = false;
+
+                        const countryCodeSelect = document.getElementById('countryCode');
+                        const allOptions = Array.from(countryCodeSelect.options);
+
+                        for (const option of allOptions) {
+                            const code = option.value; // e.g., "+973"
+                            if (userPhone.startsWith(code)) {
+                                // Extract phone number after country code
+                                const phoneNumber = userPhone.substring(code.length).trim();
+
+                                // Set country code
+                                countryCodeSelect.value = code;
+
+                                // Set phone number (remove any spaces/dashes)
+                                document.getElementById('phone').value = phoneNumber.replace(/[\s\-\(\)]/g, '');
+
+                                foundMatch = true;
+                                break;
+                            }
+                        }
+
+                        // Fallback: if no country code matched, just set the whole number
+                        if (!foundMatch) {
+                            document.getElementById('phone').value = userPhone.replace(/[\+\s\-\(\)]/g, '');
+                        }
+                    }
                 }
             } catch (error) {
                 console.error('Error loading user data:', error);
             }
         }
 
-        // Payment method selection
         document.querySelectorAll('.payment-method').forEach(method => {
             method.addEventListener('click', function () {
                 document.querySelectorAll('.payment-method').forEach(m => m.classList.remove('selected'));
                 this.classList.add('selected');
-                
+
                 selectedPaymentMethod = this.dataset.method;
-                
-                // Show/hide appropriate forms
+
                 const cardForm = document.getElementById('cardPaymentForm');
                 const paypalForm = document.getElementById('paypalForm');
-                
+
                 if (selectedPaymentMethod === 'paypal') {
                     cardForm.style.display = 'none';
                     paypalForm.style.display = 'block';
-                    
-                    // Clear card validations
                     clearValidation('cardName', 'cardNameError');
                     clearValidation('cardNumber', 'cardNumberError');
                     clearValidation('expiryMonth', 'expiryDateError');
@@ -1025,21 +2068,18 @@
                 } else {
                     cardForm.style.display = 'block';
                     paypalForm.style.display = 'none';
-                    
-                    // Clear PayPal validations
                     clearValidation('paypalEmail', 'paypalEmailError');
                     clearValidation('paypalPassword', 'paypalPasswordError');
                 }
             });
         });
 
-        // Cardholder Name - Uppercase only, no numbers
-        document.getElementById('cardName').addEventListener('input', function(e) {
+        document.getElementById('cardName').addEventListener('input', function (e) {
             let value = e.target.value.replace(/[^a-zA-Z\s]/g, '');
             e.target.value = value.toUpperCase();
         });
 
-        document.getElementById('cardName').addEventListener('blur', function() {
+        document.getElementById('cardName').addEventListener('blur', function () {
             const value = this.value.trim();
             if (value === '') {
                 clearValidation('cardName', 'cardNameError');
@@ -1050,12 +2090,11 @@
             }
         });
 
-        // Card Number - Numbers only, no letters or special characters
         document.getElementById('cardNumber').addEventListener('input', function (e) {
             let value = e.target.value.replace(/\D/g, '');
             let formattedValue = value.match(/.{1,4}/g)?.join(' ') || value;
             e.target.value = formattedValue;
-            
+
             if (value.length === 16) {
                 if (!validateCardNumber(value)) {
                     showError('cardNumber', 'cardNumberError', 'Invalid card number');
@@ -1069,30 +2108,29 @@
             }
         });
 
-        document.getElementById('cardNumber').addEventListener('blur', function() {
+        document.getElementById('cardNumber').addEventListener('blur', function () {
             const value = this.value.replace(/\s/g, '');
             if (value.length > 0 && value.length !== 16) {
                 showError('cardNumber', 'cardNumberError', 'Card number must be 16 digits');
             }
         });
 
-        // Expiry Date - Dropdowns validation
         function validateExpiryDropdowns() {
             const month = document.getElementById('expiryMonth').value;
             const year = document.getElementById('expiryYear').value;
-            
+
             if (!month || !year) {
                 if (month || year) {
                     showError('expiryMonth', 'expiryDateError', 'Please select both month and year');
                 }
                 return false;
             }
-            
+
             if (!validateExpiryDate(month, year)) {
                 showError('expiryMonth', 'expiryDateError', 'Card has expired - select future date');
                 return false;
             }
-            
+
             showSuccess('expiryMonth', 'expiryDateError');
             return true;
         }
@@ -1100,31 +2138,29 @@
         document.getElementById('expiryMonth').addEventListener('change', validateExpiryDropdowns);
         document.getElementById('expiryYear').addEventListener('change', validateExpiryDropdowns);
 
-        // CVV - Numbers only
         document.getElementById('cvv').addEventListener('input', function (e) {
             e.target.value = e.target.value.replace(/\D/g, '');
             const value = e.target.value;
-            
-            if (value.length >= 3) {
+
+            if (value.length === 3) {
                 if (validateCVV(value)) {
                     showSuccess('cvv', 'cvvError');
                 } else {
-                    showError('cvv', 'cvvError', 'CVV must be 3-4 digits');
+                    showError('cvv', 'cvvError', 'CVV must be exactly 3 digits');
                 }
             } else if (value.length > 0) {
                 clearValidation('cvv', 'cvvError');
             }
         });
 
-        document.getElementById('cvv').addEventListener('blur', function() {
+        document.getElementById('cvv').addEventListener('blur', function () {
             const value = this.value;
             if (value.length > 0 && !validateCVV(value)) {
-                showError('cvv', 'cvvError', 'CVV must be 3-4 digits');
+                showError('cvv', 'cvvError', 'CVV must be exactly 3 digits');
             }
         });
 
-        // PayPal Email Validation
-        document.getElementById('paypalEmail').addEventListener('blur', function() {
+        document.getElementById('paypalEmail').addEventListener('blur', function () {
             const value = this.value.trim();
             if (value === '') {
                 clearValidation('paypalEmail', 'paypalEmailError');
@@ -1135,15 +2171,14 @@
             }
         });
 
-        document.getElementById('paypalEmail').addEventListener('input', function() {
+        document.getElementById('paypalEmail').addEventListener('input', function () {
             const value = this.value.trim();
             if (value.length > 0 && validateEmail(value)) {
                 showSuccess('paypalEmail', 'paypalEmailError');
             }
         });
 
-        // PayPal Password Validation
-        document.getElementById('paypalPassword').addEventListener('blur', function() {
+        document.getElementById('paypalPassword').addEventListener('blur', function () {
             const value = this.value;
             if (value === '') {
                 clearValidation('paypalPassword', 'paypalPasswordError');
@@ -1154,8 +2189,7 @@
             }
         });
 
-        // Contact Form Validations
-        document.getElementById('fullName').addEventListener('blur', function() {
+        document.getElementById('fullName').addEventListener('blur', function () {
             const value = this.value.trim();
             if (value === '') {
                 clearValidation('fullName', 'fullNameError');
@@ -1166,12 +2200,11 @@
             }
         });
 
-        document.getElementById('fullName').addEventListener('input', function() {
+        document.getElementById('fullName').addEventListener('input', function () {
             this.value = this.value.replace(/[^a-zA-Z\s]/g, '');
         });
 
-        // Validate Email
-        document.getElementById('email').addEventListener('blur', function() {
+        document.getElementById('email').addEventListener('blur', function () {
             const value = this.value.trim();
             if (value === '') {
                 clearValidation('email', 'emailError');
@@ -1182,35 +2215,207 @@
             }
         });
 
-        document.getElementById('email').addEventListener('input', function() {
+        document.getElementById('email').addEventListener('input', function () {
             const value = this.value.trim();
             if (value.length > 0 && validateEmail(value)) {
                 showSuccess('email', 'emailError');
             }
         });
 
-        // Validate Phone
-        document.getElementById('phone').addEventListener('input', function(e) {
-            let value = e.target.value.replace(/[^\d\+\s\-\(\)]/g, '');
+        document.getElementById('phone').addEventListener('input', function (e) {
+            let value = e.target.value.replace(/[^\d]/g, '');
             e.target.value = value;
         });
 
-        document.getElementById('phone').addEventListener('blur', function() {
+        document.getElementById('phone').addEventListener('blur', function () {
             const value = this.value.trim();
             if (value === '') {
                 clearValidation('phone', 'phoneError');
             } else if (!validatePhone(value)) {
-                showError('phone', 'phoneError', 'Invalid phone number (8 digits)');
+                showError('phone', 'phoneError', 'Please enter a valid phone number (7-15 digits)');
             } else {
                 showSuccess('phone', 'phoneError');
             }
         });
 
-        // Confirm payment
         document.getElementById('confirmPaymentBtn').addEventListener('click', async function () {
+            let isMember = false;
+            if (currentUser) {
+                try {
+                    const userDoc = await getDoc(doc(db, "Users", currentUser.uid));
+                    if (userDoc.exists()) {
+                        const userData = userDoc.data();
+                        isMember = userData.membershipStatus === 'active';
+                    }
+                } catch (error) {
+                    console.error('Error checking membership:', error);
+                }
+            }
+
+            if (isMember && !bookingData.memberAddingGuests) {
+                let isValid = true;
+
+                const fullName = document.getElementById('fullName').value.trim();
+                if (!fullName) {
+                    showError('fullName', 'fullNameError', 'Full name is required');
+                    isValid = false;
+                } else if (!validateFullName(fullName)) {
+                    showError('fullName', 'fullNameError', 'Enter first and last name');
+                    isValid = false;
+                } else {
+                    showSuccess('fullName', 'fullNameError');
+                }
+
+                const email = document.getElementById('email').value.trim();
+                if (!email) {
+                    showError('email', 'emailError', 'Email is required');
+                    isValid = false;
+                } else if (!validateEmail(email)) {
+                    showError('email', 'emailError', 'Invalid email address');
+                    isValid = false;
+                } else {
+                    showSuccess('email', 'emailError');
+                }
+
+                const phone = document.getElementById('phone').value.trim();
+                const countryCode = document.getElementById('countryCode').value;
+                const fullPhone = `${countryCode} ${phone}`;
+
+                if (!phone) {
+                    showError('phone', 'phoneError', 'Phone number is required');
+                    isValid = false;
+                } else if (!validatePhone(phone)) {
+                    showError('phone', 'phoneError', 'Invalid phone number');
+                    isValid = false;
+                } else {
+                    showSuccess('phone', 'phoneError');
+                }
+
+                if (!isValid) {
+                    const firstError = document.querySelector('.form-input.error');
+                    if (firstError) {
+                        firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        firstError.focus();
+                    }
+                    return;
+                }
+
+                const loadingOverlay = document.getElementById('loadingOverlay');
+                loadingOverlay.classList.add('active');
+
+                try {
+                    await new Promise(resolve => setTimeout(resolve, 1500));
+
+                    let eventPrice = 0;
+                    if (bookingData.visitType === 'event' && bookingData.selectedEvent) {
+                        try {
+                            const eventDoc = await getDoc(doc(db, "Events", bookingData.selectedEvent));
+                            if (eventDoc.exists()) {
+                                eventPrice = eventDoc.data()?.price || 0;
+                            }
+                        } catch (error) {
+                            console.error('Error fetching event price:', error);
+                        }
+                    }
+
+                    const ticketData = {
+                        userId: currentUser.uid,
+                        userName: fullName,
+                        userEmail: email,
+                        userPhone: fullPhone,
+                        ticketType: bookingData.visitType,
+                        eventId: bookingData.selectedEvent || null,
+                        eventName: bookingData.visitType === 'event' ? bookingData.visitInfo : null,
+                        eventPrice: bookingData.visitType === 'event' ? eventPrice : null,
+                        visitDate: bookingData.date,
+                        visitTime: bookingData.time,
+                        visitors: {
+                            adults: {
+                                count: bookingData.adults || 0,
+                                price: 0,
+                                total: 0
+                            },
+                            seniors: {
+                                count: bookingData.seniors || 0,
+                                price: 0,
+                                total: 0
+                            },
+                            children: {
+                                count: bookingData.children || 0,
+                                price: 0,
+                                total: 0
+                            }
+                        },
+                        totalVisitors: bookingData.totalVisitors,
+                        totalPrice: 0,
+                        currency: 'USD',
+                        paymentDetails: {
+                            method: 'membership',
+                            membershipDiscount: true
+                        },
+                        status: 'confirmed',
+                        purchaseDate: serverTimestamp(),
+                        createdAt: new Date().toISOString()
+                    };
+
+                    const ticketRef = await addDoc(collection(db, "Ticketing"), ticketData);
+                    console.log('✅ Member ticket saved:', ticketRef.id);
+
+                    if (sendBookingConfirmationNotification) {
+                        try {
+                            await sendBookingConfirmationNotification(currentUser.uid, {
+                                bookingId: ticketRef.id,
+                                visitInfo: bookingData.visitInfo,
+                                date: bookingData.date,
+                                time: bookingData.time,
+                                totalVisitors: bookingData.totalVisitors,
+                                adults: bookingData.adults || 0,
+                                children: bookingData.children || 0,
+                                seniors: bookingData.seniors || 0,
+                                total: '0.00',
+                                paymentMethod: 'membership'
+                            });
+                        } catch (notifError) {
+                            console.warn('⚠️ Failed to send notification:', notifError);
+                        }
+                    }
+
+                    loadingOverlay.classList.remove('active');
+
+                    showSuccessBanner({
+                        visitInfo: bookingData.visitInfo,
+                        date: bookingData.date,
+                        time: bookingData.time
+                    });
+
+                    sessionStorage.setItem('bookingSuccess', JSON.stringify({
+                        success: true,
+                        bookingId: ticketRef.id,
+                        email: email,
+                        paymentMethod: 'membership',
+                        visitInfo: bookingData.visitInfo,
+                        date: bookingData.date,
+                        time: bookingData.time,
+                        total: '0.00'
+                    }));
+
+                    sessionStorage.removeItem('bookingData');
+
+                    setTimeout(() => {
+                        window.location.href = 'Account.html?tab=notifications';
+                    }, 3000);
+
+                } catch (error) {
+                    console.error('Error processing member booking:', error);
+                    loadingOverlay.classList.remove('active');
+                    alert('Booking failed: ' + error.message);
+                }
+
+                return;
+            }
+
             let isValid = true;
 
-            // Validate based on payment method
             if (selectedPaymentMethod === 'paypal') {
                 const paypalEmail = document.getElementById('paypalEmail').value.trim();
                 if (!paypalEmail) {
@@ -1258,7 +2463,7 @@
 
                 const expiryMonth = document.getElementById('expiryMonth').value;
                 const expiryYear = document.getElementById('expiryYear').value;
-                
+
                 if (!expiryMonth || !expiryYear) {
                     showError('expiryMonth', 'expiryDateError', 'Please select expiry date');
                     isValid = false;
@@ -1281,7 +2486,6 @@
                 }
             }
 
-            // Validate contact fields
             const fullName = document.getElementById('fullName').value.trim();
             if (!fullName) {
                 showError('fullName', 'fullNameError', 'Full name is required');
@@ -1305,6 +2509,9 @@
             }
 
             const phone = document.getElementById('phone').value.trim();
+            const countryCode = document.getElementById('countryCode').value;
+            const fullPhone = `${countryCode} ${phone}`;
+
             if (!phone) {
                 showError('phone', 'phoneError', 'Phone number is required');
                 isValid = false;
@@ -1324,19 +2531,57 @@
                 return;
             }
 
-            // Show loading
             const loadingOverlay = document.getElementById('loadingOverlay');
             loadingOverlay.classList.add('active');
 
             try {
-                // Simulate payment processing
                 await new Promise(resolve => setTimeout(resolve, 2500));
 
-                // Prepare payment details
-                let paymentDetails = {
-                    method: selectedPaymentMethod
-                };
+                let adultPrice = 15;
+                let seniorPrice = 9.75;
+                let eventPrice = 0;
 
+                if (bookingData.visitType === 'event') {
+                    if (bookingData.selectedEvent) {
+                        try {
+                            const eventDoc = await getDoc(doc(db, "Events", bookingData.selectedEvent));
+                            if (eventDoc.exists()) {
+                                eventPrice = eventDoc.data()?.price || 0;
+                                adultPrice = eventPrice;
+                                seniorPrice = eventPrice * 0.65;
+                            }
+                        } catch (error) {
+                            console.error('Error fetching event price:', error);
+                        }
+                    } else if (bookingData.selectedEventData) {
+                        eventPrice = bookingData.selectedEventData.price || 20;
+                        adultPrice = eventPrice;
+                        seniorPrice = eventPrice * 0.65;
+                    }
+                }
+
+                const adultCount = bookingData.adults || 0;
+                const seniorCount = bookingData.seniors || 0;
+                const childCount = bookingData.children || 0;
+
+                let paidAdults = adultCount;
+                if (bookingData.isMember && bookingData.memberAddingGuests && paidAdults > 0) {
+                    paidAdults -= 1;
+                }
+
+                const adultTotal = paidAdults * adultPrice;
+                const seniorTotal = seniorCount * seniorPrice;
+
+                const totalFromBooking = parseFloat(bookingData.total.replace(/[$,]/g, ''));
+
+                console.log('💰 Payment details:', {
+                    totalFromBooking: totalFromBooking,
+                    databaseCounts: { adults: adultCount, seniors: seniorCount, children: childCount },
+                    paidCounts: { adults: paidAdults, seniors: seniorCount, children: 0 },
+                    pricing: { adultPrice, seniorPrice, adultTotal, seniorTotal }
+                });
+
+                let paymentDetails = {};
                 if (selectedPaymentMethod === 'paypal') {
                     paymentDetails.paypalEmail = document.getElementById('paypalEmail').value.trim();
                 } else {
@@ -1344,35 +2589,56 @@
                     paymentDetails.cardType = selectedPaymentMethod;
                 }
 
-                // Save booking to Firestore
-                const bookingDoc = {
+                const ticketData = {
                     userId: currentUser?.uid || 'guest',
                     userName: fullName,
                     userEmail: email,
-                    userPhone: phone,
-                    visitType: bookingData.visitType,
-                    visitInfo: bookingData.visitInfo,
-                    date: bookingData.date,
-                    time: bookingData.time,
-                    adults: bookingData.adults || 0,
-                    children: bookingData.children || 0,
-                    seniors: bookingData.seniors || 0,
+                    userPhone: fullPhone,
+                    ticketType: bookingData.visitType,
+                    eventId: bookingData.selectedEvent || null,
+                    eventName: bookingData.visitType === 'event' ? bookingData.visitInfo : null,
+                    eventPrice: bookingData.visitType === 'event' ? eventPrice : null,
+                    visitDate: bookingData.date,
+                    visitTime: bookingData.time,
+                    visitors: {
+                        adults: {
+                            count: adultCount,
+                            price: adultPrice,
+                            total: adultTotal
+                        },
+                        seniors: {
+                            count: seniorCount,
+                            price: seniorPrice,
+                            total: seniorTotal
+                        },
+                        children: {
+                            count: childCount,
+                            price: 0,
+                            total: 0
+                        }
+                    },
                     totalVisitors: bookingData.totalVisitors,
-                    total: bookingData.total,
-                    paymentDetails: paymentDetails,
+                    totalPrice: totalFromBooking,
+                    currency: 'USD',
+                    paymentDetails: {
+                        method: selectedPaymentMethod,
+                        ...paymentDetails
+                    },
                     status: 'confirmed',
-                    createdAt: new Date(),
-                    eventId: bookingData.selectedEvent || null
+                    purchaseDate: serverTimestamp(),
+                    createdAt: new Date().toISOString(),
+                    isMemberBooking: bookingData.isMember && bookingData.memberAddingGuests ? true : false
                 };
 
-                const bookingRef = await addDoc(collection(db, "Bookings"), bookingDoc);
-                console.log('✅ Booking saved:', bookingRef.id);
-
+                const ticketRef = await addDoc(collection(db, "Ticketing"), ticketData);
+                console.log('✅ Ticket saved:', ticketRef.id);
+                console.log('💾 Database: Adults count =', adultCount, ', Adults total =', adultTotal);
+                
                 // Create notification for logged-in users
                 if (currentUser && sendBookingConfirmationNotification) {
                     try {
                         await sendBookingConfirmationNotification(currentUser.uid, {
-                            bookingId: bookingRef.id,
+                            bookingId: ticketRef.id,
                             visitInfo: bookingData.visitInfo,
                             date: bookingData.date,
                             time: bookingData.time,
@@ -1380,47 +2646,60 @@
                             adults: bookingData.adults || 0,
                             children: bookingData.children || 0,
                             seniors: bookingData.seniors || 0,
-                            total: bookingData.total,
+                            total: totalFromBooking.toFixed(2),
                             paymentMethod: selectedPaymentMethod
                         });
-                        console.log('✅ Booking notification sent');
                     } catch (notifError) {
                         console.warn('⚠️ Failed to send notification:', notifError);
-                        // Don't fail the entire booking if notification fails
                     }
                 }
 
-                // Hide loading
                 loadingOverlay.classList.remove('active');
 
-                // Show success banner
                 showSuccessBanner({
                     visitInfo: bookingData.visitInfo,
                     date: bookingData.date,
                     time: bookingData.time
                 });
 
-                // Store success details
                 sessionStorage.setItem('bookingSuccess', JSON.stringify({
                     success: true,
-                    bookingId: bookingRef.id,
+                    bookingId: ticketRef.id,
                     email: email,
                     paymentMethod: selectedPaymentMethod,
                     visitInfo: bookingData.visitInfo,
                     date: bookingData.date,
                     time: bookingData.time,
-                    total: bookingData.total
+                    total: totalFromBooking.toFixed(2)
                 }));
 
-                // Clear booking data
                 sessionStorage.removeItem('bookingData');
-                
-                // Redirect after showing banner
+
+                // Show Order Summary pop-up for guest users, redirect for logged-in users
                 setTimeout(() => {
                     if (currentUser) {
                         window.location.href = 'Account.html?tab=notifications';
                     } else {
-                        window.location.href = 'Ticketing.html?success=true';
+                        // Guest user - show order summary popup
+                        showOrderSummaryPopup({
+                            bookingId: ticketRef.id,
+                            visitInfo: bookingData.visitInfo,
+                            date: bookingData.date,
+                            time: bookingData.time,
+                            totalVisitors: bookingData.totalVisitors,
+                            adults: paidAdults > 0 ? paidAdults : 0,
+                            seniors: seniorCount,
+                            children: childCount,
+                            adultPrice: adultPrice,
+                            seniorPrice: seniorPrice,
+                            adultTotal: adultTotal,
+                            seniorTotal: seniorTotal,
+                            total: totalFromBooking.toFixed(2),
+                            paymentMethod: selectedPaymentMethod,
+                            contactName: fullName,
+                            contactEmail: email,
+                            contactPhone: fullPhone
+                        });
                     }
                 }, 3000);
 
@@ -1431,7 +2710,6 @@
             }
         });
 
-        // Auth state
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
             loadBookingData();
@@ -1441,7 +2719,6 @@
             initializeExpiryYears();
         });
 
-        // Scroll nav effect
         window.addEventListener('scroll', function () {
             const nav = document.querySelector('nav');
             if (window.scrollY > 50) {
@@ -1452,6 +2729,428 @@
                 nav.style.boxShadow = '0 4px 6px rgba(0, 0, 0, 0.07)';
             }
         });
+
+        // ===== SCREEN READER ACCESSIBILITY SYSTEM =====
+        class ScreenReaderSystem {
+            constructor() {
+                this.isEnabled = false;
+                this.isReading = false;
+                this.autoReadOnHover = false;
+                this.readOnClick = false;
+                this.speed = 1.0;
+                this.currentElement = null;
+                this.hoverTimeout = null;
+
+                this.init();
+            }
+
+            init() {
+                this.createAccessibilityControls();
+                this.loadSettings();
+                this.attachEventListeners();
+            }
+
+            createAccessibilityControls() {
+                const controls = document.createElement('div');
+                controls.className = 'accessibility-controls';
+                controls.innerHTML = `
+            <button class="accessibility-btn" id="accessibility-toggle" title="Screen Reader Controls" aria-label="Open screen reader controls">
+                <span class="material-icons">accessibility_new</span>
+            </button>
+            <div class="accessibility-menu" id="accessibility-menu" role="menu">
+                <h3>Screen Reader</h3>
+                
+                <div class="menu-option">
+                    <label for="enable-reader">Enable Reader</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="enable-reader">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="menu-option">
+                    <label for="auto-hover">Read on Hover</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-hover" disabled>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="menu-option">
+                    <label for="read-click">Read on Click</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="read-click" disabled>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="speed-control">
+                    <div class="speed-label">
+                        <span>Speech Speed</span>
+                        <span id="speed-value">Normal</span>
+                    </div>
+                    <input type="range" id="speed-control" min="0.5" max="2" step="0.1" value="1">
+                </div>
+            </div>
+        `;
+                document.body.appendChild(controls);
+            }
+
+            attachEventListeners() {
+                // Toggle menu
+                document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                    const menu = document.getElementById('accessibility-menu');
+                    menu.classList.toggle('show');
+                });
+
+                // Close menu when clicking outside
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.accessibility-controls')) {
+                        document.getElementById('accessibility-menu').classList.remove('show');
+                    }
+                });
+
+                // Enable/Disable reader
+                document.getElementById('enable-reader').addEventListener('change', (e) => {
+                    this.isEnabled = e.target.checked;
+                    const hoverCheckbox = document.getElementById('auto-hover');
+                    const clickCheckbox = document.getElementById('read-click');
+
+                    if (this.isEnabled) {
+                        hoverCheckbox.disabled = false;
+                        clickCheckbox.disabled = false;
+
+                        this.autoReadOnHover = true;
+                        this.readOnClick = true;
+                        hoverCheckbox.checked = true;
+                        clickCheckbox.checked = true;
+
+                        this.speak("Screen reader enabled");
+                        this.enableReader();
+                        this.enableHoverReading();
+                    } else {
+                        hoverCheckbox.disabled = true;
+                        clickCheckbox.disabled = true;
+                        hoverCheckbox.checked = false;
+                        clickCheckbox.checked = false;
+
+                        this.autoReadOnHover = false;
+                        this.readOnClick = false;
+
+                        this.speak("Screen reader disabled");
+                        this.disableReader();
+                    }
+
+                    this.saveSettings();
+                });
+
+                // Auto hover
+                document.getElementById('auto-hover').addEventListener('change', (e) => {
+                    this.autoReadOnHover = e.target.checked;
+                    this.saveSettings();
+                    if (this.autoReadOnHover) {
+                        this.enableHoverReading();
+                    } else {
+                        this.disableHoverReading();
+                    }
+                });
+
+                // Read on click
+                document.getElementById('read-click').addEventListener('change', (e) => {
+                    this.readOnClick = e.target.checked;
+                    this.saveSettings();
+                });
+
+                // Speed control
+                document.getElementById('speed-control').addEventListener('input', (e) => {
+                    this.speed = parseFloat(e.target.value);
+                    this.updateSpeedLabel();
+                    this.saveSettings();
+                });
+
+                // Keyboard shortcuts
+                document.addEventListener('keydown', (e) => {
+                    if (e.altKey && e.key === 's') {
+                        e.preventDefault();
+                        this.stopSpeaking();
+                    }
+                    if (e.altKey && e.key === 'r') {
+                        e.preventDefault();
+                        const enableCheckbox = document.getElementById('enable-reader');
+                        enableCheckbox.checked = !enableCheckbox.checked;
+                        enableCheckbox.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+
+            enableReader() {
+                document.body.style.cursor = 'help';
+            }
+
+            disableReader() {
+                document.body.style.cursor = 'default';
+                this.stopSpeaking();
+                this.disableHoverReading();
+            }
+
+            enableHoverReading() {
+                document.addEventListener('mouseover', this.handleHover);
+            }
+
+            disableHoverReading() {
+                document.removeEventListener('mouseover', this.handleHover);
+                clearTimeout(this.hoverTimeout);
+            }
+
+            handleHover = (e) => {
+                if (!this.isEnabled || !this.autoReadOnHover) return;
+
+                clearTimeout(this.hoverTimeout);
+
+                this.hoverTimeout = setTimeout(() => {
+                    const element = e.target;
+                    if (element && element !== this.currentElement) {
+                        this.readElement(element);
+                    }
+                }, 500);
+            }
+
+            readElement(element) {
+                if (!this.isEnabled) return;
+
+                // Skip script, style, and hidden elements
+                if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(element.tagName)) return;
+                if (element.offsetParent === null && element.tagName !== 'BODY') return;
+
+                let textToRead = '';
+                let isClickable = false;
+
+                // Check if element is clickable
+                const hasClickHandler = element.onclick !== null ||
+                    element.hasAttribute('onclick') ||
+                    element.style.cursor === 'pointer' ||
+                    element.classList.contains('clickable') ||
+                    element.hasAttribute('role') && element.getAttribute('role') === 'button';
+
+                // Get aria-label or title first (highest priority)
+                if (element.getAttribute('aria-label')) {
+                    textToRead = element.getAttribute('aria-label');
+                    isClickable = hasClickHandler;
+                } else if (element.getAttribute('title')) {
+                    textToRead = element.getAttribute('title');
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'IMG') {
+                    textToRead = element.alt || 'Image';
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'A') {
+                    textToRead = `Link: ${element.textContent.trim()}`;
+                    isClickable = true;
+                } else if (element.tagName === 'BUTTON') {
+                    textToRead = `Button: ${element.textContent.trim()}`;
+                    isClickable = true;
+                } else if (element.tagName === 'INPUT') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    textToRead = `Input field: ${label ? label.textContent : element.placeholder || 'Text input'}`;
+                    isClickable = true;
+                } else if (element.tagName === 'TEXTAREA') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    textToRead = `Text area: ${label ? label.textContent : element.placeholder || 'Text area'}`;
+                    isClickable = true;
+                } else if (element.tagName === 'SELECT') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    textToRead = `Dropdown: ${label ? label.textContent : 'Select option'}`;
+                    isClickable = true;
+                } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
+                    textToRead = element.textContent.trim();
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'P') {
+                    textToRead = element.textContent.trim();
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'NAV') {
+                    textToRead = 'Navigation menu';
+                    isClickable = false;
+                } else if (element.tagName === 'FOOTER') {
+                    textToRead = 'Footer section';
+                    isClickable = false;
+                } else if (element.tagName === 'HEADER') {
+                    textToRead = 'Header section';
+                    isClickable = false;
+                } else if (element.tagName === 'SECTION') {
+                    // For sections, try to find the main heading to read
+                    const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+                    if (heading) {
+                        textToRead = heading.textContent.trim();
+                    } else {
+                        return;
+                    }
+                    isClickable = hasClickHandler;
+                } else if (element.tagName === 'DIV') {
+                    // Check if div is clickable (cards, containers)
+                    if (hasClickHandler) {
+                        // Try to find meaningful text inside
+                        const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+                        if (heading) {
+                            textToRead = heading.textContent.trim();
+                        } else {
+                            // Get first meaningful text
+                            const firstText = element.textContent.trim().substring(0, 100);
+                            textToRead = firstText;
+                        }
+                        isClickable = true;
+                    } else {
+                        return;
+                    }
+                } else {
+                    // Get direct text content only (not nested elements)
+                    textToRead = Array.from(element.childNodes)
+                        .filter(node => node.nodeType === Node.TEXT_NODE)
+                        .map(node => node.textContent.trim())
+                        .filter(text => text.length > 0)
+                        .join(' ');
+
+                    isClickable = hasClickHandler;
+                }
+
+                // Clean up text
+                textToRead = textToRead.trim().replace(/\s+/g, ' ');
+
+                // Add "clickable" announcement if element is interactive
+                if (isClickable && textToRead && !textToRead.toLowerCase().includes('button') && !textToRead.toLowerCase().includes('link')) {
+                    textToRead = `Clickable: ${textToRead}`;
+                }
+
+                if (textToRead && textToRead.length > 1) {
+                    this.speak(textToRead);
+                    this.currentElement = element;
+                    this.highlightElement(element);
+                }
+            }
+
+            highlightElement(element) {
+                // Remove previous highlight
+                document.querySelectorAll('.sr-highlight').forEach(el => {
+                    el.classList.remove('sr-highlight');
+                });
+
+                // Add temporary highlight
+                element.classList.add('sr-highlight');
+                setTimeout(() => {
+                    element.classList.remove('sr-highlight');
+                }, 2000);
+            }
+
+            speak(text) {
+                if (!text || text.trim().length === 0) return;
+
+                // Stop current speech
+                this.stopSpeaking();
+
+                // Use ResponsiveVoice if available, otherwise use browser's SpeechSynthesis
+                if (typeof responsiveVoice !== 'undefined') {
+                    responsiveVoice.speak(text, "US English Female", {
+                        rate: this.speed,
+                        pitch: 1,
+                        volume: 1
+                    });
+                } else {
+                    // Fallback to browser's built-in speech synthesis
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = this.speed;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    window.speechSynthesis.speak(utterance);
+                }
+
+                this.isReading = true;
+            }
+
+            stopSpeaking() {
+                if (typeof responsiveVoice !== 'undefined') {
+                    responsiveVoice.cancel();
+                } else {
+                    window.speechSynthesis.cancel();
+                }
+                this.isReading = false;
+                this.currentElement = null;
+            }
+
+            updateSpeedLabel() {
+                const label = document.getElementById('speed-value');
+                if (this.speed < 0.8) {
+                    label.textContent = 'Slow';
+                } else if (this.speed > 1.2) {
+                    label.textContent = 'Fast';
+                } else {
+                    label.textContent = 'Normal';
+                }
+            }
+
+            saveSettings() {
+                localStorage.setItem('screenReaderSettings', JSON.stringify({
+                    enabled: this.isEnabled,
+                    autoHover: this.autoReadOnHover,
+                    readClick: this.readOnClick,
+                    speed: this.speed
+                }));
+            }
+
+            loadSettings() {
+                const saved = localStorage.getItem('screenReaderSettings');
+                if (saved) {
+                    const settings = JSON.parse(saved);
+                    this.isEnabled = settings.enabled || false;
+                    this.autoReadOnHover = settings.autoHover || false;
+                    this.readOnClick = settings.readClick || false;
+                    this.speed = settings.speed || 1.0;
+
+                    const hoverCheckbox = document.getElementById('auto-hover');
+                    const clickCheckbox = document.getElementById('read-click');
+
+                    document.getElementById('enable-reader').checked = this.isEnabled;
+                    document.getElementById('speed-control').value = this.speed;
+                    this.updateSpeedLabel();
+
+                    if (this.isEnabled) {
+                        hoverCheckbox.disabled = false;
+                        clickCheckbox.disabled = false;
+                        hoverCheckbox.checked = this.autoReadOnHover;
+                        clickCheckbox.checked = this.readOnClick;
+
+                        this.enableReader();
+                        if (this.autoReadOnHover) {
+                            this.enableHoverReading();
+                        }
+                    } else {
+                        hoverCheckbox.disabled = true;
+                        clickCheckbox.disabled = true;
+                        hoverCheckbox.checked = false;
+                        clickCheckbox.checked = false;
+                    }
+                }
+            }
+        }
+
+        // Initialize when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.screenReader = new ScreenReaderSystem();
+
+                // Add click listeners to all clickable elements
+                document.addEventListener('click', (e) => {
+                    if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
+                        window.screenReader.readElement(e.target);
+                    }
+                });
+            });
+        } else {
+            window.screenReader = new ScreenReaderSystem();
+
+            document.addEventListener('click', (e) => {
+                if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
+                    window.screenReader.readElement(e.target);
+                }
+            });
+        }
     </script>
 </body>
 
