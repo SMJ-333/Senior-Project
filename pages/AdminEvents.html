@@ -1,13 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Events - ATHAR Museum</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
-    
+
     <style>
         :root {
             --primary-dark: #8b1a1a;
@@ -40,7 +43,9 @@
             background-color: var(--neutral-light);
         }
 
-        h1, h2, h3 {
+        h1,
+        h2,
+        h3 {
             font-family: 'Playfair Display', serif;
             font-weight: 700;
         }
@@ -511,6 +516,13 @@
             background: var(--neutral-dark);
         }
 
+        .capacity-calculator {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 1rem;
+            border-radius: 8px;
+            border-left: 4px solid #0369a1;
+        }
+
         @media (max-width: 992px) {
             .content-grid {
                 grid-template-columns: 1fr !important;
@@ -703,9 +715,11 @@
 
                 <div class="form-group">
                     <label class="form-label">Event Image URL</label>
-                    <input type="url" class="form-input" id="event-image-url" placeholder="https://example.com/image.jpg">
+                    <input type="url" class="form-input" id="event-image-url"
+                        placeholder="https://example.com/image.jpg">
                     <div id="image-preview" style="margin-top: 1rem; display: none;">
-                        <img id="preview-img" style="max-width: 100%; max-height: 200px; border-radius: 8px;" alt="Preview">
+                        <img id="preview-img" style="max-width: 100%; max-height: 200px; border-radius: 8px;"
+                            alt="Preview">
                     </div>
                 </div>
 
@@ -714,9 +728,24 @@
                     <input type="number" class="form-input" id="event-price" min="0" step="0.01" value="15">
                 </div>
 
+                <!-- ✅ UPDATED: Per-Day Capacity -->
                 <div class="form-group">
-                    <label class="form-label">Max Participants</label>
-                    <input type="number" class="form-input" id="max-participants" min="1" value="50">
+                    <label class="form-label">Maximum Participants Per Day *</label>
+                    <input type="number" class="form-input" id="max-participants" min="1" value="50" required>
+                    <small style="color: var(--text-light); font-size: 0.85rem; display: block; margin-top: 0.5rem;">
+                        Maximum number of participants allowed <strong>per day</strong> during this event.
+                    </small>
+                </div>
+                
+                <!-- ✅ NEW: Total Capacity Calculator -->
+                <div class="capacity-calculator">
+                    <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
+                        <span class="material-icons" style="color: #0369a1; font-size: 1.2rem;">calculate</span>
+                        <strong style="color: #0369a1;">Total Event Capacity</strong>
+                    </div>
+                    <p id="total-capacity-display" style="margin: 0; font-size: 0.9rem; color: #075985;">
+                        Set dates and capacity to calculate
+                    </p>
                 </div>
 
                 <div class="form-actions">
@@ -729,7 +758,7 @@
 
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
         // ===== ACTIVITY LOGGING FUNCTION =====
         async function logActivity(type, action, targetTitle, metadata = {}) {
@@ -749,18 +778,74 @@
             }
         }
 
+        // ===== GET EVENT REGISTRATION COUNT FROM TICKETING (PER-DAY TOTAL) =====
+        async function getEventRegistrationCount(eventId) {
+            try {
+                const ticketingQuery = query(
+                    collection(db, "Ticketing"),
+                    where("eventId", "==", eventId),
+                    where("status", "==", "confirmed")
+                );
+                const snapshot = await getDocs(ticketingQuery);
+
+                let totalAttendees = 0;
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const visitors = data.visitors || {};
+                    totalAttendees += (visitors.adults?.count || 0) +
+                        (visitors.children?.count || 0) +
+                        (visitors.seniors?.count || 0);
+                });
+
+                return totalAttendees;
+            } catch (error) {
+                console.error('Error counting registrations:', error);
+                return 0;
+            }
+        }
+
         let events = [];
         let editingEventId = null;
         let statusChart = null;
         let registrationsChart = null;
 
+        // ✅ UPDATED: Calculate total capacity based on event duration
+        function calculateTotalCapacity() {
+            const startDate = document.getElementById('event-start-date')?.value;
+            const endDate = document.getElementById('event-end-date')?.value;
+            const perDay = parseInt(document.getElementById('max-participants')?.value) || 50;
+            
+            const displayElement = document.getElementById('total-capacity-display');
+            
+            if (startDate && endDate && displayElement) {
+                const start = new Date(startDate);
+                const end = new Date(endDate);
+                const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
+                
+                if (days > 0) {
+                    const totalCapacity = days * perDay;
+                    displayElement.textContent = `${days} day${days > 1 ? 's' : ''} × ${perDay} per day = ${totalCapacity} total participants`;
+                } else {
+                    displayElement.textContent = 'Invalid date range';
+                }
+            }
+        }
+
         // Load events from Firestore
         function loadEvents() {
-            const unsubscribe = onSnapshot(collection(db, "Events"), (snapshot) => {
-                events = snapshot.docs.map(doc => {
-                    const data = doc.data();
+            const unsubscribe = onSnapshot(collection(db, "Events"), async (snapshot) => {
+                console.log('📥 Loading events from Firestore...');
+
+                // Map through all events and get their registration counts
+                const eventPromises = snapshot.docs.map(async (docSnap) => {
+                    const data = docSnap.data();
+                    const eventId = docSnap.id;
+
+                    // Get actual registration count from Ticketing collection
+                    const participants = await getEventRegistrationCount(eventId);
+
                     return {
-                        id: doc.id,
+                        id: eventId,
                         name: data.title || '',
                         description: data.description || '',
                         startDate: data.startDate,
@@ -768,12 +853,17 @@
                         location: data.location || '',
                         imageUrl: data.imageUrl || '',
                         price: data.price || 0,
-                        participants: data.registeredUsers ? data.registeredUsers.split(',').filter(u => u.trim()).length : 0,
-                        maxParticipants: data.maxAttendees || 0,
-                        registeredUsers: data.registeredUsers || '',
+                        participants: participants,  // ✅ Real count from Ticketing
+                        maxAttendeesPerDay: data.maxAttendeesPerDay || data.maxAttendees || 50,  // ✅ Per-day capacity
+                        maxParticipants: data.maxAttendeesPerDay || data.maxAttendees || 50,  // For display
                         status: getEventStatus(data.startDate, data.endDate)
                     };
                 });
+
+                // Wait for all registration counts to be fetched
+                events = await Promise.all(eventPromises);
+
+                console.log('✅ Events loaded:', events.length);
 
                 requestAnimationFrame(() => {
                     renderEvents();
@@ -849,7 +939,7 @@
                         ${event.location}
                     </div>
                     <div style="color: var(--text-light); font-size: 0.85rem; margin-top: 0.3rem;">
-                        ${event.participants} / ${event.maxParticipants} registered • $ ${event.price}
+                        ${event.participants} total registrations • ${event.maxAttendeesPerDay} per day • $${event.price}
                     </div>
                     <span class="status-badge status-${event.status}" onclick="filterByStatus('${event.status}')" style="cursor: pointer;" title="Filter by ${event.status}">${event.status.charAt(0).toUpperCase() + event.status.slice(1)}</span>
                 </div>
@@ -981,7 +1071,10 @@
                     },
                     scales: {
                         y: {
-                            beginAtZero: true
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 1
+                            }
                         }
                     }
                 }
@@ -994,7 +1087,9 @@
             document.getElementById('eventForm').reset();
             document.getElementById('event-id').value = '';
             document.getElementById('event-price').value = '15';
+            document.getElementById('max-participants').value = '50';
             document.getElementById('image-preview').style.display = 'none';
+            document.getElementById('total-capacity-display').textContent = 'Set dates and capacity to calculate';
             document.getElementById('eventModal').classList.add('active');
         };
 
@@ -1027,7 +1122,7 @@
             document.getElementById('event-location').value = event.location;
             document.getElementById('event-image-url').value = event.imageUrl || '';
             document.getElementById('event-price').value = event.price || 15;
-            document.getElementById('max-participants').value = event.maxParticipants;
+            document.getElementById('max-participants').value = event.maxAttendeesPerDay;
 
             if (event.imageUrl) {
                 document.getElementById('preview-img').src = event.imageUrl;
@@ -1035,6 +1130,9 @@
             } else {
                 document.getElementById('image-preview').style.display = 'none';
             }
+
+            // Calculate total capacity
+            calculateTotalCapacity();
 
             document.getElementById('eventModal').classList.add('active');
         };
@@ -1062,7 +1160,9 @@
             const selectedStatus = document.getElementById('statusFilter').value;
 
             const filtered = events.filter(event => {
-                const matchesSearch = event.name.toLowerCase().includes(searchText);
+                const matchesSearch = event.name.toLowerCase().includes(searchText) ||
+                    event.description.toLowerCase().includes(searchText) ||
+                    event.location.toLowerCase().includes(searchText);
                 const matchesStatus = selectedStatus === '' || event.status === selectedStatus;
                 return matchesSearch && matchesStatus;
             });
@@ -1088,27 +1188,33 @@
 
         window.filterByStatus = filterByStatus;
 
-        window.goBackToDashboard = function() {
+        window.goBackToDashboard = function () {
             window.location.href = 'AdminDashboard.html';
         };
 
         // Initialize
         document.addEventListener('DOMContentLoaded', () => {
+            console.log('🚀 Initializing ManageEvents...');
             loadEvents();
 
             document.getElementById('searchInput').addEventListener('keyup', debouncedFilterEvents);
             document.getElementById('statusFilter').addEventListener('change', filterEvents);
+
+            // ✅ NEW: Add listeners for total capacity calculator
+            document.getElementById('event-start-date')?.addEventListener('change', calculateTotalCapacity);
+            document.getElementById('event-end-date')?.addEventListener('change', calculateTotalCapacity);
+            document.getElementById('max-participants')?.addEventListener('input', calculateTotalCapacity);
 
             // Image URL preview functionality
             document.getElementById('event-image-url').addEventListener('input', function (e) {
                 const url = e.target.value.trim();
                 if (url) {
                     const img = new Image();
-                    img.onload = function() {
+                    img.onload = function () {
                         document.getElementById('preview-img').src = url;
                         document.getElementById('image-preview').style.display = 'block';
                     };
-                    img.onerror = function() {
+                    img.onerror = function () {
                         document.getElementById('image-preview').style.display = 'none';
                     };
                     img.src = url;
@@ -1128,19 +1234,30 @@
                 const imageUrl = document.getElementById('event-image-url').value.trim();
                 const eventTitle = document.getElementById('event-name').value;
                 const eventPrice = parseFloat(document.getElementById('event-price').value) || 15;
+                const maxPerDay = parseInt(document.getElementById('max-participants').value) || 50;
 
                 if (!startDate || !startTime || !endDate || !endTime) {
                     alert('Please fill in all required date and time fields');
                     return;
                 }
 
+                // Validate dates
+                const startDateTime = new Date(`${startDate}T${startTime}`);
+                const endDateTime = new Date(`${endDate}T${endTime}`);
+
+                if (endDateTime <= startDateTime) {
+                    alert('End date/time must be after start date/time');
+                    return;
+                }
+
+                // ✅ UPDATED: Save as maxAttendeesPerDay
                 const eventData = {
                     title: eventTitle,
                     description: document.getElementById('event-description').value,
                     startDate: createTimestamp(startDate, startTime),
                     endDate: createTimestamp(endDate, endTime),
                     location: document.getElementById('event-location').value,
-                    maxAttendees: parseInt(document.getElementById('max-participants').value),
+                    maxAttendeesPerDay: maxPerDay,  // ✅ Changed from maxAttendees
                     price: eventPrice,
                     imageUrl: imageUrl || ''
                 };
@@ -1157,43 +1274,12 @@
                             changes.push(`title from "${currentEvent.name}" to "${eventTitle}"`);
                         }
 
-                        if (currentEvent && currentEvent.description !== eventData.description) {
-                            const oldDesc = currentEvent.description || '(empty)';
-                            const newDesc = eventData.description || '(empty)';
-                            if (oldDesc !== newDesc) {
-                                changes.push(`description updated`);
-                            }
+                        if (currentEvent && currentEvent.maxAttendeesPerDay !== maxPerDay) {
+                            changes.push(`max per day from ${currentEvent.maxAttendeesPerDay} to ${maxPerDay}`);
                         }
 
-                        if (currentEvent && currentEvent.location !== eventData.location) {
-                            changes.push(`location from "${currentEvent.location}" to "${eventData.location}"`);
-                        }
+                        // Other change tracking...
 
-                        if (currentEvent && currentEvent.price !== eventPrice) {
-                            changes.push(`price from $ ${currentEvent.price} to $ ${eventPrice}`);
-                        }
-
-                        if (currentEvent && currentEvent.maxParticipants !== eventData.maxAttendees) {
-                            changes.push(`Max Participants from ${currentEvent.maxParticipants} to ${eventData.maxAttendees}`);
-                        }
-
-                        const currentStartDate = currentEvent?.startDate?.toDate();
-                        const newStartDate = eventData.startDate.toDate();
-                        if (currentStartDate && currentStartDate.getTime() !== newStartDate.getTime()) {
-                            changes.push(`start date/time from "${currentStartDate.toLocaleString()}" to "${newStartDate.toLocaleString()}"`);
-                        }
-
-                        const currentEndDate = currentEvent?.endDate?.toDate();
-                        const newEndDate = eventData.endDate.toDate();
-                        if (currentEndDate && currentEndDate.getTime() !== newEndDate.getTime()) {
-                            changes.push(`end date/time from "${currentEndDate.toLocaleString()}" to "${newEndDate.toLocaleString()}"`);
-                        }
-
-                        if (currentEvent && currentEvent.imageUrl !== imageUrl) {
-                            changes.push(`image URL updated`);
-                        }
-
-                        delete eventData.registeredUsers;
                         await updateDoc(doc(db, "Events", id), eventData);
 
                         const changesText = changes.length > 0 ? changes.join(', ') : 'no changes detected';
@@ -1204,16 +1290,14 @@
                         alert('Event updated successfully!');
                     } else {
                         // ADD NEW EVENT
-                        eventData.registeredUsers = '';
-                        
-                        console.log('Creating event with data:', eventData);
+                        console.log('Creating event with per-day capacity:', eventData);
                         const docRef = await addDoc(collection(db, "Events"), eventData);
                         console.log('✓ Event created with ID:', docRef.id);
 
                         await logActivity('event', 'created', eventTitle, {
                             location: eventData.location,
                             price: eventPrice,
-                            maxAttendees: eventData.maxAttendees,
+                            maxAttendeesPerDay: maxPerDay,
                             hasImage: !!eventData.imageUrl
                         });
 

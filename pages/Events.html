@@ -163,18 +163,6 @@
             margin-bottom: 3rem;
         }
 
-        .page-hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 600" opacity="0.03"><rect fill="%23ffffff" width="1200" height="600"/><path d="M0,150 C150,100 350,200 500,150 C650,100 850,50 1000,100 C1150,150 1200,100 1200,100 L1200,600 L0,600 Z" fill="%23d4af37"/></svg>');
-            background-size: cover;
-            background-position: center;
-        }
-
         .page-hero h1 {
             font-size: 3rem;
             margin-bottom: 1rem;
@@ -290,18 +278,6 @@
             overflow: hidden;
         }
 
-        .event-img::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><rect fill="%23ffffff" width="200" height="200"/><path d="M40,40 C60,20 80,40 100,30 C120,20 140,40 160,30 C180,20 200,40 200,40 L200,200 L40,200 Z" fill="%23d4af37"/></svg>');
-            background-size: cover;
-            z-index: 0;
-        }
-
         .event-img>div {
             position: relative;
             z-index: 1;
@@ -322,34 +298,18 @@
             z-index: 2;
         }
 
-        .event-badge.current {
-            background: #27ae60;
-            color: white;
-        }
-
-        .event-badge.upcoming {
-            background: #3498db;
-            color: white;
-        }
-
-        .event-badge.past {
-            background: #95a5a6;
-            color: white;
-        }
-
-        .event-badge.full {
+        .event-badge.sold-out {
             background: #e74c3c;
             color: white;
         }
 
-        .event-badge.almost-full {
+        .event-badge.almost-sold-out {
             background: #f39c12;
             color: white;
         }
 
         .event-content {
             padding: 1.5rem;
-            /* display: flex; */
             flex-direction: column;
             flex: 1;
         }
@@ -417,11 +377,14 @@
 
         .event-actions button:disabled {
             background: #ccc;
+            color: #999;
             cursor: not-allowed;
+            opacity: 0.6;
         }
 
-        .event-actions button.registered {
-            background: #27ae60;
+        .event-actions button:disabled:hover {
+            background: #ccc;
+            transform: none;
         }
 
         .event-actions a.view-details {
@@ -435,90 +398,14 @@
             color: var(--white);
         }
 
-        /* Featured Event */
-        .featured-event {
-            background: linear-gradient(to right, var(--primary-dark) 0%, var(--primary-light) 100%);
-            border-radius: 12px;
-            overflow: hidden;
-            margin-bottom: 5rem;
-            display: flex;
-            color: var(--white);
-            box-shadow: var(--shadow);
-        }
-
-        .featured-content {
-            flex: 1;
-            padding: 3rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .featured-content h2 {
-            font-size: 2.2rem;
-            margin-bottom: 1.5rem;
-            color: var(--white);
-        }
-
-        .featured-content p {
-            margin-bottom: 1.5rem;
-            opacity: 0.9;
-            line-height: 1.7;
-        }
-
-        .featured-content .event-meta {
-            margin-bottom: 2rem;
-        }
-
-        .featured-content .event-actions {
-            gap: 1rem;
-        }
-
-        .featured-content .event-actions .btn,
-        .featured-content .event-actions .btn-outline {
-            padding: 0.8rem 1.8rem;
-        }
-
-        .featured-content .btn-outline {
-            background: transparent;
-            border: 2px solid var(--accent);
-            color: var(--accent);
-        }
-
-        .featured-content .btn-outline:hover {
-            background: var(--accent);
-            color: var(--white);
-        }
-
-        .featured-image {
-            flex: 1;
-            min-height: 400px;
-            background: linear-gradient(45deg, var(--accent) 0%, var(--accent-light) 100%);
+        .sold-out-label {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
             display: flex;
             align-items: center;
-            justify-content: center;
-            color: var(--primary-dark);
-            font-size: 1.2rem;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .featured-image::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 200" opacity="0.1"><rect fill="%23ffffff" width="200" height="200"/><path d="M40,40 C60,20 80,40 100,30 C120,20 140,40 160,30 C180,20 200,40 200,40 L200,200 L40,200 Z" fill="%231a365d"/></svg>');
-            background-size: cover;
-        }
-
-        .featured-image>div {
-            position: relative;
-            z-index: 1;
-            text-align: center;
-            padding: 1rem;
+            gap: 0.3rem;
         }
 
         /* Modal Styles */
@@ -608,7 +495,6 @@
 
         .modal-close:hover {
             background: rgba(255, 255, 255, 0.3);
-            transform: rotate(90deg);
         }
 
         .modal-body {
@@ -664,12 +550,19 @@
             font-size: 1rem;
         }
 
+        .modal-btn:disabled {
+            background: #ccc;
+            color: #999;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
         .modal-btn-primary {
             background: var(--accent);
             color: var(--white);
         }
 
-        .modal-btn-primary:hover {
+        .modal-btn-primary:hover:not(:disabled) {
             background: var(--accent-light);
         }
 
@@ -759,6 +652,81 @@
 
         .coming-card a:hover {
             color: var(--accent-light);
+        }
+
+        /* Featured Event */
+        .featured-event {
+            background: linear-gradient(to right, var(--primary-dark) 0%, var(--primary-light) 100%);
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 5rem;
+            display: flex;
+            color: var(--white);
+            box-shadow: var(--shadow);
+        }
+
+        .featured-content {
+            flex: 1;
+            padding: 3rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .featured-content h2 {
+            font-size: 2.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--white);
+        }
+
+        .featured-content p {
+            margin-bottom: 1.5rem;
+            opacity: 0.9;
+            line-height: 1.7;
+        }
+
+        .featured-content .event-meta {
+            margin-bottom: 2rem;
+        }
+
+        .featured-content .event-actions {
+            gap: 1rem;
+        }
+
+        .featured-content .event-actions .btn,
+        .featured-content .event-actions .btn-outline {
+            padding: 0.8rem 1.8rem;
+        }
+
+        .featured-content .btn-outline {
+            background: transparent;
+            border: 2px solid var(--accent);
+            color: var(--accent);
+        }
+
+        .featured-content .btn-outline:hover {
+            background: var(--accent);
+            color: var(--white);
+        }
+
+        .featured-image {
+            flex: 1;
+            min-height: 400px;
+            background: linear-gradient(45deg, var(--accent) 0%, var(--accent-light) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-dark);
+            font-size: 1.2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .featured-image>div {
+            position: relative;
+            z-index: 1;
+            text-align: center;
+            padding: 1rem;
         }
 
         /* Footer */
@@ -897,18 +865,6 @@
         .accessibility-menu.show {
             display: block;
             animation: slideUp 0.3s ease-out;
-        }
-
-        @keyframes slideUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
         }
 
         .accessibility-menu h3 {
@@ -1164,15 +1120,13 @@
     <!-- Include section highlighter for navigation -->
     <script src="section-highlighter.js"></script>
 
-    <!-- Firebase Integration -->
     <script type="module">
         import { db, auth } from './firebase-config.js';
         import {
             collection,
             getDocs,
-            doc,
-            updateDoc,
-            onSnapshot
+            query,
+            where
         } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
         import './notification-system.js';
@@ -1184,6 +1138,45 @@
             currentUser = user;
             console.log('Current user:', currentUser?.email || 'Not logged in');
         });
+
+        // ===== GET EVENT REGISTRATION COUNT PER DAY =====
+        async function getEventDailyBookings(eventId) {
+            try {
+                const ticketingQuery = query(
+                    collection(db, "Ticketing"),
+                    where("eventId", "==", eventId),
+                    where("status", "==", "confirmed")
+                );
+                const snapshot = await getDocs(ticketingQuery);
+
+                console.log(`📊 Found ${snapshot.size} confirmed bookings for event ${eventId}`);
+
+                // Create map of date -> attendee count
+                const dailyBookings = {};
+
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const visitDate = data.visitDate; // e.g., "December 25, 2025"
+                    const visitors = data.visitors || {};
+                    const attendees = (visitors.adults?.count || 0) +
+                        (visitors.children?.count || 0) +
+                        (visitors.seniors?.count || 0);
+
+                    console.log(`  📅 Booking: visitDate="${visitDate}", attendees=${attendees}`);
+
+                    if (!dailyBookings[visitDate]) {
+                        dailyBookings[visitDate] = 0;
+                    }
+                    dailyBookings[visitDate] += attendees;
+                });
+
+                console.log(`📊 Daily bookings map:`, dailyBookings);
+                return dailyBookings;
+            } catch (error) {
+                console.error('Error counting daily bookings:', error);
+                return {};
+            }
+        }
 
         function formatDate(timestamp) {
             if (!timestamp || !timestamp.toDate) return 'Date TBA';
@@ -1208,14 +1201,61 @@
             return 'past';
         }
 
-        function getRegisteredCount(registeredUsers) {
-            if (!registeredUsers || registeredUsers === '') return 0;
-            return registeredUsers.split(',').filter(id => id.trim() !== '').length;
-        }
+        // ===== CHECK IF EVENT IS SOLD OUT =====
+        function isEventSoldOut(event) {
+            // Use dailyBookings from the Event document itself
+            const dailyBookings = event.dailyBookings || {};
+            
+            if (Object.keys(dailyBookings).length === 0) {
+                console.log(`Event "${event.title}": No bookings yet`);
+                return false;
+            }
 
-        function isUserRegistered(registeredUsers) {
-            if (!currentUser || !registeredUsers) return false;
-            return registeredUsers.includes(currentUser.uid);
+            const start = event.startDate?.toDate();
+            const end = event.endDate?.toDate();
+            
+            if (!start || !end) return false;
+
+            console.log(`Event "${event.title}": Start: ${start.toDateString()}, End: ${end.toDateString()}`);
+
+            // Generate all dates in the event range
+            const eventDates = [];
+            const currentDate = new Date(start);
+            currentDate.setHours(0, 0, 0, 0);
+            const endDateNormalized = new Date(end);
+            endDateNormalized.setHours(0, 0, 0, 0);
+            
+            while (currentDate <= endDateNormalized) {
+                // Format to match: "Tuesday, November 25, 2025"
+                const dateStr = currentDate.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                eventDates.push(dateStr);
+                console.log(`  Adding date: ${dateStr}`);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            console.log(`Event "${event.title}": Checking ${eventDates.length} days`, {
+                maxPerDay: event.maxAttendeesPerDay,
+                dailyBookings: dailyBookings
+            });
+
+            // Check if ALL days are at capacity
+            let allDaysSoldOut = true;
+            for (const date of eventDates) {
+                const bookings = dailyBookings[date] || 0;
+                console.log(`  - ${date}: ${bookings}/${event.maxAttendeesPerDay} booked ${bookings >= event.maxAttendeesPerDay ? '✓ FULL' : '✗ AVAILABLE'}`);
+                
+                if (bookings < event.maxAttendeesPerDay) {
+                    allDaysSoldOut = false;
+                }
+            }
+
+            console.log(`Event "${event.title}": ${allDaysSoldOut ? '🔴 SOLD OUT' : '🟢 Available'}`);
+            return allDaysSoldOut;
         }
 
         // Modal Functions
@@ -1244,84 +1284,76 @@
 
             const startDate = formatDate(event.startDate);
             const endDate = formatDate(event.endDate);
-            const isFull = event.spotsLeft <= 0;
+            const soldOut = isEventSoldOut(event);
 
             modalBody.innerHTML = `
-                <div class="modal-detail">
-                    <div class="modal-label">
-                        <i class="fas fa-calendar"></i>
-                        Start Date
-                    </div>
-                    <div class="modal-value">${startDate}</div>
+            <div class="modal-detail">
+                <div class="modal-label">
+                    <i class="fas fa-calendar"></i>
+                    Start Date
                 </div>
-                <div class="modal-detail">
-                    <div class="modal-label">
-                        <i class="fas fa-calendar-check"></i>
-                        End Date
-                    </div>
-                    <div class="modal-value">${endDate}</div>
+                <div class="modal-value">${startDate}</div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-label">
+                    <i class="fas fa-calendar-check"></i>
+                    End Date
                 </div>
-                <div class="modal-detail">
-                    <div class="modal-label">
-                        <i class="fas fa-map-marker-alt"></i>
-                        Location
-                    </div>
-                    <div class="modal-value">${event.location}</div>
+                <div class="modal-value">${endDate}</div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-label">
+                    <i class="fas fa-map-marker-alt"></i>
+                    Location
                 </div>
-                <div class="modal-detail">
-                    <div class="modal-label">
-                        <i class="fas fa-info-circle"></i>
-                        Description
-                    </div>
-                    <div class="modal-value">${event.description}</div>
+                <div class="modal-value">${event.location}</div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-label">
+                    <i class="fas fa-dollar-sign"></i>
+                    Price
                 </div>
-                ${event.additionalInfo ? `
-                <div class="modal-detail">
-                    <div class="modal-label">
-                        <i class="fas fa-plus-circle"></i>
-                        Additional Information
-                    </div>
-                    <div class="modal-value">${event.additionalInfo}</div>
+                <div class="modal-value">$${event.price}</div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-label">
+                    <i class="fas fa-users"></i>
+                    Capacity
                 </div>
-                ` : ''}
-                <div class="modal-detail">
-                    <div class="modal-label">
-                        <i class="fas fa-tag"></i>
-                        Status
-                    </div>
-                    <div class="modal-value">${event.status.charAt(0).toUpperCase() + event.status.slice(1)}</div>
+                <div class="modal-value">
+                    ${event.maxAttendeesPerDay} participants per day
+                    ${soldOut ? '<br><span style="color: #e74c3c; font-weight: 600;"><i class="fas fa-exclamation-circle"></i> SOLD OUT</span>' : ''}
                 </div>
-            `;
+            </div>
+            <div class="modal-detail">
+                <div class="modal-label">
+                    <i class="fas fa-info-circle"></i>
+                    Description
+                </div>
+                <div class="modal-value">${event.description}</div>
+            </div>
+            <div class="modal-detail">
+                <div class="modal-label">
+                    <i class="fas fa-tag"></i>
+                    Status
+                </div>
+                <div class="modal-value">${event.status.charAt(0).toUpperCase() + event.status.slice(1)}</div>
+            </div>
+        `;
 
-            if (event.isRegistered) {
-                modalActions.innerHTML = `
-                    <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>
-                    <button class="modal-btn modal-btn-primary" style="background: #27ae60;" disabled>
-                        <i class="fas fa-check-circle"></i> Already Registered
-                    </button>
-                `;
-            } else if (isFull) {
-                modalActions.innerHTML = `
-                    <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>
-                    <button class="modal-btn modal-btn-primary" style="background: #e74c3c;" disabled>
-                        <i class="fas fa-times-circle"></i> Fully Booked
-                    </button>
-                `;
-            } else {
-                modalActions.innerHTML = `
-                    <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>
-                    <button class="modal-btn modal-btn-primary" onclick="registerForEvent('${event.id}')">
-                        <i class="fas fa-ticket-alt"></i> Register Now
-                    </button>
-                `;
-            }
+            modalActions.innerHTML = `
+                <button class="modal-btn modal-btn-secondary" onclick="closeModal()">Close</button>
+                <button class="modal-btn modal-btn-primary" onclick="registerForEvent('${event.id}')" ${soldOut ? 'disabled' : ''}>
+                    <i class="fas fa-ticket-alt"></i> ${soldOut ? 'Sold Out' : 'Register Now'}
+                </button>
+            `;
 
             modal.classList.add('show');
         }
 
         async function loadEvents() {
             try {
-                console.log('Fetching events from Firestore...');
+                console.log('📥 Fetching events from Firestore...');
 
                 const eventsCol = collection(db, 'Events');
                 const snapshot = await getDocs(eventsCol);
@@ -1333,36 +1365,34 @@
 
                     const currentGrid = document.getElementById('currentEventsGrid');
                     currentGrid.innerHTML = `
-                        <p class="no-results-message">
-                            No events available at this time.<br>
-                            <small>Check back soon for exciting events!</small>
-                        </p>`;
+                    <p class="no-results-message">
+                        No events available at this time.<br>
+                        <small>Check back soon for exciting events!</small>
+                    </p>`;
                     return;
                 }
 
-                console.log(`Found ${snapshot.size} events in 'Events' collection`);
+                console.log(`✅ Found ${snapshot.size} events in 'Events' collection`);
 
                 allEvents = [];
 
+                // Load events directly - dailyBookings should be stored in Event document
                 snapshot.forEach((docSnap) => {
                     const data = docSnap.data();
-                    const registeredCount = getRegisteredCount(data.registeredUsers);
+                    const eventId = docSnap.id;
 
                     allEvents.push({
-                        id: docSnap.id,
+                        id: eventId,
                         title: data.title || '',
                         description: data.description || '',
                         startDate: data.startDate,
                         endDate: data.endDate,
                         location: data.location || '',
                         imageUrl: data.imageUrl || '',
-                        maxAttendees: data.maxAttendees || 0,
+                        maxAttendeesPerDay: data.maxAttendeesPerDay || 50,
                         price: data.price || 0,
-                        registeredUsers: data.registeredUsers || '',
                         status: getEventStatus(data.startDate, data.endDate),
-                        registeredCount: registeredCount,
-                        spotsLeft: (data.maxAttendees || 0) - registeredCount,
-                        isRegistered: isUserRegistered(data.registeredUsers)
+                        dailyBookings: data.dailyBookings || {} // Read directly from Event document
                     });
                 });
 
@@ -1372,18 +1402,18 @@
                 });
 
                 displayEvents(allEvents);
-                console.log('Events loaded successfully');
+                console.log('✅ Events loaded successfully');
 
                 // Check if we need to highlight a specific event
                 checkForEventHighlight();
             } catch (error) {
-                console.error('Error loading events:', error);
+                console.error('❌ Error loading events:', error);
                 const featuredSection = document.getElementById('featuredEventSection');
                 featuredSection.innerHTML = `
-                    <p class="no-results-message">
-                        Error loading events: ${error.message}<br>
-                        Please check the console for details.
-                    </p>`;
+                <p class="no-results-message">
+                    Error loading events: ${error.message}<br>
+                    Please check the console for details.
+                </p>`;
             }
         }
 
@@ -1415,52 +1445,48 @@
                 return;
             }
 
-            const isFull = event.spotsLeft <= 0;
             const startDate = formatDate(event.startDate);
             const endDate = event.endDate ? formatDate(event.endDate) : null;
             const dateRange = endDate ? `${startDate} - ${endDate}` : startDate;
+            const soldOut = isEventSoldOut(event);
 
             featuredSection.innerHTML = `
-                <div class="featured-content">
-                    <h2>${event.title}</h2>
-                    <p>${event.description}</p>
-                    ${event.additionalInfo ? `<p>${event.additionalInfo}</p>` : ''}
-                    <div class="event-meta">
-                        <span class="event-date"><i class="far fa-calendar-alt"></i> ${dateRange}</span>
-                        <span class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</span>
-                    </div>
-                    <div class="event-actions">
-                        <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="btn">
-                            <i class="fas fa-info-circle"></i> Learn More
-                        </a>
-                        ${event.isRegistered ?
-                    `<button class="btn" style="background: #27ae60; cursor: not-allowed;" disabled>
-                                <i class="fas fa-check-circle"></i> Already Registered
-                            </button>` :
-                    `<a href="#" onclick="window.registerForEvent('${event.id}'); return false;" class="btn btn-outline" ${isFull ? 'style="opacity: 0.5; pointer-events: none;"' : ''}>
-                                ${isFull ? '<i class="fas fa-times-circle"></i> Fully Booked' : '<i class="fas fa-ticket-alt"></i> Register Now'}
-                            </a>`
-                }
+            <div class="featured-content">
+                <h2>${event.title}</h2>
+                ${soldOut ? '<span class="sold-out-label"><i class="fas fa-exclamation-circle"></i> SOLD OUT</span>' : ''}
+                <p>${event.description}</p>
+                <div class="event-meta">
+                    <span class="event-date"><i class="far fa-calendar-alt"></i> ${dateRange}</span>
+                    <span class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</span>
+                </div>
+                <div class="event-actions">
+                    <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="btn">
+                        <i class="fas fa-info-circle"></i> Learn More
+                    </a>
+                    <a href="#" onclick="window.registerForEvent('${event.id}'); return false;" 
+                       class="btn btn-outline" ${soldOut ? 'style="pointer-events: none; opacity: 0.5;"' : ''}>
+                        <i class="fas fa-ticket-alt"></i> ${soldOut ? 'Sold Out' : 'Register Now'}
+                    </a>
+                </div>
+            </div>
+            <div class="featured-image" style="${event.imageUrl ? `background-image: url('${event.imageUrl}'); background-size: cover; background-position: center;` : ''}">
+                ${event.imageUrl ? `
+                <div style="background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)); width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 2rem;">
+                    <div style="color: white;">
+                        <h3 style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);"><i class="fas fa-star"></i> Featured Event</h3>
+                        <p style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">${event.title}</p>
+                        <p style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">${event.location}</p>
                     </div>
                 </div>
-                <div class="featured-image" style="${event.imageUrl ? `background-image: url('${event.imageUrl}'); background-size: cover; background-position: center;` : ''}">
-                    ${event.imageUrl ? `
-                    <div style="background: linear-gradient(to bottom, transparent, rgba(0,0,0,0.7)); width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 2rem;">
-                        <div style="color: white;">
-                            <h3 style="text-shadow: 2px 2px 4px rgba(0,0,0,0.8);"><i class="fas fa-star"></i> Featured Event</h3>
-                            <p style="text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">${event.title}</p>
-                            <p style="font-size: 0.9rem; opacity: 0.9; margin-top: 0.5rem; text-shadow: 1px 1px 2px rgba(0,0,0,0.8);">${event.location}</p>
-                        </div>
-                    </div>
-                    ` : `
-                    <div>
-                        <h3><i class="fas fa-star"></i> Featured Event</h3>
-                        <p>${event.title}</p>
-                        <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${event.location}</p>
-                    </div>
-                    `}
+                ` : `
+                <div>
+                    <h3><i class="fas fa-star"></i> Featured Event</h3>
+                    <p>${event.title}</p>
+                    <p style="font-size: 0.9rem; opacity: 0.8; margin-top: 0.5rem;">${event.location}</p>
                 </div>
-            `;
+                `}
+            </div>
+        `;
         }
 
         function displayCurrentEvents(events) {
@@ -1472,56 +1498,76 @@
             }
 
             grid.innerHTML = events.map(event => {
-                const isFull = event.spotsLeft <= 0;
-                const isAlmostFull = event.registeredCount >= event.maxAttendees * 0.8;
-
-                let statusBadge = '';
-                if (isFull) {
-                    statusBadge = '<span class="event-badge full"><i class="fas fa-times-circle"></i> Fully Booked</span>';
-                } else if (isAlmostFull) {
-                    statusBadge = '<span class="event-badge almost-full"><i class="fas fa-exclamation-triangle"></i> Almost Full</span>';
+                const soldOut = isEventSoldOut(event);
+                
+                // Calculate percentage of total capacity booked
+                const start = event.startDate?.toDate();
+                const end = event.endDate?.toDate();
+                let capacityPercentage = 0;
+                
+                if (start && end) {
+                    const timeDiff = end.getTime() - start.getTime();
+                    const totalDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
+                    const totalCapacity = event.maxAttendeesPerDay * totalDays;
+                    
+                    let totalBookings = 0;
+                    if (event.dailyBookings) {
+                        for (const count of Object.values(event.dailyBookings)) {
+                            totalBookings += count;
+                        }
+                    }
+                    
+                    capacityPercentage = (totalBookings / totalCapacity) * 100;
+                    
+                    console.log(`Badge calculation for "${event.title}":`, {
+                        totalBookings,
+                        totalCapacity,
+                        capacityPercentage: capacityPercentage.toFixed(1) + '%',
+                        soldOut,
+                        almostSoldOut: !soldOut && capacityPercentage >= 80
+                    });
                 }
+                
+                const almostSoldOut = !soldOut && capacityPercentage >= 80;
 
                 return `
-                    <div class="event-card" id="event-${event.id}">
-                        <div class="event-img" style="${event.imageUrl ? `background-image: url('${event.imageUrl}'); background-size: cover; background-position: center;` : ''}">
-                            ${!event.imageUrl ? `
-                            <div>
-                                <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${event.title}</h3>
-                                <p style="font-size: 0.9rem; opacity: 0.9;"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
-                            </div>
-                            ` : `
-                            <div style="background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)); width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 1.5rem;">
-                                <div style="text-align: left;">
-                                    <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">${event.title}</h3>
-                                    <p style="font-size: 0.9rem; opacity: 0.9; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
-                                </div>
-                            </div>
-                            `}
-                            ${statusBadge}
+                <div class="event-card" id="event-${event.id}">
+                    <div class="event-img" style="${event.imageUrl ? `background-image: url('${event.imageUrl}'); background-size: cover; background-position: center;` : ''}">
+                        ${!event.imageUrl ? `
+                        <div>
+                            <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem;">${event.title}</h3>
+                            <p style="font-size: 0.9rem; opacity: 0.9;"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
                         </div>
-                        <div class="event-content">
-                            <h3>${event.title}</h3>
-                            <div class="event-meta">
-                                <span class="event-date"><i class="far fa-calendar-alt"></i> ${formatDate(event.startDate)}</span>
-                                <span class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</span>
+                        ` : `
+                        <div style="background: linear-gradient(to bottom, rgba(0,0,0,0.3), rgba(0,0,0,0.7)); width: 100%; height: 100%; display: flex; align-items: flex-end; padding: 1.5rem;">
+                            <div style="text-align: left;">
+                                <h3 style="font-size: 1.3rem; margin-bottom: 0.5rem; color: white; text-shadow: 2px 2px 4px rgba(0,0,0,0.5);">${event.title}</h3>
+                                <p style="font-size: 0.9rem; opacity: 0.9; color: white; text-shadow: 1px 1px 2px rgba(0,0,0,0.5);"><i class="fas fa-map-marker-alt"></i> ${event.location}</p>
                             </div>
-                            <p>${event.description}</p>
+                        </div>
+                        `}
+                        ${soldOut ? '<span class="event-badge sold-out">Sold Out</span>' : 
+                        (almostSoldOut ? '<span class="event-badge almost-sold-out">Almost Sold Out</span>' : '')}
+                    </div>
+                    <div class="event-content">
+                        <h3>${event.title}</h3>
+                        <div class="event-meta">
+                            <span class="event-date"><i class="far fa-calendar-alt"></i> ${formatDate(event.startDate)}</span>
+                            <span class="event-location"><i class="fas fa-map-marker-alt"></i> ${event.location}</span>
+                        </div>
+                        <p>${event.description}</p>
 
-                            <div class="event-actions">
-                                ${event.isRegistered ?
-                        `<button class="registered" disabled><i class="fas fa-check-circle"></i> Registered</button>` :
-                        `<button onclick="window.registerForEvent('${event.id}')" ${isFull ? 'disabled' : ''}>
-                                        <i class="fas fa-ticket-alt"></i> ${isFull ? 'Fully Booked' : 'Register Now'}
-                                    </button>`
-                    }
-                                <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="view-details">
-                                    <i class="fas fa-info-circle"></i> View Details
-                                </a>
-                            </div>
+                        <div class="event-actions">
+                            <button onclick="window.registerForEvent('${event.id}')" ${soldOut ? 'disabled' : ''}>
+                                <i class="fas fa-ticket-alt"></i> ${soldOut ? 'Sold Out' : 'Register Now'}
+                            </button>
+                            <a href="#" onclick="window.viewEventDetails('${event.id}'); return false;" class="view-details">
+                                <i class="fas fa-info-circle"></i> View Details
+                            </a>
                         </div>
                     </div>
-                `;
+                </div>
+            `;
             }).join('');
 
             setTimeout(() => {
@@ -1541,17 +1587,20 @@
 
             const cards = events.map(event => {
                 return `
-                    <div class="coming-card" id="event-${event.id}">
-                        <h3>${event.title}</h3>
-                        <span class="coming-date">
-                            <i class="far fa-calendar-alt"></i> Opening ${formatDate(event.startDate)}
-                        </span>
-                        <p>${event.description}</p>
-                        <a href="#" onclick="window.notifyMe('${event.id}'); return false;">
-                            <i class="far fa-bell"></i> Notify Me
-                        </a>
-                    </div>
-                `;
+                <div class="coming-card" id="event-${event.id}">
+                    <h3>${event.title}</h3>
+                    <span class="coming-date">
+                        <i class="far fa-calendar-alt"></i> Opening ${formatDate(event.startDate)}
+                    </span>
+                    <p>${event.description}</p>
+                    <p style="font-size: 0.85rem; color: var(--accent); font-weight: 600;">
+                        <i class="fas fa-users"></i> ${event.maxAttendeesPerDay} participants per day
+                    </p>
+                    <a href="#" onclick="window.notifyMe('${event.id}'); return false;">
+                        <i class="far fa-bell"></i> Notify Me
+                    </a>
+                </div>
+            `;
             });
 
             grid.innerHTML = cards.join('');
@@ -1592,31 +1641,22 @@
             alert(`✓ You will be notified when "${event.title}" starts!\n\nWe'll send you a reminder before the event.`);
         }
 
-        // Register for Event - Navigate to Ticketing page
+        // ===== REGISTER FOR EVENT - WITH SOLD OUT CHECK =====
         window.registerForEvent = function (eventId) {
             const event = allEvents.find(e => e.id === eventId);
             if (!event) return;
 
-            if (event.spotsLeft <= 0) {
-                alert('Sorry, this event is fully booked.');
+            // Check if event is sold out
+            if (isEventSoldOut(event)) {
+                alert('⚠️ Sorry, this event is completely sold out!\n\nAll dates for this event have reached maximum capacity. Please check our other events or sign up for notifications when similar events become available.');
                 return;
             }
 
-            if (event.isRegistered) {
-                alert('You are already registered for this event.');
-                return;
-            }
+            console.log('🎫 Redirecting to Ticketing page for event:', event.title);
 
-            // Store event info in sessionStorage for Ticketing page
-            sessionStorage.setItem('selectedEvent', JSON.stringify({
-                id: event.id,
-                title: event.title,
-                date: formatDate(event.startDate),
-                location: event.location
-            }));
-
-            // Navigate to Ticketing page with special events parameter
-            window.location.href = 'Ticketing.html?type=special-events&event=' + encodeURIComponent(event.title);
+            // Navigate to Ticketing page with query parameters to auto-select event and show calendar
+            // Pass both event name and ID for proper selection
+            window.location.href = `Ticketing.html?type=special-events&eventId=${encodeURIComponent(eventId)}&event=${encodeURIComponent(event.title)}&showCalendar=true`;
         }
 
         window.addEventListener('scroll', function () {
@@ -1631,12 +1671,8 @@
         });
 
         document.addEventListener('DOMContentLoaded', function () {
-            console.log('Page loaded, initializing...');
+            console.log('🚀 Page loaded, initializing Events...');
             loadEvents();
-        });
-
-        onSnapshot(collection(db, 'Events'), (snapshot) => {
-            console.log('Events updated in database');
         });
 
         // ===== SCREEN READER ACCESSIBILITY SYSTEM =====
@@ -1657,6 +1693,55 @@
                 this.createAccessibilityControls();
                 this.loadSettings();
                 this.attachEventListeners();
+                this.attachSelectListeners();
+            }
+
+            attachSelectListeners() {
+                // Add listeners to all select elements to read options on keyboard navigation
+                document.addEventListener('change', (e) => {
+                    if (this.isEnabled && e.target.tagName === 'SELECT') {
+                        const selectedOption = e.target.options[e.target.selectedIndex];
+                        if (selectedOption) {
+                            this.speak(selectedOption.textContent.trim());
+                        }
+                    }
+                });
+
+                // Handle keyboard navigation in selects
+                document.addEventListener('keydown', (e) => {
+                    if (this.isEnabled && e.target.tagName === 'SELECT') {
+                        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                            setTimeout(() => {
+                                const selectedOption = e.target.options[e.target.selectedIndex];
+                                if (selectedOption) {
+                                    this.speak(selectedOption.textContent.trim());
+                                }
+                            }, 50);
+                        }
+                    }
+                });
+
+                // Handle hover over options (using mouseenter on SELECT to detect when options are hovered)
+                document.addEventListener('mouseenter', (e) => {
+                    if (this.isEnabled && this.autoReadOnHover && e.target.tagName === 'OPTION') {
+                        const text = e.target.textContent.trim();
+                        if (text && text.length > 0 && e.target !== this.currentElement) {
+                            this.speak(text);
+                            this.currentElement = e.target;
+                        }
+                    }
+                }, true); // Use capture phase
+
+                // Also handle focus events on options
+                document.addEventListener('focus', (e) => {
+                    if (this.isEnabled && this.autoReadOnHover && e.target.tagName === 'OPTION') {
+                        const text = e.target.textContent.trim();
+                        if (text && text.length > 0 && e.target !== this.currentElement) {
+                            this.speak(text);
+                            this.currentElement = e.target;
+                        }
+                    }
+                }, true); // Use capture phase
             }
 
             createAccessibilityControls() {
@@ -1706,20 +1791,17 @@
             }
 
             attachEventListeners() {
-                // Toggle menu
                 document.getElementById('accessibility-toggle').addEventListener('click', () => {
                     const menu = document.getElementById('accessibility-menu');
                     menu.classList.toggle('show');
                 });
 
-                // Close menu when clicking outside
                 document.addEventListener('click', (e) => {
                     if (!e.target.closest('.accessibility-controls')) {
                         document.getElementById('accessibility-menu').classList.remove('show');
                     }
                 });
 
-                // Enable/Disable reader
                 document.getElementById('enable-reader').addEventListener('change', (e) => {
                     this.isEnabled = e.target.checked;
                     const hoverCheckbox = document.getElementById('auto-hover');
@@ -1734,7 +1816,7 @@
                         hoverCheckbox.checked = true;
                         clickCheckbox.checked = true;
 
-                        this.speak("Screen reader enabled");
+                        this.speak("Screen reader enabled. Hover over elements to hear them read aloud.");
                         this.enableReader();
                         this.enableHoverReading();
                     } else {
@@ -1753,7 +1835,6 @@
                     this.saveSettings();
                 });
 
-                // Auto hover
                 document.getElementById('auto-hover').addEventListener('change', (e) => {
                     this.autoReadOnHover = e.target.checked;
                     this.saveSettings();
@@ -1764,20 +1845,17 @@
                     }
                 });
 
-                // Read on click
                 document.getElementById('read-click').addEventListener('change', (e) => {
                     this.readOnClick = e.target.checked;
                     this.saveSettings();
                 });
 
-                // Speed control
                 document.getElementById('speed-control').addEventListener('input', (e) => {
                     this.speed = parseFloat(e.target.value);
                     this.updateSpeedLabel();
                     this.saveSettings();
                 });
 
-                // Keyboard shortcuts
                 document.addEventListener('keydown', (e) => {
                     if (e.altKey && e.key === 's') {
                         e.preventDefault();
@@ -1804,113 +1882,277 @@
 
             enableHoverReading() {
                 document.addEventListener('mouseover', this.handleHover);
+                document.addEventListener('mousemove', this.handleSelectOptions);
             }
 
             disableHoverReading() {
                 document.removeEventListener('mouseover', this.handleHover);
+                document.removeEventListener('mousemove', this.handleSelectOptions);
                 clearTimeout(this.hoverTimeout);
+            }
+
+            handleSelectOptions = (e) => {
+                if (!this.isEnabled || !this.autoReadOnHover) return;
+
+                const element = e.target;
+
+                // Skip material icons
+                if (element.classList && element.classList.contains('material-icons')) return;
+
+                if (element.tagName === 'OPTION') {
+                    clearTimeout(this.hoverTimeout);
+                    this.hoverTimeout = setTimeout(() => {
+                        if (element !== this.currentElement) {
+                            const text = element.textContent.trim();
+                            if (text && text.length > 0) {
+                                this.speak(text);
+                                this.currentElement = element;
+                            }
+                        }
+                    }, 100);
+                }
             }
 
             handleHover = (e) => {
                 if (!this.isEnabled || !this.autoReadOnHover) return;
 
+                const element = e.target;
+
+                // Skip material icons
+                if (element.classList && element.classList.contains('material-icons')) return;
+
                 clearTimeout(this.hoverTimeout);
 
+                // Use shorter delay for dropdown options
+                const delay = element.tagName === 'OPTION' ? 100 : 500;
+
                 this.hoverTimeout = setTimeout(() => {
-                    const element = e.target;
                     if (element && element !== this.currentElement) {
                         this.readElement(element);
                     }
-                }, 500);
+                }, delay);
             }
 
             readElement(element) {
                 if (!this.isEnabled) return;
 
-                // Skip script, style, and hidden elements
                 if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(element.tagName)) return;
                 if (element.offsetParent === null && element.tagName !== 'BODY') return;
+
+                // Skip material icons
+                if (element.classList && element.classList.contains('material-icons')) return;
+
+                // Skip if parent is a material icon
+                if (element.parentElement && element.parentElement.classList && element.parentElement.classList.contains('material-icons')) return;
+
+                // Skip if element contains only a material icon as child
+                const iconChild = element.querySelector('.material-icons');
+                if (iconChild && element.textContent.trim() === iconChild.textContent.trim()) return;
 
                 let textToRead = '';
                 let isClickable = false;
 
-                // Check if element is clickable
                 const hasClickHandler = element.onclick !== null ||
                     element.hasAttribute('onclick') ||
                     element.style.cursor === 'pointer' ||
                     element.classList.contains('clickable') ||
                     element.hasAttribute('role') && element.getAttribute('role') === 'button';
 
-                // Get aria-label or title first (highest priority)
+                // Priority 1: Aria-label
                 if (element.getAttribute('aria-label')) {
                     textToRead = element.getAttribute('aria-label');
                     isClickable = hasClickHandler;
-                } else if (element.getAttribute('title')) {
+                }
+                // Priority 2: Title attribute
+                else if (element.getAttribute('title')) {
                     textToRead = element.getAttribute('title');
                     isClickable = hasClickHandler;
-                } else if (element.tagName === 'IMG') {
+                }
+                // Priority 3: Specific element types
+                else if (element.tagName === 'IMG') {
                     textToRead = element.alt || 'Image';
                     isClickable = hasClickHandler;
-                } else if (element.tagName === 'A') {
+                }
+                else if (element.tagName === 'A') {
                     textToRead = `Link: ${element.textContent.trim()}`;
                     isClickable = true;
-                } else if (element.tagName === 'BUTTON') {
-                    textToRead = `Button: ${element.textContent.trim()}`;
-                    isClickable = true;
-                } else if (element.tagName === 'INPUT') {
+                }
+                else if (element.tagName === 'BUTTON') {
+                    // Get text content but exclude material icons
+                    let buttonText = '';
+                    element.childNodes.forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            buttonText += node.textContent.trim() + ' ';
+                        } else if (node.nodeType === Node.ELEMENT_NODE && !node.classList.contains('material-icons')) {
+                            buttonText += node.textContent.trim() + ' ';
+                        }
+                    });
+                    buttonText = buttonText.trim();
+                    if (buttonText) {
+                        textToRead = `Button: ${buttonText}`;
+                        isClickable = true;
+                    } else {
+                        return; // Skip buttons with only icons
+                    }
+                }
+                else if (element.tagName === 'INPUT') {
                     const label = document.querySelector(`label[for="${element.id}"]`);
-                    textToRead = `Input field: ${label ? label.textContent : element.placeholder || 'Text input'}`;
+                    const labelText = label ? label.textContent.trim() : '';
+                    const type = element.type || 'text';
+                    const value = element.value || '';
+
+                    if (type === 'checkbox' || type === 'radio') {
+                        const state = element.checked ? 'checked' : 'unchecked';
+                        textToRead = `${labelText || type} ${state}`;
+                    } else if (value) {
+                        textToRead = `${labelText || 'Input field'}: current value is ${value}`;
+                    } else {
+                        textToRead = `${labelText || 'Input field'}: ${element.placeholder || 'empty'}`;
+                    }
                     isClickable = true;
-                } else if (element.tagName === 'TEXTAREA') {
+                }
+                else if (element.tagName === 'TEXTAREA') {
                     const label = document.querySelector(`label[for="${element.id}"]`);
-                    textToRead = `Text area: ${label ? label.textContent : element.placeholder || 'Text area'}`;
+                    const value = element.value || '';
+                    textToRead = `Text area ${label ? label.textContent : ''}: ${value || element.placeholder || 'empty'}`;
                     isClickable = true;
-                } else if (element.tagName === 'SELECT') {
+                }
+                else if (element.tagName === 'SELECT') {
                     const label = document.querySelector(`label[for="${element.id}"]`);
-                    textToRead = `Dropdown: ${label ? label.textContent : 'Select option'}`;
+                    const selectedOption = element.options[element.selectedIndex];
+                    const selectedText = selectedOption ? selectedOption.text : 'nothing selected';
+                    textToRead = `Dropdown menu: ${label ? label.textContent.trim() + ', ' : ''}currently selected: ${selectedText}`;
                     isClickable = true;
-                } else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
+                }
+                else if (element.tagName === 'OPTION') {
+                    textToRead = element.textContent.trim();
+                    isClickable = false; // Don't add "clickable" prefix
+                }
+                else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
                     textToRead = element.textContent.trim();
                     isClickable = hasClickHandler;
-                } else if (element.tagName === 'P') {
+                }
+                else if (element.tagName === 'P') {
                     textToRead = element.textContent.trim();
                     isClickable = hasClickHandler;
-                } else if (element.tagName === 'NAV') {
+                }
+                else if (element.tagName === 'LABEL') {
+                    const forElement = element.getAttribute('for');
+                    const associatedInput = forElement ? document.getElementById(forElement) : null;
+                    textToRead = `Label: ${element.textContent.trim()}`;
+                    if (associatedInput) {
+                        textToRead += `. Associated with ${associatedInput.tagName.toLowerCase()}`;
+                    }
+                    isClickable = false;
+                }
+                else if (element.tagName === 'SPAN') {
+                    // Check if it's a counter value or price tag
+                    if (element.classList.contains('counter-value')) {
+                        textToRead = `Count: ${element.textContent.trim()}`;
+                    } else if (element.classList.contains('price-tag')) {
+                        textToRead = `Price: ${element.textContent.trim()}`;
+                    } else {
+                        textToRead = element.textContent.trim();
+                    }
+                    isClickable = hasClickHandler;
+                }
+                else if (element.tagName === 'NAV') {
                     textToRead = 'Navigation menu';
                     isClickable = false;
-                } else if (element.tagName === 'FOOTER') {
+                }
+                else if (element.tagName === 'FOOTER') {
                     textToRead = 'Footer section';
                     isClickable = false;
-                } else if (element.tagName === 'HEADER') {
+                }
+                else if (element.tagName === 'HEADER') {
                     textToRead = 'Header section';
                     isClickable = false;
-                } else if (element.tagName === 'SECTION') {
-                    // For sections, try to find the main heading to read
+                }
+                else if (element.tagName === 'SECTION') {
                     const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
                     if (heading) {
-                        textToRead = heading.textContent.trim();
+                        textToRead = `Section: ${heading.textContent.trim()}`;
                     } else {
                         return;
                     }
                     isClickable = hasClickHandler;
-                } else if (element.tagName === 'DIV') {
-                    // Check if div is clickable (cards, containers)
-                    if (hasClickHandler) {
-                        // Try to find meaningful text inside
+                }
+                // Enhanced DIV reading
+                else if (element.tagName === 'DIV') {
+                    // Check for specific interactive components
+                    if (element.classList.contains('counter-group')) {
+                        const label = element.querySelector('.counter-label');
+                        const price = element.querySelector('.counter-price');
+                        const count = element.querySelector('.counter-value');
+                        if (label && count) {
+                            textToRead = `${label.textContent.trim()}: ${count.textContent.trim()} selected. ${price ? price.textContent.trim() : ''}`;
+                        }
+                        isClickable = true;
+                    } else if (element.classList.contains('visit-type-card')) {
+                        const title = element.querySelector('h4');
+                        const price = element.querySelector('.price-tag');
+                        const description = element.querySelector('p:not(.price-tag)');
+                        textToRead = `${title ? title.textContent.trim() : 'Visit option'}. ${price ? price.textContent.trim() : ''}. ${description ? description.textContent.trim() : ''}`;
+                        isClickable = true;
+                    } else if (element.classList.contains('calendar-date')) {
+                        const isSelected = element.classList.contains('selected');
+                        const isUnavailable = element.classList.contains('unavailable');
+                        const dateNum = element.textContent.trim();
+                        if (isUnavailable) {
+                            textToRead = `Date ${dateNum}: unavailable`;
+                        } else if (isSelected) {
+                            textToRead = `Date ${dateNum}: currently selected`;
+                        } else {
+                            textToRead = `Date ${dateNum}: available for booking`;
+                        }
+                        isClickable = !isUnavailable;
+                    } else if (element.classList.contains('form-group')) {
+                        const label = element.querySelector('.form-label');
+                        const input = element.querySelector('input, select, textarea');
+                        if (label) {
+                            textToRead = `Form field: ${label.textContent.trim()}`;
+                            if (input && input.tagName === 'SELECT') {
+                                const selected = input.options[input.selectedIndex];
+                                textToRead += `. Currently: ${selected ? selected.text : 'not selected'}`;
+                            }
+                        }
+                        isClickable = false;
+                    } else if (element.classList.contains('summary-item')) {
+                        textToRead = element.textContent.trim().replace(/\s+/g, ' ');
+                    } else if (element.classList.contains('summary-total')) {
+                        textToRead = `Total amount: ${element.textContent.trim().replace(/\s+/g, ' ')}`;
+                    } else if (element.classList.contains('member-status-card')) {
+                        const greeting = element.querySelector('#member-greeting');
+                        const desc = element.querySelector('#member-description');
+                        const badge = element.querySelector('#member-badge');
+                        if (greeting && desc && badge) {
+                            textToRead = `${greeting.textContent.trim()}. ${desc.textContent.trim()}. ${badge.textContent.trim()}`;
+                        }
+                    } else if (hasClickHandler) {
                         const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
                         if (heading) {
                             textToRead = heading.textContent.trim();
                         } else {
-                            // Get first meaningful text
-                            const firstText = element.textContent.trim().substring(0, 100);
+                            const firstText = element.textContent.trim().substring(0, 150);
                             textToRead = firstText;
                         }
                         isClickable = true;
                     } else {
-                        return;
+                        // Read direct text content only
+                        const directText = Array.from(element.childNodes)
+                            .filter(node => node.nodeType === Node.TEXT_NODE)
+                            .map(node => node.textContent.trim())
+                            .filter(text => text.length > 0)
+                            .join(' ');
+
+                        if (directText) {
+                            textToRead = directText;
+                        } else {
+                            return;
+                        }
                     }
-                } else {
-                    // Get direct text content only (not nested elements)
+                }
+                else {
                     textToRead = Array.from(element.childNodes)
                         .filter(node => node.nodeType === Node.TEXT_NODE)
                         .map(node => node.textContent.trim())
@@ -1920,14 +2162,15 @@
                     isClickable = hasClickHandler;
                 }
 
-                // Clean up text
+                // Clean up the text
                 textToRead = textToRead.trim().replace(/\s+/g, ' ');
 
-                // Add "clickable" announcement if element is interactive
-                if (isClickable && textToRead && !textToRead.toLowerCase().includes('button') && !textToRead.toLowerCase().includes('link')) {
+                // Add clickable indicator if needed
+                if (isClickable && textToRead && !textToRead.toLowerCase().includes('button') && !textToRead.toLowerCase().includes('link') && !textToRead.toLowerCase().includes('clickable')) {
                     textToRead = `Clickable: ${textToRead}`;
                 }
 
+                // Speak if we have meaningful text
                 if (textToRead && textToRead.length > 1) {
                     this.speak(textToRead);
                     this.currentElement = element;
@@ -1936,12 +2179,10 @@
             }
 
             highlightElement(element) {
-                // Remove previous highlight
                 document.querySelectorAll('.sr-highlight').forEach(el => {
                     el.classList.remove('sr-highlight');
                 });
 
-                // Add temporary highlight
                 element.classList.add('sr-highlight');
                 setTimeout(() => {
                     element.classList.remove('sr-highlight');
@@ -1951,10 +2192,8 @@
             speak(text) {
                 if (!text || text.trim().length === 0) return;
 
-                // Stop current speech
                 this.stopSpeaking();
 
-                // Use ResponsiveVoice if available, otherwise use browser's SpeechSynthesis
                 if (typeof responsiveVoice !== 'undefined') {
                     responsiveVoice.speak(text, "US English Female", {
                         rate: this.speed,
@@ -1962,7 +2201,6 @@
                         volume: 1
                     });
                 } else {
-                    // Fallback to browser's built-in speech synthesis
                     const utterance = new SpeechSynthesisUtterance(text);
                     utterance.rate = this.speed;
                     utterance.pitch = 1;
@@ -2039,13 +2277,15 @@
             }
         }
 
-        // Initialize when DOM is ready
+        // Initialize screen reader when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 window.screenReader = new ScreenReaderSystem();
 
-                // Add click listeners to all clickable elements
                 document.addEventListener('click', (e) => {
+                    // Skip material icons
+                    if (e.target.classList && e.target.classList.contains('material-icons')) return;
+
                     if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
                         window.screenReader.readElement(e.target);
                     }
@@ -2055,6 +2295,9 @@
             window.screenReader = new ScreenReaderSystem();
 
             document.addEventListener('click', (e) => {
+                // Skip material icons
+                if (e.target.classList && e.target.classList.contains('material-icons')) return;
+
                 if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
                     window.screenReader.readElement(e.target);
                 }
