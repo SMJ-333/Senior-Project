@@ -1354,6 +1354,7 @@
         let allArtworks = [];
         let allUsers = [];
         let searchData = [];
+        let allEventsData = [];
 
         // Interest to Category Mapping
         const interestToCategoryMap = {
@@ -1609,10 +1610,11 @@
         }
 
         // Search Data Structure
-        function buildSearchIndex() {
+        async function buildSearchIndex() {
+            console.log('🔍 Starting buildSearchIndex...');
             searchData = [];
 
-            // Add exhibitions - navigate to ExhibitionDetails page
+            // Add exhibitions
             const exhibitions = [
                 { name: 'Arab Heritage', url: 'ExhibitionDetails.html?exhibition=Arab%20Heritage', type: 'exhibition', description: 'Explore Arab cultural treasures' },
                 { name: 'Persian Heritage', url: 'ExhibitionDetails.html?exhibition=Persian%20Heritage', type: 'exhibition', description: 'Discover Persian art and history' },
@@ -1620,13 +1622,6 @@
                 { name: 'Andalusian Heritage', url: 'ExhibitionDetails.html?exhibition=Andalusian%20Heritage', type: 'exhibition', description: 'Experience Andalusian culture' },
                 { name: 'Turkish Heritage', url: 'ExhibitionDetails.html?exhibition=Turkish%20Heritage', type: 'exhibition', description: 'Discover Ottoman treasures' },
                 { name: 'Others', url: 'ExhibitionDetails.html?exhibition=Others', type: 'exhibition', description: 'Echoes of Islamic Civilization' }
-            ];
-
-            // Add events with section targeting
-            const events = [
-                { name: 'Ancient Egypt Night Tour', url: 'Home.html#upcoming-events', type: 'event', date: 'October 25, 2025', description: 'After-hours guided tour', section: 'upcoming-events' },
-                { name: 'Renaissance Art Workshop', url: 'Home.html#upcoming-events', type: 'event', date: 'November 12, 2025', description: 'Learn painting techniques', section: 'upcoming-events' },
-                { name: 'Family Discovery Day', url: 'Home.html#upcoming-events', type: 'event', date: 'November 28, 2025', description: 'Interactive family event', section: 'upcoming-events' }
             ];
 
             // Add pages
@@ -1639,28 +1634,84 @@
                 { name: 'Account', url: 'Account.html', type: 'page', description: 'Manage your account' }
             ];
 
-            searchData = [...exhibitions, ...events, ...pages];
+            searchData = [...exhibitions, ...pages];
 
-            // Add artworks from database
-            allArtworks.forEach(artwork => {
-                searchData.push({
-                    name: artwork.title || 'Untitled',
-                    url: `ArtDetails.html?id=${artwork.id}`,
-                    type: 'artwork',
-                    description: `${artwork.artist || artwork.artistName || 'Unknown Artist'} • ${artwork.Exhibition || 'Museum Collection'}`,
-                    keywords: [
-                        artwork.title,
-                        artwork.artist,
-                        artwork.artistName,
-                        artwork.Exhibition,
-                        artwork.classification
-                    ].filter(Boolean).join(' ').toLowerCase()
+            // Load events from Firebase
+            try {
+                const eventsCol = collection(db, 'Events');
+                const eventsSnapshot = await getDocs(eventsCol);
+                
+                allEventsData = [];
+                
+                eventsSnapshot.forEach(doc => {
+                    const data = doc.data();
+                    const startDate = data.startDate?.toDate();
+                    
+                    const event = {
+                        id: doc.id,
+                        title: data.title || 'Untitled Event',
+                        description: data.description || '',
+                        startDate: startDate,
+                        location: data.location || '',
+                        ...data
+                    };
+                    
+                    allEventsData.push(event);
+                    
+                    // Add to search data immediately
+                    const dateStr = startDate ? startDate.toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    }) : 'Date TBA';
+                    
+                    searchData.push({
+                        name: event.title,
+                        url: `Events.html#event-${event.id}`,
+                        type: 'event',
+                        date: dateStr,
+                        description: event.description || 'Museum event',
+                        eventId: event.id,
+                        location: event.location || '',
+                        // CRITICAL: Include all searchable text in keywords
+                        keywords: `${event.title} ${event.description} ${event.location} event museum`.toLowerCase()
+                    });
                 });
-            });
+                
+                console.log('✅ Events loaded and added to search:', allEventsData.length);
+                
+            } catch (error) {
+                console.error('❌ Error loading events:', error);
+            }
+
+            // Add artworks
+            if (allArtworks && allArtworks.length > 0) {
+                allArtworks.forEach(artwork => {
+                    searchData.push({
+                        name: artwork.title || 'Untitled',
+                        url: `ArtDetails.html?id=${artwork.id}`,
+                        type: 'artwork',
+                        description: `${artwork.artist || artwork.artistName || 'Unknown Artist'} • ${artwork.Exhibition || 'Museum Collection'}`,
+                        keywords: [
+                            artwork.title,
+                            artwork.artist,
+                            artwork.artistName,
+                            artwork.Exhibition,
+                            artwork.classification
+                        ].filter(Boolean).join(' ').toLowerCase()
+                    });
+                });
+            }
+            
+            console.log('🎉 Search index complete:', searchData.length, 'items');
+            console.log('📊 Events in search:', searchData.filter(i => i.type === 'event').length);
         }
+
 
         // Search functionality
         function performSearch(query) {
+            console.log('🔎 Searching for:', `"${query}"`);
+            
             if (!query || query.trim().length < 2) {
                 return [];
             }
@@ -1668,32 +1719,84 @@
             const lowerQuery = query.toLowerCase().trim();
             const results = [];
 
-            searchData.forEach(item => {
-                const searchText = `${item.name} ${item.description} ${item.keywords || ''}`.toLowerCase();
+            console.log('📚 Searching through', searchData.length, 'items');
+
+            searchData.forEach((item, index) => {
+                // Build complete search text including name, description, keywords, location, date
+                const searchText = [
+                    item.name,
+                    item.description,
+                    item.keywords,
+                    item.location,
+                    item.date
+                ].filter(Boolean).join(' ').toLowerCase();
+
+                // Debug log for events
+                if (item.type === 'event') {
+                    console.log(`Event #${index}: "${item.name}" - Search text includes: ${searchText.substring(0, 100)}...`);
+                }
 
                 if (searchText.includes(lowerQuery)) {
-                    // Calculate relevance score
                     let score = 0;
                     if (item.name.toLowerCase().startsWith(lowerQuery)) {
                         score = 100; // Exact match at start
                     } else if (item.name.toLowerCase().includes(lowerQuery)) {
                         score = 50; // Contains in name
+                    } else if (item.description && item.description.toLowerCase().includes(lowerQuery)) {
+                        score = 30; // Contains in description
                     } else {
-                        score = 10; // Contains in description/keywords
+                        score = 10; // Contains somewhere else
                     }
 
                     results.push({ ...item, score });
+                    console.log(`✅ Match found: "${item.name}" (${item.type}) - Score: ${score}`);
                 }
             });
 
-            // Sort by relevance and limit results
-            return results
+            console.log(`📊 Found ${results.length} total results`);
+
+            const sortedResults = results
                 .sort((a, b) => b.score - a.score)
                 .slice(0, 8);
+            
+            console.log('🎯 Returning top results:', sortedResults.map(r => `${r.name} (${r.type})`));
+            
+            return sortedResults;
         }
 
+        // Test function - use this to debug
+        window.testEventsSearch = function() {
+            console.log('=== DETAILED EVENTS SEARCH TEST ===');
+            console.log('Total search items:', searchData.length);
+            
+            const events = searchData.filter(i => i.type === 'event');
+            console.log('Events in search data:', events.length);
+            console.log('Event titles:');
+            events.forEach((e, i) => {
+                console.log(`  ${i + 1}. "${e.name}"`);
+                console.log(`     Keywords: ${e.keywords.substring(0, 80)}...`);
+            });
+            
+            // Try searching
+            console.log('\n--- Testing search for "workshop" ---');
+            const results1 = performSearch('workshop');
+            console.log('Results:', results1);
+            
+            console.log('\n--- Testing search for "tour" ---');
+            const results2 = performSearch('tour');
+            console.log('Results:', results2);
+            
+            console.log('\n--- Testing search for first event name ---');
+            if (events.length > 0) {
+                const firstWord = events[0].name.split(' ')[0];
+                console.log(`Searching for: "${firstWord}"`);
+                const results3 = performSearch(firstWord);
+                console.log('Results:', results3);
+            }
+        };
+
         // Display search suggestions
-        function displaySuggestions(results) {
+       function displaySuggestions(results) {
             const dropdown = document.getElementById('suggestions-dropdown');
 
             if (results.length === 0) {
@@ -1707,7 +1810,6 @@
                 return;
             }
 
-            // Group results by type
             const grouped = {
                 exhibition: [],
                 event: [],
@@ -1721,7 +1823,6 @@
 
             let html = '';
 
-            // Display each category
             if (grouped.exhibition.length > 0) {
                 html += '<div class="suggestion-category">Exhibitions</div>';
                 grouped.exhibition.forEach(item => {
@@ -1753,22 +1854,32 @@
             dropdown.innerHTML = html;
             dropdown.classList.add('show');
 
-            // Add click handlers - direct navigation
             dropdown.querySelectorAll('.suggestion-item').forEach(item => {
                 item.addEventListener('click', function () {
                     const url = this.dataset.url;
+                    const eventId = this.dataset.eventId;
+                    
+                    if (eventId) {
+                        sessionStorage.setItem('highlightEvent', eventId);
+                        console.log('✅ Saved event for highlighting:', eventId);
+                    }
+                    
                     window.location.href = url;
                 });
             });
         }
 
         function createSuggestionHTML(item, icon) {
+            const metaText = item.description + 
+                            (item.date ? ' • ' + item.date : '') + 
+                            (item.location ? ' • ' + item.location : '');
+            
             return `
-                <div class="suggestion-item" data-url="${item.url}">
+                <div class="suggestion-item" data-url="${item.url}" ${item.eventId ? `data-event-id="${item.eventId}"` : ''}>
                     <span class="material-icons suggestion-icon">${icon}</span>
                     <div class="suggestion-content">
                         <div class="suggestion-title">${item.name}</div>
-                        <div class="suggestion-meta">${item.description}${item.date ? ' • ' + item.date : ''}</div>
+                        <div class="suggestion-meta">${metaText}</div>
                     </div>
                 </div>
             `;
@@ -1857,15 +1968,19 @@
                     };
                 });
 
-                // Build search index after loading data
-                buildSearchIndex();
+                console.log('✅ Loaded artworks:', allArtworks.length);
+                console.log('✅ Loaded users:', allUsers.length);
 
-                console.log('Loaded artworks:', allArtworks.length);
-                console.log('Search index built with', searchData.length, 'items');
+                // NOW build search index after artworks are loaded
+                await buildSearchIndex();
+
             } catch (error) {
-                console.error('Error loading data:', error);
+                console.error('❌ Error loading data:', error);
+                // Even if there's an error, try to build search index with what we have
+                await buildSearchIndex();
             }
         }
+
 
         function generateRecommendations() {
             if (!userData || allArtworks.length === 0) {
