@@ -9,7 +9,7 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <style>
         :root {
-            --primary-dark: #653025;
+             --primary-dark: #653025;
             --primary-light: #8d2e1d;
             --accent: #b08d57;
             --accent-light: #d4b483;
@@ -45,16 +45,12 @@
             line-height: 1.2;
         }
 
-
-
-
-
         .page-content {
             min-height: 100vh;
         }
 
         .hero {
-            background: linear-gradient(135deg, #8B4513 0%, #6B3410 100%);
+            background: linear-gradient(135deg, var(--primary-dark) 0%, var(--primary-light) 100%);
             padding: 2rem 0;
             color: var(--white);
             position: relative;
@@ -1177,16 +1173,43 @@
             const isEdit = !!originalName;
             const action = isEdit ? 'updated' : 'created';
             
-            // تتبع التغييرات للتحديثات
+            // تتبع التغييرات بالتفصيل (مثل AdminEvents)
             let changes = [];
-            if (isEdit && originalName) {
+            if (isEdit && originalName && exhibitionsData[originalName]) {
                 const oldData = exhibitionsData[originalName];
-                if (originalName !== name) changes.push(`Name changed from "${originalName}" to "${name}"`);
-                if (oldData.icon !== icon) changes.push(`Icon updated`);
-                if (oldData.timeline !== timeline) changes.push(`Timeline updated to "${timeline}"`);
-                if (oldData.description !== description) changes.push(`Description modified`);
-                if (oldData.detailedDescription !== (detailed || description)) changes.push(`Detailed description modified`);
-                if (oldData.curatorNote !== curator) changes.push(`Curator's note modified`);
+                
+                // تغيير الاسم
+                if (originalName !== name) {
+                    changes.push(`name from "${originalName}" to "${name}"`);
+                }
+                
+                // تغيير الأيقونة
+                if (oldData.icon !== icon) {
+                    changes.push(`icon from ${oldData.icon} to ${icon}`);
+                }
+                
+                // تغيير الجدول الزمني
+                if (oldData.timeline !== timeline) {
+                    changes.push(`timeline from "${oldData.timeline}" to "${timeline}"`);
+                }
+                
+                // تغيير الوصف القصير
+                if (oldData.description !== description) {
+                    changes.push(`short description updated`);
+                }
+                
+                // تغيير الوصف التفصيلي
+                const oldDetailed = oldData.detailedDescription || oldData.description;
+                const newDetailed = detailed || description;
+                if (oldDetailed !== newDetailed) {
+                    changes.push(`detailed description updated`);
+                }
+                
+                // تغيير ملاحظة المنسق
+                const oldCurator = oldData.curatorNote || '';
+                if (oldCurator !== curator) {
+                    changes.push(`curator's note ${curator ? 'updated' : 'removed'}`);
+                }
             }
 
             // If editing and name changed, delete old entry
@@ -1206,14 +1229,15 @@
             // Save to localStorage
             saveExhibitionsData();
             
-            // تسجيل النشاط
+            // تسجيل النشاط مع التفاصيل
             const metadata = {
                 timeline: timeline,
-                timestamp: new Date().toISOString()
+                icon: icon
             };
             
             if (isEdit && changes.length > 0) {
-                metadata.changes = changes.join('; ');
+                // عرض التغييرات بنفس أسلوب AdminEvents
+                metadata.changes = changes.join(', ');
             }
             
             await logActivity('exhibit', action, name, metadata);

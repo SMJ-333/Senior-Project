@@ -12,6 +12,7 @@
     <style>
         :root {
             --primary-dark: #653025;
+             --primary-dark: #653025;
             --primary-light: #8d2e1d;
             --accent: #b08d57;
             --accent-light: #d4b483;
@@ -1079,8 +1080,26 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { collection, getDocs, deleteDoc, doc, query, orderBy, onSnapshot, updateDoc } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { collection, getDocs, deleteDoc, doc, query, orderBy, onSnapshot, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // دالة لتسجيل النشاط
+        async function logActivity(type, action, targetTitle, metadata = {}) {
+            try {
+                const user = auth.currentUser;
+                await addDoc(collection(db, "ActivityLog"), {
+                    type: type,
+                    action: action,
+                    targetTitle: targetTitle,
+                    userEmail: user?.email || 'Admin',
+                    timestamp: serverTimestamp(),
+                    metadata: metadata
+                });
+                console.log('✓ Activity logged:', type, action, targetTitle);
+            } catch (error) {
+                console.error('✗ Error logging activity:', error);
+            }
+        }
 
         let allBookings = [];
         let filteredBookings = [];
@@ -1348,6 +1367,18 @@
                 await updateDoc(doc(db, "Ticketing", bookingId), {
                     status: newStatus
                 });
+                
+                // تسجيل النشاط مع التفاصيل
+                const targetTitle = `${booking.userName || 'Customer'} - ${booking.ticketType === 'event' ? booking.eventName : 'General Visit'}`;
+                await logActivity('ticket', 'status_changed', targetTitle, {
+                    bookingId: bookingId,
+                    changes: `status from ${currentStatusText} to ${newStatusText}`,
+                    ticketType: booking.ticketType,
+                    visitDate: booking.visitDate,
+                    totalPrice: booking.totalPrice,
+                    customerEmail: booking.userEmail
+                });
+                
                 alert(`Booking status changed to "${newStatusText}" successfully!`);
             } catch (error) {
                 console.error("Error updating booking status:", error);
