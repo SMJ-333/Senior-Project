@@ -1388,77 +1388,77 @@
             const end = endDate?.toDate();
 
             if (!start || !end) return 'upcoming';
-            
+
             // Set start and end to beginning/end of day for comparison
             const startOfDay = new Date(start);
             startOfDay.setHours(0, 0, 0, 0);
-            
+
             const endOfDay = new Date(end);
             endOfDay.setHours(23, 59, 59, 999);
-            
+
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             if (now < startOfDay) return 'upcoming';
             if (now >= startOfDay && now <= endOfDay) return 'current';
             return 'past';
         }
-        
+
         // New function to check if a specific date should be available for an event
         function isEventDateAvailable(eventData, dateToCheck) {
             if (!eventData || !dateToCheck) {
                 console.log('❌ isEventDateAvailable: Missing eventData or dateToCheck');
                 return false;
             }
-            
+
             const checkDate = new Date(dateToCheck);
             checkDate.setHours(0, 0, 0, 0);
-            
+
             const today = new Date();
             today.setHours(0, 0, 0, 0);
-            
+
             const startDate = eventData.startDate?.toDate();
             const endDate = eventData.endDate?.toDate();
-            
+
             if (!startDate || !endDate) {
                 console.log('❌ isEventDateAvailable: Missing start or end date');
                 return false;
             }
-            
+
             // Check if date is within event range (date only, ignore time)
             const checkDateOnly = new Date(checkDate);
             checkDateOnly.setHours(0, 0, 0, 0);
-            
+
             const startDateOnly = new Date(startDate);
             startDateOnly.setHours(0, 0, 0, 0);
-            
+
             const endDateOnly = new Date(endDate);
             endDateOnly.setHours(0, 0, 0, 0);
-            
+
             if (checkDateOnly < startDateOnly || checkDateOnly > endDateOnly) {
                 return false;
             }
-            
+
             // If the date to check is today AND today is within the event range
             if (checkDateOnly.getTime() === today.getTime()) {
                 console.log(`🔍 Checking today's availability for event ending on ${endDate.toLocaleString()}`);
-                
+
                 // Extract the time from the endDate timestamp
                 const eventEndHours = endDate.getHours();
                 const eventEndMinutes = endDate.getMinutes();
-                
+
                 console.log(`⏰ Event end time from timestamp: ${eventEndHours}:${eventEndMinutes.toString().padStart(2, '0')}`);
-                
+
                 // Create end datetime for today using the time from endDate
                 const eventEndDateTime = new Date();
                 eventEndDateTime.setHours(eventEndHours, eventEndMinutes, 0, 0);
-                
+
                 const now = new Date();
-                
+
                 console.log(`⏰ Event ends at: ${eventEndDateTime.toLocaleTimeString()}`);
                 console.log(`⏰ Current time: ${now.toLocaleTimeString()}`);
                 console.log(`⏰ Is now > endTime? ${now > eventEndDateTime}`);
-                
+
                 // If current time is past event end time, today's date is NOT available
                 if (now > eventEndDateTime) {
                     console.log(`❌ Today's date HIDDEN - Event ended at ${eventEndDateTime.toLocaleTimeString()}`);
@@ -1467,7 +1467,7 @@
                     console.log(`✅ Today's date AVAILABLE - Event hasn't ended yet`);
                 }
             }
-            
+
             // Date is available
             return true;
         }
@@ -1516,13 +1516,13 @@
                 for (const docSnap of snapshot.docs) {
                     const data = docSnap.data();
                     const status = getEventStatus(data.startDate, data.endDate);
-                    
+
                     console.log(`📅 Event "${data.title}": status="${status}"`);
 
                     if (status === 'current' || status === 'upcoming') {
                         const eventId = docSnap.id;
                         const maxAttendeesPerDay = data.maxAttendeesPerDay || data.maxAttendees || 50;
-                        
+
                         // Get all bookings for this event
                         const ticketingQuery = query(
                             collection(db, "Ticketing"),
@@ -1530,7 +1530,7 @@
                             where("status", "==", "confirmed")
                         );
                         const ticketSnapshot = await getDocs(ticketingQuery);
-                        
+
                         // Calculate total bookings across all dates
                         let totalBookings = 0;
                         ticketSnapshot.forEach(doc => {
@@ -1541,23 +1541,23 @@
                                 (visitors.seniors?.count || 0);
                             totalBookings += count;
                         });
-                        
+
                         // Calculate total available spots for the event
                         const startDate = data.startDate?.toDate();
                         const endDate = data.endDate?.toDate();
                         let totalDays = 1;
-                        
+
                         if (startDate && endDate) {
                             startDate.setHours(0, 0, 0, 0);
                             endDate.setHours(0, 0, 0, 0);
                             totalDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24)) + 1;
                         }
-                        
+
                         const totalCapacity = maxAttendeesPerDay * totalDays;
                         const availableSpots = totalCapacity - totalBookings;
-                        
+
                         console.log(`🎫 Event "${data.title}": ${totalBookings}/${totalCapacity} booked (${totalDays} days, ${maxAttendeesPerDay}/day)`);
-                        
+
                         // Only add event if it has available spots
                         if (availableSpots > 0) {
                             allEvents.push({
@@ -1658,8 +1658,6 @@
 
                     if (timeGroup) timeGroup.classList.add('hidden');
                     if (timeHeading) timeHeading.textContent = '';
-
-                    await loadCurrentEvents();
 
                 } else {
                     eventSection.classList.add('hidden');
@@ -2042,7 +2040,7 @@
                 } else if (selectedVisitType === 'event' && selectedEventData) {
                     // Check if this specific date is available for the event
                     const isDateAvailable = isEventDateAvailable(selectedEventData, currentDate);
-                    
+
                     if (!isDateAvailable) {
                         dateDiv.classList.add('unavailable');
                         dateDiv.title = 'Not available';
@@ -2241,49 +2239,6 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', async () => {
-            const params = new URLSearchParams(window.location.search);
-            const visitType = params.get('type');
-            const eventId = params.get('eventId');
-            const eventTitle = params.get('event');
-            const showCalendar = params.get('showCalendar');
-
-            const eventsLoaded = await loadCurrentEvents();
-
-            if (visitType === 'special-events' && eventsLoaded) {
-                const eventCard = document.querySelector('.visit-type-card[data-type="event"]');
-                if (eventCard) {
-                    eventCard.classList.add('selected');
-                    eventCard.click();
-                }
-
-                setTimeout(() => {
-                    const selectEl = document.getElementById('event-select');
-
-                    if (eventId) {
-                        selectEl.value = eventId;
-                    } else if (eventTitle) {
-                        const options = Array.from(selectEl.options);
-                        const match = options.find(opt => opt.dataset.title === eventTitle);
-                        if (match) selectEl.value = match.value;
-                    }
-
-                    if (selectEl.value) {
-                        selectEl.dispatchEvent(new Event('change'));
-
-                        if (showCalendar) {
-                            setTimeout(() => {
-                                const calendar = document.querySelector('.calendar');
-                                if (calendar) {
-                                    calendar.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                                }
-                            }, 800);
-                        }
-                    }
-                }, 300);
-            }
-        });
-
         // ===== COMPREHENSIVE SCREEN READER ACCESSIBILITY SYSTEM =====
         class ScreenReaderSystem {
             constructor() {
@@ -2304,7 +2259,7 @@
                 this.attachEventListeners();
                 this.attachSelectListeners();
             }
-            
+
             attachSelectListeners() {
                 // Add listeners to all select elements to read options on keyboard navigation
                 document.addEventListener('change', (e) => {
@@ -2315,7 +2270,7 @@
                         }
                     }
                 });
-                
+
                 // Handle keyboard navigation in selects
                 document.addEventListener('keydown', (e) => {
                     if (this.isEnabled && e.target.tagName === 'SELECT') {
@@ -2329,7 +2284,7 @@
                         }
                     }
                 });
-                
+
                 // Handle hover over options (using mouseenter on SELECT to detect when options are hovered)
                 document.addEventListener('mouseenter', (e) => {
                     if (this.isEnabled && this.autoReadOnHover && e.target.tagName === 'OPTION') {
@@ -2340,7 +2295,7 @@
                         }
                     }
                 }, true); // Use capture phase
-                
+
                 // Also handle focus events on options
                 document.addEventListener('focus', (e) => {
                     if (this.isEnabled && this.autoReadOnHover && e.target.tagName === 'OPTION') {
@@ -2499,15 +2454,15 @@
                 document.removeEventListener('mousemove', this.handleSelectOptions);
                 clearTimeout(this.hoverTimeout);
             }
-            
+
             handleSelectOptions = (e) => {
                 if (!this.isEnabled || !this.autoReadOnHover) return;
-                
+
                 const element = e.target;
-                
+
                 // Skip material icons
                 if (element.classList && element.classList.contains('material-icons')) return;
-                
+
                 if (element.tagName === 'OPTION') {
                     clearTimeout(this.hoverTimeout);
                     this.hoverTimeout = setTimeout(() => {
@@ -2526,7 +2481,7 @@
                 if (!this.isEnabled || !this.autoReadOnHover) return;
 
                 const element = e.target;
-                
+
                 // Skip material icons
                 if (element.classList && element.classList.contains('material-icons')) return;
 
@@ -2547,13 +2502,13 @@
 
                 if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(element.tagName)) return;
                 if (element.offsetParent === null && element.tagName !== 'BODY') return;
-                
+
                 // Skip material icons
                 if (element.classList && element.classList.contains('material-icons')) return;
-                
+
                 // Skip if parent is a material icon
                 if (element.parentElement && element.parentElement.classList && element.parentElement.classList.contains('material-icons')) return;
-                
+
                 // Skip if element contains only a material icon as child
                 const iconChild = element.querySelector('.material-icons');
                 if (iconChild && element.textContent.trim() === iconChild.textContent.trim()) return;
@@ -2571,21 +2526,21 @@
                 if (element.getAttribute('aria-label')) {
                     textToRead = element.getAttribute('aria-label');
                     isClickable = hasClickHandler;
-                } 
+                }
                 // Priority 2: Title attribute
                 else if (element.getAttribute('title')) {
                     textToRead = element.getAttribute('title');
                     isClickable = hasClickHandler;
-                } 
+                }
                 // Priority 3: Specific element types
                 else if (element.tagName === 'IMG') {
                     textToRead = element.alt || 'Image';
                     isClickable = hasClickHandler;
-                } 
+                }
                 else if (element.tagName === 'A') {
                     textToRead = `Link: ${element.textContent.trim()}`;
                     isClickable = true;
-                } 
+                }
                 else if (element.tagName === 'BUTTON') {
                     // Get text content but exclude material icons
                     let buttonText = '';
@@ -2603,13 +2558,13 @@
                     } else {
                         return; // Skip buttons with only icons
                     }
-                } 
+                }
                 else if (element.tagName === 'INPUT') {
                     const label = document.querySelector(`label[for="${element.id}"]`);
                     const labelText = label ? label.textContent.trim() : '';
                     const type = element.type || 'text';
                     const value = element.value || '';
-                    
+
                     if (type === 'checkbox' || type === 'radio') {
                         const state = element.checked ? 'checked' : 'unchecked';
                         textToRead = `${labelText || type} ${state}`;
@@ -2619,32 +2574,32 @@
                         textToRead = `${labelText || 'Input field'}: ${element.placeholder || 'empty'}`;
                     }
                     isClickable = true;
-                } 
+                }
                 else if (element.tagName === 'TEXTAREA') {
                     const label = document.querySelector(`label[for="${element.id}"]`);
                     const value = element.value || '';
                     textToRead = `Text area ${label ? label.textContent : ''}: ${value || element.placeholder || 'empty'}`;
                     isClickable = true;
-                } 
+                }
                 else if (element.tagName === 'SELECT') {
                     const label = document.querySelector(`label[for="${element.id}"]`);
                     const selectedOption = element.options[element.selectedIndex];
                     const selectedText = selectedOption ? selectedOption.text : 'nothing selected';
                     textToRead = `Dropdown menu: ${label ? label.textContent.trim() + ', ' : ''}currently selected: ${selectedText}`;
                     isClickable = true;
-                } 
+                }
                 else if (element.tagName === 'OPTION') {
                     textToRead = element.textContent.trim();
                     isClickable = false; // Don't add "clickable" prefix
-                } 
+                }
                 else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
                     textToRead = element.textContent.trim();
                     isClickable = hasClickHandler;
-                } 
+                }
                 else if (element.tagName === 'P') {
                     textToRead = element.textContent.trim();
                     isClickable = hasClickHandler;
-                } 
+                }
                 else if (element.tagName === 'LABEL') {
                     const forElement = element.getAttribute('for');
                     const associatedInput = forElement ? document.getElementById(forElement) : null;
@@ -2653,7 +2608,7 @@
                         textToRead += `. Associated with ${associatedInput.tagName.toLowerCase()}`;
                     }
                     isClickable = false;
-                } 
+                }
                 else if (element.tagName === 'SPAN') {
                     // Check if it's a counter value or price tag
                     if (element.classList.contains('counter-value')) {
@@ -2664,19 +2619,19 @@
                         textToRead = element.textContent.trim();
                     }
                     isClickable = hasClickHandler;
-                } 
+                }
                 else if (element.tagName === 'NAV') {
                     textToRead = 'Navigation menu';
                     isClickable = false;
-                } 
+                }
                 else if (element.tagName === 'FOOTER') {
                     textToRead = 'Footer section';
                     isClickable = false;
-                } 
+                }
                 else if (element.tagName === 'HEADER') {
                     textToRead = 'Header section';
                     isClickable = false;
-                } 
+                }
                 else if (element.tagName === 'SECTION') {
                     const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
                     if (heading) {
@@ -2685,7 +2640,7 @@
                         return;
                     }
                     isClickable = hasClickHandler;
-                } 
+                }
                 // Enhanced DIV reading
                 else if (element.tagName === 'DIV') {
                     // Check for specific interactive components
@@ -2753,14 +2708,14 @@
                             .map(node => node.textContent.trim())
                             .filter(text => text.length > 0)
                             .join(' ');
-                        
+
                         if (directText) {
                             textToRead = directText;
                         } else {
                             return;
                         }
                     }
-                } 
+                }
                 else {
                     textToRead = Array.from(element.childNodes)
                         .filter(node => node.nodeType === Node.TEXT_NODE)
@@ -2893,7 +2848,7 @@
                 document.addEventListener('click', (e) => {
                     // Skip material icons
                     if (e.target.classList && e.target.classList.contains('material-icons')) return;
-                    
+
                     if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
                         window.screenReader.readElement(e.target);
                     }
@@ -2905,11 +2860,260 @@
             document.addEventListener('click', (e) => {
                 // Skip material icons
                 if (e.target.classList && e.target.classList.contains('material-icons')) return;
-                
+
                 if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
                     window.screenReader.readElement(e.target);
                 }
             });
+        }
+
+
+        // ===================================================================
+        // FIXED AUTO-SELECTION - Handles full option text matching
+        // ===================================================================
+        // Replace your auto-selection code with this
+        // ===================================================================
+
+        console.log('🚀 Auto-selection code loaded');
+
+        // Get URL params immediately
+        const urlParams = new URLSearchParams(window.location.search);
+        const autoSelectType = urlParams.get('type');
+        const autoSelectEvent = urlParams.get('event');
+
+        console.log('📋 URL Parameters:', {
+            type: autoSelectType,
+            event: autoSelectEvent,
+            fullURL: window.location.href
+        });
+
+        // Check if we should auto-select
+        if (autoSelectType === 'special-events' && autoSelectEvent) {
+            console.log('🎯 AUTO-SELECTION ACTIVATED!');
+            console.log('   Looking for event:', autoSelectEvent);
+
+            // Wait for page to be fully ready
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', triggerAutoSelection);
+            } else {
+                // DOM already loaded, trigger immediately
+                setTimeout(triggerAutoSelection, 100);
+            }
+        } else {
+            console.log('ℹ️ No auto-selection needed');
+        }
+
+        async function triggerAutoSelection() {
+            console.log('');
+            console.log('╔════════════════════════════════════════╗');
+            console.log('║   AUTO-SELECTION SEQUENCE STARTING     ║');
+            console.log('╚════════════════════════════════════════╝');
+            console.log('');
+
+            try {
+                // STEP 1: Load events
+                console.log('⏳ STEP 1: Loading events from Firebase...');
+                const eventsLoaded = await loadCurrentEvents();
+
+                if (!eventsLoaded) {
+                    console.error('❌ STEP 1 FAILED: Could not load events');
+                    return;
+                }
+
+                console.log('✅ STEP 1 COMPLETE: Events loaded');
+
+                // Wait for DOM to settle
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                // STEP 2: Click event type card
+                console.log('⏳ STEP 2: Selecting "Special Event" card...');
+                const eventCard = document.querySelector('.visit-type-card[data-type="event"]');
+
+                if (!eventCard) {
+                    console.error('❌ STEP 2 FAILED: Event card not found');
+                    return;
+                }
+
+                // Clear other selections
+                document.querySelectorAll('.visit-type-card').forEach(c => c.classList.remove('selected'));
+
+                // Select and click
+                eventCard.classList.add('selected');
+                eventCard.click();
+
+                console.log('✅ STEP 2 COMPLETE: Event card clicked');
+
+                // Wait for click handler to complete
+                await new Promise(resolve => setTimeout(resolve, 400));
+
+                // STEP 3: Ensure event section is visible
+                console.log('⏳ STEP 3: Making event section visible...');
+                const eventSection = document.getElementById('event-section');
+
+                if (!eventSection) {
+                    console.error('❌ STEP 3 FAILED: Event section not found');
+                    return;
+                }
+
+                eventSection.classList.remove('hidden');
+                console.log('✅ STEP 3 COMPLETE: Event section visible');
+
+                await new Promise(resolve => setTimeout(resolve, 200));
+
+                // STEP 4: Select event from dropdown
+                console.log('⏳ STEP 4: Selecting event from dropdown...');
+                const selectEl = document.getElementById('event-select');
+
+                if (!selectEl) {
+                    console.error('❌ STEP 4 FAILED: Select element not found');
+                    return;
+                }
+
+                // Log available options
+                const options = Array.from(selectEl.options);
+                console.log(`📋 Found ${options.length} options in dropdown:`);
+
+                // Log each option with ALL its properties
+                options.forEach((opt, i) => {
+                    if (opt.value) {
+                        console.log(`   ${i}. value="${opt.value}"`);
+                        console.log(`      text="${opt.textContent}"`);
+                        console.log(`      dataset.title="${opt.dataset.title || 'MISSING'}"`);
+                        console.log(`      dataset.price="${opt.dataset.price || 'MISSING'}"`);
+                    }
+                });
+
+                // Find matching event - try multiple strategies
+                console.log(`🔍 Searching for: "${autoSelectEvent}"`);
+
+                let match = null;
+
+                // Strategy 1: Exact match on dataset.title
+                match = options.find(opt => opt.dataset.title === autoSelectEvent);
+                if (match) {
+                    console.log('✅ Found via Strategy 1: dataset.title exact match');
+                }
+
+                // Strategy 2: Match on option text starting with event name
+                if (!match) {
+                    match = options.find(opt => {
+                        const optText = opt.textContent.trim();
+                        // Check if option text starts with the event name
+                        return optText.startsWith(autoSelectEvent);
+                    });
+                    if (match) {
+                        console.log('✅ Found via Strategy 2: option text starts with event name');
+                    }
+                }
+
+                // Strategy 3: Match on option text containing event name
+                if (!match) {
+                    match = options.find(opt => {
+                        const optText = opt.textContent.trim();
+                        return optText.includes(autoSelectEvent);
+                    });
+                    if (match) {
+                        console.log('✅ Found via Strategy 3: option text contains event name');
+                    }
+                }
+
+                // Strategy 4: Partial match - compare first part before " - "
+                if (!match) {
+                    const eventNameBase = autoSelectEvent.split(' - ')[0].trim();
+                    console.log(`🔍 Trying partial match with base: "${eventNameBase}"`);
+
+                    match = options.find(opt => {
+                        if (!opt.value) return false;
+
+                        const optTextBase = opt.textContent.split(' - ')[0].trim();
+                        const optTitleBase = opt.dataset.title ? opt.dataset.title.split(' - ')[0].trim() : '';
+
+                        console.log(`   Comparing "${eventNameBase}" with optText="${optTextBase}" and optTitle="${optTitleBase}"`);
+
+                        return optTextBase === eventNameBase || optTitleBase === eventNameBase;
+                    });
+
+                    if (match) {
+                        console.log('✅ Found via Strategy 4: partial match on base name');
+                    }
+                }
+
+                if (!match) {
+                    console.error('❌ STEP 4 FAILED: Event not found in dropdown');
+                    console.error('   Looking for:', autoSelectEvent);
+                    console.error('   Tried all matching strategies');
+                    console.error('   Available options:');
+                    options.filter(o => o.value).forEach(o => {
+                        console.error(`     - "${o.textContent}" (title: "${o.dataset.title || 'N/A'}")`);
+                    });
+                    return;
+                }
+
+                console.log('✅ Found matching event!');
+                console.log('   Option value:', match.value);
+                console.log('   Option text:', match.textContent);
+                console.log('   Option title:', match.dataset.title);
+
+                // Select the event
+                selectEl.value = match.value;
+                console.log('✅ Set dropdown value to:', match.value);
+
+                // Trigger change event
+                console.log('🔔 Triggering change event...');
+                const changeEvent = new Event('change', { bubbles: true });
+                selectEl.dispatchEvent(changeEvent);
+                console.log('✅ STEP 4 COMPLETE: Change event fired');
+
+                // Wait for booking section to appear
+                await new Promise(resolve => setTimeout(resolve, 500));
+
+                // STEP 5: Verify booking section appeared
+                console.log('⏳ STEP 5: Checking booking section...');
+                const bookingSection = document.getElementById('booking-section');
+
+                if (!bookingSection) {
+                    console.error('❌ STEP 5 FAILED: Booking section not found');
+                    return;
+                }
+
+                const isHidden = bookingSection.classList.contains('hidden');
+
+                if (isHidden) {
+                    console.warn('⚠️ Booking section is hidden, forcing it visible...');
+                    bookingSection.classList.remove('hidden');
+                }
+
+                console.log('✅ STEP 5 COMPLETE: Booking section visible');
+
+                // STEP 6: Scroll to booking section
+                console.log('⏳ STEP 6: Scrolling to booking section...');
+
+                await new Promise(resolve => setTimeout(resolve, 300));
+
+                const dateTimeHeader = document.querySelector('#booking-section h3');
+
+                if (dateTimeHeader) {
+                    dateTimeHeader.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                    console.log('✅ STEP 6 COMPLETE: Scrolled to booking');
+                }
+
+                console.log('');
+                console.log('╔════════════════════════════════════════╗');
+                console.log('║     ✅ AUTO-SELECTION SUCCESSFUL!      ║');
+                console.log('╚════════════════════════════════════════╝');
+                console.log('');
+
+            } catch (error) {
+                console.error('');
+                console.error('╔════════════════════════════════════════╗');
+                console.error('║     ❌ AUTO-SELECTION FAILED!          ║');
+                console.error('╚════════════════════════════════════════╝');
+                console.error('Error:', error);
+                console.error('Stack:', error.stack);
+            }
         }
     </script>
 </body>

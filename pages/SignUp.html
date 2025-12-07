@@ -1,28 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ATHAR Museum - Sign Up</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
     <style>
         :root {
-            --primary-dark: #653025;     
-            --primary-light: #8d2e1d;    
-            --accent: #b08d57;           
-            --accent-light: #d4b483;     
-            --neutral-light: #f4f1e3;    
-            --neutral-dark: #4a3c2a;     
-            --text-dark: #3b2f23;        
-            --text-light: #7c6f57;       
-            --white: #fdfaf4;            
+            --primary-dark: #653025;
+            --primary-light: #8d2e1d;
+            --accent: #b08d57;
+            --accent-light: #d4b483;
+            --neutral-light: #f4f1e3;
+            --neutral-dark: #4a3c2a;
+            --text-dark: #3b2f23;
+            --text-light: #7c6f57;
+            --white: #fdfaf4;
             --shadow: 0 4px 6px rgba(0, 0, 0, 0.15);
             --transition: all 0.3s ease;
             --error: #e53e3e;
             --success: #38a169;
         }
 
-        * { margin:0; padding:0; box-sizing:border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', sans-serif;
@@ -43,7 +52,10 @@
             transition: var(--transition);
         }
 
-        .back-arrow:hover { color: var(--accent); transform: translateX(-3px); }
+        .back-arrow:hover {
+            color: var(--accent);
+            transform: translateX(-3px);
+        }
 
         .signup-card {
             background: var(--white);
@@ -67,15 +79,28 @@
             border-radius: 20px 20px 0 0;
         }
 
-        .signup-header { text-align:center; }
-        .logo-icon { font-size: 3rem; color: var(--accent); margin-bottom: 1rem; display:block; }
+        .signup-header {
+            text-align: center;
+        }
 
-        h1 { font-size: 2rem; color: var(--primary-dark); font-family: 'Playfair Display', serif; margin-bottom: 0.5rem; }
+        .logo-icon {
+            font-size: 3rem;
+            color: var(--accent);
+            margin-bottom: 1rem;
+            display: block;
+        }
+
+        h1 {
+            font-size: 2rem;
+            color: var(--primary-dark);
+            font-family: 'Playfair Display', serif;
+            margin-bottom: 0.5rem;
+        }
 
         .password-toggle {
             position: absolute;
             right: 1rem;
-            top: 65%;
+            top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
             color: var(--text-light);
@@ -84,9 +109,15 @@
             user-select: none;
         }
 
-        .password-toggle:hover { color: var(--primary-dark); }
+        .password-toggle:hover {
+            color: var(--primary-dark);
+        }
 
-        .form-group { margin-bottom: 1.2rem; position: relative; }
+        .form-group {
+            margin-bottom: 1.2rem;
+            position: relative;
+        }
+
         .form-group label {
             display: block;
             margin-bottom: 0.4rem;
@@ -122,7 +153,11 @@
             min-height: 1em;
         }
 
-        .phone-group { display: grid; grid-template-columns: 1fr; gap: 0.8rem; }
+        .phone-group {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 0.8rem;
+        }
 
         input:-webkit-autofill {
             -webkit-box-shadow: 0 0 0px 1000px var(--neutral-light) inset;
@@ -214,18 +249,61 @@
             animation: checkmarkBounce 0.3s ease;
         }
 
-        @keyframes checkmarkBounce { 0% { transform: scale(0.5); } 50% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        @keyframes checkmarkBounce {
+            0% {
+                transform: scale(0.5);
+            }
 
-        .category-icon { font-size: 2rem; margin-bottom: 0.8rem; display: block; margin-left: auto; margin-right: auto; }
-        .category-title { font-weight: 700; font-size: 1.1rem; color: var(--primary-dark); margin-bottom: 0.3rem; }
-        .category-desc { font-size: 0.9rem; color: var(--text-light); }
+            50% {
+                transform: scale(1.2);
+            }
 
-        .button-row { display: flex; flex-direction: column; gap: 0.8rem; margin-top: 1.2rem; }
+            100% {
+                transform: scale(1);
+            }
+        }
 
-        .select-all-button { background: var(--white); color: var(--accent); border: 2px solid var(--accent); }
-        .select-all-button.selected { background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%); color: var(--primary-dark); }
+        .category-icon {
+            font-size: 2rem;
+            margin-bottom: 0.8rem;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
 
-        .hidden { display: none; }
+        .category-title {
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary-dark);
+            margin-bottom: 0.3rem;
+        }
+
+        .category-desc {
+            font-size: 0.9rem;
+            color: var(--text-light);
+        }
+
+        .button-row {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+            margin-top: 1.2rem;
+        }
+
+        .select-all-button {
+            background: var(--white);
+            color: var(--accent);
+            border: 2px solid var(--accent);
+        }
+
+        .select-all-button.selected {
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-light) 100%);
+            color: var(--primary-dark);
+        }
+
+        .hidden {
+            display: none;
+        }
 
         .selection-info {
             display: grid;
@@ -238,15 +316,55 @@
             border-radius: 10px;
         }
 
-        .selection-info p { margin: 0; text-align: center; font-weight: 400; line-height: 1.4; }
-        .selection-info p:first-child { color: var(--text-light); margin-bottom: 0.5rem; }
-        .selection-info p strong .number { color: var(--accent); }
+        .selection-info p {
+            margin: 0;
+            text-align: center;
+            font-weight: 400;
+            line-height: 1.4;
+        }
 
-        .message { padding: 1rem; border-radius: 10px; margin-bottom: 1.5rem; display: none; text-align: center; }
-        .message.error { background: #fff5f5; color: var(--error); border: 1px solid #feb2b2; display: block; }
-        .message.success { background: #f0fff4; color: var(--success); border: 1px solid #9ae6b4; display: block; }
+        .selection-info p:first-child {
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
 
-        @keyframes slideUp { from { opacity: 0; transform: translateY(30px); } to { opacity: 1; transform: translateY(0); } }
+        .selection-info p strong .number {
+            color: var(--accent);
+        }
+
+        .message {
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: none;
+            text-align: center;
+        }
+
+        .message.error {
+            background: #fff5f5;
+            color: var(--error);
+            border: 1px solid #feb2b2;
+            display: block;
+        }
+
+        .message.success {
+            background: #f0fff4;
+            color: var(--success);
+            border: 1px solid #9ae6b4;
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
 
         /* country select arrow: moved to right with minimal padding */
         select#country {
@@ -257,7 +375,8 @@
             background-repeat: no-repeat;
             background-position: right 0.8rem center;
             background-size: 1rem;
-            padding-right: 2.6rem; /* small padding for arrow */
+            padding-right: 2.6rem;
+            /* small padding for arrow */
         }
 
         /* ===== Gender select arrow : نسخة من country arrow ===== */
@@ -283,26 +402,233 @@
             align-items: center;
             gap: 0.6rem;
             font-weight: 600;
-            color: #064e3b; /* dark green text */
-            background: linear-gradient(90deg, #bbf7d0, #86efac); /* soft green */
+            color: #064e3b;
+            /* dark green text */
+            background: linear-gradient(90deg, #bbf7d0, #86efac);
+            /* soft green */
             border: 1px solid #86efac;
             transform: translateY(-20px);
             opacity: 0;
             transition: transform 280ms ease, opacity 280ms ease;
             box-shadow: 0 6px 18px rgba(16, 185, 129, 0.12);
         }
+
         .success-bar.show {
             transform: translateY(0);
             opacity: 1;
         }
-        .success-bar.hidden { display: none; }
+
+        .success-bar.hidden {
+            display: none;
+        }
 
         @media (max-width: 720px) {
-            .categories-grid { grid-template-columns: 1fr; }
-            .signup-card { padding: 2rem; }
+            .categories-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .signup-card {
+                padding: 2rem;
+            }
+        }
+
+        .accessibility-controls {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 10000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .accessibility-btn {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--primary-dark);
+            color: var(--white);
+            border: 3px solid var(--accent);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            transition: all 0.3s ease;
+            font-size: 1.5rem;
+        }
+
+        .accessibility-btn:hover {
+            transform: scale(1.1);
+            background: var(--primary-light);
+        }
+
+        .accessibility-btn.active {
+            background: var(--accent);
+            color: var(--primary-dark);
+        }
+
+        .accessibility-menu {
+            position: absolute;
+            bottom: 70px;
+            right: 0;
+            background: var(--white);
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            padding: 1.5rem;
+            min-width: 250px;
+            display: none;
+        }
+
+        .accessibility-menu.show {
+            display: block;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .accessibility-menu h3 {
+            color: var(--primary-dark);
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+
+        .menu-option {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--neutral-light);
+            transition: var(--transition);
+        }
+
+        .menu-option:last-child {
+            border-bottom: none;
+        }
+
+        .menu-option label {
+            color: var(--text-dark);
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .menu-option:has(input:disabled) {
+            opacity: 0.5;
+        }
+
+        .menu-option:has(input:disabled) label {
+            cursor: not-allowed;
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 50px;
+            height: 26px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked+.slider {
+            background-color: var(--accent);
+        }
+
+        input:checked+.slider:before {
+            transform: translateX(24px);
+        }
+
+        .toggle-switch input:disabled+.slider {
+            background-color: #e0e0e0;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .toggle-switch input:disabled+.slider:before {
+            background-color: #f5f5f5;
+        }
+
+        .speed-control {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            padding: 0.8rem 0;
+        }
+
+        .speed-control input[type="range"] {
+            width: 100%;
+            accent-color: var(--accent);
+        }
+
+        .speed-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .sr-highlight {
+            outline: 3px solid var(--accent) !important;
+            outline-offset: 2px;
+            background-color: rgba(176, 141, 87, 0.1) !important;
+        }
+
+        @media (max-width: 768px) {
+            .accessibility-controls {
+                bottom: 15px;
+                right: 15px;
+            }
+
+            .accessibility-btn {
+                width: 55px;
+                height: 55px;
+            }
+
+            .accessibility-menu {
+                right: -10px;
+                min-width: 220px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="signup-card">
         <!-- back arrow for navigation (kept as in original) -->
@@ -332,7 +658,8 @@
             <div class="form-group" style="position:relative;">
                 <label for="password">Password</label>
                 <input type="password" id="password" minlength="8" required>
-                <span class="password-toggle" id="passwordToggle" role="button" aria-label="Toggle password visibility">👁</span>
+                <span class="password-toggle" id="passwordToggle" role="button"
+                    aria-label="Toggle password visibility">👁</span>
                 <div id="err-password" class="field-error" aria-live="polite"></div>
             </div>
 
@@ -340,7 +667,8 @@
             <div class="form-group" style="position:relative;">
                 <label for="confirmPassword">Confirm Password</label>
                 <input type="password" id="confirmPassword" minlength="8" required>
-                <span class="password-toggle" id="confirmPasswordToggle" role="button" aria-label="Toggle confirm password visibility">👁</span>
+                <span class="password-toggle" id="confirmPasswordToggle" role="button"
+                    aria-label="Toggle confirm password visibility">👁</span>
                 <div id="err-confirmPassword" class="field-error" aria-live="polite"></div>
             </div>
 
@@ -456,11 +784,12 @@
                     <div id="err-cvv" class="field-error" aria-live="polite"></div>
                 </div>
             </div>
-         
+
 
             <div class="button-row" style="margin-top:1rem;">
                 <button id="fakePayBtn" class="signup-button">Pay & Continue</button>
-                <button id="backToInfoBtn" class="select-all-button" style="background:var(--white); border:2px solid #e2e8f0;">Back to Info</button>
+                <button id="backToInfoBtn" class="select-all-button"
+                    style="background:var(--white); border:2px solid #e2e8f0;">Back to Info</button>
             </div>
         </div>
 
@@ -473,28 +802,32 @@
 
             <div class="selection-info">
                 <p>Select at least 3 categories that interest you.</p>
-                <p><strong>You've selected <span class="number" id="counter">0</span> out of 
-                    <span class="number">10</span> categories.</strong></p>
+                <p><strong>You've selected <span class="number" id="counter">0</span> out of
+                        <span class="number">10</span> categories.</strong></p>
             </div>
 
-            <h3 style="text-align:center; color: var(--primary-dark); font-family:'Playfair Display',serif; margin-top:1.5rem;">
+            <h3
+                style="text-align:center; color: var(--primary-dark); font-family:'Playfair Display',serif; margin-top:1.5rem;">
                 Islamic Heritage Regions
             </h3>
             <div class="categories-grid" id="categoriesGrid">
                 <div class="category-card" data-category="Arab Heritage">
                     <div class="category-icon">🕋</div>
                     <div class="category-title">Arab Heritage</div>
-                    <div class="category-desc">Discover manuscripts and treasures from the heart of Arab civilization.</div>
+                    <div class="category-desc">Discover manuscripts and treasures from the heart of Arab civilization.
+                    </div>
                 </div>
                 <div class="category-card" data-category="Persian Heritage">
                     <div class="category-icon">🌸</div>
                     <div class="category-title">Persian Heritage</div>
-                    <div class="category-desc">Experience the beauty of Persian calligraphy and intricate ornamentation.</div>
+                    <div class="category-desc">Experience the beauty of Persian calligraphy and intricate ornamentation.
+                    </div>
                 </div>
                 <div class="category-card" data-category="Indian Heritage">
                     <div class="category-icon">🪔</div>
                     <div class="category-title">Indian Heritage</div>
-                    <div class="category-desc">Vibrant colors and rich patterns reflecting Islamic influence in India.</div>
+                    <div class="category-desc">Vibrant colors and rich patterns reflecting Islamic influence in India.
+                    </div>
                 </div>
                 <div class="category-card" data-category="Andalusian Heritage">
                     <div class="category-icon">🏰</div>
@@ -509,33 +842,39 @@
                 <div class="category-card" data-category="Echoes of Islamic Civilization">
                     <div class="category-icon">🌍</div>
                     <div class="category-title">Echoes of Islamic Civilization</div>
-                    <div class="category-desc">Rare pieces from around the world show the global influence of Islam.</div>
+                    <div class="category-desc">Rare pieces from around the world show the global influence of Islam.
+                    </div>
                 </div>
             </div>
 
-            <h3 style="text-align:center; color: var(--primary-dark); font-family:'Playfair Display',serif; margin-top:2.5rem;">
+            <h3
+                style="text-align:center; color: var(--primary-dark); font-family:'Playfair Display',serif; margin-top:2.5rem;">
                 Artifact Types
             </h3>
             <div class="categories-grid">
                 <div class="category-card" data-category="Manuscripts">
                     <div class="category-icon">📜</div>
                     <div class="category-title">Manuscripts</div>
-                    <div class="category-desc">Ancient writings preserving the wisdom and knowledge of past scholars.</div>
+                    <div class="category-desc">Ancient writings preserving the wisdom and knowledge of past scholars.
+                    </div>
                 </div>
                 <div class="category-card" data-category="Weapons">
                     <div class="category-icon">⚔️</div>
                     <div class="category-title">Weapons</div>
-                    <div class="category-desc">Swords, shields, and arms that reflect artistry and history of defense.</div>
+                    <div class="category-desc">Swords, shields, and arms that reflect artistry and history of defense.
+                    </div>
                 </div>
                 <div class="category-card" data-category="Boxes">
                     <div class="category-icon">🗝️</div>
                     <div class="category-title">Boxes</div>
-                    <div class="category-desc">Intricately carved boxes used to store precious artifacts and jewels.</div>
+                    <div class="category-desc">Intricately carved boxes used to store precious artifacts and jewels.
+                    </div>
                 </div>
                 <div class="category-card" data-category="Bottles">
                     <div class="category-icon">🏺</div>
                     <div class="category-title">Bottles</div>
-                    <div class="category-desc">Delicate glass and ceramic bottles crafted with remarkable precision.</div>
+                    <div class="category-desc">Delicate glass and ceramic bottles crafted with remarkable precision.
+                    </div>
                 </div>
             </div>
 
@@ -568,7 +907,7 @@
         const phoneInput = document.getElementById('phone');
         const paymentAmountEl = document.getElementById('paymentAmount');
 
-    
+
 
 
         let selectedCategories = [];
@@ -581,7 +920,7 @@
         const confirmPasswordInput = document.getElementById('confirmPassword');
         const confirmPasswordToggle = document.getElementById('confirmPasswordToggle');
 
-       
+
 
 
         function showMessage(message, type) {
@@ -596,7 +935,7 @@
         }
 
         // helper: show inline field error
-        function setFieldError(elemId, msg='') {
+        function setFieldError(elemId, msg = '') {
             const el = document.getElementById('err-' + elemId);
             if (!el) return;
             el.textContent = msg;
@@ -606,7 +945,7 @@
         }
 
         // wire up clearing inline errors on input/change
-        ['username','email','password','confirmPassword','dob','gender','country','phone','cardName','cardNumber','expiry','cvv'].forEach(id => {
+        ['username', 'email', 'password', 'confirmPassword', 'dob', 'gender', 'country', 'phone', 'cardName', 'cardNumber', 'expiry', 'cvv'].forEach(id => {
             const el = document.getElementById(id);
             if (el) {
                 el.addEventListener('input', () => clearFieldError(id));
@@ -628,7 +967,7 @@
         });
 
         // Update phone placeholder with country code
-        countrySelect.addEventListener('change', function() {
+        countrySelect.addEventListener('change', function () {
             const selectedOption = this.options[this.selectedIndex];
             const countryCode = selectedOption ? selectedOption.getAttribute('data-code') : '';
             if (countryCode) {
@@ -669,43 +1008,43 @@
 
         /* ---------- Payment amount mapping by country ---------- */
         const paymentMap = {
-    'AF': { text: '3543.65 AFN' },  // Afghanistan
-    'AL': { text: '4404.91 ALL' },  // Albania
-    'DZ': { text: '6887.77 DZD' },  // Algeria
-    'BH': { text: '20 BD' },     // Bahrain
-    'BD': { text: '6490.44 BDT' },  // Bangladesh
-    'EG': { text: '2524.75 EGP' },   // Egypt
-    'FR': { text: '45.42 EUR' },    // France
-    'DE': { text: '45.42 EUR' },    // Germany
-    'IN': { text: '4673.62 INR' },  // India
-    'ID': { text: '879806.81 IDR' },// Indonesia
-    'IQ': { text: '69809.32 IQD' }, // Iraq
-    'IR': { text: '2235160.03 IRR' },// Iran
-    'IT': { text: '45.42 EUR' },    // Italy
-    'JP': { text: '7993.28 JPY' },  // Japan
-    'JO': { text: '37.68 JOD' },    // Jordan
-    'KW': { text: '16.23 KWD' },    // Kuwait
-    'LB': { text: '4771997.71 LBP' },    // Lebanon
-    'LY': { text: '289.24 LYD' },    // Libya
-    'MY': { text: '224.65 MYR' },   // Malaysia
-    'MA': { text: '487.30 MAD' },   // Morocco
-    'OM': { text: '20.40 OMR' },   // Oman
-    'PK': { text: '14912.47 PKR' },  // Pakistan
-    'PH': { text: '3088.49 PHP' },  // Philippines
-    'QA': { text: '194.24 QAR' },   // Qatar
-    'SA': { text: '200 SAR' },   // Saudi Arabia
-    'ES': { text: '45.42 EUR' },    // Spain
-    'SD': { text: '31963.12 SDG' },  // Sudan
-    'SY': { text: '5000 SYP' },  // Syria
-    'TN': { text: '155.60 TND' },    // Tunisia
-    'TR': { text: '2226.53 TRY' },   // Turkey
-    'AE': { text: '200 AED' },   // United Arab Emirates
-    'GB': { text: '39.48 GBP' },    // United Kingdom
-    'US': { text: '53.14 USD' },    // United States
-    'YE': { text: '12694.88 YER' },  // Yemen
-    'OTHER': { text: '53.14 USD' }, // Other / fallback
-    
-};
+            'AF': { text: '3543.65 AFN' },  // Afghanistan
+            'AL': { text: '4404.91 ALL' },  // Albania
+            'DZ': { text: '6887.77 DZD' },  // Algeria
+            'BH': { text: '20 BD' },     // Bahrain
+            'BD': { text: '6490.44 BDT' },  // Bangladesh
+            'EG': { text: '2524.75 EGP' },   // Egypt
+            'FR': { text: '45.42 EUR' },    // France
+            'DE': { text: '45.42 EUR' },    // Germany
+            'IN': { text: '4673.62 INR' },  // India
+            'ID': { text: '879806.81 IDR' },// Indonesia
+            'IQ': { text: '69809.32 IQD' }, // Iraq
+            'IR': { text: '2235160.03 IRR' },// Iran
+            'IT': { text: '45.42 EUR' },    // Italy
+            'JP': { text: '7993.28 JPY' },  // Japan
+            'JO': { text: '37.68 JOD' },    // Jordan
+            'KW': { text: '16.23 KWD' },    // Kuwait
+            'LB': { text: '4771997.71 LBP' },    // Lebanon
+            'LY': { text: '289.24 LYD' },    // Libya
+            'MY': { text: '224.65 MYR' },   // Malaysia
+            'MA': { text: '487.30 MAD' },   // Morocco
+            'OM': { text: '20.40 OMR' },   // Oman
+            'PK': { text: '14912.47 PKR' },  // Pakistan
+            'PH': { text: '3088.49 PHP' },  // Philippines
+            'QA': { text: '194.24 QAR' },   // Qatar
+            'SA': { text: '200 SAR' },   // Saudi Arabia
+            'ES': { text: '45.42 EUR' },    // Spain
+            'SD': { text: '31963.12 SDG' },  // Sudan
+            'SY': { text: '5000 SYP' },  // Syria
+            'TN': { text: '155.60 TND' },    // Tunisia
+            'TR': { text: '2226.53 TRY' },   // Turkey
+            'AE': { text: '200 AED' },   // United Arab Emirates
+            'GB': { text: '39.48 GBP' },    // United Kingdom
+            'US': { text: '53.14 USD' },    // United States
+            'YE': { text: '12694.88 YER' },  // Yemen
+            'OTHER': { text: '53.14 USD' }, // Other / fallback
+
+        };
 
 
 
@@ -768,7 +1107,7 @@
             }
             const d = new Date(v);
             const now = new Date();
-            d.setHours(0,0,0,0); now.setHours(0,0,0,0);
+            d.setHours(0, 0, 0, 0); now.setHours(0, 0, 0, 0);
             if (d > now) {
                 setFieldError('dob', 'Date of birth cannot be in the future.');
                 return false;
@@ -835,7 +1174,7 @@
                 return false;
             }
             try {
-                const [y,m] = expiry.split('-').map(Number);
+                const [y, m] = expiry.split('-').map(Number);
                 const now = new Date();
                 const cy = now.getFullYear(), cm = now.getMonth() + 1;
                 if (y < cy || (y === cy && m < cm)) {
@@ -919,7 +1258,7 @@
             hideMessage();
 
             // clear inline errors
-            ['username','email','password','confirmPassword','dob','gender','country','phone'].forEach(clearFieldError);
+            ['username', 'email', 'password', 'confirmPassword', 'dob', 'gender', 'country', 'phone'].forEach(clearFieldError);
 
             const continueBtn = e.target.querySelector('button[type="submit"]');
             const origText = continueBtn.textContent;
@@ -941,7 +1280,7 @@
                 const ok = fn();
                 if (!ok) {
                     // scroll to first invalid field
-                    const id = fn.name.replace('validate','').replace('Field','').replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
+                    const id = fn.name.replace('validate', '').replace('Field', '').replace(/([A-Z])/g, '-$1').toLowerCase().replace(/^-/, '');
                     const fieldEl = document.getElementById(id);
                     if (fieldEl) scrollToElem(fieldEl);
                     continueBtn.disabled = false;
@@ -1066,7 +1405,7 @@
             cardNumberInput.addEventListener('paste', (e) => {
                 e.preventDefault();
                 const text = (e.clipboardData || window.clipboardData).getData('text');
-                const digits = text.replace(/\D/g, '').slice(0,16);
+                const digits = text.replace(/\D/g, '').slice(0, 16);
                 const parts = [];
                 for (let i = 0; i < digits.length; i += 4) parts.push(digits.substring(i, i + 4));
                 cardNumberInput.value = parts.join(' ');
@@ -1093,7 +1432,7 @@
         const cvvInput = document.getElementById('cvv');
         if (cvvInput) {
             cvvInput.addEventListener('input', (e) => {
-                e.target.value = e.target.value.replace(/\D/g, '').slice(0,4);
+                e.target.value = e.target.value.replace(/\D/g, '').slice(0, 4);
             });
         }
 
@@ -1116,7 +1455,7 @@
             hideMessage();
 
             // clear inline errors
-            ['cardName','cardNumber','expiry','cvv'].forEach(clearFieldError);
+            ['cardName', 'cardNumber', 'expiry', 'cvv'].forEach(clearFieldError);
 
             // run per-field validators and focus/scroll to first error
             const payValidators = [
@@ -1125,7 +1464,7 @@
                 { fn: validateExpiryField, id: 'expiry' },
                 { fn: validateCvvField, id: 'cvv' }
             ];
-            for (const {fn, id} of payValidators) {
+            for (const { fn, id } of payValidators) {
                 const ok = fn();
                 if (!ok) {
                     const el = document.getElementById(id);
@@ -1260,8 +1599,635 @@
 
         // initial counter
         updateCounter();
+        // ===== SCREEN READER ACCESSIBILITY SYSTEM =====
+        class ScreenReaderSystem {
+            constructor() {
+                this.isEnabled = false;
+                this.isReading = false;
+                this.autoReadOnHover = false;
+                this.readOnClick = false;
+                this.speed = 1.0;
+                this.currentElement = null;
+                this.hoverTimeout = null;
 
-        
+                this.init();
+            }
+
+            init() {
+                this.createAccessibilityControls();
+                this.loadSettings();
+                this.attachEventListeners();
+                this.attachSelectListeners();
+            }
+
+            attachSelectListeners() {
+                // Add listeners to all select elements to read options on keyboard navigation
+                document.addEventListener('change', (e) => {
+                    if (this.isEnabled && e.target.tagName === 'SELECT') {
+                        const selectedOption = e.target.options[e.target.selectedIndex];
+                        if (selectedOption) {
+                            this.speak(selectedOption.textContent.trim());
+                        }
+                    }
+                });
+
+                // Handle keyboard navigation in selects
+                document.addEventListener('keydown', (e) => {
+                    if (this.isEnabled && e.target.tagName === 'SELECT') {
+                        if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+                            setTimeout(() => {
+                                const selectedOption = e.target.options[e.target.selectedIndex];
+                                if (selectedOption) {
+                                    this.speak(selectedOption.textContent.trim());
+                                }
+                            }, 50);
+                        }
+                    }
+                });
+
+                // Handle hover over options (using mouseenter on SELECT to detect when options are hovered)
+                document.addEventListener('mouseenter', (e) => {
+                    if (this.isEnabled && this.autoReadOnHover && e.target.tagName === 'OPTION') {
+                        const text = e.target.textContent.trim();
+                        if (text && text.length > 0 && e.target !== this.currentElement) {
+                            this.speak(text);
+                            this.currentElement = e.target;
+                        }
+                    }
+                }, true); // Use capture phase
+
+                // Also handle focus events on options
+                document.addEventListener('focus', (e) => {
+                    if (this.isEnabled && this.autoReadOnHover && e.target.tagName === 'OPTION') {
+                        const text = e.target.textContent.trim();
+                        if (text && text.length > 0 && e.target !== this.currentElement) {
+                            this.speak(text);
+                            this.currentElement = e.target;
+                        }
+                    }
+                }, true); // Use capture phase
+            }
+
+            createAccessibilityControls() {
+                const controls = document.createElement('div');
+                controls.className = 'accessibility-controls';
+                controls.innerHTML = `
+            <button class="accessibility-btn" id="accessibility-toggle" title="Screen Reader Controls" aria-label="Open screen reader controls">
+                <span class="material-icons">accessibility_new</span>
+            </button>
+            <div class="accessibility-menu" id="accessibility-menu" role="menu">
+                <h3>Screen Reader</h3>
+                
+                <div class="menu-option">
+                    <label for="enable-reader">Enable Reader</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="enable-reader">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="menu-option">
+                    <label for="auto-hover">Read on Hover</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="auto-hover" disabled>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="menu-option">
+                    <label for="read-click">Read on Click</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" id="read-click" disabled>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="speed-control">
+                    <div class="speed-label">
+                        <span>Speech Speed</span>
+                        <span id="speed-value">Normal</span>
+                    </div>
+                    <input type="range" id="speed-control" min="0.5" max="2" step="0.1" value="1">
+                </div>
+            </div>
+        `;
+                document.body.appendChild(controls);
+            }
+
+            attachEventListeners() {
+                document.getElementById('accessibility-toggle').addEventListener('click', () => {
+                    const menu = document.getElementById('accessibility-menu');
+                    menu.classList.toggle('show');
+                });
+
+                document.addEventListener('click', (e) => {
+                    if (!e.target.closest('.accessibility-controls')) {
+                        document.getElementById('accessibility-menu').classList.remove('show');
+                    }
+                });
+
+                document.getElementById('enable-reader').addEventListener('change', (e) => {
+                    this.isEnabled = e.target.checked;
+                    const hoverCheckbox = document.getElementById('auto-hover');
+                    const clickCheckbox = document.getElementById('read-click');
+
+                    if (this.isEnabled) {
+                        hoverCheckbox.disabled = false;
+                        clickCheckbox.disabled = false;
+
+                        this.autoReadOnHover = true;
+                        this.readOnClick = true;
+                        hoverCheckbox.checked = true;
+                        clickCheckbox.checked = true;
+
+                        this.speak("Screen reader enabled. Hover over elements to hear them read aloud.");
+                        this.enableReader();
+                        this.enableHoverReading();
+                    } else {
+                        hoverCheckbox.disabled = true;
+                        clickCheckbox.disabled = true;
+                        hoverCheckbox.checked = false;
+                        clickCheckbox.checked = false;
+
+                        this.autoReadOnHover = false;
+                        this.readOnClick = false;
+
+                        this.speak("Screen reader disabled");
+                        this.disableReader();
+                    }
+
+                    this.saveSettings();
+                });
+
+                document.getElementById('auto-hover').addEventListener('change', (e) => {
+                    this.autoReadOnHover = e.target.checked;
+                    this.saveSettings();
+                    if (this.autoReadOnHover) {
+                        this.enableHoverReading();
+                    } else {
+                        this.disableHoverReading();
+                    }
+                });
+
+                document.getElementById('read-click').addEventListener('change', (e) => {
+                    this.readOnClick = e.target.checked;
+                    this.saveSettings();
+                });
+
+                document.getElementById('speed-control').addEventListener('input', (e) => {
+                    this.speed = parseFloat(e.target.value);
+                    this.updateSpeedLabel();
+                    this.saveSettings();
+                });
+
+                document.addEventListener('keydown', (e) => {
+                    if (e.altKey && e.key === 's') {
+                        e.preventDefault();
+                        this.stopSpeaking();
+                    }
+                    if (e.altKey && e.key === 'r') {
+                        e.preventDefault();
+                        const enableCheckbox = document.getElementById('enable-reader');
+                        enableCheckbox.checked = !enableCheckbox.checked;
+                        enableCheckbox.dispatchEvent(new Event('change'));
+                    }
+                });
+            }
+
+            enableReader() {
+                document.body.style.cursor = 'help';
+            }
+
+            disableReader() {
+                document.body.style.cursor = 'default';
+                this.stopSpeaking();
+                this.disableHoverReading();
+            }
+
+            enableHoverReading() {
+                document.addEventListener('mouseover', this.handleHover);
+                document.addEventListener('mousemove', this.handleSelectOptions);
+            }
+
+            disableHoverReading() {
+                document.removeEventListener('mouseover', this.handleHover);
+                document.removeEventListener('mousemove', this.handleSelectOptions);
+                clearTimeout(this.hoverTimeout);
+            }
+
+            handleSelectOptions = (e) => {
+                if (!this.isEnabled || !this.autoReadOnHover) return;
+
+                const element = e.target;
+
+                // Skip material icons
+                if (element.classList && element.classList.contains('material-icons')) return;
+
+                if (element.tagName === 'OPTION') {
+                    clearTimeout(this.hoverTimeout);
+                    this.hoverTimeout = setTimeout(() => {
+                        if (element !== this.currentElement) {
+                            const text = element.textContent.trim();
+                            if (text && text.length > 0) {
+                                this.speak(text);
+                                this.currentElement = element;
+                            }
+                        }
+                    }, 100);
+                }
+            }
+
+            handleHover = (e) => {
+                if (!this.isEnabled || !this.autoReadOnHover) return;
+
+                const element = e.target;
+
+                // Skip material icons
+                if (element.classList && element.classList.contains('material-icons')) return;
+
+                clearTimeout(this.hoverTimeout);
+
+                // Use shorter delay for dropdown options
+                const delay = element.tagName === 'OPTION' ? 100 : 500;
+
+                this.hoverTimeout = setTimeout(() => {
+                    if (element && element !== this.currentElement) {
+                        this.readElement(element);
+                    }
+                }, delay);
+            }
+
+            readElement(element) {
+                if (!this.isEnabled) return;
+
+                if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(element.tagName)) return;
+                if (element.offsetParent === null && element.tagName !== 'BODY') return;
+
+                // Skip material icons
+                if (element.classList && element.classList.contains('material-icons')) return;
+
+                // Skip if parent is a material icon
+                if (element.parentElement && element.parentElement.classList && element.parentElement.classList.contains('material-icons')) return;
+
+                // Skip if element contains only a material icon as child
+                const iconChild = element.querySelector('.material-icons');
+                if (iconChild && element.textContent.trim() === iconChild.textContent.trim()) return;
+
+                let textToRead = '';
+                let isClickable = false;
+
+                const hasClickHandler = element.onclick !== null ||
+                    element.hasAttribute('onclick') ||
+                    element.style.cursor === 'pointer' ||
+                    element.classList.contains('clickable') ||
+                    element.hasAttribute('role') && element.getAttribute('role') === 'button';
+
+                // Priority 1: Aria-label
+                if (element.getAttribute('aria-label')) {
+                    textToRead = element.getAttribute('aria-label');
+                    isClickable = hasClickHandler;
+                }
+                // Priority 2: Title attribute
+                else if (element.getAttribute('title')) {
+                    textToRead = element.getAttribute('title');
+                    isClickable = hasClickHandler;
+                }
+                // Priority 3: Specific element types
+                else if (element.tagName === 'IMG') {
+                    textToRead = element.alt || 'Image';
+                    isClickable = hasClickHandler;
+                }
+                else if (element.tagName === 'A') {
+                    textToRead = `Link: ${element.textContent.trim()}`;
+                    isClickable = true;
+                }
+                else if (element.tagName === 'BUTTON') {
+                    // Get text content but exclude material icons
+                    let buttonText = '';
+                    element.childNodes.forEach(node => {
+                        if (node.nodeType === Node.TEXT_NODE) {
+                            buttonText += node.textContent.trim() + ' ';
+                        } else if (node.nodeType === Node.ELEMENT_NODE && !node.classList.contains('material-icons')) {
+                            buttonText += node.textContent.trim() + ' ';
+                        }
+                    });
+                    buttonText = buttonText.trim();
+                    if (buttonText) {
+                        textToRead = `Button: ${buttonText}`;
+                        isClickable = true;
+                    } else {
+                        return; // Skip buttons with only icons
+                    }
+                }
+                else if (element.tagName === 'INPUT') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    const labelText = label ? label.textContent.trim() : '';
+                    const type = element.type || 'text';
+                    const value = element.value || '';
+
+                    if (type === 'checkbox' || type === 'radio') {
+                        const state = element.checked ? 'checked' : 'unchecked';
+                        textToRead = `${labelText || type} ${state}`;
+                    } else if (value) {
+                        textToRead = `${labelText || 'Input field'}: current value is ${value}`;
+                    } else {
+                        textToRead = `${labelText || 'Input field'}: ${element.placeholder || 'empty'}`;
+                    }
+                    isClickable = true;
+                }
+                else if (element.tagName === 'TEXTAREA') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    const value = element.value || '';
+                    textToRead = `Text area ${label ? label.textContent : ''}: ${value || element.placeholder || 'empty'}`;
+                    isClickable = true;
+                }
+                else if (element.tagName === 'SELECT') {
+                    const label = document.querySelector(`label[for="${element.id}"]`);
+                    const selectedOption = element.options[element.selectedIndex];
+                    const selectedText = selectedOption ? selectedOption.text : 'nothing selected';
+                    textToRead = `Dropdown menu: ${label ? label.textContent.trim() + ', ' : ''}currently selected: ${selectedText}`;
+                    isClickable = true;
+                }
+                else if (element.tagName === 'OPTION') {
+                    textToRead = element.textContent.trim();
+                    isClickable = false; // Don't add "clickable" prefix
+                }
+                else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
+                    textToRead = element.textContent.trim();
+                    isClickable = hasClickHandler;
+                }
+                else if (element.tagName === 'P') {
+                    textToRead = element.textContent.trim();
+                    isClickable = hasClickHandler;
+                }
+                else if (element.tagName === 'LABEL') {
+                    const forElement = element.getAttribute('for');
+                    const associatedInput = forElement ? document.getElementById(forElement) : null;
+                    textToRead = `Label: ${element.textContent.trim()}`;
+                    if (associatedInput) {
+                        textToRead += `. Associated with ${associatedInput.tagName.toLowerCase()}`;
+                    }
+                    isClickable = false;
+                }
+                else if (element.tagName === 'SPAN') {
+                    // Check if it's a counter value or price tag
+                    if (element.classList.contains('counter-value')) {
+                        textToRead = `Count: ${element.textContent.trim()}`;
+                    } else if (element.classList.contains('price-tag')) {
+                        textToRead = `Price: ${element.textContent.trim()}`;
+                    } else {
+                        textToRead = element.textContent.trim();
+                    }
+                    isClickable = hasClickHandler;
+                }
+                else if (element.tagName === 'NAV') {
+                    textToRead = 'Navigation menu';
+                    isClickable = false;
+                }
+                else if (element.tagName === 'FOOTER') {
+                    textToRead = 'Footer section';
+                    isClickable = false;
+                }
+                else if (element.tagName === 'HEADER') {
+                    textToRead = 'Header section';
+                    isClickable = false;
+                }
+                else if (element.tagName === 'SECTION') {
+                    const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+                    if (heading) {
+                        textToRead = `Section: ${heading.textContent.trim()}`;
+                    } else {
+                        return;
+                    }
+                    isClickable = hasClickHandler;
+                }
+                // Enhanced DIV reading
+                else if (element.tagName === 'DIV') {
+                    // Check for specific interactive components
+                    if (element.classList.contains('counter-group')) {
+                        const label = element.querySelector('.counter-label');
+                        const price = element.querySelector('.counter-price');
+                        const count = element.querySelector('.counter-value');
+                        if (label && count) {
+                            textToRead = `${label.textContent.trim()}: ${count.textContent.trim()} selected. ${price ? price.textContent.trim() : ''}`;
+                        }
+                        isClickable = true;
+                    } else if (element.classList.contains('visit-type-card')) {
+                        const title = element.querySelector('h4');
+                        const price = element.querySelector('.price-tag');
+                        const description = element.querySelector('p:not(.price-tag)');
+                        textToRead = `${title ? title.textContent.trim() : 'Visit option'}. ${price ? price.textContent.trim() : ''}. ${description ? description.textContent.trim() : ''}`;
+                        isClickable = true;
+                    } else if (element.classList.contains('calendar-date')) {
+                        const isSelected = element.classList.contains('selected');
+                        const isUnavailable = element.classList.contains('unavailable');
+                        const dateNum = element.textContent.trim();
+                        if (isUnavailable) {
+                            textToRead = `Date ${dateNum}: unavailable`;
+                        } else if (isSelected) {
+                            textToRead = `Date ${dateNum}: currently selected`;
+                        } else {
+                            textToRead = `Date ${dateNum}: available for booking`;
+                        }
+                        isClickable = !isUnavailable;
+                    } else if (element.classList.contains('form-group')) {
+                        const label = element.querySelector('.form-label');
+                        const input = element.querySelector('input, select, textarea');
+                        if (label) {
+                            textToRead = `Form field: ${label.textContent.trim()}`;
+                            if (input && input.tagName === 'SELECT') {
+                                const selected = input.options[input.selectedIndex];
+                                textToRead += `. Currently: ${selected ? selected.text : 'not selected'}`;
+                            }
+                        }
+                        isClickable = false;
+                    } else if (element.classList.contains('summary-item')) {
+                        textToRead = element.textContent.trim().replace(/\s+/g, ' ');
+                    } else if (element.classList.contains('summary-total')) {
+                        textToRead = `Total amount: ${element.textContent.trim().replace(/\s+/g, ' ')}`;
+                    } else if (element.classList.contains('member-status-card')) {
+                        const greeting = element.querySelector('#member-greeting');
+                        const desc = element.querySelector('#member-description');
+                        const badge = element.querySelector('#member-badge');
+                        if (greeting && desc && badge) {
+                            textToRead = `${greeting.textContent.trim()}. ${desc.textContent.trim()}. ${badge.textContent.trim()}`;
+                        }
+                    } else if (hasClickHandler) {
+                        const heading = element.querySelector('h1, h2, h3, h4, h5, h6');
+                        if (heading) {
+                            textToRead = heading.textContent.trim();
+                        } else {
+                            const firstText = element.textContent.trim().substring(0, 150);
+                            textToRead = firstText;
+                        }
+                        isClickable = true;
+                    } else {
+                        // Read direct text content only
+                        const directText = Array.from(element.childNodes)
+                            .filter(node => node.nodeType === Node.TEXT_NODE)
+                            .map(node => node.textContent.trim())
+                            .filter(text => text.length > 0)
+                            .join(' ');
+
+                        if (directText) {
+                            textToRead = directText;
+                        } else {
+                            return;
+                        }
+                    }
+                }
+                else {
+                    textToRead = Array.from(element.childNodes)
+                        .filter(node => node.nodeType === Node.TEXT_NODE)
+                        .map(node => node.textContent.trim())
+                        .filter(text => text.length > 0)
+                        .join(' ');
+
+                    isClickable = hasClickHandler;
+                }
+
+                // Clean up the text
+                textToRead = textToRead.trim().replace(/\s+/g, ' ');
+
+                // Add clickable indicator if needed
+                if (isClickable && textToRead && !textToRead.toLowerCase().includes('button') && !textToRead.toLowerCase().includes('link') && !textToRead.toLowerCase().includes('clickable')) {
+                    textToRead = `Clickable: ${textToRead}`;
+                }
+
+                // Speak if we have meaningful text
+                if (textToRead && textToRead.length > 1) {
+                    this.speak(textToRead);
+                    this.currentElement = element;
+                    this.highlightElement(element);
+                }
+            }
+
+            highlightElement(element) {
+                document.querySelectorAll('.sr-highlight').forEach(el => {
+                    el.classList.remove('sr-highlight');
+                });
+
+                element.classList.add('sr-highlight');
+                setTimeout(() => {
+                    element.classList.remove('sr-highlight');
+                }, 2000);
+            }
+
+            speak(text) {
+                if (!text || text.trim().length === 0) return;
+
+                this.stopSpeaking();
+
+                if (typeof responsiveVoice !== 'undefined') {
+                    responsiveVoice.speak(text, "US English Female", {
+                        rate: this.speed,
+                        pitch: 1,
+                        volume: 1
+                    });
+                } else {
+                    const utterance = new SpeechSynthesisUtterance(text);
+                    utterance.rate = this.speed;
+                    utterance.pitch = 1;
+                    utterance.volume = 1;
+                    window.speechSynthesis.speak(utterance);
+                }
+
+                this.isReading = true;
+            }
+
+            stopSpeaking() {
+                if (typeof responsiveVoice !== 'undefined') {
+                    responsiveVoice.cancel();
+                } else {
+                    window.speechSynthesis.cancel();
+                }
+                this.isReading = false;
+                this.currentElement = null;
+            }
+
+            updateSpeedLabel() {
+                const label = document.getElementById('speed-value');
+                if (this.speed < 0.8) {
+                    label.textContent = 'Slow';
+                } else if (this.speed > 1.2) {
+                    label.textContent = 'Fast';
+                } else {
+                    label.textContent = 'Normal';
+                }
+            }
+
+            saveSettings() {
+                localStorage.setItem('screenReaderSettings', JSON.stringify({
+                    enabled: this.isEnabled,
+                    autoHover: this.autoReadOnHover,
+                    readClick: this.readOnClick,
+                    speed: this.speed
+                }));
+            }
+
+            loadSettings() {
+                const saved = localStorage.getItem('screenReaderSettings');
+                if (saved) {
+                    const settings = JSON.parse(saved);
+                    this.isEnabled = settings.enabled || false;
+                    this.autoReadOnHover = settings.autoHover || false;
+                    this.readOnClick = settings.readClick || false;
+                    this.speed = settings.speed || 1.0;
+
+                    const hoverCheckbox = document.getElementById('auto-hover');
+                    const clickCheckbox = document.getElementById('read-click');
+
+                    document.getElementById('enable-reader').checked = this.isEnabled;
+                    document.getElementById('speed-control').value = this.speed;
+                    this.updateSpeedLabel();
+
+                    if (this.isEnabled) {
+                        hoverCheckbox.disabled = false;
+                        clickCheckbox.disabled = false;
+                        hoverCheckbox.checked = this.autoReadOnHover;
+                        clickCheckbox.checked = this.readOnClick;
+
+                        this.enableReader();
+                        if (this.autoReadOnHover) {
+                            this.enableHoverReading();
+                        }
+                    } else {
+                        hoverCheckbox.disabled = true;
+                        clickCheckbox.disabled = true;
+                        hoverCheckbox.checked = false;
+                        clickCheckbox.checked = false;
+                    }
+                }
+            }
+        }
+
+        // Initialize screen reader when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', () => {
+                window.screenReader = new ScreenReaderSystem();
+
+                document.addEventListener('click', (e) => {
+                    // Skip material icons
+                    if (e.target.classList && e.target.classList.contains('material-icons')) return;
+
+                    if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
+                        window.screenReader.readElement(e.target);
+                    }
+                });
+            });
+        } else {
+            window.screenReader = new ScreenReaderSystem();
+
+            document.addEventListener('click', (e) => {
+                // Skip material icons
+                if (e.target.classList && e.target.classList.contains('material-icons')) return;
+
+                if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
+                    window.screenReader.readElement(e.target);
+                }
+            });
+        }
     </script>
 </body>
+
 </html>

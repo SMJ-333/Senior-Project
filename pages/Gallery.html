@@ -795,7 +795,16 @@
             font-size: 0.85rem;
             font-weight: 700;
             box-shadow: 0 2px 8px rgba(231, 76, 60, 0.4);
-            animation: pulse 2s infinite;
+            animation: badgePulse 2s infinite;
+        }
+
+        @keyframes badgePulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .similarity-badge {
@@ -811,16 +820,28 @@
             box-shadow: 0 2px 8px rgba(39, 174, 96, 0.3);
         }
 
-        @keyframes pulse {
+        .loading-progress {
+            margin-top: 1rem;
+            padding: 1rem;
+            background: var(--neutral-light);
+            border-radius: 8px;
+            text-align: center;
+        }
 
-            0%,
-            100% {
-                transform: scale(1);
-            }
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-top: 0.5rem;
+        }
 
-            50% {
-                transform: scale(1.1);
-            }
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent-light));
+            transition: width 0.3s ease;
+            border-radius: 4px;
         }
 
         .accessibility-controls {
@@ -1106,6 +1127,13 @@
                                         This may take a few seconds
                                     </p>
                                 </div>
+
+                                <div id="loading-progress" class="loading-progress" style="display: none;">
+                                    <p>Loading artwork database: <span id="progress-text">0/0</span></p>
+                                    <div class="progress-bar">
+                                        <div id="progress-fill" class="progress-fill" style="width: 0%"></div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1246,7 +1274,6 @@
                 exhibition: exhibitionFilter.value
             };
             sessionStorage.setItem('galleryFilters', JSON.stringify(filterState));
-            // ✅ Also save exhibition filter separately
             if (exhibitionFilter.value) {
                 sessionStorage.setItem('galleryExhibitionFilter', exhibitionFilter.value);
             } else {
@@ -1389,7 +1416,6 @@
                     history.scrollRestoration = 'manual';
                 }
 
-                // Floating button logic
                 const floatingBtn = document.querySelector('.floating-btn');
                 if (floatingBtn) {
                     window.addEventListener('scroll', () => {
@@ -1406,12 +1432,10 @@
                     });
                 }
 
-                // Get URL parameters
                 const urlParams = new URLSearchParams(window.location.search);
                 const exhibitionParam = urlParams.get('exhibition');
                 const fromPage = urlParams.get('from');
 
-                // Clear scroll position if coming from ExhibitionDetails
                 if (fromPage && fromPage.includes('ExhibitionDetails')) {
                     sessionStorage.removeItem('scrollToArtwork');
                 }
@@ -1422,7 +1446,6 @@
                     allCollections = JSON.parse(cachedCollections);
                     filteredCollections = [...allCollections];
 
-                    // Set exhibition filter if provided in URL
                     if (exhibitionParam) {
                         exhibitionFilter.value = exhibitionParam;
                         sessionStorage.setItem('galleryExhibitionFilter', exhibitionParam);
@@ -1442,7 +1465,6 @@
                     filteredCollections = [...allCollections];
                     sessionStorage.setItem('collections_cache', JSON.stringify(allCollections));
 
-                    // Set exhibition filter if provided in URL
                     if (exhibitionParam) {
                         exhibitionFilter.value = exhibitionParam;
                         sessionStorage.setItem('galleryExhibitionFilter', exhibitionParam);
@@ -1457,7 +1479,6 @@
                     });
                 }
 
-                // Handle scroll to artwork (only if NOT coming from ExhibitionDetails)
                 const scrollToArtwork = sessionStorage.getItem('scrollToArtwork');
                 if (scrollToArtwork && (!fromPage || !fromPage.includes('ExhibitionDetails'))) {
                     setTimeout(() => {
@@ -1490,15 +1511,16 @@
             }
         });
 
-
-        // استبدل قسم Visual Search في Gallery.html بهذا الكود المحسّن:
-
-        // 🔍 Visual Search System
+        // ============ IMPROVED VISUAL SEARCH SYSTEM ============
         let mobilenetModel = null;
-        let imageFeatures = new Map(); // Store features for all artworks
+        let imageFeatures = new Map();
+        let isLoadingFeatures = false;
+        let featuresLoaded = false;
 
         // Load MobileNet model
         async function loadModel() {
+            if (mobilenetModel) return true;
+            
             try {
                 console.log('🤖 Loading AI model...');
                 mobilenetModel = await mobilenet.load();
@@ -1517,6 +1539,14 @@
             }
 
             try {
+                // Ensure image is loaded
+                if (!imageElement.complete) {
+                    await new Promise((resolve, reject) => {
+                        imageElement.onload = resolve;
+                        imageElement.onerror = reject;
+                    });
+                }
+
                 const activation = mobilenetModel.infer(imageElement, true);
                 const features = await activation.data();
                 activation.dispose();
@@ -1547,54 +1577,154 @@
 
         // Find similar artworks
         async function findSimilarArtworks(uploadedImageFeatures) {
+            console.log(`🔍 Searching through ${imageFeatures.size} artworks...`);
             const similarities = [];
 
             for (const [artworkId, features] of imageFeatures.entries()) {
                 const similarity = cosineSimilarity(uploadedImageFeatures, features);
-                similarities.push({
-                    artwork: allCollections.find(c => c.id === artworkId),
-                    similarity: similarity
-                });
+                const artwork = allCollections.find(c => c.id === artworkId);
+                
+                if (artwork) {
+                    similarities.push({
+                        artwork: artwork,
+                        similarity: similarity
+                    });
+                }
             }
 
             // Sort by similarity (highest first)
             similarities.sort((a, b) => b.similarity - a.similarity);
 
-            // Return top 10 results with similarity > 0.3
-            return similarities.filter(s => s.similarity > 0.3).slice(0, 10);
+            console.log(`✅ Found ${similarities.length} comparisons`);
+            console.log('Top 5 matches:', similarities.slice(0, 5).map(s => ({
+                title: s.artwork.title,
+                similarity: (s.similarity * 100).toFixed(1) + '%'
+            })));
+
+            // Return top results with similarity > 0.2 (lowered threshold for better results)
+            return similarities.filter(s => s.similarity > 0.2).slice(0, 20);
         }
 
-        // Preload features for all artworks
-        async function preloadArtworkFeatures() {
+        // Preload features for all artworks with progress tracking
+        async function preloadArtworkFeatures(showProgress = false) {
+            if (isLoadingFeatures || featuresLoaded) {
+                console.log('⏭️ Features already loading or loaded');
+                return;
+            }
+
+            isLoadingFeatures = true;
+
             if (!mobilenetModel) {
                 await loadModel();
             }
 
-            console.log('🔄 Preloading artwork features...');
+            const progressEl = document.getElementById('loading-progress');
+            const progressText = document.getElementById('progress-text');
+            const progressFill = document.getElementById('progress-fill');
+
+            if (showProgress) {
+                progressEl.style.display = 'block';
+            }
+
+            console.log(`🔄 Starting to load features for ${allCollections.length} artworks...`);
+            
+            let processed = 0;
+            let successful = 0;
+            const total = allCollections.length;
 
             for (const artwork of allCollections) {
-                if (artwork.imageURL && !imageFeatures.has(artwork.id)) {
-                    try {
-                        const img = new Image();
-                        img.crossOrigin = 'anonymous';
+                if (!artwork.imageURL || imageFeatures.has(artwork.id)) {
+                    processed++;
+                    continue;
+                }
 
-                        await new Promise((resolve, reject) => {
-                            img.onload = resolve;
-                            img.onerror = reject;
-                            img.src = artwork.imageURL;
-                        });
+                try {
+                    const img = new Image();
+                    img.crossOrigin = 'anonymous';
 
-                        const features = await extractFeatures(img);
-                        if (features) {
-                            imageFeatures.set(artwork.id, features);
-                        }
-                    } catch (error) {
-                        console.warn(`Failed to extract features for ${artwork.title}:`, error);
+                    await new Promise((resolve, reject) => {
+                        const timeout = setTimeout(() => {
+                            reject(new Error('Image load timeout'));
+                        }, 10000); // 10 second timeout
+
+                        img.onload = () => {
+                            clearTimeout(timeout);
+                            resolve();
+                        };
+                        
+                        img.onerror = () => {
+                            clearTimeout(timeout);
+                            reject(new Error('Image load failed'));
+                        };
+                        
+                        img.src = artwork.imageURL;
+                    });
+
+                    const features = await extractFeatures(img);
+                    
+                    if (features && features.length > 0) {
+                        imageFeatures.set(artwork.id, features);
+                        successful++;
                     }
+
+                } catch (error) {
+                    console.warn(`⚠️ Failed to process ${artwork.title}:`, error.message);
+                }
+
+                processed++;
+
+                // Update progress
+                if (showProgress && progressEl && progressText && progressFill) {
+                    progressText.textContent = `${processed}/${total}`;
+                    progressFill.style.width = `${(processed / total) * 100}%`;
+                }
+
+                // Log progress every 10 items
+                if (processed % 10 === 0) {
+                    console.log(`📊 Progress: ${processed}/${total} processed, ${successful} successful`);
                 }
             }
 
-            console.log(`✅ Loaded features for ${imageFeatures.size} artworks`);
+            if (showProgress && progressEl) {
+                setTimeout(() => {
+                    progressEl.style.display = 'none';
+                }, 1000);
+            }
+
+            console.log(`✅ Feature loading complete: ${successful}/${total} artworks processed successfully`);
+            featuresLoaded = true;
+            isLoadingFeatures = false;
+
+            // Cache features in sessionStorage
+            try {
+                const featuresToCache = {};
+                imageFeatures.forEach((value, key) => {
+                    featuresToCache[key] = value;
+                });
+                sessionStorage.setItem('artwork_features', JSON.stringify(featuresToCache));
+                console.log('💾 Features cached to sessionStorage');
+            } catch (e) {
+                console.warn('Failed to cache features:', e);
+            }
+        }
+
+        // Try to load cached features
+        function loadCachedFeatures() {
+            try {
+                const cached = sessionStorage.getItem('artwork_features');
+                if (cached) {
+                    const featureObj = JSON.parse(cached);
+                    Object.entries(featureObj).forEach(([key, value]) => {
+                        imageFeatures.set(key, value);
+                    });
+                    console.log(`✅ Loaded ${imageFeatures.size} cached features`);
+                    featuresLoaded = true;
+                    return true;
+                }
+            } catch (e) {
+                console.warn('Failed to load cached features:', e);
+            }
+            return false;
         }
 
         // UI Handlers
@@ -1620,9 +1750,14 @@
                 await loadModel();
             }
 
-            // Preload features if not done yet
-            if (imageFeatures.size === 0) {
-                setTimeout(preloadArtworkFeatures, 1000);
+            // Try to load cached features first
+            if (!featuresLoaded) {
+                const hasCached = loadCachedFeatures();
+                
+                // If no cache or incomplete, start preloading
+                if (!hasCached || imageFeatures.size < allCollections.length * 0.9) {
+                    setTimeout(() => preloadArtworkFeatures(true), 500);
+                }
             }
         });
 
@@ -1690,6 +1825,8 @@
 
                     if (!uploadedImageFeatures) {
                         alert('Failed to analyze image. Please try another one.');
+                    } else {
+                        console.log('✅ Uploaded image features extracted successfully');
                     }
                 };
                 uploadedImage.src = e.target.result;
@@ -1703,7 +1840,22 @@
                 return;
             }
 
+            // Ensure features are loaded
+            if (imageFeatures.size === 0) {
+                processingIndicator.classList.add('active');
+                processingIndicator.querySelector('p').textContent = 'Loading artwork database...';
+                
+                await preloadArtworkFeatures(true);
+                
+                if (imageFeatures.size === 0) {
+                    alert('Failed to load artwork database. Please try again.');
+                    processingIndicator.classList.remove('active');
+                    return;
+                }
+            }
+
             processingIndicator.classList.add('active');
+            processingIndicator.querySelector('p').textContent = 'Searching for similar artworks...';
             searchSimilarBtn.disabled = true;
 
             try {
@@ -1756,6 +1908,7 @@
                 alert('An error occurred. Please try again.');
             } finally {
                 processingIndicator.classList.remove('active');
+                processingIndicator.querySelector('p').textContent = 'Analyzing image with AI...';
                 searchSimilarBtn.disabled = false;
             }
         });
@@ -1814,7 +1967,6 @@
             }
 
             attachSelectListeners() {
-                // Add listeners to all select elements to read options on keyboard navigation
                 document.addEventListener('change', (e) => {
                     if (this.isEnabled && e.target.tagName === 'SELECT') {
                         const selectedOption = e.target.options[e.target.selectedIndex];
@@ -1824,7 +1976,6 @@
                     }
                 });
 
-                // Handle keyboard navigation in selects
                 document.addEventListener('keydown', (e) => {
                     if (this.isEnabled && e.target.tagName === 'SELECT') {
                         if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
@@ -1838,7 +1989,6 @@
                     }
                 });
 
-                // Handle hover over options (using mouseenter on SELECT to detect when options are hovered)
                 document.addEventListener('mouseenter', (e) => {
                     if (this.isEnabled && this.autoReadOnHover && e.target.tagName === 'OPTION') {
                         const text = e.target.textContent.trim();
@@ -1847,9 +1997,8 @@
                             this.currentElement = e.target;
                         }
                     }
-                }, true); // Use capture phase
+                }, true);
 
-                // Also handle focus events on options
                 document.addEventListener('focus', (e) => {
                     if (this.isEnabled && this.autoReadOnHover && e.target.tagName === 'OPTION') {
                         const text = e.target.textContent.trim();
@@ -1858,7 +2007,7 @@
                             this.currentElement = e.target;
                         }
                     }
-                }, true); // Use capture phase
+                }, true);
             }
 
             createAccessibilityControls() {
@@ -2013,7 +2162,6 @@
 
                 const element = e.target;
 
-                // Skip material icons
                 if (element.classList && element.classList.contains('material-icons')) return;
 
                 if (element.tagName === 'OPTION') {
@@ -2035,12 +2183,10 @@
 
                 const element = e.target;
 
-                // Skip material icons
                 if (element.classList && element.classList.contains('material-icons')) return;
 
                 clearTimeout(this.hoverTimeout);
 
-                // Use shorter delay for dropdown options
                 const delay = element.tagName === 'OPTION' ? 100 : 500;
 
                 this.hoverTimeout = setTimeout(() => {
@@ -2056,13 +2202,10 @@
                 if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(element.tagName)) return;
                 if (element.offsetParent === null && element.tagName !== 'BODY') return;
 
-                // Skip material icons
                 if (element.classList && element.classList.contains('material-icons')) return;
 
-                // Skip if parent is a material icon
                 if (element.parentElement && element.parentElement.classList && element.parentElement.classList.contains('material-icons')) return;
 
-                // Skip if element contains only a material icon as child
                 const iconChild = element.querySelector('.material-icons');
                 if (iconChild && element.textContent.trim() === iconChild.textContent.trim()) return;
 
@@ -2075,17 +2218,14 @@
                     element.classList.contains('clickable') ||
                     element.hasAttribute('role') && element.getAttribute('role') === 'button';
 
-                // Priority 1: Aria-label
                 if (element.getAttribute('aria-label')) {
                     textToRead = element.getAttribute('aria-label');
                     isClickable = hasClickHandler;
                 }
-                // Priority 2: Title attribute
                 else if (element.getAttribute('title')) {
                     textToRead = element.getAttribute('title');
                     isClickable = hasClickHandler;
                 }
-                // Priority 3: Specific element types
                 else if (element.tagName === 'IMG') {
                     textToRead = element.alt || 'Image';
                     isClickable = hasClickHandler;
@@ -2095,7 +2235,6 @@
                     isClickable = true;
                 }
                 else if (element.tagName === 'BUTTON') {
-                    // Get text content but exclude material icons
                     let buttonText = '';
                     element.childNodes.forEach(node => {
                         if (node.nodeType === Node.TEXT_NODE) {
@@ -2109,7 +2248,7 @@
                         textToRead = `Button: ${buttonText}`;
                         isClickable = true;
                     } else {
-                        return; // Skip buttons with only icons
+                        return;
                     }
                 }
                 else if (element.tagName === 'INPUT') {
@@ -2143,7 +2282,7 @@
                 }
                 else if (element.tagName === 'OPTION') {
                     textToRead = element.textContent.trim();
-                    isClickable = false; // Don't add "clickable" prefix
+                    isClickable = false;
                 }
                 else if (['H1', 'H2', 'H3', 'H4', 'H5', 'H6'].includes(element.tagName)) {
                     textToRead = element.textContent.trim();
@@ -2163,7 +2302,6 @@
                     isClickable = false;
                 }
                 else if (element.tagName === 'SPAN') {
-                    // Check if it's a counter value or price tag
                     if (element.classList.contains('counter-value')) {
                         textToRead = `Count: ${element.textContent.trim()}`;
                     } else if (element.classList.contains('price-tag')) {
@@ -2194,9 +2332,7 @@
                     }
                     isClickable = hasClickHandler;
                 }
-                // Enhanced DIV reading
                 else if (element.tagName === 'DIV') {
-                    // Check for specific interactive components
                     if (element.classList.contains('counter-group')) {
                         const label = element.querySelector('.counter-label');
                         const price = element.querySelector('.counter-price');
@@ -2255,7 +2391,6 @@
                         }
                         isClickable = true;
                     } else {
-                        // Read direct text content only
                         const directText = Array.from(element.childNodes)
                             .filter(node => node.nodeType === Node.TEXT_NODE)
                             .map(node => node.textContent.trim())
@@ -2279,15 +2414,12 @@
                     isClickable = hasClickHandler;
                 }
 
-                // Clean up the text
                 textToRead = textToRead.trim().replace(/\s+/g, ' ');
 
-                // Add clickable indicator if needed
                 if (isClickable && textToRead && !textToRead.toLowerCase().includes('button') && !textToRead.toLowerCase().includes('link') && !textToRead.toLowerCase().includes('clickable')) {
                     textToRead = `Clickable: ${textToRead}`;
                 }
 
-                // Speak if we have meaningful text
                 if (textToRead && textToRead.length > 1) {
                     this.speak(textToRead);
                     this.currentElement = element;
@@ -2394,13 +2526,11 @@
             }
         }
 
-        // Initialize screen reader when DOM is ready
         if (document.readyState === 'loading') {
             document.addEventListener('DOMContentLoaded', () => {
                 window.screenReader = new ScreenReaderSystem();
 
                 document.addEventListener('click', (e) => {
-                    // Skip material icons
                     if (e.target.classList && e.target.classList.contains('material-icons')) return;
 
                     if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {
@@ -2412,7 +2542,6 @@
             window.screenReader = new ScreenReaderSystem();
 
             document.addEventListener('click', (e) => {
-                // Skip material icons
                 if (e.target.classList && e.target.classList.contains('material-icons')) return;
 
                 if (window.screenReader && window.screenReader.isEnabled && window.screenReader.readOnClick) {

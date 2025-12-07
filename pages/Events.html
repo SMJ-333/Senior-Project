@@ -1205,7 +1205,7 @@
         function isEventSoldOut(event) {
             // Use dailyBookings from the Event document itself
             const dailyBookings = event.dailyBookings || {};
-            
+
             if (Object.keys(dailyBookings).length === 0) {
                 console.log(`Event "${event.title}": No bookings yet`);
                 return false;
@@ -1213,7 +1213,7 @@
 
             const start = event.startDate?.toDate();
             const end = event.endDate?.toDate();
-            
+
             if (!start || !end) return false;
 
             console.log(`Event "${event.title}": Start: ${start.toDateString()}, End: ${end.toDateString()}`);
@@ -1224,7 +1224,7 @@
             currentDate.setHours(0, 0, 0, 0);
             const endDateNormalized = new Date(end);
             endDateNormalized.setHours(0, 0, 0, 0);
-            
+
             while (currentDate <= endDateNormalized) {
                 // Format to match: "Tuesday, November 25, 2025"
                 const dateStr = currentDate.toLocaleDateString('en-US', {
@@ -1248,7 +1248,7 @@
             for (const date of eventDates) {
                 const bookings = dailyBookings[date] || 0;
                 console.log(`  - ${date}: ${bookings}/${event.maxAttendeesPerDay} booked ${bookings >= event.maxAttendeesPerDay ? '✓ FULL' : '✗ AVAILABLE'}`);
-                
+
                 if (bookings < event.maxAttendeesPerDay) {
                     allDaysSoldOut = false;
                 }
@@ -1499,26 +1499,26 @@
 
             grid.innerHTML = events.map(event => {
                 const soldOut = isEventSoldOut(event);
-                
+
                 // Calculate percentage of total capacity booked
                 const start = event.startDate?.toDate();
                 const end = event.endDate?.toDate();
                 let capacityPercentage = 0;
-                
+
                 if (start && end) {
                     const timeDiff = end.getTime() - start.getTime();
                     const totalDays = Math.ceil(timeDiff / (1000 * 3600 * 24)) + 1;
                     const totalCapacity = event.maxAttendeesPerDay * totalDays;
-                    
+
                     let totalBookings = 0;
                     if (event.dailyBookings) {
                         for (const count of Object.values(event.dailyBookings)) {
                             totalBookings += count;
                         }
                     }
-                    
+
                     capacityPercentage = (totalBookings / totalCapacity) * 100;
-                    
+
                     console.log(`Badge calculation for "${event.title}":`, {
                         totalBookings,
                         totalCapacity,
@@ -1527,7 +1527,7 @@
                         almostSoldOut: !soldOut && capacityPercentage >= 80
                     });
                 }
-                
+
                 const almostSoldOut = !soldOut && capacityPercentage >= 80;
 
                 return `
@@ -1546,7 +1546,7 @@
                             </div>
                         </div>
                         `}
-                        ${soldOut ? '<span class="event-badge sold-out">Sold Out</span>' : 
+                        ${soldOut ? '<span class="event-badge sold-out">Sold Out</span>' :
                         (almostSoldOut ? '<span class="event-badge almost-sold-out">Almost Sold Out</span>' : '')}
                     </div>
                     <div class="event-content">
@@ -1596,8 +1596,8 @@
                     <p style="font-size: 0.85rem; color: var(--accent); font-weight: 600;">
                         <i class="fas fa-users"></i> ${event.maxAttendeesPerDay} participants per day
                     </p>
-                    <a href="#" onclick="window.notifyMe('${event.id}'); return false;">
-                        <i class="far fa-bell"></i> Notify Me
+                    <a href="#" onclick="window.registerForEvent('${event.id}'); return false;">
+                        <i class="fas fa-ticket-alt"></i> Register Now
                     </a>
                 </div>
             `;
@@ -1627,36 +1627,24 @@
             displayUpcomingEvents(upcomingEvents);
         }
 
-        // Notify Me function
-        window.notifyMe = async function (eventId) {
-            if (!currentUser) {
-                alert('Please sign in to receive notifications about upcoming events.');
-                window.location.href = 'Account.html';
-                return;
-            }
-
-            const event = allEvents.find(e => e.id === eventId);
-            if (!event) return;
-
-            alert(`✓ You will be notified when "${event.title}" starts!\n\nWe'll send you a reminder before the event.`);
-        }
-
         // ===== REGISTER FOR EVENT - WITH SOLD OUT CHECK =====
         window.registerForEvent = function (eventId) {
             const event = allEvents.find(e => e.id === eventId);
-            if (!event) return;
+            if (!event) {
+                console.error('❌ Event not found:', eventId);
+                return;
+            }
 
-            // Check if event is sold out
             if (isEventSoldOut(event)) {
-                alert('⚠️ Sorry, this event is completely sold out!\n\nAll dates for this event have reached maximum capacity. Please check our other events or sign up for notifications when similar events become available.');
+                alert('⚠️ Sorry, this event is completely sold out!\n\nAll dates for this event have reached maximum capacity.');
                 return;
             }
 
             console.log('🎫 Redirecting to Ticketing page for event:', event.title);
+            console.log('🔗 URL will be:', `Ticketing.html?type=special-events&event=${encodeURIComponent(event.title)}`);
 
-            // Navigate to Ticketing page with query parameters to auto-select event and show calendar
-            // Pass both event name and ID for proper selection
-            window.location.href = `Ticketing.html?type=special-events&eventId=${encodeURIComponent(eventId)}&event=${encodeURIComponent(event.title)}&showCalendar=true`;
+            // Navigate with EXACT event title
+            window.location.href = `Ticketing.html?type=special-events&event=${encodeURIComponent(event.title)}`;
         }
 
         window.addEventListener('scroll', function () {
