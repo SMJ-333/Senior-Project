@@ -1250,14 +1250,13 @@
                     return;
                 }
 
-                // ✅ UPDATED: Save as maxAttendeesPerDay
                 const eventData = {
                     title: eventTitle,
                     description: document.getElementById('event-description').value,
                     startDate: createTimestamp(startDate, startTime),
                     endDate: createTimestamp(endDate, endTime),
                     location: document.getElementById('event-location').value,
-                    maxAttendeesPerDay: maxPerDay,  // ✅ Changed from maxAttendees
+                    maxAttendeesPerDay: maxPerDay,
                     price: eventPrice,
                     imageUrl: imageUrl || ''
                 };
@@ -1266,31 +1265,94 @@
 
                 try {
                     if (id) {
-                        // UPDATE EXISTING EVENT
+                        // ✅✅✅ UPDATE EXISTING EVENT - TRACK ALL CHANGES ✅✅✅
                         const currentEvent = events.find(e => e.id === id);
                         const changes = [];
 
-                        if (currentEvent && currentEvent.name !== eventTitle) {
-                            changes.push(`title from "${currentEvent.name}" to "${eventTitle}"`);
+                        if (currentEvent) {
+                            // 1. Track TITLE change
+                            if (currentEvent.name !== eventTitle) {
+                                changes.push(`title from "${currentEvent.name}" to "${eventTitle}"`);
+                            }
+
+                            // 2. Track DESCRIPTION change
+                            const newDescription = document.getElementById('event-description').value;
+                            if (currentEvent.description !== newDescription) {
+                                const oldDesc = currentEvent.description || '(empty)';
+                                const newDesc = newDescription || '(empty)';
+                                const oldPreview = oldDesc.length > 30 ? oldDesc.substring(0, 30) + '...' : oldDesc;
+                                const newPreview = newDesc.length > 30 ? newDesc.substring(0, 30) + '...' : newDesc;
+                                changes.push(`description from "${oldPreview}" to "${newPreview}"`);
+                            }
+
+                            // 3. Track START DATE/TIME change
+                            const newStartDate = createTimestamp(startDate, startTime);
+                            if (currentEvent.startDate) {
+                                const oldStartTime = currentEvent.startDate.toDate().getTime();
+                                const newStartTime = newStartDate.toDate().getTime();
+                                if (oldStartTime !== newStartTime) {
+                                    const oldStart = `${formatDate(currentEvent.startDate)} ${formatTime(currentEvent.startDate)}`;
+                                    const newStart = `${startDate} ${startTime}`;
+                                    changes.push(`start from ${oldStart} to ${newStart}`);
+                                }
+                            }
+
+                            // 4. Track END DATE/TIME change
+                            const newEndDate = createTimestamp(endDate, endTime);
+                            if (currentEvent.endDate) {
+                                const oldEndTime = currentEvent.endDate.toDate().getTime();
+                                const newEndTime = newEndDate.toDate().getTime();
+                                if (oldEndTime !== newEndTime) {
+                                    const oldEnd = `${formatDate(currentEvent.endDate)} ${formatTime(currentEvent.endDate)}`;
+                                    const newEnd = `${endDate} ${endTime}`;
+                                    changes.push(`end from ${oldEnd} to ${newEnd}`);
+                                }
+                            }
+
+                            // 5. Track LOCATION change
+                            const newLocation = document.getElementById('event-location').value;
+                            if (currentEvent.location !== newLocation) {
+                                changes.push(`location from "${currentEvent.location}" to "${newLocation}"`);
+                            }
+
+                            // 6. Track PRICE change
+                            if (currentEvent.price !== eventPrice) {
+                                changes.push(`price from $${currentEvent.price} to $${eventPrice}`);
+                            }
+
+                            // 7. Track MAX PARTICIPANTS PER DAY change
+                            if (currentEvent.maxAttendeesPerDay !== maxPerDay) {
+                                changes.push(`max per day from ${currentEvent.maxAttendeesPerDay} to ${maxPerDay}`);
+                            }
+
+                            // 8. Track IMAGE URL change
+                            const oldImage = currentEvent.imageUrl || '';
+                            if (oldImage !== imageUrl) {
+                                if (!oldImage && imageUrl) {
+                                    changes.push(`image added`);
+                                } else if (oldImage && !imageUrl) {
+                                    changes.push(`image removed`);
+                                } else if (oldImage !== imageUrl) {
+                                    changes.push(`image URL updated`);
+                                }
+                            }
                         }
 
-                        if (currentEvent && currentEvent.maxAttendeesPerDay !== maxPerDay) {
-                            changes.push(`max per day from ${currentEvent.maxAttendeesPerDay} to ${maxPerDay}`);
-                        }
-
-                        // Other change tracking...
-
+                        // Save to Firebase
                         await updateDoc(doc(db, "Events", id), eventData);
 
-                        const changesText = changes.length > 0 ? changes.join(', ') : 'no changes detected';
+                        // Log activity with all changes
+                        const changesText = changes.length > 0 ? changes.join(' • ') : 'saved with no changes';
                         await logActivity('event', 'updated', eventTitle, {
-                            changes: changesText
+                            changes: changesText,
+                            fieldsModified: changes.length
                         });
 
-                        alert('Event updated successfully!');
+                        console.log('✓ Event updated. Changes:', changesText);
+                        alert(`Event updated successfully!\n\nChanges: ${changes.length > 0 ? changes.join('\n') : 'None'}`);
                     } else {
-                        // ADD NEW EVENT
-                        console.log('Creating event with per-day capacity:', eventData);
+                        // ✅ ADD NEW EVENT
+                        console.log('Creating new event:', eventData);
                         const docRef = await addDoc(collection(db, "Events"), eventData);
                         console.log('✓ Event created with ID:', docRef.id);
 
@@ -1298,6 +1360,8 @@
                             location: eventData.location,
                             price: eventPrice,
                             maxAttendeesPerDay: maxPerDay,
+                            startDate: startDate,
+                            endDate: endDate,
                             hasImage: !!eventData.imageUrl
                         });
 

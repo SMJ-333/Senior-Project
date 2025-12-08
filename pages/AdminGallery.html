@@ -1524,7 +1524,7 @@
             }
         });
 
-        // Form submission
+        // Form submission with COMPREHENSIVE CHANGE TRACKING
         document.getElementById('artworkForm').addEventListener('submit', async function(e) {
             e.preventDefault();
 
@@ -1553,17 +1553,114 @@
 
             try {
                 if (id) {
+                    // ✅✅✅ UPDATE EXISTING ARTWORK - TRACK ALL CHANGES ✅✅✅
+                    const currentArtwork = allArtworks.find(item => item.id === id);
+                    const changes = [];
+
+                    if (currentArtwork) {
+                        // 1. Track TITLE change
+                        const oldTitle = currentArtwork.title || '';
+                        if (oldTitle !== artworkTitle) {
+                            changes.push(`title from "${oldTitle}" to "${artworkTitle}"`);
+                        }
+
+                        // 2. Track ARTIST change
+                        const oldArtist = currentArtwork.artist || currentArtwork.artistName || '';
+                        const newArtist = artworkData.artist;
+                        if (oldArtist !== newArtist) {
+                            changes.push(`artist from "${oldArtist}" to "${newArtist}"`);
+                        }
+
+                        // 3. Track CATEGORY/CLASSIFICATION change
+                        const oldCategory = currentArtwork.classification || '';
+                        if (oldCategory !== artworkCategory) {
+                            changes.push(`category from "${oldCategory}" to "${artworkCategory}"`);
+                        }
+
+                        // 4. Track DESCRIPTION change
+                        const oldDesc = currentArtwork.description || '';
+                        const newDesc = artworkData.description;
+                        if (oldDesc !== newDesc) {
+                            const oldPreview = oldDesc.length > 30 ? oldDesc.substring(0, 30) + '...' : oldDesc || '(empty)';
+                            const newPreview = newDesc.length > 30 ? newDesc.substring(0, 30) + '...' : newDesc || '(empty)';
+                            changes.push(`description from "${oldPreview}" to "${newPreview}"`);
+                        }
+
+                        // 5. Track IMAGE URL change
+                        const oldImage = currentArtwork.imageURL || '';
+                        const newImage = artworkData.imageURL;
+                        if (oldImage !== newImage) {
+                            if (!oldImage && newImage) {
+                                changes.push(`image added`);
+                            } else if (oldImage && !newImage) {
+                                changes.push(`image removed`);
+                            } else if (oldImage !== newImage) {
+                                changes.push(`image URL updated`);
+                            }
+                        }
+
+                        // 6. Track EXHIBITION change
+                        const oldExhibition = currentArtwork.Exhibition || '';
+                        const newExhibition = artworkData.Exhibition;
+                        if (oldExhibition !== newExhibition) {
+                            changes.push(`exhibition from "${oldExhibition}" to "${newExhibition}"`);
+                        }
+
+                        // 7. Track GEOGRAPHY change
+                        const oldGeography = currentArtwork.Geography || '';
+                        const newGeography = artworkData.Geography;
+                        if (oldGeography !== newGeography) {
+                            changes.push(`geography from "${oldGeography}" to "${newGeography}"`);
+                        }
+
+                        // 8. Track MATERIAL change
+                        const oldMaterial = currentArtwork.material || '';
+                        const newMaterial = artworkData.material;
+                        if (oldMaterial !== newMaterial) {
+                            changes.push(`material from "${oldMaterial}" to "${newMaterial}"`);
+                        }
+
+                        // 9. Track DIMENSIONS change
+                        const oldDimensions = currentArtwork.dimensions || '';
+                        const newDimensions = artworkData.dimensions;
+                        if (oldDimensions !== newDimensions) {
+                            changes.push(`dimensions from "${oldDimensions}" to "${newDimensions}"`);
+                        }
+
+                        // 10. Track YEAR change
+                        const oldYear = currentArtwork.year || '';
+                        const newYear = artworkData.year;
+                        if (oldYear !== newYear) {
+                            changes.push(`year from "${oldYear}" to "${newYear}"`);
+                        }
+                    }
+
+                    // Save to Firebase
                     await updateDoc(doc(db, "Museum_Collection", id), artworkData);
+
+                    // Log activity with all changes
+                    const changesText = changes.length > 0 ? changes.join(' • ') : 'saved with no changes';
                     await logActivity('gallery', 'updated', artworkTitle, {
-                        category: artworkCategory
+                        category: artworkCategory,
+                        changes: changesText,
+                        fieldsModified: changes.length
                     });
-                    alert('Artwork updated successfully!');
+
+                    console.log('✓ Artwork updated. Changes:', changesText);
+                    alert(`Artwork updated successfully!\n\nChanges: ${changes.length > 0 ? changes.join('\n') : 'None'}`);
                 } else {
+                    // ✅ ADD NEW ARTWORK
+                    console.log('Creating new artwork:', artworkData);
                     await addDoc(collection(db, "Museum_Collection"), artworkData);
+                    
                     await logActivity('gallery', 'uploaded', artworkTitle, {
                         category: artworkCategory,
+                        artist: artworkData.artist,
+                        exhibition: artworkData.Exhibition,
+                        hasImage: !!artworkData.imageURL,
                         count: 1
                     });
+
                     alert('Artwork added successfully!');
                 }
 

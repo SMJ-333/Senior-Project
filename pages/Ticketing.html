@@ -2868,11 +2868,7 @@
         }
 
 
-        // ===================================================================
-        // FIXED AUTO-SELECTION - Handles full option text matching
-        // ===================================================================
-        // Replace your auto-selection code with this
-        // ===================================================================
+        // FIXED AUTO-SELECTION WITH NAVIGATION DETECTION
 
         console.log('🚀 Auto-selection code loaded');
 
@@ -2884,12 +2880,23 @@
         console.log('📋 URL Parameters:', {
             type: autoSelectType,
             event: autoSelectEvent,
-            fullURL: window.location.href
+            fullURL: window.location.href,
+            referrer: document.referrer
         });
 
-        // Check if we should auto-select
-        if (autoSelectType === 'special-events' && autoSelectEvent) {
-            console.log('🎯 AUTO-SELECTION ACTIVATED!');
+        // ✅ CONDITION 1: Direct link with URL parameters (from Events page with "Book Event" button)
+        const hasUrlParams = autoSelectType === 'special-events' && autoSelectEvent;
+
+        // ✅ CONDITION 2: Coming from navigation bar (no URL params, but from same origin)
+        const fromNavigation = !autoSelectType && !autoSelectEvent &&
+            document.referrer.includes(window.location.origin);
+
+        // ✅ CONDITION 3: Fresh page load (direct URL or external referrer)
+        const freshLoad = !document.referrer || !document.referrer.includes(window.location.origin);
+
+        if (hasUrlParams) {
+            // Case 1: User clicked "Book Event" from Events page
+            console.log('🎯 AUTO-SELECTION ACTIVATED (from Events page)!');
             console.log('   Looking for event:', autoSelectEvent);
 
             // Wait for page to be fully ready
@@ -2899,8 +2906,49 @@
                 // DOM already loaded, trigger immediately
                 setTimeout(triggerAutoSelection, 100);
             }
+        } else if (fromNavigation) {
+            // Case 2: User clicked "Ticketing" from navigation bar
+            console.log('🧭 User came from NAVIGATION BAR');
+            console.log('   Loading all available events for browsing');
+
+            // Load events normally without auto-selection
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    loadCurrentEvents();
+                });
+            } else {
+                setTimeout(() => {
+                    loadCurrentEvents();
+                }, 100);
+            }
+        } else if (freshLoad) {
+            // Case 3: Direct URL access or external link
+            console.log('🌐 Fresh page load (direct URL or external link)');
+            console.log('   Loading all available events');
+
+            // Load events for normal browsing
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    loadCurrentEvents();
+                });
+            } else {
+                setTimeout(() => {
+                    loadCurrentEvents();
+                }, 100);
+            }
         } else {
-            console.log('ℹ️ No auto-selection needed');
+            // Fallback case
+            console.log('ℹ️ Default page load - loading events');
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', () => {
+                    loadCurrentEvents();
+                });
+            } else {
+                setTimeout(() => {
+                    loadCurrentEvents();
+                }, 100);
+            }
         }
 
         async function triggerAutoSelection() {

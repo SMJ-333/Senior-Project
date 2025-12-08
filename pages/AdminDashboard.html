@@ -843,46 +843,63 @@
         }
 
         function formatActivityDescription(activity) {
-            // Handle event updates with detailed changes
+            // ✅✅✅ COMPREHENSIVE CHANGE DETECTION FOR ALL TYPES ✅✅✅
+            
+            // ✅ 1. EVENTS - Show all field changes
             if (activity.type === 'event' && activity.action === 'updated' && activity.metadata?.changes) {
                 return {
                     main: `<strong>Event updated:</strong> ${activity.targetTitle}`,
-                    changes: activity.metadata.changes
+                    changes: `Changes: ${activity.metadata.changes}`
                 };
             }
 
-            // Handle news updates with detailed changes
-            if (activity.type === 'news' && activity.action === 'updated' && activity.metadata?.changeDescription) {
-                return {
-                    main: `<strong>Article updated:</strong> ${activity.targetTitle}`,
-                    changes: activity.metadata.changeDescription
-                };
+            // ✅ 2. NEWS - Show all field changes
+            if (activity.type === 'news' && activity.action === 'updated') {
+                const changes = activity.metadata?.changes || activity.metadata?.changeDescription;
+                if (changes) {
+                    return {
+                        main: `<strong>Article updated:</strong> ${activity.targetTitle}`,
+                        changes: `Changes: ${changes}`
+                    };
+                }
             }
 
-            // Handle gallery updates with detailed changes
-            if (activity.type === 'gallery' && activity.action === 'updated' && activity.metadata?.changeDescription) {
-                return {
-                    main: `<strong>Gallery updated:</strong> ${activity.targetTitle}`,
-                    changes: activity.metadata.changeDescription
-                };
+            // ✅ 3. GALLERY/ARTWORKS - Show all field changes
+            if (activity.type === 'gallery' && activity.action === 'updated') {
+                const changes = activity.metadata?.changes || activity.metadata?.changeDescription;
+                if (changes) {
+                    return {
+                        main: `<strong>Artwork updated:</strong> ${activity.targetTitle}`,
+                        changes: `Changes: ${changes}`
+                    };
+                }
             }
 
-            // Handle exhibit updates with detailed changes
+            // ✅ 4. EXHIBITIONS - Show all field changes
             if (activity.type === 'exhibit' && activity.action === 'updated' && activity.metadata?.changes) {
                 return {
                     main: `<strong>Exhibition updated:</strong> ${activity.targetTitle}`,
-                    changes: activity.metadata.changes
+                    changes: `Changes: ${activity.metadata.changes}`
                 };
             }
 
-            // ✅ NEW: Handle ticket status changes
+            // ✅ 5. TICKETS/BOOKINGS - Show status changes
             if (activity.type === 'ticket' && activity.action === 'status_changed' && activity.metadata?.changes) {
                 return {
                     main: `<strong>Booking status changed:</strong> ${activity.targetTitle}`,
-                    changes: activity.metadata.changes
+                    changes: `Changes: ${activity.metadata.changes}`
                 };
             }
 
+            // ✅ 6. USERS - Show all field changes
+            if (activity.type === 'user' && activity.action === 'updated' && activity.metadata?.changes) {
+                return {
+                    main: `<strong>User updated:</strong> ${activity.targetTitle}`,
+                    changes: `Changes: ${activity.metadata.changes}`
+                };
+            }
+
+            // Default templates for actions without detailed changes
             const templates = {
                 event: {
                     created: `<strong>New event created:</strong> ${activity.targetTitle}`,
@@ -895,9 +912,9 @@
                     deleted: `<strong>Article deleted:</strong> ${activity.targetTitle}`
                 },
                 gallery: {
-                    uploaded: `<strong>Gallery:</strong> New artwork uploaded - ${activity.targetTitle}`,
-                    updated: `<strong>Gallery updated:</strong> ${activity.targetTitle}`,
-                    deleted: `<strong>Gallery:</strong> Artwork deleted - ${activity.targetTitle}`
+                    uploaded: `<strong>New artwork uploaded:</strong> ${activity.targetTitle}`,
+                    updated: `<strong>Artwork updated:</strong> ${activity.targetTitle}`,
+                    deleted: `<strong>Artwork deleted:</strong> ${activity.targetTitle}`
                 },
                 exhibit: {
                     created: `<strong>New exhibition added:</strong> ${activity.targetTitle}`,
@@ -918,8 +935,20 @@
                 }
             };
 
-            const mainText = templates[activity.type]?.[activity.action] || `<strong>${activity.type} ${activity.action}:</strong>`;
-            return { main: mainText, changes: null };
+            const mainText = templates[activity.type]?.[activity.action] || 
+                `<strong>${activity.type} ${activity.action}:</strong> ${activity.targetTitle}`;
+            
+            // ✅ FALLBACK: Check for any metadata changes that weren't caught above
+            let changesText = null;
+            if (activity.metadata) {
+                if (activity.metadata.changes) {
+                    changesText = `Changes: ${activity.metadata.changes}`;
+                } else if (activity.metadata.changeDescription) {
+                    changesText = `Changes: ${activity.metadata.changeDescription}`;
+                }
+            }
+            
+            return { main: mainText, changes: changesText };
         }
 
         function getTimeAgo(date) {

@@ -1201,61 +1201,99 @@
             return 'past';
         }
 
-        // ===== CHECK IF EVENT IS SOLD OUT =====
+        // ===== CHECK IF EVENT IS SOLD OUT (WITH TIME-BASED LOGIC) =====
         function isEventSoldOut(event) {
             // Use dailyBookings from the Event document itself
             const dailyBookings = event.dailyBookings || {};
-
-            if (Object.keys(dailyBookings).length === 0) {
-                console.log(`Event "${event.title}": No bookings yet`);
-                return false;
-            }
 
             const start = event.startDate?.toDate();
             const end = event.endDate?.toDate();
 
             if (!start || !end) return false;
 
-            console.log(`Event "${event.title}": Start: ${start.toDateString()}, End: ${end.toDateString()}`);
+            const now = new Date();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
 
-            // Generate all dates in the event range
-            const eventDates = [];
-            const currentDate = new Date(start);
-            currentDate.setHours(0, 0, 0, 0);
+            console.log(`\n🔍 Checking if "${event.title}" is sold out...`);
+            console.log(`   Start: ${start.toLocaleString()}`);
+            console.log(`   End: ${end.toLocaleString()}`);
+            console.log(`   Current time: ${now.toLocaleString()}`);
+
+            // Determine the first available date
+            let firstAvailableDate = new Date(start);
+            firstAvailableDate.setHours(0, 0, 0, 0);
+
+            // If event start date is today or earlier, check if today's event has already ended
+            if (firstAvailableDate <= today) {
+                firstAvailableDate = new Date(today);
+
+                // Check if today's event time has passed
+                const todayEventEnd = new Date(end);
+                const todayWithEventEndTime = new Date(today);
+                todayWithEventEndTime.setHours(todayEventEnd.getHours(), todayEventEnd.getMinutes(), 0, 0);
+
+                console.log(`   📅 Event started on/before today`);
+                console.log(`   ⏰ Today's event end time: ${todayWithEventEndTime.toLocaleTimeString()}`);
+                console.log(`   ⏰ Current time: ${now.toLocaleTimeString()}`);
+
+                // If current time is past today's event end time, start from tomorrow
+                if (now > todayWithEventEndTime) {
+                    console.log(`   ❌ Today's event has ended - checking from tomorrow onwards`);
+                    firstAvailableDate.setDate(firstAvailableDate.getDate() + 1);
+                } else {
+                    console.log(`   ✅ Today's event is still available`);
+                }
+            }
+
             const endDateNormalized = new Date(end);
             endDateNormalized.setHours(0, 0, 0, 0);
 
+            // If there are no more available dates, event is sold out
+            if (firstAvailableDate > endDateNormalized) {
+                console.log(`   🔴 No remaining dates - Event SOLD OUT`);
+                return true;
+            }
+
+            // Generate remaining available dates
+            const remainingDates = [];
+            const currentDate = new Date(firstAvailableDate);
+
             while (currentDate <= endDateNormalized) {
-                // Format to match: "Tuesday, November 25, 2025"
                 const dateStr = currentDate.toLocaleDateString('en-US', {
                     weekday: 'long',
                     year: 'numeric',
                     month: 'long',
                     day: 'numeric'
                 });
-                eventDates.push(dateStr);
-                console.log(`  Adding date: ${dateStr}`);
+                remainingDates.push(dateStr);
                 currentDate.setDate(currentDate.getDate() + 1);
             }
 
-            console.log(`Event "${event.title}": Checking ${eventDates.length} days`, {
-                maxPerDay: event.maxAttendeesPerDay,
-                dailyBookings: dailyBookings
-            });
+            console.log(`   📊 Checking ${remainingDates.length} remaining day(s)`);
+            console.log(`   Max per day: ${event.maxAttendeesPerDay}`);
 
-            // Check if ALL days are at capacity
-            let allDaysSoldOut = true;
-            for (const date of eventDates) {
+            // Check if ALL remaining days are fully booked
+            let allRemainingDaysSoldOut = true;
+            let totalAvailableSpots = 0;
+
+            for (const date of remainingDates) {
                 const bookings = dailyBookings[date] || 0;
-                console.log(`  - ${date}: ${bookings}/${event.maxAttendeesPerDay} booked ${bookings >= event.maxAttendeesPerDay ? '✓ FULL' : '✗ AVAILABLE'}`);
+                const availableSpots = event.maxAttendeesPerDay - bookings;
+                totalAvailableSpots += availableSpots;
 
-                if (bookings < event.maxAttendeesPerDay) {
-                    allDaysSoldOut = false;
+                const isFull = bookings >= event.maxAttendeesPerDay;
+                console.log(`   - ${date}: ${bookings}/${event.maxAttendeesPerDay} ${isFull ? '🔴 FULL' : '🟢 AVAILABLE (' + availableSpots + ' spots)'}`);
+
+                if (!isFull) {
+                    allRemainingDaysSoldOut = false;
                 }
             }
 
-            console.log(`Event "${event.title}": ${allDaysSoldOut ? '🔴 SOLD OUT' : '🟢 Available'}`);
-            return allDaysSoldOut;
+            console.log(`   📊 Total available spots across remaining days: ${totalAvailableSpots}`);
+            console.log(`   ${allRemainingDaysSoldOut ? '🔴 SOLD OUT - All remaining days are full' : '🟢 AVAILABLE - Event has open spots'}`);
+
+            return allRemainingDaysSoldOut;
         }
 
         // Modal Functions
