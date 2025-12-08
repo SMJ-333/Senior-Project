@@ -1503,6 +1503,71 @@
             }
         }
 
+        // Helper function to check if event is sold out based on remaining days
+        function checkEventSoldOut(eventData, dailyBookings, maxPerDay) {
+            const now = new Date();
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+
+            const startDate = eventData.startDate?.toDate();
+            const endDate = eventData.endDate?.toDate();
+
+            if (!startDate || !endDate) return false;
+
+            // Determine first available date
+            let firstAvailableDate = new Date(startDate);
+            firstAvailableDate.setHours(0, 0, 0, 0);
+
+            // If event started on/before today, check if today's event has ended
+            if (firstAvailableDate <= today) {
+                firstAvailableDate = new Date(today);
+
+                // Check if today's event time has passed
+                const todayEventEnd = new Date(endDate);
+                const todayWithEventEndTime = new Date(today);
+                todayWithEventEndTime.setHours(todayEventEnd.getHours(), todayEventEnd.getMinutes(), 0, 0);
+
+                // If current time is past today's event end time, start from tomorrow
+                if (now > todayWithEventEndTime) {
+                    firstAvailableDate.setDate(firstAvailableDate.getDate() + 1);
+                }
+            }
+
+            const endDateNormalized = new Date(endDate);
+            endDateNormalized.setHours(0, 0, 0, 0);
+
+            // If no more available dates, event is sold out
+            if (firstAvailableDate > endDateNormalized) {
+                return true;
+            }
+
+            // Generate remaining available dates
+            const remainingDates = [];
+            const currentDate = new Date(firstAvailableDate);
+
+            while (currentDate <= endDateNormalized) {
+                const dateStr = currentDate.toLocaleDateString('en-US', {
+                    weekday: 'long',
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                });
+                remainingDates.push(dateStr);
+                currentDate.setDate(currentDate.getDate() + 1);
+            }
+
+            // Check if ALL remaining days are fully booked
+            for (const date of remainingDates) {
+                const bookings = dailyBookings[date] || 0;
+                if (bookings < maxPerDay) {
+                    return false; // At least one day has availability
+                }
+            }
+
+            // All remaining days are full
+            return true;
+        }
+
         async function loadCurrentEvents() {
             const eventSelect = document.getElementById('event-select');
             eventSelect.innerHTML = '<option value="">-- Loading events... --</option>';
@@ -1531,15 +1596,24 @@
                         );
                         const ticketSnapshot = await getDocs(ticketingQuery);
 
-                        // Calculate total bookings across all dates
+                        // Calculate total bookings AND daily bookings
                         let totalBookings = 0;
+                        const dailyBookingsByDate = {}; // Track bookings per date
+
                         ticketSnapshot.forEach(doc => {
                             const bookingData = doc.data();
                             const visitors = bookingData.visitors || {};
                             const count = (visitors.adults?.count || 0) +
                                 (visitors.children?.count || 0) +
                                 (visitors.seniors?.count || 0);
+
                             totalBookings += count;
+
+                            // Track per-date bookings
+                            const visitDate = bookingData.visitDate;
+                            if (visitDate) {
+                                dailyBookingsByDate[visitDate] = (dailyBookingsByDate[visitDate] || 0) + count;
+                            }
                         });
 
                         // Calculate total available spots for the event
@@ -1558,8 +1632,11 @@
 
                         console.log(`🎫 Event "${data.title}": ${totalBookings}/${totalCapacity} booked (${totalDays} days, ${maxAttendeesPerDay}/day)`);
 
-                        // Only add event if it has available spots
-                        if (availableSpots > 0) {
+                        // Check if event is sold out (considering remaining days from today onwards)
+                        const isSoldOut = checkEventSoldOut(data, dailyBookingsByDate, maxAttendeesPerDay);
+
+                        // Only add event if it has available spots AND is not sold out
+                        if (availableSpots > 0 && !isSoldOut) {
                             allEvents.push({
                                 id: docSnap.id,
                                 title: data.title || '',
@@ -1574,6 +1651,8 @@
                                 totalCapacity: totalCapacity,
                                 availableSpots: availableSpots
                             });
+                        } else if (isSoldOut) {
+                            console.log(`❌ Event "${data.title}" is SOLD OUT (all remaining days full) - hiding from dropdown`);
                         } else {
                             console.log(`❌ Event "${data.title}" is FULLY BOOKED - not showing in dropdown`);
                         }
