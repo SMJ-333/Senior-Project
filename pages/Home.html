@@ -10,7 +10,123 @@
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'ar,en'
+            }, 'google_translate_element');
+        }
 
+        var currentLang = 'en';
+
+        function translateToArabic() {
+            var translateText = document.querySelector('.translate-text');
+            var selectElement = document.querySelector('.goog-te-combo');
+
+            if (!selectElement) {
+                setTimeout(translateToArabic, 300);
+                return;
+            }
+
+            if (currentLang === 'en') {
+                selectElement.value = 'ar';
+                selectElement.dispatchEvent(new Event('change'));
+                if (translateText) translateText.textContent = 'English';
+                setTimeout(function() {
+                    document.documentElement.setAttribute('dir', 'rtl');
+                    document.body.setAttribute('dir', 'rtl');
+                }, 1000);
+                currentLang = 'ar';
+            } else {
+                selectElement.value = '';
+                selectElement.dispatchEvent(new Event('change'));
+                if (translateText) translateText.textContent = 'العربية';
+                document.documentElement.setAttribute('dir', 'ltr');
+                document.body.setAttribute('dir', 'ltr');
+                currentLang = 'en';
+            }
+        }
+
+        window.addEventListener('load', function() {
+            var materialIcons = document.querySelectorAll('.material-icons');
+            materialIcons.forEach(function(icon) {
+                icon.classList.add('notranslate');
+            });
+        });
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+
+    <style>
+
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+
+        body {
+            top: 0px !important;
+            position: static !important;
+        }
+
+        .goog-te-balloon-frame {
+            display: none !important;
+        }
+
+        .goog-tooltip {
+            display: none !important;
+        }
+
+        .goog-tooltip:hover {
+            display: none !important;
+        }
+
+        .goog-text-highlight {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        /* Force remove the top frame */
+        #goog-gt-tt {
+            display: none !important;
+        }
+
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+
+        /* Remove the "Translated to" bar */
+        .goog-te-banner-frame.skiptranslate,
+        .goog-te-gadget-simple {
+            display: none !important;
+        }
+
+        iframe.goog-te-banner-frame {
+            display: none !important;
+        }
+
+        /* Prevent body from being pushed down */
+        body>.skiptranslate {
+            display: none !important;
+        }
+
+        iframe.skiptranslate {
+            display: none !important;
+        }
+
+        /* Hide all Google Translate UI elements */
+        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+            display: none !important;
+        }
+
+        .VIpgJd-ZVi9od-aZ2wEe-OiiCO {
+            display: none !important;
+        }
+
+        .VIpgJd-ZVi9od-xl07Ob-lTBxed {
+            display: none !important;
+        }
+    </style>
     <style>
         :root {
             --primary-dark: #653025;
@@ -1173,6 +1289,120 @@
                 min-width: 220px;
             }
         }
+
+        /* Language Toggle Button */
+        .language-toggle {
+            background: var(--accent);
+            color: var(--primary-dark);
+            border: 2px solid var(--accent);
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .language-toggle:hover {
+            background: var(--accent-light);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(176, 141, 87, 0.3);
+        }
+
+        .language-toggle .material-icons {
+            font-size: 1.2rem;
+        }
+
+        /* RTL Support for Arabic */
+        body[dir="rtl"] {
+            direction: rtl;
+            text-align: right;
+        }
+
+        body[dir="rtl"] .nav-container {
+            flex-direction: row-reverse;
+        }
+
+        body[dir="rtl"] .nav-links {
+            flex-direction: row-reverse;
+        }
+
+        body[dir="rtl"] .logo::before {
+            margin-right: 0;
+            margin-left: 0.5rem;
+        }
+
+        body[dir="rtl"] .nav-links a::after {
+            left: auto;
+            right: 50%;
+            transform: translateX(50%);
+        }
+
+        body[dir="rtl"] .search-icon {
+            margin-right: 0;
+            margin-left: 1rem;
+        }
+
+        body[dir="rtl"] .info-grid {
+            direction: rtl;
+        }
+
+        body[dir="rtl"] .event-item,
+        body[dir="rtl"] .exhibition-item {
+            border-left: none;
+            border-right: 4px solid transparent;
+        }
+
+        body[dir="rtl"] .event-item:hover,
+        body[dir="rtl"] .exhibition-item:hover {
+            transform: translateX(-5px);
+            border-left: none;
+            border-right: 4px solid var(--accent);
+        }
+
+        body[dir="rtl"] .footer-info {
+            direction: rtl;
+        }
+
+        body[dir="rtl"] .recommendation-badge {
+            right: auto;
+            left: 1rem;
+        }
+
+        body[dir="rtl"] .accessibility-controls {
+            right: auto;
+            left: 20px;
+        }
+
+        body[dir="rtl"] .accessibility-menu {
+            right: auto;
+            left: 0;
+        }
+
+        body[dir="rtl"] .suggestion-icon {
+            margin-right: 0;
+            margin-left: 1rem;
+        }
+
+        body[dir="rtl"] .language-toggle {
+            margin-left: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            body[dir="rtl"] .accessibility-controls {
+                left: 15px;
+                right: auto;
+            }
+
+            .language-toggle {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
     </style>
 </head>
 
@@ -1189,15 +1419,26 @@
                 <li><a href="Exhibitions.html">Exhibitions</a></li>
                 <li><a href="Gallery.html">Gallery</a></li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account"><span
-                    class="material-icons">person</span></a>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div id="google_translate_element" style="display: none;"></div>
+                <!-- Custom Language Toggle Button -->
+                <button class="language-toggle" id="language-toggle" onclick="translateToArabic()" title="Switch Language">
+                    <span class="material-icons notranslate">translate</span>
+                    <span class="translate-text" id="lang-text">العربية</span>
+                </button>
+
+                <a href="Account.html" class="account-icon" title="My Account">
+                    <span class="material-icons">person</span>
+                </a>
+            </div>
         </div>
     </nav>
 
     <section class="hero" id="home">
         <div class="hero-content">
             <h1>Where Islamic Art Lives</h1>
-            <p>Explore intricate patterns, calligraphy, and artifacts that tell the story of a civilization built on beauty and meaning.</p>
+            <p>Explore intricate patterns, calligraphy, and artifacts that tell the story of a civilization built on
+                beauty and meaning.</p>
 
             <!-- Search Bar replacing CTA button -->
             <div class="search-container">
@@ -1639,13 +1880,13 @@
             try {
                 const eventsCol = collection(db, 'Events');
                 const eventsSnapshot = await getDocs(eventsCol);
-                
+
                 allEventsData = [];
-                
+
                 eventsSnapshot.forEach(doc => {
                     const data = doc.data();
                     const startDate = data.startDate?.toDate();
-                    
+
                     const event = {
                         id: doc.id,
                         title: data.title || 'Untitled Event',
@@ -1654,16 +1895,16 @@
                         location: data.location || '',
                         ...data
                     };
-                    
+
                     allEventsData.push(event);
-                    
+
                     // Add to search data immediately
                     const dateStr = startDate ? startDate.toLocaleDateString('en-US', {
                         year: 'numeric',
                         month: 'long',
                         day: 'numeric'
                     }) : 'Date TBA';
-                    
+
                     searchData.push({
                         name: event.title,
                         url: `Events.html#event-${event.id}`,
@@ -1676,9 +1917,9 @@
                         keywords: `${event.title} ${event.description} ${event.location} event museum`.toLowerCase()
                     });
                 });
-                
+
                 console.log('✅ Events loaded and added to search:', allEventsData.length);
-                
+
             } catch (error) {
                 console.error('❌ Error loading events:', error);
             }
@@ -1701,7 +1942,7 @@
                     });
                 });
             }
-            
+
             console.log('🎉 Search index complete:', searchData.length, 'items');
             console.log('📊 Events in search:', searchData.filter(i => i.type === 'event').length);
         }
@@ -1710,7 +1951,7 @@
         // Search functionality
         function performSearch(query) {
             console.log('🔎 Searching for:', `"${query}"`);
-            
+
             if (!query || query.trim().length < 2) {
                 return [];
             }
@@ -1757,17 +1998,17 @@
             const sortedResults = results
                 .sort((a, b) => b.score - a.score)
                 .slice(0, 8);
-            
+
             console.log('🎯 Returning top results:', sortedResults.map(r => `${r.name} (${r.type})`));
-            
+
             return sortedResults;
         }
 
         // Test function - use this to debug
-        window.testEventsSearch = function() {
+        window.testEventsSearch = function () {
             console.log('=== DETAILED EVENTS SEARCH TEST ===');
             console.log('Total search items:', searchData.length);
-            
+
             const events = searchData.filter(i => i.type === 'event');
             console.log('Events in search data:', events.length);
             console.log('Event titles:');
@@ -1775,16 +2016,16 @@
                 console.log(`  ${i + 1}. "${e.name}"`);
                 console.log(`     Keywords: ${e.keywords.substring(0, 80)}...`);
             });
-            
+
             // Try searching
             console.log('\n--- Testing search for "workshop" ---');
             const results1 = performSearch('workshop');
             console.log('Results:', results1);
-            
+
             console.log('\n--- Testing search for "tour" ---');
             const results2 = performSearch('tour');
             console.log('Results:', results2);
-            
+
             console.log('\n--- Testing search for first event name ---');
             if (events.length > 0) {
                 const firstWord = events[0].name.split(' ')[0];
@@ -1795,7 +2036,7 @@
         };
 
         // Display search suggestions
-       function displaySuggestions(results) {
+        function displaySuggestions(results) {
             const dropdown = document.getElementById('suggestions-dropdown');
 
             if (results.length === 0) {
@@ -1857,22 +2098,22 @@
                 item.addEventListener('click', function () {
                     const url = this.dataset.url;
                     const eventId = this.dataset.eventId;
-                    
+
                     if (eventId) {
                         sessionStorage.setItem('highlightEvent', eventId);
                         console.log('✅ Saved event for highlighting:', eventId);
                     }
-                    
+
                     window.location.href = url;
                 });
             });
         }
 
         function createSuggestionHTML(item, icon) {
-            const metaText = item.description + 
-                            (item.date ? ' • ' + item.date : '') + 
-                            (item.location ? ' • ' + item.location : '');
-            
+            const metaText = item.description +
+                (item.date ? ' • ' + item.date : '') +
+                (item.location ? ' • ' + item.location : '');
+
             return `
                 <div class="suggestion-item" data-url="${item.url}" ${item.eventId ? `data-event-id="${item.eventId}"` : ''}>
                     <span class="material-icons suggestion-icon">${icon}</span>
