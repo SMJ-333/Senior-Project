@@ -362,6 +362,10 @@
             background: rgba(66, 153, 225, 0.1);
             border-left: 4px solid var(--info);
         }
+        .alert-item.danger {
+            background: rgba(245, 101, 101, 0.1);
+            border-left: 4px solid var(--danger);
+        }
 
         .alert-item .material-icons {
             color: var(--warning);
@@ -369,6 +373,10 @@
 
         .alert-item.info .material-icons {
             color: var(--info);
+        }
+
+        .alert-item.danger .material-icons {
+            color: var(--danger);
         }
 
         .alert-content {
@@ -548,6 +556,50 @@
             try {
                 const alerts = [];
 
+                // ========== 🔴 تنبيهات الأحداث المحذوفة مع تذاكر (NEW!) ==========
+                const activitySnapshot = await getDocs(
+                    query(
+                        collection(db, "ActivityLog"),
+                        orderBy("timestamp", "desc"),
+                        limit(20)
+                    )
+                );
+
+                const sevenDaysAgo = new Date();
+                sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+                activitySnapshot.docs.forEach(doc => {
+                    const data = doc.data();
+                    const activityDate = data.timestamp?.toDate() || new Date(0);
+                    
+                    // Check for deleted events with sold tickets in last 7 days
+                    if (data.type === 'event' && 
+                        data.action === 'deleted_with_tickets' && 
+                        activityDate >= sevenDaysAgo) {
+                        
+                        const ticketCount = data.metadata?.ticketsSold || 0;
+                        const daysAgo = Math.floor((new Date() - activityDate) / (1000 * 60 * 60 * 24));
+                        
+                        let timeText;
+                        if (daysAgo === 0) {
+                            timeText = 'today';
+                        } else if (daysAgo === 1) {
+                            timeText = 'yesterday';
+                        } else {
+                            timeText = `${daysAgo} days ago`;
+                        }
+
+                        alerts.push({
+                            type: 'danger',
+                            icon: 'warning',
+                            title: '⚠️ Event Deleted with Sold Tickets',
+                            description: `"${data.targetTitle}" was deleted ${timeText} - ${ticketCount} ticket(s) need refund`,
+                            priority: 1, // Highest priority
+                            timestamp: activityDate
+                        });
+                    }
+                });
+
                 // ========== تنبيهات الأحداث (Events) ==========
                 const eventsSnapshot = await getDocs(collection(db, "Events"));
                 const now = new Date();
@@ -583,8 +635,6 @@
 
                 // ========== تنبيهات الإعلانات (News) ==========
                 const newsSnapshot = await getDocs(collection(db, "News"));
-                const sevenDaysAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000));
-
                 newsSnapshot.docs.forEach(doc => {
                     const data = doc.data();
                     const publishDate = data.publishedAt?.toDate() || data.publishDate?.toDate() || data.createdAt?.toDate() || data.date?.toDate();
@@ -815,17 +865,22 @@
                 }
 
                 const activitiesHTML = activities.map(activity => {
-                    const timeAgo = getTimeAgo(activity.timestamp);
-                    const description = formatActivityDescription(activity);
+                const timeAgo = getTimeAgo(activity.timestamp);
+                const description = formatActivityDescription(activity);
+                
+                // ✅ Add special styling for deleted events with tickets
+                const isDeletedWithTickets = activity.type === 'event' && activity.action === 'deleted_with_tickets';
+                const borderColor = isDeletedWithTickets ? 'var(--danger)' : 'var(--accent)';
+                const bgColor = isDeletedWithTickets ? 'rgba(245, 101, 101, 0.05)' : 'var(--neutral-light)';
 
-                    return `
-                        <div class="activity-item">
-                            <span class="activity-time">${timeAgo}</span>
-                            <div class="activity-desc">${description.main}</div>
-                            ${description.changes ? `<div class="activity-changes">${description.changes}</div>` : ''}
-                        </div>
-                    `;
-                }).join('');
+                return `
+                    <div class="activity-item" style="border-left-color: ${borderColor}; background: ${bgColor};">
+                        <span class="activity-time">${timeAgo}</span>
+                        <div class="activity-desc">${description.main}</div>
+                        ${description.changes ? `<div class="activity-changes" style="color: ${isDeletedWithTickets ? 'var(--danger)' : 'var(--text-light)'}; font-weight: ${isDeletedWithTickets ? '600' : 'normal'};">${description.changes}</div>` : ''}
+                    </div>
+                `;
+            }).join('');
 
                 scrollableContainer.innerHTML = activitiesHTML;
 
@@ -904,7 +959,8 @@
                 event: {
                     created: `<strong>New event created:</strong> ${activity.targetTitle}`,
                     updated: `<strong>Event updated:</strong> ${activity.targetTitle}`,
-                    deleted: `<strong>Event deleted:</strong> ${activity.targetTitle}`
+                    deleted: `<strong>Event deleted:</strong> ${activity.targetTitle}`,
+                    deleted_with_tickets: `<strong style="color: var(--danger);">⚠️ Event deleted with sold tickets:</strong> ${activity.targetTitle}`
                 },
                 news: {
                     created: `<strong>New article published:</strong> ${activity.targetTitle}`,
@@ -935,20 +991,24 @@
                 }
             };
 
-            const mainText = templates[activity.type]?.[activity.action] || 
-                `<strong>${activity.type} ${activity.action}:</strong> ${activity.targetTitle}`;
-            
-            // ✅ FALLBACK: Check for any metadata changes that weren't caught above
-            let changesText = null;
-            if (activity.metadata) {
-                if (activity.metadata.changes) {
-                    changesText = `Changes: ${activity.metadata.changes}`;
-                } else if (activity.metadata.changeDescription) {
-                    changesText = `Changes: ${activity.metadata.changeDescription}`;
-                }
+        const mainText = templates[activity.type]?.[activity.action] || 
+            `<strong>${activity.type} ${activity.action}:</strong> ${activity.targetTitle}`;
+
+        // ✅ SPECIAL HANDLING: Show ticket count for deleted events with tickets
+        let changesText = null;
+        if (activity.type === 'event' && activity.action === 'deleted_with_tickets' && activity.metadata?.ticketsSold) {
+            changesText = `⚠️ ${activity.metadata.ticketsSold} ticket(s) were sold - Refunds required!`;
+        }
+        // ✅ FALLBACK: Check for any metadata changes that weren't caught above
+        else if (activity.metadata) {
+            if (activity.metadata.changes) {
+                changesText = `Changes: ${activity.metadata.changes}`;
+            } else if (activity.metadata.changeDescription) {
+                changesText = `Changes: ${activity.metadata.changeDescription}`;
             }
-            
-            return { main: mainText, changes: changesText };
+        }
+
+        return { main: mainText, changes: changesText };
         }
 
         function getTimeAgo(date) {
