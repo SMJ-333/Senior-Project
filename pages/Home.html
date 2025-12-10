@@ -14,13 +14,22 @@
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
                 pageLanguage: 'en',
-                includedLanguages: 'ar,en'
+                includedLanguages: 'ar,en',
+                autoDisplay: false
             }, 'google_translate_element');
         }
 
-        var currentLang = 'en';
+        // Load saved language preference or default to English
+        var currentLang = localStorage.getItem('siteLanguage') || 'en';
+        var isTranslating = false; // Prevent multiple clicks during translation
 
         function translateToArabic() {
+            // Prevent multiple clicks while translating
+            if (isTranslating) {
+                console.log('Translation in progress, please wait...');
+                return;
+            }
+
             var translateText = document.querySelector('.translate-text');
             var selectElement = document.querySelector('.goog-te-combo');
 
@@ -29,36 +38,142 @@
                 return;
             }
 
+            isTranslating = true;
+
             if (currentLang === 'en') {
+                // Switch to Arabic
                 selectElement.value = 'ar';
                 selectElement.dispatchEvent(new Event('change'));
-                if (translateText) translateText.textContent = 'English';
-                setTimeout(function() {
+
+                // Update button text and keep updating it to prevent translation
+                function updateButtonToEnglish() {
+                    if (translateText) translateText.textContent = 'English';
+                }
+                updateButtonToEnglish();
+
+                setTimeout(function () {
                     document.documentElement.setAttribute('dir', 'rtl');
                     document.body.setAttribute('dir', 'rtl');
-                }, 1000);
-                currentLang = 'ar';
+                    document.documentElement.setAttribute('lang', 'ar');
+
+                    // Keep forcing button text
+                    updateButtonToEnglish();
+
+                    // Save preference
+                    currentLang = 'ar';
+                    localStorage.setItem('siteLanguage', 'ar');
+
+                    isTranslating = false;
+                }, 1500);
+
+                // Force button text multiple times to override Google Translate
+                setTimeout(updateButtonToEnglish, 500);
+                setTimeout(updateButtonToEnglish, 1000);
+                setTimeout(updateButtonToEnglish, 2000);
+
             } else {
-                selectElement.value = '';
+                // Switch back to English
+                selectElement.value = 'en';
                 selectElement.dispatchEvent(new Event('change'));
-                if (translateText) translateText.textContent = 'العربية';
-                document.documentElement.setAttribute('dir', 'ltr');
-                document.body.setAttribute('dir', 'ltr');
-                currentLang = 'en';
+
+                // Update button text and keep updating it
+                function updateButtonToArabic() {
+                    if (translateText) translateText.textContent = 'العربية';
+                }
+                updateButtonToArabic();
+
+                setTimeout(function () {
+                    document.documentElement.setAttribute('dir', 'ltr');
+                    document.body.setAttribute('dir', 'ltr');
+                    document.documentElement.setAttribute('lang', 'en');
+
+                    // Keep forcing button text
+                    updateButtonToArabic();
+
+                    // Save preference
+                    currentLang = 'en';
+                    localStorage.setItem('siteLanguage', 'en');
+
+                    isTranslating = false;
+                }, 1500);
+
+                // Force button text multiple times
+                setTimeout(updateButtonToArabic, 500);
+                setTimeout(updateButtonToArabic, 1000);
+                setTimeout(updateButtonToArabic, 2000);
             }
         }
 
-        window.addEventListener('load', function() {
+        // Apply saved language preference on page load
+        window.addEventListener('load', function () {
+            // Mark material icons as not translatable
             var materialIcons = document.querySelectorAll('.material-icons');
-            materialIcons.forEach(function(icon) {
+            materialIcons.forEach(function (icon) {
                 icon.classList.add('notranslate');
             });
+
+            // Wait for Google Translate to initialize
+            setTimeout(function () {
+                var savedLang = localStorage.getItem('siteLanguage');
+                var translateText = document.querySelector('.translate-text');
+
+                if (savedLang === 'ar') {
+                    // Apply Arabic if it was previously selected
+                    var selectElement = document.querySelector('.goog-te-combo');
+                    if (selectElement) {
+                        selectElement.value = 'ar';
+                        selectElement.dispatchEvent(new Event('change'));
+
+                        // Force button text to English
+                        function setEnglish() {
+                            if (translateText) translateText.textContent = 'English';
+                        }
+                        setEnglish();
+                        setTimeout(setEnglish, 500);
+                        setTimeout(setEnglish, 1000);
+                        setTimeout(setEnglish, 2000);
+
+                        setTimeout(function () {
+                            document.documentElement.setAttribute('dir', 'rtl');
+                            document.body.setAttribute('dir', 'rtl');
+                            document.documentElement.setAttribute('lang', 'ar');
+                        }, 1500);
+                    }
+                } else {
+                    // Ensure English state
+                    function setArabic() {
+                        if (translateText) translateText.textContent = 'العربية';
+                    }
+                    setArabic();
+                    setTimeout(setArabic, 500);
+                    setTimeout(setArabic, 1000);
+
+                    document.documentElement.setAttribute('dir', 'ltr');
+                    document.body.setAttribute('dir', 'ltr');
+                    document.documentElement.setAttribute('lang', 'en');
+                }
+            }, 1000);
         });
+
+        // Keep the button text correct even after page is fully translated
+        setInterval(function () {
+            var translateText = document.querySelector('.translate-text');
+            if (translateText) {
+                if (currentLang === 'ar') {
+                    if (translateText.textContent !== 'English') {
+                        translateText.textContent = 'English';
+                    }
+                } else {
+                    if (translateText.textContent !== 'العربية') {
+                        translateText.textContent = 'العربية';
+                    }
+                }
+            }
+        }, 2000); // Check every 2 seconds
     </script>
-    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
-
+    <script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
-
         .goog-te-banner-frame.skiptranslate {
             display: none !important;
         }
@@ -126,8 +241,7 @@
         .VIpgJd-ZVi9od-xl07Ob-lTBxed {
             display: none !important;
         }
-    </style>
-    <style>
+
         :root {
             --primary-dark: #653025;
             --primary-light: #8d2e1d;
@@ -1422,7 +1536,8 @@
             <div style="display: flex; align-items: center; gap: 1rem;">
                 <div id="google_translate_element" style="display: none;"></div>
                 <!-- Custom Language Toggle Button -->
-                <button class="language-toggle" id="language-toggle" onclick="translateToArabic()" title="Switch Language">
+                <button class="language-toggle" id="language-toggle" onclick="translateToArabic()"
+                    title="Switch Language">
                     <span class="material-icons notranslate">translate</span>
                     <span class="translate-text" id="lang-text">العربية</span>
                 </button>
