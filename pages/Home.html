@@ -9,6 +9,8 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+
     <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
     <script type="text/javascript">
         function googleTranslateElementInit() {
@@ -19,12 +21,11 @@
             }, 'google_translate_element');
         }
 
-        // Load saved language preference or default to English
-        var currentLang = localStorage.getItem('siteLanguage') || 'en';
-        var isTranslating = false; // Prevent multiple clicks during translation
+        // Always start with English
+        var currentLang = 'en';
+        var isTranslating = false;
 
         function translateToArabic() {
-            // Prevent multiple clicks while translating
             if (isTranslating) {
                 console.log('Translation in progress, please wait...');
                 return;
@@ -45,7 +46,6 @@
                 selectElement.value = 'ar';
                 selectElement.dispatchEvent(new Event('change'));
 
-                // Update button text and keep updating it to prevent translation
                 function updateButtonToEnglish() {
                     if (translateText) translateText.textContent = 'English';
                 }
@@ -56,17 +56,11 @@
                     document.body.setAttribute('dir', 'rtl');
                     document.documentElement.setAttribute('lang', 'ar');
 
-                    // Keep forcing button text
                     updateButtonToEnglish();
-
-                    // Save preference
                     currentLang = 'ar';
-                    localStorage.setItem('siteLanguage', 'ar');
-
                     isTranslating = false;
                 }, 1500);
 
-                // Force button text multiple times to override Google Translate
                 setTimeout(updateButtonToEnglish, 500);
                 setTimeout(updateButtonToEnglish, 1000);
                 setTimeout(updateButtonToEnglish, 2000);
@@ -76,7 +70,6 @@
                 selectElement.value = 'en';
                 selectElement.dispatchEvent(new Event('change'));
 
-                // Update button text and keep updating it
                 function updateButtonToArabic() {
                     if (translateText) translateText.textContent = 'العربية';
                 }
@@ -87,75 +80,34 @@
                     document.body.setAttribute('dir', 'ltr');
                     document.documentElement.setAttribute('lang', 'en');
 
-                    // Keep forcing button text
                     updateButtonToArabic();
-
-                    // Save preference
                     currentLang = 'en';
-                    localStorage.setItem('siteLanguage', 'en');
-
                     isTranslating = false;
                 }, 1500);
 
-                // Force button text multiple times
                 setTimeout(updateButtonToArabic, 500);
                 setTimeout(updateButtonToArabic, 1000);
                 setTimeout(updateButtonToArabic, 2000);
             }
         }
 
-        // Apply saved language preference on page load
+        // On page load - DO NOT translate, just mark icons
         window.addEventListener('load', function () {
-            // Mark material icons as not translatable
             var materialIcons = document.querySelectorAll('.material-icons');
             materialIcons.forEach(function (icon) {
                 icon.classList.add('notranslate');
             });
 
-            // Wait for Google Translate to initialize
+            // Set initial button text
             setTimeout(function () {
-                var savedLang = localStorage.getItem('siteLanguage');
                 var translateText = document.querySelector('.translate-text');
-
-                if (savedLang === 'ar') {
-                    // Apply Arabic if it was previously selected
-                    var selectElement = document.querySelector('.goog-te-combo');
-                    if (selectElement) {
-                        selectElement.value = 'ar';
-                        selectElement.dispatchEvent(new Event('change'));
-
-                        // Force button text to English
-                        function setEnglish() {
-                            if (translateText) translateText.textContent = 'English';
-                        }
-                        setEnglish();
-                        setTimeout(setEnglish, 500);
-                        setTimeout(setEnglish, 1000);
-                        setTimeout(setEnglish, 2000);
-
-                        setTimeout(function () {
-                            document.documentElement.setAttribute('dir', 'rtl');
-                            document.body.setAttribute('dir', 'rtl');
-                            document.documentElement.setAttribute('lang', 'ar');
-                        }, 1500);
-                    }
-                } else {
-                    // Ensure English state
-                    function setArabic() {
-                        if (translateText) translateText.textContent = 'العربية';
-                    }
-                    setArabic();
-                    setTimeout(setArabic, 500);
-                    setTimeout(setArabic, 1000);
-
-                    document.documentElement.setAttribute('dir', 'ltr');
-                    document.body.setAttribute('dir', 'ltr');
-                    document.documentElement.setAttribute('lang', 'en');
+                if (translateText) {
+                    translateText.textContent = 'العربية';
                 }
             }, 1000);
         });
 
-        // Keep the button text correct even after page is fully translated
+        // Keep the button text correct
         setInterval(function () {
             var translateText = document.querySelector('.translate-text');
             if (translateText) {
@@ -169,7 +121,7 @@
                     }
                 }
             }
-        }, 2000); // Check every 2 seconds
+        }, 2000);
     </script>
     <script type="text/javascript"
         src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
@@ -210,7 +162,6 @@
             display: none !important;
         }
 
-        /* Remove the "Translated to" bar */
         .goog-te-banner-frame.skiptranslate,
         .goog-te-gadget-simple {
             display: none !important;
@@ -419,6 +370,9 @@
             margin-bottom: 2.5rem;
             font-weight: 300;
             opacity: 0.9;
+            padding: 5px;
+            background: #331611;
+            border-radius: 20px;
         }
 
         /* Search Bar Styles */
@@ -866,7 +820,7 @@
 
         .stat-box h3 {
             color: var(--accent);
-            font-size: 2.5rem;
+            font-size: 2rem;
             margin-bottom: 0.5rem;
         }
 
@@ -1431,6 +1385,21 @@
             font-size: 1.2rem;
         }
 
+        /* Hide Arabic text by default (when in English mode) */
+        .arabic-only {
+            display: none;
+        }
+
+        /* When in Arabic mode (RTL), hide English and show Arabic */
+        body[dir="rtl"] .english-only {
+            display: none;
+        }
+
+        body[dir="rtl"] .arabic-only {
+            display: inline;
+        }
+
+        /* RTL Support for Arabic */
         /* RTL Support for Arabic */
         body[dir="rtl"] {
             direction: rtl;
@@ -1438,11 +1407,8 @@
         }
 
         body[dir="rtl"] .nav-container {
-            flex-direction: row-reverse;
-        }
-
-        body[dir="rtl"] .nav-links {
-            flex-direction: row-reverse;
+            flex-direction: row;
+            /* Don't reverse the container */
         }
 
         body[dir="rtl"] .logo::before {
@@ -1459,6 +1425,23 @@
         body[dir="rtl"] .search-icon {
             margin-right: 0;
             margin-left: 1rem;
+        }
+
+        /* FIX: Force language toggle and account to the LEFT side */
+        body[dir="rtl"] .nav-container>div:last-child {
+            order: 3;
+            /* Put it last in RTL (which displays on left) */
+            margin-right: 0;
+        }
+
+        body[dir="rtl"] .logo {
+            order: 1;
+            /* First position (displays on right in RTL) */
+        }
+
+        body[dir="rtl"] .nav-links {
+            order: 2;
+            /* Middle position */
         }
 
         body[dir="rtl"] .info-grid {
@@ -1523,15 +1506,54 @@
 <body>
     <nav>
         <div class="nav-container">
-            <a href="Home.html" class="logo">ATHAR Museum</a>
+            <a href="Home.html" class="logo">
+                <span class="english-only notranslate">ATHAR Museum</span>
+                <span class="arabic-only notranslate"
+                    style="font-family: 'Aref Ruqaa', serif; font-size: 30px;">أثــــر</span>
+            </a>
             <ul class="nav-links">
-                <li><a href="Home.html" class="active">Home</a></li>
-                <li><a href="AboutUs.html">About Us</a></li>
-                <li><a href="Events.html">Events</a></li>
-                <li><a href="Ticketing.html">Ticketing</a></li>
-                <li><a href="News.html">News</a></li>
-                <li><a href="Exhibitions.html">Exhibitions</a></li>
-                <li><a href="Gallery.html">Gallery</a></li>
+                <li>
+                    <a href="Home.html" class="active">
+                        <span class="english-only notranslate">Home</span>
+                        <span class="arabic-only notranslate">الصفحة الرئيسية</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="AboutUs.html">
+                        <span class="english-only notranslate">About Us</span>
+                        <span class="arabic-only notranslate">من نحن</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Events.html">
+                        <span class="english-only notranslate">Events</span>
+                        <span class="arabic-only notranslate">الفعاليات</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Ticketing.html">
+                        <span class="english-only notranslate">Ticketing</span>
+                        <span class="arabic-only notranslate">التذاكر</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="News.html">
+                        <span class="english-only notranslate">News</span>
+                        <span class="arabic-only notranslate">الأخبار</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Exhibitions.html">
+                        <span class="english-only notranslate">Exhibitions</span>
+                        <span class="arabic-only notranslate">المعارض</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Gallery.html">
+                        <span class="english-only notranslate">Gallery</span>
+                        <span class="arabic-only notranslate">مجموعة التراث</span>
+                    </a>
+                </li>
             </ul>
             <div style="display: flex; align-items: center; gap: 1rem;">
                 <div id="google_translate_element" style="display: none;"></div>
@@ -1580,7 +1602,7 @@
                         to the objects that have shaped our world.</p>
                     <div class="info-stats">
                         <div class="stat-box">
-                            <h3>50K+</h3>
+                            <h3 class="notranslate">500+</h3>
                             <p>Artifacts</p>
                         </div>
                         <div class="stat-box">
@@ -1588,7 +1610,7 @@
                             <p>Galleries</p>
                         </div>
                         <div class="stat-box">
-                            <h3>500K+</h3>
+                            <h3 class="notranslate">500K+</h3>
                             <p>Annual Visitors</p>
                         </div>
                         <div class="stat-box">
