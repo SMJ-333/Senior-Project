@@ -1190,17 +1190,6 @@
             });
         }
 
-        function getEventStatus(startDate, endDate) {
-            const now = new Date();
-            const start = startDate?.toDate();
-            const end = endDate?.toDate();
-
-            if (!start || !end) return 'upcoming';
-            if (now < start) return 'upcoming';
-            if (now >= start && now <= end) return 'current';
-            return 'past';
-        }
-
         // ===== CHECK IF EVENT IS SOLD OUT (WITH TIME-BASED LOGIC) =====
         function isEventSoldOut(event) {
             // Use dailyBookings from the Event document itself
@@ -1403,10 +1392,10 @@
 
                     const currentGrid = document.getElementById('currentEventsGrid');
                     currentGrid.innerHTML = `
-                    <p class="no-results-message">
-                        No events available at this time.<br>
-                        <small>Check back soon for exciting events!</small>
-                    </p>`;
+                <p class="no-results-message">
+                    No events available at this time.<br>
+                    <small>Check back soon for exciting events!</small>
+                </p>`;
                     return;
                 }
 
@@ -1429,8 +1418,8 @@
                         imageUrl: data.imageUrl || '',
                         maxAttendeesPerDay: data.maxAttendeesPerDay || 50,
                         price: data.price || 0,
-                        status: getEventStatus(data.startDate, data.endDate),
-                        dailyBookings: data.dailyBookings || {} // Read directly from Event document
+                        status: data.status || 'upcoming', // ✅ CHANGED: Use status from Firestore
+                        dailyBookings: data.dailyBookings || {}
                     });
                 });
 
@@ -1448,10 +1437,10 @@
                 console.error('❌ Error loading events:', error);
                 const featuredSection = document.getElementById('featuredEventSection');
                 featuredSection.innerHTML = `
-                <p class="no-results-message">
-                    Error loading events: ${error.message}<br>
-                    Please check the console for details.
-                </p>`;
+            <p class="no-results-message">
+                Error loading events: ${error.message}<br>
+                Please check the console for details.
+            </p>`;
             }
         }
 
@@ -1654,16 +1643,25 @@
         }
 
         function displayEvents(events) {
-            const filteredEvents = events.filter(e => e.status !== 'past');
+            const filteredEvents = events.filter(e =>
+                e.status === 'ongoing' || e.status === 'upcoming'
+            );
+
+            console.log(`📊 Filtered events: ${filteredEvents.length} total`);
+            console.log(`   - Ongoing: ${filteredEvents.filter(e => e.status === 'ongoing').length}`);
+            console.log(`   - Upcoming: ${filteredEvents.filter(e => e.status === 'upcoming').length}`);
+
             const mostRecentEvent = filteredEvents.length > 0 ? filteredEvents[0] : null;
             displayFeaturedEvent(mostRecentEvent);
 
-            const currentEvents = filteredEvents.filter(e => e.status === 'current');
+            // ✅ CHANGED: Separate ongoing and upcoming events
+            const ongoingEvents = filteredEvents.filter(e => e.status === 'ongoing');
             const upcomingEvents = filteredEvents.filter(e => e.status === 'upcoming');
 
-            displayCurrentEvents(currentEvents);
+            displayCurrentEvents(ongoingEvents);
             displayUpcomingEvents(upcomingEvents);
         }
+
 
         // ===== REGISTER FOR EVENT - WITH SOLD OUT CHECK =====
         window.registerForEvent = function (eventId) {

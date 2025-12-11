@@ -1382,28 +1382,6 @@
             }
         }
 
-        function getEventStatus(startDate, endDate, endTime = '') {
-            const now = new Date();
-            const start = startDate?.toDate();
-            const end = endDate?.toDate();
-
-            if (!start || !end) return 'upcoming';
-
-            // Set start and end to beginning/end of day for comparison
-            const startOfDay = new Date(start);
-            startOfDay.setHours(0, 0, 0, 0);
-
-            const endOfDay = new Date(end);
-            endOfDay.setHours(23, 59, 59, 999);
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-
-            if (now < startOfDay) return 'upcoming';
-            if (now >= startOfDay && now <= endOfDay) return 'current';
-            return 'past';
-        }
-
         // New function to check if a specific date should be available for an event
         function isEventDateAvailable(eventData, dateToCheck) {
             if (!eventData || !dateToCheck) {
@@ -1580,11 +1558,14 @@
 
                 for (const docSnap of snapshot.docs) {
                     const data = docSnap.data();
-                    const status = getEventStatus(data.startDate, data.endDate);
 
-                    console.log(`📅 Event "${data.title}": status="${status}"`);
+                    // ✅ CHANGED: Use status directly from Firestore
+                    const status = data.status || 'upcoming';
 
-                    if (status === 'current' || status === 'upcoming') {
+                    console.log(`📅 Event "${data.title}": status="${status}" (from Firestore)`);
+
+                    // ✅ CHANGED: Only show events with 'ongoing' or 'upcoming' status
+                    if (status === 'ongoing' || status === 'upcoming') {
                         const eventId = docSnap.id;
                         const maxAttendeesPerDay = data.maxAttendeesPerDay || data.maxAttendees || 50;
 
@@ -1649,18 +1630,22 @@
                                 maxAttendeesPerDay: maxAttendeesPerDay,
                                 totalBookings: totalBookings,
                                 totalCapacity: totalCapacity,
-                                availableSpots: availableSpots
+                                availableSpots: availableSpots,
+                                status: status // Store status for reference
                             });
                         } else if (isSoldOut) {
                             console.log(`❌ Event "${data.title}" is SOLD OUT (all remaining days full) - hiding from dropdown`);
                         } else {
                             console.log(`❌ Event "${data.title}" is FULLY BOOKED - not showing in dropdown`);
                         }
+                    } else {
+                        console.log(`⏭️ Event "${data.title}" skipped - status is "${status}" (not ongoing/upcoming)`);
                     }
                 }
 
                 if (allEvents.length === 0) {
                     eventSelect.innerHTML = '<option value="">-- No current or upcoming events available --</option>';
+                    console.log('ℹ️ No ongoing or upcoming events found');
                     return false;
                 }
 
@@ -1677,9 +1662,10 @@
                     eventSelect.appendChild(option);
                 });
 
+                console.log(`✅ Loaded ${allEvents.length} ongoing/upcoming events into dropdown`);
                 return true;
             } catch (error) {
-                console.error('Error loading events:', error);
+                console.error('❌ Error loading events:', error);
                 eventSelect.innerHTML = '<option value="">-- Error loading events --</option>';
                 return false;
             }
