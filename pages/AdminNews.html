@@ -25,6 +25,8 @@
 
             --success: #48bb78;
             --danger: #f56565;
+            --warning: #ecc94b;
+            --info: #4299e1;
         }
 
         * {
@@ -709,6 +711,263 @@
                 transform: rotate(360deg);
             }
         }
+
+        /* ===== Custom Alert System ===== */
+        .custom-alert-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.2s ease;
+        }
+
+        .custom-alert-overlay.active {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .custom-alert-box {
+            background: var(--white);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 90%;
+            padding: 0;
+            animation: slideIn 0.3s ease;
+            overflow: hidden;
+        }
+
+        .custom-alert-header {
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            border-bottom: 2px solid var(--neutral-light);
+        }
+
+        .custom-alert-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            flex-shrink: 0;
+        }
+
+        .custom-alert-icon.success {
+            background: linear-gradient(135deg, #48bb78, #38a169);
+            color: white;
+        }
+
+        .custom-alert-icon.warning {
+            background: linear-gradient(135deg, #ecc94b, #d69e2e);
+            color: white;
+        }
+
+        .custom-alert-icon.danger {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: white;
+        }
+
+        .custom-alert-icon.info {
+            background: linear-gradient(135deg, #4299e1, #3182ce);
+            color: white;
+        }
+
+        .custom-alert-header-text {
+            flex: 1;
+        }
+
+        .custom-alert-header-text h3 {
+            font-size: 1.3rem;
+            color: var(--primary-dark);
+            margin: 0;
+        }
+
+        .custom-alert-header-text p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin: 0.2rem 0 0 0;
+        }
+
+        .custom-alert-body {
+            padding: 1.5rem;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .custom-alert-body p {
+            margin: 0 0 0.8rem 0;
+        }
+
+        .custom-alert-body p:last-child {
+            margin-bottom: 0;
+        }
+
+        .custom-alert-body strong {
+            color: var(--primary-dark);
+        }
+
+        .custom-alert-body ul {
+            margin: 0.5rem 0 0 1.2rem;
+            padding: 0;
+        }
+
+        .custom-alert-body li {
+            margin-bottom: 0.3rem;
+        }
+
+        .custom-alert-highlight {
+            background: rgba(245, 101, 101, 0.1);
+            border-left: 4px solid var(--danger);
+            padding: 1rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+        }
+
+        .custom-alert-highlight.warning {
+            background: rgba(236, 201, 75, 0.1);
+            border-left-color: #ecc94b;
+        }
+
+        .custom-alert-highlight.info {
+            background: rgba(66, 153, 225, 0.1);
+            border-left-color: #4299e1;
+        }
+
+        .custom-alert-highlight.success {
+            background: rgba(72, 187, 120, 0.1);
+            border-left-color: var(--success);
+        }
+
+        .custom-alert-actions {
+            padding: 1rem 1.5rem 1.5rem 1.5rem;
+            display: flex;
+            gap: 1rem;
+            justify-content: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .custom-alert-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .custom-alert-btn.primary {
+            background: var(--primary-dark);
+            color: var(--white);
+        }
+
+        .custom-alert-btn.primary:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .custom-alert-btn.danger {
+            background: var(--danger);
+            color: var(--white);
+        }
+
+        .custom-alert-btn.danger:hover {
+            background: #e53e3e;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(245, 101, 101, 0.3);
+        }
+
+        .custom-alert-btn.secondary {
+            background: var(--neutral-light);
+            color: var(--text-dark);
+            border: 2px solid #e2e8f0;
+        }
+
+        .custom-alert-btn.secondary:hover {
+            background: #e2e8f0;
+        }
+
+        .custom-alert-btn.success {
+            background: var(--success);
+            color: var(--white);
+        }
+
+        .custom-alert-btn.success:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(72, 187, 120, 0.3);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .custom-alert-box {
+                width: 95%;
+                max-width: none;
+            }
+
+            .custom-alert-header {
+                padding: 1.2rem;
+            }
+
+            .custom-alert-icon {
+                width: 45px;
+                height: 45px;
+                font-size: 1.5rem;
+            }
+
+            .custom-alert-header-text h3 {
+                font-size: 1.1rem;
+            }
+
+            .custom-alert-body {
+                padding: 1.2rem;
+            }
+
+            .custom-alert-actions {
+                padding: 1rem 1.2rem 1.2rem 1.2rem;
+                flex-direction: column;
+            }
+
+            .custom-alert-btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
     </style>
 </head>
 
@@ -909,10 +1168,143 @@
         </div>
     </div>
 
+    <!-- Custom Alert System -->
+    <div class="custom-alert-overlay" id="customAlertOverlay">
+        <div class="custom-alert-box">
+            <div class="custom-alert-header">
+                <div class="custom-alert-icon" id="customAlertIcon">
+                    <span class="material-icons" id="customAlertIconSymbol">check_circle</span>
+                </div>
+                <div class="custom-alert-header-text">
+                    <h3 id="customAlertTitle">Title</h3>
+                    <p id="customAlertSubtitle"></p>
+                </div>
+            </div>
+            <div class="custom-alert-body" id="customAlertBody">
+                Message content
+            </div>
+            <div class="custom-alert-actions" id="customAlertActions">
+                <!-- Buttons will be added dynamically -->
+            </div>
+        </div>
+    </div>
+
     <script type="module">
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, Timestamp, query, orderBy, onSnapshot, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+        // ===== CUSTOM ALERT SYSTEM =====
+        function showCustomAlert(options) {
+            return new Promise((resolve) => {
+                const overlay = document.getElementById('customAlertOverlay');
+                const icon = document.getElementById('customAlertIcon');
+                const iconSymbol = document.getElementById('customAlertIconSymbol');
+                const title = document.getElementById('customAlertTitle');
+                const subtitle = document.getElementById('customAlertSubtitle');
+                const body = document.getElementById('customAlertBody');
+                const actions = document.getElementById('customAlertActions');
+
+                icon.className = 'custom-alert-icon ' + (options.type || 'info');
+                iconSymbol.textContent = options.icon || 'info';
+                title.textContent = options.title || 'Notification';
+                subtitle.textContent = options.subtitle || '';
+                body.innerHTML = options.body || '';
+
+                actions.innerHTML = '';
+                if (options.buttons) {
+                    options.buttons.forEach(btn => {
+                        const button = document.createElement('button');
+                        button.className = 'custom-alert-btn ' + (btn.type || 'primary');
+                        button.innerHTML = btn.icon ? 
+                            `<span class="material-icons" style="font-size: 1rem;">${btn.icon}</span> ${btn.text}` : 
+                            btn.text;
+                        button.onclick = () => {
+                            overlay.classList.remove('active');
+                            resolve(btn.value);
+                        };
+                        actions.appendChild(button);
+                    });
+                } else {
+                    const button = document.createElement('button');
+                    button.className = 'custom-alert-btn primary';
+                    button.textContent = 'OK';
+                    button.onclick = () => {
+                        overlay.classList.remove('active');
+                        resolve(true);
+                    };
+                    actions.appendChild(button);
+                }
+
+                overlay.classList.add('active');
+
+                overlay.onclick = (e) => {
+                    if (e.target === overlay) {
+                        overlay.classList.remove('active');
+                        resolve(false);
+                    }
+                };
+            });
+        }
+
+        function showSuccessAlert(title, message) {
+            return showCustomAlert({
+                type: 'success',
+                icon: 'check_circle',
+                title: title,
+                subtitle: 'Operation completed successfully',
+                body: `<p>${message}</p>`,
+                buttons: [
+                    { text: 'Done', type: 'success', value: true, icon: 'check' }
+                ]
+            });
+        }
+
+        function showErrorAlert(title, message) {
+            return showCustomAlert({
+                type: 'danger',
+                icon: 'error',
+                title: title,
+                subtitle: 'An error occurred',
+                body: `<p>${message}</p>`,
+                buttons: [
+                    { text: 'Close', type: 'secondary', value: true }
+                ]
+            });
+        }
+
+        function showConfirmAlert(title, message) {
+            return showCustomAlert({
+                type: 'warning',
+                icon: 'help',
+                title: title,
+                subtitle: 'Please confirm your action',
+                body: `<p>${message}</p>`,
+                buttons: [
+                    { text: 'Cancel', type: 'secondary', value: false },
+                    { text: 'Confirm', type: 'primary', value: true, icon: 'check' }
+                ]
+            });
+        }
+
+        function showDeleteConfirm(itemName, itemType = 'item') {
+            return showCustomAlert({
+                type: 'danger',
+                icon: 'warning',
+                title: `Delete ${itemType.charAt(0).toUpperCase() + itemType.slice(1)}?`,
+                subtitle: 'This action cannot be undone',
+                body: `
+                    <p>Are you sure you want to delete "<strong>${itemName}</strong>"?</p>
+                    <div class="custom-alert-highlight">
+                        <p><strong>⚠️ Warning:</strong> This article will be moved to deleted articles and hidden from users.</p>
+                    </div>
+                `,
+                buttons: [
+                    { text: 'Cancel', type: 'secondary', value: false },
+                    { text: 'Yes, Delete', type: 'danger', value: true, icon: 'delete' }
+                ]
+            });
+        }
 
         // Import notification system with error handling
         let sendNewsNotificationToUsers = null;
@@ -1228,7 +1620,7 @@
             const isNew = document.getElementById('news-new').checked;
 
             if (!title || !category || !content || !imageURL) {
-                alert('Please fill in all required fields');
+                await showErrorAlert('Validation Error', 'Please fill in all required fields.');
                 return;
             }
 
@@ -1247,6 +1639,7 @@
                 };
 
                 if (currentEditId) {
+                    // UPDATE EXISTING ARTICLE
                     const originalArticle = allNews.find(n => n.id === currentEditId);
                     const changes = [];
                     
@@ -1283,7 +1676,28 @@
                         changeDescription: changeDescription
                     });
                     
-                    alert('News article updated successfully!');
+                    if (changes.length > 0) {
+                        await showCustomAlert({
+                            type: 'success',
+                            icon: 'check_circle',
+                            title: 'Article Updated Successfully',
+                            subtitle: `${changes.length} change(s) made`,
+                            body: `
+                                <p>The article "<strong>${title}</strong>" has been updated.</p>
+                                <div class="custom-alert-highlight info">
+                                    <strong>Changes made:</strong>
+                                    <ul style="margin: 0.5rem 0 0 1.2rem;">
+                                        ${changes.map(c => `<li>${c}</li>`).join('')}
+                                    </ul>
+                                </div>
+                            `,
+                            buttons: [
+                                { text: 'Done', type: 'success', value: true, icon: 'check' }
+                            ]
+                        });
+                    } else {
+                        await showSuccessAlert('Article Saved', 'Article has been saved with no changes.');
+                    }
                 } else {
                     // NEW ARTICLE - SEND NOTIFICATIONS
                     newsData.publishedAt = Timestamp.now();
@@ -1310,21 +1724,65 @@
                             );
                             
                             console.log(`✅ ${notificationCount} notifications sent successfully!`);
-                            alert(`✅ News article published successfully!\n🔔 ${notificationCount} notifications sent to interested users.`);
+                            
+                            await showCustomAlert({
+                                type: 'success',
+                                icon: 'check_circle',
+                                title: 'Article Published Successfully',
+                                subtitle: 'Notifications sent',
+                                body: `
+                                    <p>The article "<strong>${title}</strong>" has been published.</p>
+                                    <div class="custom-alert-highlight success">
+                                        <p><strong>🔔 ${notificationCount} notification(s)</strong> sent to interested users.</p>
+                                    </div>
+                                `,
+                                buttons: [
+                                    { text: 'Done', type: 'success', value: true, icon: 'check' }
+                                ]
+                            });
                         } catch (notifError) {
                             console.error('❌ Error sending notifications:', notifError);
-                            alert(`✅ News article published successfully!\n⚠️ However, notifications could not be sent.\n\nError: ${notifError.message}`);
+                            await showCustomAlert({
+                                type: 'warning',
+                                icon: 'warning',
+                                title: 'Article Published',
+                                subtitle: 'Notification issue',
+                                body: `
+                                    <p>The article "<strong>${title}</strong>" has been published successfully.</p>
+                                    <div class="custom-alert-highlight warning">
+                                        <p><strong>⚠️ However:</strong> Notifications could not be sent.</p>
+                                        <p>Error: ${notifError.message}</p>
+                                    </div>
+                                `,
+                                buttons: [
+                                    { text: 'OK', type: 'primary', value: true }
+                                ]
+                            });
                         }
                     } else {
                         console.warn('⚠️ Notification system not available');
-                        alert('✅ News article published successfully!\n⚠️ Notification system is not available.');
+                        await showCustomAlert({
+                            type: 'info',
+                            icon: 'info',
+                            title: 'Article Published',
+                            subtitle: 'Notification system unavailable',
+                            body: `
+                                <p>The article "<strong>${title}</strong>" has been published successfully.</p>
+                                <div class="custom-alert-highlight info">
+                                    <p><strong>ℹ️ Note:</strong> Notification system is not available.</p>
+                                </div>
+                            `,
+                            buttons: [
+                                { text: 'OK', type: 'primary', value: true }
+                            ]
+                        });
                     }
                 }
 
                 closeModalFn();
             } catch (error) {
                 console.error("❌ Error saving news:", error);
-                alert('❌ Error saving news: ' + error.message);
+                await showErrorAlert('Failed to Save Article', `An error occurred: ${error.message}`);
             } finally {
                 submitBtn.disabled = false;
                 submitBtn.textContent = currentEditId ? 'Update Article' : 'Publish Article';
@@ -1343,7 +1801,9 @@
             const newsId = e.currentTarget.getAttribute('data-id');
             const newsData = allNews.find(n => n.id === newsId);
 
-            if (!confirm(`Are you sure you want to delete "${newsData.title}"?\n\nThis article will be moved to deleted articles and hidden from users.`)) {
+            const confirmed = await showDeleteConfirm(newsData.title, 'article');
+            
+            if (!confirmed) {
                 return;
             }
 
@@ -1359,10 +1819,13 @@
                     category: newsData.category || 'Uncategorized'
                 });
                 
-                alert('News article moved to deleted articles!');
+                await showSuccessAlert(
+                    'Article Deleted',
+                    `The article "<strong>${newsData.title}</strong>" has been moved to deleted articles.`
+                );
             } catch (error) {
                 console.error("Error deleting news:", error);
-                alert('Error deleting news: ' + error.message);
+                await showErrorAlert('Failed to Delete', `An error occurred: ${error.message}`);
             }
         }
 
@@ -1370,7 +1833,12 @@
             const newsId = e.currentTarget.getAttribute('data-id');
             const newsData = deletedNews.find(n => n.id === newsId);
 
-            if (!confirm(`Restore "${newsData.title}"?\n\nThis article will be visible to users again.`)) {
+            const confirmed = await showConfirmAlert(
+                'Restore Article?',
+                `Restore "<strong>${newsData.title}</strong>"? This article will be visible to users again.`
+            );
+            
+            if (!confirmed) {
                 return;
             }
 
@@ -1386,10 +1854,13 @@
                     action: 'restored'
                 });
                 
-                alert('News article restored successfully!');
+                await showSuccessAlert(
+                    'Article Restored',
+                    `The article "<strong>${newsData.title}</strong>" has been restored successfully.`
+                );
             } catch (error) {
                 console.error("Error restoring news:", error);
-                alert('Error restoring news: ' + error.message);
+                await showErrorAlert('Failed to Restore', `An error occurred: ${error.message}`);
             }
         }
 
@@ -1397,16 +1868,38 @@
             const newsId = e.currentTarget.getAttribute('data-id');
             const newsData = deletedNews.find(n => n.id === newsId);
 
-            if (!confirm(`PERMANENTLY DELETE "${newsData.title}"?\n\nThis action cannot be undone and will remove the article from the database forever!`)) {
+            const confirmed = await showCustomAlert({
+                type: 'danger',
+                icon: 'warning',
+                title: 'Permanently Delete Article?',
+                subtitle: 'This action CANNOT be undone',
+                body: `
+                    <p>Permanently delete "<strong>${newsData.title}</strong>"?</p>
+                    <div class="custom-alert-highlight">
+                        <p><strong>⚠️ CRITICAL WARNING:</strong></p>
+                        <p>This will <strong>permanently remove</strong> the article from the database forever.</p>
+                        <p>This action is <strong>irreversible</strong>!</p>
+                    </div>
+                `,
+                buttons: [
+                    { text: 'Cancel', type: 'secondary', value: false },
+                    { text: 'Yes, Delete Forever', type: 'danger', value: true, icon: 'delete_forever' }
+                ]
+            });
+            
+            if (!confirmed) {
                 return;
             }
 
             try {
                 await deleteDoc(doc(db, "News", newsId));
-                alert('News article permanently deleted!');
+                await showSuccessAlert(
+                    'Article Permanently Deleted',
+                    `The article "<strong>${newsData.title}</strong>" has been permanently removed from the database.`
+                );
             } catch (error) {
                 console.error("Error permanently deleting news:", error);
-                alert('Error permanently deleting news: ' + error.message);
+                await showErrorAlert('Failed to Delete', `An error occurred: ${error.message}`);
             }
         }
 
