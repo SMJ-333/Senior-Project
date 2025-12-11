@@ -11,6 +11,15 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 
+    <!-- ✅ EmailJS SDK -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        // Initialize EmailJS with your Public Key
+        (function () {
+            emailjs.init("-44BWtrRgLumgCqoN");
+        })();
+    </script>
+
     <style>
         :root {
             --primary-dark: #653025;
@@ -553,7 +562,8 @@
                 grid-template-columns: 1fr;
             }
         }
-                /* Custom Alert System */
+
+        /* Custom Alert System */
         .custom-alert-overlay {
             display: none;
             position: fixed;
@@ -577,6 +587,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -587,6 +598,7 @@
                 transform: translateY(-50px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -920,7 +932,6 @@
                     <input type="number" class="form-input" id="event-price" min="0" step="0.01" value="15">
                 </div>
 
-                <!-- ✅ UPDATED: Per-Day Capacity -->
                 <div class="form-group">
                     <label class="form-label">Maximum Participants Per Day *</label>
                     <input type="number" class="form-input" id="max-participants" min="1" value="50" required>
@@ -928,8 +939,7 @@
                         Maximum number of participants allowed <strong>per day</strong> during this event.
                     </small>
                 </div>
-                
-                <!-- ✅ NEW: Total Capacity Calculator -->
+
                 <div class="capacity-calculator">
                     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
                         <span class="material-icons" style="color: #0369a1; font-size: 1.2rem;">calculate</span>
@@ -952,6 +962,56 @@
         import { auth, db } from './firebase-config.js';
         import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc, onSnapshot, query, where, Timestamp, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
+        // ===== EMAILJS EMAIL NOTIFICATION SYSTEM =====
+        const EMAILJS_CONFIG = {
+            serviceId: 'service_mjy8g9h',
+            templateId: 'template_30kx56m',
+            publicKey: '-44BWtrRgLumgCqoN'
+        };
+
+        async function sendCancellationEmailWithRefund(recipientEmail, recipientName, bookingId, eventName, eventDate, refundAmount) {
+            const templateParams = {
+                recipientEmail: recipientEmail,
+                recipientName: recipientName,
+                bookingId: bookingId,
+                eventName: eventName,
+                eventDate: eventDate,
+                refundAmount: refundAmount
+            };
+
+            try {
+                console.log(`📧 Sending email to: ${recipientEmail}`);
+
+                const response = await emailjs.send(
+                    EMAILJS_CONFIG.serviceId,
+                    EMAILJS_CONFIG.templateId,
+                    templateParams
+                );
+
+                console.log(`✅ Email sent successfully to: ${recipientEmail}`);
+                return true;
+            } catch (error) {
+                console.error(`❌ Failed to send email to: ${recipientEmail}`, error);
+                return false;
+            }
+        }
+
+        async function testEmailJSEmail(testEmail) {
+            console.log('🧪 Testing EmailJS...');
+            const success = await sendCancellationEmailWithRefund(
+                testEmail,
+                'Test Customer',
+                'TEST-12345',
+                'Test Event',
+                'January 15, 2025',
+                '25.00'
+            );
+            console.log(success ? '✅ Test passed!' : '❌ Test failed!');
+            return success;
+        }
+
+        window.testEmailJSEmail = testEmailJSEmail;
+
         // ===== CUSTOM ALERT SYSTEM =====
         function showCustomAlert(options) {
             return new Promise((resolve) => {
@@ -963,25 +1023,19 @@
                 const body = document.getElementById('customAlertBody');
                 const actions = document.getElementById('customAlertActions');
 
-                // Set icon
                 icon.className = 'custom-alert-icon ' + (options.type || 'info');
                 iconSymbol.textContent = options.icon || 'info';
-
-                // Set title and subtitle
                 title.textContent = options.title || 'Notification';
                 subtitle.textContent = options.subtitle || '';
-
-                // Set body
                 body.innerHTML = options.body || '';
 
-                // Set buttons
                 actions.innerHTML = '';
                 if (options.buttons) {
                     options.buttons.forEach(btn => {
                         const button = document.createElement('button');
                         button.className = 'custom-alert-btn ' + (btn.type || 'primary');
-                        button.innerHTML = btn.icon ? 
-                            `<span class="material-icons" style="font-size: 1rem;">${btn.icon}</span> ${btn.text}` : 
+                        button.innerHTML = btn.icon ?
+                            `<span class="material-icons" style="font-size: 1rem;">${btn.icon}</span> ${btn.text}` :
                             btn.text;
                         button.onclick = () => {
                             overlay.classList.remove('active');
@@ -1000,10 +1054,8 @@
                     actions.appendChild(button);
                 }
 
-                // Show alert
                 overlay.classList.add('active');
 
-                // Close on overlay click
                 overlay.onclick = (e) => {
                     if (e.target === overlay) {
                         overlay.classList.remove('active');
@@ -1071,7 +1123,258 @@
             }
         }
 
-        // ===== GET EVENT REGISTRATION COUNT FROM TICKETING (PER-DAY TOTAL) =====
+        // ===== EVENT CASCADE CANCELLATION SYSTEM WITH TIME-AWARE LOGIC =====
+        function parseTime(timeString) {
+            if (!timeString) return { hours: 23, minutes: 59 };
+
+            const cleanTime = timeString.trim().toUpperCase();
+            const isPM = cleanTime.includes('PM');
+            const isAM = cleanTime.includes('AM');
+            const timeOnly = cleanTime.replace(/AM|PM/gi, '').trim();
+            const parts = timeOnly.split(':');
+            let hours = parseInt(parts[0]);
+            const minutes = parts.length > 1 ? parseInt(parts[1]) : 0;
+
+            if (isPM && hours !== 12) {
+                hours += 12;
+            } else if (isAM && hours === 12) {
+                hours = 0;
+            }
+
+            return { hours, minutes };
+        }
+
+        function isSameDay(date1, date2) {
+            return date1.getFullYear() === date2.getFullYear() &&
+                date1.getMonth() === date2.getMonth() &&
+                date1.getDate() === date2.getDate();
+        }
+
+        function getEventEndDateTime(eventData, visitDate) {
+            const endDateTime = new Date(visitDate);
+
+            if (eventData.endTime) {
+                const timeParts = parseTime(eventData.endTime);
+                endDateTime.setHours(timeParts.hours, timeParts.minutes, 0, 0);
+            } else {
+                endDateTime.setHours(23, 59, 59, 999);
+            }
+
+            return endDateTime;
+        }
+
+        async function findEventTickets(eventName) {
+            try {
+                const q = query(
+                    collection(db, "Ticketing"),
+                    where("ticketType", "==", "event"),
+                    where("eventName", "==", eventName)
+                );
+
+                const snapshot = await getDocs(q);
+                return snapshot.docs.map(doc => ({
+                    id: doc.id,
+                    ...doc.data()
+                }));
+            } catch (error) {
+                console.error('Error finding event tickets:', error);
+                return [];
+            }
+        }
+
+        function determineTicketsToCancelByDateTime(tickets, eventData) {
+            const now = new Date();
+            const toCancel = [];
+            const eventEnded = [];
+            const alreadyUsed = [];
+
+            tickets.forEach(ticket => {
+                if (ticket.status === 'cancelled') return;
+
+                const visitDate = ticket.visitDate ? new Date(ticket.visitDate) : new Date();
+                const eventEndDateTime = getEventEndDateTime(eventData, visitDate);
+
+                console.log(`Checking ticket ${ticket.id}: Event ends ${eventEndDateTime.toLocaleString()}, Now: ${now.toLocaleString()}`);
+
+                if (eventEndDateTime < now) {
+                    console.log(`Event ended - Ignore ticket ${ticket.id}`);
+                    eventEnded.push({ ...ticket, visitDate, eventEndDateTime, refundEligible: false });
+                } else if (visitDate < now && !isSameDay(visitDate, now)) {
+                    console.log(`Past event - Preserving ticket ${ticket.id}`);
+                    alreadyUsed.push({ ...ticket });
+                } else {
+                    console.log(`Event not ended - Cancel WITH refund for ticket ${ticket.id}`);
+                    toCancel.push({ ...ticket, visitDate, eventEndDateTime, refundEligible: true });
+                }
+            });
+
+            return { toCancel, eventEnded, alreadyUsed };
+        }
+
+        async function cancelTicketsInBatch(ticketsToCancel, eventData, adminEmail) {
+            let successCount = 0;
+            let failCount = 0;
+            let emailsSent = 0;
+
+            for (const ticket of ticketsToCancel) {
+                try {
+                    await updateDoc(doc(db, "Ticketing", ticket.id), {
+                        status: 'cancelled',
+                        cancelledAt: serverTimestamp(),
+                        cancelledBy: adminEmail,
+                        cancellationReason: 'event_cancelled',
+                        refundStatus: 'pending',
+                        refundAmount: ticket.totalPrice,
+                        originalEventData: {
+                            eventName: eventData.title,
+                            eventDate: eventData.startDate,
+                            eventEndTime: eventData.endTime,
+                            eventId: eventData.id
+                        }
+                    });
+
+                    // ✅ Send email notification via EmailJS
+                    const emailSent = await sendCancellationEmailWithRefund(
+                        ticket.email || ticket.userEmail,
+                        ticket.customerName || ticket.userName || 'Valued Customer',
+                        ticket.id,
+                        eventData.title,
+                        ticket.visitDate,
+                        ticket.totalPrice
+                    );
+
+                    if (emailSent) {
+                        emailsSent++;
+                        console.log(`✅ Email sent to: ${ticket.email || ticket.userEmail}`);
+                    } else {
+                        console.log(`⚠️ Failed to send email to: ${ticket.email || ticket.userEmail}`);
+                    }
+
+                    // In-app notification for members
+                    if (ticket.userId && ticket.userId !== 'guest') {
+                        await addDoc(collection(db, "UserNotifications"), {
+                            userId: ticket.userId,
+                            type: 'event_cancellation_refund',
+                            title: 'Event Cancelled - Refund Confirmed',
+                            message: `"${eventData.title}" has been cancelled. Full refund of $${ticket.totalPrice.toFixed(2)} will be processed.`,
+                            bookingId: ticket.id,
+                            read: false,
+                            createdAt: serverTimestamp(),
+                            metadata: {
+                                eventName: eventData.title,
+                                refundAmount: ticket.totalPrice
+                            }
+                        });
+                    }
+
+                    successCount++;
+                } catch (error) {
+                    console.error(`Error cancelling ticket ${ticket.id}:`, error);
+                    failCount++;
+                }
+            }
+
+            console.log(`Batch complete: ${successCount} cancelled, ${failCount} failed, ${emailsSent} emails sent`);
+            return { successCount, failCount, emailsSent };
+        }
+
+        // ===== STATUS CALCULATION FUNCTION =====
+        function calculateEventStatus(startDate, endDate, currentStatus) {
+            if (currentStatus === 'cancelled') {
+                return 'cancelled';
+            }
+
+            const now = new Date();
+            const start = startDate?.toDate ? startDate.toDate() : new Date(startDate);
+            const end = endDate?.toDate ? endDate.toDate() : new Date(endDate);
+
+            if (!start || !end) return 'upcoming';
+
+            const nowDate = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const startDateOnly = new Date(start.getFullYear(), start.getMonth(), start.getDate());
+            const endDateOnly = new Date(end.getFullYear(), end.getMonth(), end.getDate());
+
+            if (nowDate < startDateOnly) {
+                return 'upcoming';
+            } else if (nowDate >= startDateOnly && nowDate <= endDateOnly) {
+                return 'ongoing';
+            } else {
+                return 'completed';
+            }
+        }
+
+        async function updateEventStatusInFirebase(eventId, newStatus, oldStatus) {
+            try {
+                await updateDoc(doc(db, "Events", eventId), {
+                    status: newStatus,
+                    statusLastUpdated: serverTimestamp()
+                });
+
+                console.log(`✓ Event ${eventId} status updated: ${oldStatus} → ${newStatus}`);
+                return true;
+            } catch (error) {
+                console.error(`✗ Error updating event ${eventId} status:`, error);
+                return false;
+            }
+        }
+
+        async function checkAndUpdateAllStatuses() {
+            console.log('🔄 Checking all event statuses...');
+
+            try {
+                const snapshot = await getDocs(collection(db, "Events"));
+                let updatedCount = 0;
+
+                for (const docSnap of snapshot.docs) {
+                    const data = docSnap.data();
+                    const currentStatus = data.status || 'upcoming';
+                    const calculatedStatus = calculateEventStatus(data.startDate, data.endDate, currentStatus);
+
+                    if (currentStatus !== calculatedStatus) {
+                        const success = await updateEventStatusInFirebase(docSnap.id, calculatedStatus, currentStatus);
+                        if (success) {
+                            updatedCount++;
+
+                            await logActivity('event', 'status_auto_updated', data.title || 'Untitled Event', {
+                                oldStatus: currentStatus,
+                                newStatus: calculatedStatus,
+                                autoUpdated: true
+                            });
+                        }
+                    }
+                }
+
+                if (updatedCount > 0) {
+                    console.log(`✅ Updated ${updatedCount} event status(es)`);
+                } else {
+                    console.log('✅ All event statuses are up to date');
+                }
+
+                return updatedCount;
+            } catch (error) {
+                console.error('❌ Error checking statuses:', error);
+                return 0;
+            }
+        }
+
+        let statusUpdateInterval;
+
+        function startStatusUpdateScheduler() {
+            checkAndUpdateAllStatuses();
+            statusUpdateInterval = setInterval(() => {
+                console.log('⏰ Scheduled status check running...');
+                checkAndUpdateAllStatuses();
+            }, 3600000);
+            console.log('✅ Status update scheduler started (runs every hour)');
+        }
+
+        function stopStatusUpdateScheduler() {
+            if (statusUpdateInterval) {
+                clearInterval(statusUpdateInterval);
+                console.log('⏸️ Status update scheduler stopped');
+            }
+        }
+
         async function getEventRegistrationCount(eventId) {
             try {
                 const ticketingQuery = query(
@@ -1102,19 +1405,18 @@
         let statusChart = null;
         let registrationsChart = null;
 
-        // ✅ UPDATED: Calculate total capacity based on event duration
         function calculateTotalCapacity() {
             const startDate = document.getElementById('event-start-date')?.value;
             const endDate = document.getElementById('event-end-date')?.value;
             const perDay = parseInt(document.getElementById('max-participants')?.value) || 50;
-            
+
             const displayElement = document.getElementById('total-capacity-display');
-            
+
             if (startDate && endDate && displayElement) {
                 const start = new Date(startDate);
                 const end = new Date(endDate);
                 const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24)) + 1;
-                
+
                 if (days > 0) {
                     const totalCapacity = days * perDay;
                     displayElement.textContent = `${days} day${days > 1 ? 's' : ''} × ${perDay} per day = ${totalCapacity} total participants`;
@@ -1124,18 +1426,20 @@
             }
         }
 
-        // Load events from Firestore
         function loadEvents() {
             const unsubscribe = onSnapshot(collection(db, "Events"), async (snapshot) => {
                 console.log('📥 Loading events from Firestore...');
 
-                // Map through all events and get their registration counts
                 const eventPromises = snapshot.docs.map(async (docSnap) => {
                     const data = docSnap.data();
                     const eventId = docSnap.id;
 
-                    // Get actual registration count from Ticketing collection
                     const participants = await getEventRegistrationCount(eventId);
+                    let status = data.status || calculateEventStatus(data.startDate, data.endDate, null);
+
+                    if (!data.status) {
+                        await updateEventStatusInFirebase(eventId, status, 'unknown');
+                    }
 
                     return {
                         id: eventId,
@@ -1146,14 +1450,13 @@
                         location: data.location || '',
                         imageUrl: data.imageUrl || '',
                         price: data.price || 0,
-                        participants: participants,  // ✅ Real count from Ticketing
-                        maxAttendeesPerDay: data.maxAttendeesPerDay || data.maxAttendees || 50,  // ✅ Per-day capacity
-                        maxParticipants: data.maxAttendeesPerDay || data.maxAttendees || 50,  // For display
-                        status: getEventStatus(data.startDate, data.endDate)
+                        participants: participants,
+                        maxAttendeesPerDay: data.maxAttendeesPerDay || data.maxAttendees || 50,
+                        maxParticipants: data.maxAttendeesPerDay || data.maxAttendees || 50,
+                        status: status
                     };
                 });
 
-                // Wait for all registration counts to be fetched
                 events = await Promise.all(eventPromises);
 
                 console.log('✅ Events loaded:', events.length);
@@ -1165,22 +1468,6 @@
                     updateCharts();
                 });
             });
-        }
-
-        function getEventStatus(startDate, endDate) {
-            const now = new Date();
-            const start = startDate?.toDate();
-            const end = endDate?.toDate();
-
-            if (!start || !end) return 'upcoming';
-
-            if (now < start) {
-                return 'upcoming';
-            } else if (now >= start && now <= end) {
-                return 'ongoing';
-            } else {
-                return 'completed';
-            }
         }
 
         function formatDate(timestamp) {
@@ -1196,10 +1483,24 @@
         }
 
         function createTimestamp(dateStr, timeStr = "00:00") {
-            const datetime = new Date(`${dateStr}T${timeStr}`);
+            // Create date in local timezone (Bahrain)
+            const [year, month, day] = dateStr.split('-');
+            const [hours, minutes] = timeStr.split(':');
+
+            // Create date using local timezone
+            const datetime = new Date(
+                parseInt(year),
+                parseInt(month) - 1, // months are 0-indexed
+                parseInt(day),
+                parseInt(hours),
+                parseInt(minutes),
+                0,
+                0
+            );
+
             return Timestamp.fromDate(datetime);
         }
-
+        
         function updateStats() {
             document.getElementById('total-events').textContent = events.length;
             document.getElementById('upcoming-events').textContent = events.filter(e => e.status === 'upcoming').length;
@@ -1236,12 +1537,13 @@
                     </div>
                     <span class="status-badge status-${event.status}" onclick="filterByStatus('${event.status}')" style="cursor: pointer;" title="Filter by ${event.status}">${event.status.charAt(0).toUpperCase() + event.status.slice(1)}</span>
                 </div>
+
                 <div class="item-actions">
-                    <button class="icon-btn edit" onclick="editEvent('${event.id}')" title="Edit">
+                    <button class="icon-btn edit" onclick="editEvent('${event.id}')" title="Edit" ${event.status === 'cancelled' || event.status === 'completed' ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
                         <span class="material-icons">edit</span>
                     </button>
-                    <button class="icon-btn delete" onclick="deleteEvent('${event.id}')" title="Delete">
-                        <span class="material-icons">delete</span>
+                    <button class="icon-btn delete" onclick="deleteEvent('${event.id}')" title="${event.status === 'cancelled' ? 'Already Cancelled' : 'Cancel Event'}" ${event.status === 'cancelled' || event.status === 'completed' ? 'disabled style="opacity: 0.5; cursor: not-allowed;"' : ''}>
+                        <span class="material-icons">${event.status === 'cancelled' ? 'block' : 'cancel'}</span>
                     </button>
                 </div>
             </div>
@@ -1255,7 +1557,7 @@
 
         function renderPopularEvents() {
             const popular = events
-                .filter(e => e.participants > 0)
+                .filter(e => e.participants > 0 && e.status !== 'cancelled')
                 .sort((a, b) => b.participants - a.participants)
                 .slice(0, 5);
 
@@ -1330,6 +1632,7 @@
             const ctx = document.getElementById('registrationsChart').getContext('2d');
 
             const sortedEvents = [...events]
+                .filter(e => e.status !== 'cancelled')
                 .sort((a, b) => {
                     const dateA = a.startDate?.toDate() || new Date(0);
                     const dateB = b.startDate?.toDate() || new Date(0);
@@ -1394,6 +1697,22 @@
             const event = events.find(e => e.id === id);
             if (!event) return;
 
+            if (event.status === 'cancelled') {
+                showErrorAlert(
+                    'Cannot Edit Cancelled Event',
+                    'Cancelled events cannot be edited. Please create a new event instead.'
+                );
+                return;
+            }
+
+            if (event.status === 'completed') {
+                showErrorAlert(
+                    'Cannot Edit Completed Event',
+                    'Events that have already ended cannot be edited.'
+                );
+                return;
+            }
+
             editingEventId = id;
             document.getElementById('modal-title').textContent = 'Edit Event';
             document.getElementById('event-id').value = id;
@@ -1424,98 +1743,166 @@
                 document.getElementById('image-preview').style.display = 'none';
             }
 
-            // Calculate total capacity
             calculateTotalCapacity();
-
             document.getElementById('eventModal').classList.add('active');
         };
 
         window.deleteEvent = async function (id) {
             try {
                 const event = events.find(e => e.id === id);
-                const eventTitle = event ? event.name : 'Unknown Event';
+                if (!event) return;
 
-                // ✅ CHECK IF EVENT HAS SOLD TICKETS
-                const ticketCount = await getEventRegistrationCount(id);
-                
-                if (ticketCount > 0) {
-                    // ⚠️ EVENT HAS SOLD TICKETS - SHOW WARNING
-                    const confirmDelete = await showCustomAlert({
-                        type: 'danger',
-                        icon: 'warning',
-                        title: 'Delete Event with Sold Tickets?',
-                        subtitle: 'This action requires your attention',
-                        body: `
-                            <div class="custom-alert-highlight">
-                                <p><strong>⚠️ Warning:</strong> This event has <strong>${ticketCount} sold ticket(s)</strong>!</p>
-                            </div>
-                            <p>Deleting "<strong>${eventTitle}</strong>" will affect customers who already purchased tickets.</p>
-                            <p><strong>Important:</strong> You will need to manually refund all customers.</p>
-                            <p>Are you sure you want to proceed?</p>
-                        `,
-                        buttons: [
-                            { text: 'Cancel', type: 'secondary', value: false },
-                            { text: 'Yes, Delete Event', type: 'danger', value: true, icon: 'delete' }
-                        ]
-                    });
-                    
-                    if (!confirmDelete) {
-                        return; // User cancelled
-                    }
-
-                    // User confirmed - Delete event and log warning
-                    await deleteDoc(doc(db, "Events", id));
-
-                    // ✅ LOG SPECIAL ACTIVITY FOR EVENTS WITH SOLD TICKETS
-                    await logActivity('event', 'deleted_with_tickets', eventTitle, {
-                        ticketsSold: ticketCount,
-                        requiresRefund: true,
-                        deletedAt: new Date().toISOString()
-                    });
-
-                    await showCustomAlert({
-                        type: 'success',
-                        icon: 'check_circle',
-                        title: 'Event Deleted Successfully',
-                        subtitle: 'Action completed',
-                        body: `
-                            <p>The event "<strong>${eventTitle}</strong>" has been deleted.</p>
-                            <div class="custom-alert-highlight">
-                                <p><strong>⚠️ Important Reminder:</strong></p>
-                                <p><strong>${ticketCount} ticket(s)</strong> were sold for this event.</p>
-                                <p>Please refund customers manually as soon as possible.</p>
-                            </div>
-                        `,
-                        buttons: [
-                            { text: 'Got it', type: 'success', value: true, icon: 'check' }
-                        ]
-                    });
-                } else {
-                    // ✅ NO TICKETS SOLD - SAFE TO DELETE
-                    const confirmDelete = await showConfirmAlert(
-                        'Delete Event?',
-                        `Are you sure you want to delete "<strong>${eventTitle}</strong>"? This action cannot be undone.`
-                    );
-                    
-                    if (!confirmDelete) {
-                        return;
-                    }
-
-                    await deleteDoc(doc(db, "Events", id));
-
-                    await logActivity('event', 'deleted', eventTitle);
-
-                    await showSuccessAlert(
-                        'Event Deleted',
-                        `The event "<strong>${eventTitle}</strong>" has been successfully deleted.`
-                    );
+                if (event.status === 'cancelled') {
+                    await showErrorAlert('Already Cancelled', 'This event is already cancelled.');
+                    return;
                 }
-            } catch (error) {
-                console.error('Error deleting event:', error);
-                await showErrorAlert(
-                    'Failed to Delete Event',
-                    `An error occurred: ${error.message}`
+
+                if (event.status === 'completed') {
+                    await showErrorAlert('Cannot Cancel Completed Event', 'Events that have already ended cannot be cancelled.');
+                    return;
+                }
+
+                const eventTitle = event.name;
+                const allTickets = await findEventTickets(eventTitle);
+
+                if (allTickets.length === 0) {
+                    const confirmCancel = await showConfirmAlert(
+                        'Cancel Event?',
+                        `Are you sure you want to cancel "<strong>${eventTitle}</strong>"? The event will be marked as cancelled.`
+                    );
+
+                    if (!confirmCancel) return;
+
+                    await updateDoc(doc(db, "Events", id), {
+                        status: 'cancelled',
+                        cancelledAt: serverTimestamp(),
+                        cancelledBy: auth.currentUser?.email || 'Admin',
+                        statusLastUpdated: serverTimestamp()
+                    });
+
+                    await logActivity('event', 'cancelled', eventTitle, {
+                        ticketsSold: 0,
+                        requiresRefund: false,
+                        previousStatus: event.status
+                    });
+
+                    await showSuccessAlert('Event Cancelled', `"<strong>${eventTitle}</strong>" has been cancelled.`);
+                    return;
+                }
+
+                const ticketAnalysis = determineTicketsToCancelByDateTime(allTickets, {
+                    title: eventTitle,
+                    startDate: event.startDate,
+                    endDate: event.endDate,
+                    startTime: formatTime(event.startDate),
+                    endTime: formatTime(event.endDate),
+                    id: id
+                });
+
+                console.log('📊 Ticket Analysis:', {
+                    total: allTickets.length,
+                    toCancel: ticketAnalysis.toCancel.length,
+                    eventEnded: ticketAnalysis.eventEnded.length,
+                    alreadyUsed: ticketAnalysis.alreadyUsed.length
+                });
+
+                let warningBody = `<p>This event has <strong>${allTickets.length} sold ticket(s)</strong>.</p>`;
+
+                if (ticketAnalysis.toCancel.length > 0) {
+                    warningBody += `
+                <div class="custom-alert-highlight">
+                    <strong>✓ ${ticketAnalysis.toCancel.length} ticket(s) will receive FULL refunds</strong>
+                    <p style="margin: 0.5rem 0 0 0;">Customers will be notified via email. Refunds processed within 5-7 business days.</p>
+                </div>
+            `;
+                }
+
+                if (ticketAnalysis.eventEnded.length > 0) {
+                    warningBody += `
+                <div class="custom-alert-highlight info">
+                    <strong>ℹ️ ${ticketAnalysis.eventEnded.length} ticket(s) - Event already ended</strong>
+                    <p style="margin: 0.5rem 0 0 0;">These tickets will remain unchanged (no refund applicable).</p>
+                </div>
+            `;
+                }
+
+                const confirmCancel = await showCustomAlert({
+                    type: 'warning',
+                    icon: 'warning',
+                    title: 'Cancel Event with Sold Tickets?',
+                    subtitle: 'This will affect customers',
+                    body: warningBody,
+                    buttons: [
+                        { text: 'Keep Event', type: 'secondary', value: false },
+                        { text: 'Yes, Cancel Event', type: 'danger', value: true, icon: 'cancel' }
+                    ]
+                });
+
+                if (!confirmCancel) return;
+
+                const cancelResults = await cancelTicketsInBatch(
+                    ticketAnalysis.toCancel,
+                    {
+                        title: eventTitle,
+                        startDate: event.startDate,
+                        endDate: event.endDate,
+                        startTime: formatTime(event.startDate),
+                        endTime: formatTime(event.endDate),
+                        id: id
+                    },
+                    auth.currentUser?.email || 'Admin'
                 );
+
+                await updateDoc(doc(db, "Events", id), {
+                    status: 'cancelled',
+                    cancelledAt: serverTimestamp(),
+                    cancelledBy: auth.currentUser?.email || 'Admin',
+                    statusLastUpdated: serverTimestamp(),
+                    ticketsCancelled: ticketAnalysis.toCancel.length,
+                    ticketsIgnored: ticketAnalysis.eventEnded.length,
+                    ticketsPreserved: ticketAnalysis.alreadyUsed.length
+                });
+
+                await logActivity('event', 'cancelled_with_tickets', eventTitle, {
+                    totalTickets: allTickets.length,
+                    ticketsWithRefund: ticketAnalysis.toCancel.length,
+                    ticketsIgnored: ticketAnalysis.eventEnded.length,
+                    ticketsPreserved: ticketAnalysis.alreadyUsed.length,
+                    emailsSent: cancelResults.emailsSent,
+                    refundsTotal: ticketAnalysis.toCancel.reduce((sum, t) => sum + (t.totalPrice || 0), 0),
+                    timeAwareProcessing: true,
+                    previousStatus: event.status
+                });
+
+                let successBody = `<p>The event "<strong>${eventTitle}</strong>" has been cancelled.</p>`;
+
+                if (ticketAnalysis.toCancel.length > 0) {
+                    const totalRefunds = ticketAnalysis.toCancel.reduce((sum, t) => sum + (t.totalPrice || 0), 0);
+                    successBody += '<div class="custom-alert-highlight info"><strong>✓ Actions Completed:</strong><ul style="margin: 0.5rem 0 0 1.2rem;">';
+                    successBody += `<li>${ticketAnalysis.toCancel.length} ticket(s) cancelled with refunds ($${totalRefunds.toFixed(2)} total)</li>`;
+                    successBody += `<li>${cancelResults.emailsSent} refund email(s) sent to customers</li>`;
+
+                    if (ticketAnalysis.eventEnded.length > 0) {
+                        successBody += `<li>${ticketAnalysis.eventEnded.length} ticket(s) not affected (event already ended)</li>`;
+                    }
+
+                    successBody += '</ul></div>';
+                }
+
+                await showCustomAlert({
+                    type: 'success',
+                    icon: 'check_circle',
+                    title: 'Event Cancelled Successfully',
+                    subtitle: 'All actions completed',
+                    body: successBody,
+                    buttons: [
+                        { text: 'Done', type: 'success', value: true, icon: 'check' }
+                    ]
+                });
+
+            } catch (error) {
+                console.error('Error cancelling event:', error);
+                await showErrorAlert('Failed to Cancel Event', `An error occurred: ${error.message}`);
             }
         };
 
@@ -1556,20 +1943,17 @@
             window.location.href = 'AdminDashboard.html';
         };
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', () => {
-            console.log('🚀 Initializing ManageEvents...');
+            console.log('🚀 Initializing ManageEvents with EmailJS...');
             loadEvents();
+            startStatusUpdateScheduler();
 
             document.getElementById('searchInput').addEventListener('keyup', debouncedFilterEvents);
             document.getElementById('statusFilter').addEventListener('change', filterEvents);
-
-            // ✅ NEW: Add listeners for total capacity calculator
             document.getElementById('event-start-date')?.addEventListener('change', calculateTotalCapacity);
             document.getElementById('event-end-date')?.addEventListener('change', calculateTotalCapacity);
             document.getElementById('max-participants')?.addEventListener('input', calculateTotalCapacity);
 
-            // Image URL preview functionality
             document.getElementById('event-image-url').addEventListener('input', function (e) {
                 const url = e.target.value.trim();
                 if (url) {
@@ -1587,7 +1971,6 @@
                 }
             });
 
-            // Form submission
             document.getElementById('eventForm').addEventListener('submit', async function (e) {
                 e.preventDefault();
 
@@ -1601,11 +1984,13 @@
                 const maxPerDay = parseInt(document.getElementById('max-participants').value) || 50;
 
                 if (!startDate || !startTime || !endDate || !endTime) {
-                    alert('Please fill in all required date and time fields');
+                    await showErrorAlert(
+                        'Missing Information',
+                        'Please fill in all required date and time fields'
+                    );
                     return;
                 }
 
-                // Validate dates
                 const startDateTime = new Date(`${startDate}T${startTime}`);
                 const endDateTime = new Date(`${endDate}T${endTime}`);
 
@@ -1617,32 +2002,35 @@
                     return;
                 }
 
+                const startTimestamp = createTimestamp(startDate, startTime);
+                const endTimestamp = createTimestamp(endDate, endTime);
+                const initialStatus = calculateEventStatus(startTimestamp, endTimestamp, null);
+
                 const eventData = {
                     title: eventTitle,
                     description: document.getElementById('event-description').value,
-                    startDate: createTimestamp(startDate, startTime),
-                    endDate: createTimestamp(endDate, endTime),
+                    startDate: startTimestamp,
+                    endDate: endTimestamp,
                     location: document.getElementById('event-location').value,
                     maxAttendeesPerDay: maxPerDay,
                     price: eventPrice,
-                    imageUrl: imageUrl || ''
+                    imageUrl: imageUrl || '',
+                    status: initialStatus,
+                    statusLastUpdated: serverTimestamp()
                 };
 
                 const id = document.getElementById('event-id').value;
 
                 try {
                     if (id) {
-                        // ✅✅✅ UPDATE EXISTING EVENT - TRACK ALL CHANGES ✅✅✅
                         const currentEvent = events.find(e => e.id === id);
                         const changes = [];
 
                         if (currentEvent) {
-                            // 1. Track TITLE change
                             if (currentEvent.name !== eventTitle) {
                                 changes.push(`title from "${currentEvent.name}" to "${eventTitle}"`);
                             }
 
-                            // 2. Track DESCRIPTION change
                             const newDescription = document.getElementById('event-description').value;
                             if (currentEvent.description !== newDescription) {
                                 const oldDesc = currentEvent.description || '(empty)';
@@ -1652,7 +2040,6 @@
                                 changes.push(`description from "${oldPreview}" to "${newPreview}"`);
                             }
 
-                            // 3. Track START DATE/TIME change
                             const newStartDate = createTimestamp(startDate, startTime);
                             if (currentEvent.startDate) {
                                 const oldStartTime = currentEvent.startDate.toDate().getTime();
@@ -1664,7 +2051,6 @@
                                 }
                             }
 
-                            // 4. Track END DATE/TIME change
                             const newEndDate = createTimestamp(endDate, endTime);
                             if (currentEvent.endDate) {
                                 const oldEndTime = currentEvent.endDate.toDate().getTime();
@@ -1676,23 +2062,19 @@
                                 }
                             }
 
-                            // 5. Track LOCATION change
                             const newLocation = document.getElementById('event-location').value;
                             if (currentEvent.location !== newLocation) {
                                 changes.push(`location from "${currentEvent.location}" to "${newLocation}"`);
                             }
 
-                            // 6. Track PRICE change
                             if (currentEvent.price !== eventPrice) {
                                 changes.push(`price from $${currentEvent.price} to $${eventPrice}`);
                             }
 
-                            // 7. Track MAX PARTICIPANTS PER DAY change
                             if (currentEvent.maxAttendeesPerDay !== maxPerDay) {
                                 changes.push(`max per day from ${currentEvent.maxAttendeesPerDay} to ${maxPerDay}`);
                             }
 
-                            // 8. Track IMAGE URL change
                             const oldImage = currentEvent.imageUrl || '';
                             if (oldImage !== imageUrl) {
                                 if (!oldImage && imageUrl) {
@@ -1703,12 +2085,15 @@
                                     changes.push(`image URL updated`);
                                 }
                             }
+
+                            const newStatus = calculateEventStatus(startTimestamp, endTimestamp, currentEvent.status);
+                            if (currentEvent.status !== newStatus) {
+                                changes.push(`status from ${currentEvent.status} to ${newStatus}`);
+                            }
                         }
 
-                        // Save to Firebase
                         await updateDoc(doc(db, "Events", id), eventData);
 
-                        // Log activity with all changes
                         const changesText = changes.length > 0 ? changes.join(' • ') : 'saved with no changes';
                         await logActivity('event', 'updated', eventTitle, {
                             changes: changesText,
@@ -1717,12 +2102,12 @@
 
                         console.log('✓ Event updated. Changes:', changesText);
                         if (changes.length > 0) {
-                        await showCustomAlert({
-                            type: 'success',
-                            icon: 'check_circle',
-                            title: 'Event Updated Successfully',
-                            subtitle: `${changes.length} change(s) made`,
-                            body: `
+                            await showCustomAlert({
+                                type: 'success',
+                                icon: 'check_circle',
+                                title: 'Event Updated Successfully',
+                                subtitle: `${changes.length} change(s) made`,
+                                body: `
                                 <p>The event "<strong>${eventTitle}</strong>" has been updated.</p>
                                 <div class="custom-alert-highlight info">
                                     <strong>Changes made:</strong>
@@ -1731,18 +2116,17 @@
                                     </ul>
                                 </div>
                             `,
-                            buttons: [
-                                { text: 'Done', type: 'success', value: true, icon: 'check' }
-                            ]
-                        });
+                                buttons: [
+                                    { text: 'Done', type: 'success', value: true, icon: 'check' }
+                                ]
+                            });
+                        } else {
+                            await showSuccessAlert(
+                                'Event Saved',
+                                'Event has been saved with no changes.'
+                            );
+                        }
                     } else {
-                        await showSuccessAlert(
-                            'Event Saved',
-                            'Event has been saved with no changes.'
-                        );
-                    }
-                    } else {
-                        // ✅ ADD NEW EVENT
                         console.log('Creating new event:', eventData);
                         const docRef = await addDoc(collection(db, "Events"), eventData);
                         console.log('✓ Event created with ID:', docRef.id);
@@ -1777,30 +2161,34 @@
                     closeModal();
                 }
             });
+
+            window.addEventListener('beforeunload', () => {
+                stopStatusUpdateScheduler();
+            });
         });
     </script>
     <script src="cache-helper.js"></script>
 
     <!-- Custom Alert System -->
-        <div class="custom-alert-overlay" id="customAlertOverlay">
-            <div class="custom-alert-box">
-                <div class="custom-alert-header">
-                    <div class="custom-alert-icon" id="customAlertIcon">
-                        <span class="material-icons" id="customAlertIconSymbol">check_circle</span>
-                    </div>
-                    <div class="custom-alert-header-text">
-                        <h3 id="customAlertTitle">Title</h3>
-                        <p id="customAlertSubtitle"></p>
-                    </div>
+    <div class="custom-alert-overlay" id="customAlertOverlay">
+        <div class="custom-alert-box">
+            <div class="custom-alert-header">
+                <div class="custom-alert-icon" id="customAlertIcon">
+                    <span class="material-icons" id="customAlertIconSymbol">check_circle</span>
                 </div>
-                <div class="custom-alert-body" id="customAlertBody">
-                    Message content
-                </div>
-                <div class="custom-alert-actions" id="customAlertActions">
-                    <!-- Buttons will be added dynamically -->
+                <div class="custom-alert-header-text">
+                    <h3 id="customAlertTitle">Title</h3>
+                    <p id="customAlertSubtitle"></p>
                 </div>
             </div>
+            <div class="custom-alert-body" id="customAlertBody">
+                Message content
+            </div>
+            <div class="custom-alert-actions" id="customAlertActions">
+                <!-- Buttons will be added dynamically -->
+            </div>
         </div>
+    </div>
 </body>
 
 </html>
