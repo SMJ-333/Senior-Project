@@ -3193,20 +3193,42 @@
 
                 this.stopSpeaking();
 
-                if (typeof responsiveVoice !== 'undefined') {
-                    responsiveVoice.speak(text, "US English Female", {
-                        rate: this.speed,
-                        pitch: 1,
-                        volume: 1
-                    });
+                // Detect current language from page direction
+                const isArabic = document.documentElement.getAttribute('dir') === 'rtl' || 
+                                 document.documentElement.getAttribute('lang') === 'ar';
+
+                // Use Web Speech API (built-in browser support)
+                const utterance = new SpeechSynthesisUtterance(text);
+                utterance.rate = this.speed;
+                utterance.pitch = 1;
+                utterance.volume = 1;
+                utterance.lang = isArabic ? 'ar-SA' : 'en-US';
+
+                // Try to find a better Arabic voice
+                if (isArabic) {
+                    const voices = window.speechSynthesis.getVoices();
+                    const arabicVoice = voices.find(voice => 
+                        voice.lang.startsWith('ar') || 
+                        voice.name.includes('Arabic') ||
+                        voice.name.includes('Laila') || // macOS/iOS
+                        voice.name.includes('Majed')    // Windows
+                    );
+                    if (arabicVoice) {
+                        utterance.voice = arabicVoice;
+                        console.log('✅ Using Arabic voice:', arabicVoice.name);
+                    }
                 } else {
-                    const utterance = new SpeechSynthesisUtterance(text);
-                    utterance.rate = this.speed;
-                    utterance.pitch = 1;
-                    utterance.volume = 1;
-                    window.speechSynthesis.speak(utterance);
+                    const voices = window.speechSynthesis.getVoices();
+                    const englishVoice = voices.find(voice => 
+                        voice.lang.startsWith('en') && 
+                        voice.name.includes('Female')
+                    );
+                    if (englishVoice) {
+                        utterance.voice = englishVoice;
+                    }
                 }
 
+                window.speechSynthesis.speak(utterance);
                 this.isReading = true;
             }
 

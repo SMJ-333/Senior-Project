@@ -11,14 +11,30 @@
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 
-    <!-- ✅ EmailJS SDK -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
-    <script type="text/javascript">
-        // Initialize EmailJS with your Public Key
-        (function () {
-            emailjs.init("-44BWtrRgLumgCqoN");
-        })();
-    </script>
+   <!-- ✅ EmailJS SDK with error handling -->
+        <script type="text/javascript">
+            window.emailjsLoaded = false;
+            (function() {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js';
+                script.async = true;
+                script.onload = function() {
+                    try {
+                        if (typeof emailjs !== 'undefined') {
+                            emailjs.init("-44BWtrRgLumgCqoN");
+                            window.emailjsLoaded = true;
+                            console.log('✅ EmailJS loaded successfully');
+                        }
+                    } catch (error) {
+                        console.warn('⚠️ EmailJS initialization failed:', error);
+                    }
+                };
+                script.onerror = function() {
+                    console.warn('⚠️ EmailJS failed to load');
+                };
+                document.head.appendChild(script);
+            })();
+        </script>
 
     <style>
         :root {
@@ -563,7 +579,6 @@
             }
         }
 
-        /* Custom Alert System */
         .custom-alert-overlay {
             display: none;
             position: fixed;
@@ -575,6 +590,7 @@
             z-index: 10000;
             align-items: center;
             justify-content: center;
+            -webkit-backdrop-filter: blur(4px);
             backdrop-filter: blur(4px);
             animation: fadeIn 0.2s ease;
         }
@@ -814,9 +830,9 @@
 
                 <div class="filters">
                     <div class="search-box">
-                        <input type="text" id="searchInput" placeholder="Search events...">
+                        <input type="text" id="searchInput" placeholder="Search events..." aria-label="Search events">
                     </div>
-                    <select class="form-select" id="statusFilter">
+                    <select class="form-select" id="statusFilter" aria-label="Filter by status">
                         <option value="">All Status</option>
                         <option value="upcoming">Upcoming</option>
                         <option value="ongoing">Ongoing</option>
@@ -883,62 +899,62 @@
                 <input type="hidden" id="event-id">
 
                 <div class="form-group">
-                    <label class="form-label">Event Name *</label>
-                    <input type="text" class="form-input" id="event-name" required>
-                </div>
+                <label class="form-label" for="event-name">Event Name *</label>
+                <input type="text" class="form-input" id="event-name" name="event-name" required aria-required="true">
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Description</label>
-                    <textarea class="form-textarea" id="event-description"></textarea>
-                </div>
+            <div class="form-group">
+                <label class="form-label" for="event-description">Description</label>
+                <textarea class="form-textarea" id="event-description" name="event-description" aria-label="Event description"></textarea>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Start Date *</label>
-                    <input type="date" class="form-input" id="event-start-date" required>
-                </div>
+            <div class="form-group">
+                <label class="form-label" for="event-start-date">Start Date *</label>
+                <input type="date" class="form-input" id="event-start-date" name="event-start-date" required aria-required="true">
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Start Time *</label>
-                    <input type="time" class="form-input" id="event-start-time" required>
-                </div>
+            <div class="form-group">
+                <label class="form-label" for="event-start-time">Start Time *</label>
+                <input type="time" class="form-input" id="event-start-time" name="event-start-time" required aria-required="true">
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">End Date *</label>
-                    <input type="date" class="form-input" id="event-end-date" required>
-                </div>
+            <div class="form-group">
+                <label class="form-label" for="event-end-date">End Date *</label>
+                <input type="date" class="form-input" id="event-end-date" name="event-end-date" required aria-required="true">
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">End Time *</label>
-                    <input type="time" class="form-input" id="event-end-time" required>
-                </div>
+            <div class="form-group">
+                <label class="form-label" for="event-end-time">End Time *</label>
+                <input type="time" class="form-input" id="event-end-time" name="event-end-time" required aria-required="true">
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Location *</label>
-                    <input type="text" class="form-input" id="event-location" required>
-                </div>
+            <div class="form-group">
+                <label class="form-label" for="event-location">Location *</label>
+                <input type="text" class="form-input" id="event-location" name="event-location" required aria-required="true">
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Event Image URL</label>
-                    <input type="url" class="form-input" id="event-image-url"
-                        placeholder="https://example.com/image.jpg">
-                    <div id="image-preview" style="margin-top: 1rem; display: none;">
-                        <img id="preview-img" style="max-width: 100%; max-height: 200px; border-radius: 8px;"
-                            alt="Preview">
-                    </div>
+            <div class="form-group">
+                <label class="form-label" for="event-image-url">Event Image URL</label>
+                <input type="url" class="form-input" id="event-image-url" name="event-image-url"
+                    placeholder="https://example.com/image.jpg" aria-label="Event image URL">
+                <div id="image-preview" style="margin-top: 1rem; display: none;">
+                    <img id="preview-img" style="max-width: 100%; max-height: 200px; border-radius: 8px;"
+                        alt="Event image preview">
                 </div>
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Price ($)</label>
-                    <input type="number" class="form-input" id="event-price" min="0" step="0.01" value="15">
-                </div>
+            <div class="form-group">
+                <label class="form-label" for="event-price">Price ($)</label>
+                <input type="number" class="form-input" id="event-price" name="event-price" min="0" step="0.01" value="15" aria-label="Event price in dollars">
+            </div>
 
-                <div class="form-group">
-                    <label class="form-label">Maximum Participants Per Day *</label>
-                    <input type="number" class="form-input" id="max-participants" min="1" value="50" required>
-                    <small style="color: var(--text-light); font-size: 0.85rem; display: block; margin-top: 0.5rem;">
-                        Maximum number of participants allowed <strong>per day</strong> during this event.
-                    </small>
-                </div>
+            <div class="form-group">
+                <label class="form-label" for="max-participants">Maximum Participants Per Day *</label>
+                <input type="number" class="form-input" id="max-participants" name="max-participants" min="1" value="50" required aria-required="true" aria-describedby="max-participants-help">
+                <small id="max-participants-help" style="color: var(--text-light); font-size: 0.85rem; display: block; margin-top: 0.5rem;">
+                    Maximum number of participants allowed <strong>per day</strong> during this event.
+                </small>
+            </div>
 
                 <div class="capacity-calculator">
                     <div style="display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;">
@@ -969,78 +985,37 @@
             publicKey: '-44BWtrRgLumgCqoN'
         };
 
-        async function cancelTicketsInBatch(ticketsToCancel, eventData, adminEmail) {
-            let successCount = 0;
-            let failCount = 0;
-            let emailsSent = 0;
-
-            for (const ticket of ticketsToCancel) {
-                try {
-                    await updateDoc(doc(db, "Ticketing", ticket.id), {
-                        status: 'cancelled',
-                        cancelledAt: serverTimestamp(),
-                        cancelledBy: adminEmail,
-                        cancellationReason: 'event_cancelled',
-                        refundStatus: 'pending',
-                        refundAmount: ticket.totalPrice,
-                        originalEventData: {
-                            eventName: eventData.title,
-                            eventDate: eventData.startDate,
-                            eventEndTime: eventData.endTime,
-                            eventId: eventData.id
-                        }
-                    });
-
-                    // ✅ Format date without time
-                    const formattedDate = new Date(ticket.visitDate).toLocaleDateString('en-US', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric'
-                    });
-
-                    // ✅ Send email notification via EmailJS
-                    const emailSent = await sendCancellationEmailWithRefund(
-                        ticket.email || ticket.userEmail,
-                        ticket.customerName || ticket.userName || 'Valued Customer',
-                        ticket.id,
-                        eventData.title,
-                        formattedDate,  // ← Now just "December 15, 2025"
-                        ticket.totalPrice
-                    );
-
-                    if (emailSent) {
-                        emailsSent++;
-                        console.log(`✅ Email sent to: ${ticket.email || ticket.userEmail}`);
-                    } else {
-                        console.log(`⚠️ Failed to send email to: ${ticket.email || ticket.userEmail}`);
-                    }
-
-                    // In-app notification for members
-                    if (ticket.userId && ticket.userId !== 'guest') {
-                        await addDoc(collection(db, "UserNotifications"), {
-                            userId: ticket.userId,
-                            type: 'event_cancellation_refund',
-                            title: 'Event Cancelled - Refund Confirmed',
-                            message: `"${eventData.title}" has been cancelled. Full refund of $${ticket.totalPrice.toFixed(2)} will be processed.`,
-                            bookingId: ticket.id,
-                            read: false,
-                            createdAt: serverTimestamp(),
-                            metadata: {
-                                eventName: eventData.title,
-                                refundAmount: ticket.totalPrice
-                            }
-                        });
-                    }
-
-                    successCount++;
-                } catch (error) {
-                    console.error(`Error cancelling ticket ${ticket.id}:`, error);
-                    failCount++;
-                }
+        
+// Safe EmailJS send function with fallback
+        async function sendCancellationEmailWithRefund(email, name, ticketId, eventName, eventDate, refundAmount) {
+            if (!window.emailjsLoaded || typeof emailjs === 'undefined') {
+                console.warn('⚠️ EmailJS not available - email not sent to:', email);
+                return false;
             }
 
-            console.log(`Batch complete: ${successCount} cancelled, ${failCount} failed, ${emailsSent} emails sent`);
-            return { successCount, failCount, emailsSent };
+            try {
+                const templateParams = {
+                    to_email: email,
+                    customer_name: name,
+                    ticket_id: ticketId,
+                    event_name: eventName,
+                    event_date: eventDate,
+                    refund_amount: refundAmount
+                };
+
+                const response = await emailjs.send(
+                    EMAILJS_CONFIG.serviceId,
+                    EMAILJS_CONFIG.templateId,
+                    templateParams,
+                    EMAILJS_CONFIG.publicKey
+                );
+
+                console.log('✅ Email sent successfully:', response);
+                return true;
+            } catch (error) {
+                console.error('❌ Email send failed:', error);
+                return false;
+            }
         }
 
         async function testEmailJSEmail(testEmail) {
