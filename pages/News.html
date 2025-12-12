@@ -11,7 +11,325 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
+    <!-- Arabic Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
+
+    <!-- Google Translate Script -->
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'ar,en',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+
+        // Always start with English
+        var currentLang = 'en';
+        var isTranslating = false;
+
+        function translateToArabic() {
+            if (isTranslating) {
+                console.log('Translation in progress, please wait...');
+                return;
+            }
+
+            var translateText = document.querySelector('.translate-text');
+            var selectElement = document.querySelector('.goog-te-combo');
+
+            if (!selectElement) {
+                setTimeout(translateToArabic, 300);
+                return;
+            }
+
+            isTranslating = true;
+
+            if (currentLang === 'en') {
+                // Switch to Arabic
+                selectElement.value = 'ar';
+                selectElement.dispatchEvent(new Event('change'));
+
+                function updateButtonToEnglish() {
+                    if (translateText) translateText.textContent = 'English';
+                }
+                updateButtonToEnglish();
+
+                setTimeout(function () {
+                    document.documentElement.setAttribute('dir', 'rtl');
+                    document.body.setAttribute('dir', 'rtl');
+                    document.documentElement.setAttribute('lang', 'ar');
+
+                    updateButtonToEnglish();
+                    currentLang = 'ar';
+                    isTranslating = false;
+                }, 1500);
+
+                setTimeout(updateButtonToEnglish, 500);
+                setTimeout(updateButtonToEnglish, 1000);
+                setTimeout(updateButtonToEnglish, 2000);
+
+            } else {
+                // Switch back to English
+                selectElement.value = 'en';
+                selectElement.dispatchEvent(new Event('change'));
+
+                function updateButtonToArabic() {
+                    if (translateText) translateText.textContent = 'العربية';
+                }
+                updateButtonToArabic();
+
+                setTimeout(function () {
+                    document.documentElement.setAttribute('dir', 'ltr');
+                    document.body.setAttribute('dir', 'ltr');
+                    document.documentElement.setAttribute('lang', 'en');
+
+                    updateButtonToArabic();
+                    currentLang = 'en';
+                    isTranslating = false;
+                }, 1500);
+
+                setTimeout(updateButtonToArabic, 500);
+                setTimeout(updateButtonToArabic, 1000);
+                setTimeout(updateButtonToArabic, 2000);
+            }
+        }
+
+        // On page load - DO NOT translate, just mark icons
+        window.addEventListener('load', function () {
+            var materialIcons = document.querySelectorAll('.material-icons');
+            materialIcons.forEach(function (icon) {
+                icon.classList.add('notranslate');
+            });
+
+            // Set initial button text
+            setTimeout(function () {
+                var translateText = document.querySelector('.translate-text');
+                if (translateText) {
+                    translateText.textContent = 'العربية';
+                }
+            }, 1000);
+        });
+
+        // Keep the button text correct
+        setInterval(function () {
+            var translateText = document.querySelector('.translate-text');
+            if (translateText) {
+                if (currentLang === 'ar') {
+                    if (translateText.textContent !== 'English') {
+                        translateText.textContent = 'English';
+                    }
+                } else {
+                    if (translateText.textContent !== 'العربية') {
+                        translateText.textContent = 'العربية';
+                    }
+                }
+            }
+        }, 2000);
+    </script>
+    <script type="text/javascript"
+        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
     <style>
+        /* ===== GOOGLE TRANSLATE HIDING ===== */
+        .goog-te-banner-frame.skiptranslate {
+            display: none !important;
+        }
+
+        body {
+            top: 0px !important;
+            position: static !important;
+        }
+
+        .goog-te-balloon-frame {
+            display: none !important;
+        }
+
+        .goog-tooltip {
+            display: none !important;
+        }
+
+        .goog-tooltip:hover {
+            display: none !important;
+        }
+
+        .goog-text-highlight {
+            background-color: transparent !important;
+            border: none !important;
+            box-shadow: none !important;
+        }
+
+        #goog-gt-tt {
+            display: none !important;
+        }
+
+        .goog-te-banner-frame {
+            display: none !important;
+        }
+
+        .goog-te-banner-frame.skiptranslate,
+        .goog-te-gadget-simple {
+            display: none !important;
+        }
+
+        iframe.goog-te-banner-frame {
+            display: none !important;
+        }
+
+        body>.skiptranslate {
+            display: none !important;
+        }
+
+        iframe.skiptranslate {
+            display: none !important;
+        }
+
+        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
+            display: none !important;
+        }
+
+        .VIpgJd-ZVi9od-aZ2wEe-OiiCO {
+            display: none !important;
+        }
+
+        .VIpgJd-ZVi9od-xl07Ob-lTBxed {
+            display: none !important;
+        }
+
+        /* ===== LANGUAGE TOGGLE BUTTON ===== */
+        .language-toggle {
+            background: var(--accent);
+            color: var(--primary-dark);
+            border: 2px solid var(--accent);
+            padding: 0.5rem 1.2rem;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.95rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .language-toggle:hover {
+            background: var(--accent-light);
+            transform: scale(1.05);
+            box-shadow: 0 4px 12px rgba(176, 141, 87, 0.3);
+        }
+
+        .language-toggle .material-icons {
+            font-size: 1.2rem;
+        }
+
+        /* ===== DUAL LANGUAGE DISPLAY ===== */
+        .arabic-only {
+            display: none;
+        }
+
+        body[dir="rtl"] .english-only {
+            display: none;
+        }
+
+        body[dir="rtl"] .arabic-only {
+            display: inline;
+        }
+
+        /* ===== RTL SUPPORT FOR ARABIC ===== */
+        body[dir="rtl"] {
+            direction: rtl;
+            text-align: right;
+        }
+
+        body[dir="rtl"] .nav-container {
+            flex-direction: row;
+        }
+
+        body[dir="rtl"] .logo::before {
+            margin-right: 0;
+            margin-left: 0.5rem;
+        }
+
+        body[dir="rtl"] .nav-links a::after {
+            left: auto;
+            right: 50%;
+            transform: translateX(50%);
+        }
+
+        body[dir="rtl"] .search-icon {
+            margin-right: 0;
+            margin-left: 1rem;
+        }
+
+        body[dir="rtl"] .nav-container>div:last-child {
+            order: 3;
+            margin-right: 0;
+        }
+
+        body[dir="rtl"] .logo {
+            order: 1;
+        }
+
+        body[dir="rtl"] .nav-links {
+            order: 2;
+        }
+
+        body[dir="rtl"] .info-grid {
+            direction: rtl;
+        }
+
+        body[dir="rtl"] .event-item,
+        body[dir="rtl"] .exhibition-item {
+            border-left: none;
+            border-right: 4px solid transparent;
+        }
+
+        body[dir="rtl"] .event-item:hover,
+        body[dir="rtl"] .exhibition-item:hover {
+            transform: translateX(-5px);
+            border-left: none;
+            border-right: 4px solid var(--accent);
+        }
+
+        body[dir="rtl"] .footer-info {
+            direction: rtl;
+        }
+
+        body[dir="rtl"] .recommendation-badge {
+            right: auto;
+            left: 1rem;
+        }
+
+        body[dir="rtl"] .accessibility-controls {
+            right: auto;
+            left: 20px;
+        }
+
+        body[dir="rtl"] .accessibility-menu {
+            right: auto;
+            left: 0;
+        }
+
+        body[dir="rtl"] .suggestion-icon {
+            margin-right: 0;
+            margin-left: 1rem;
+        }
+
+        body[dir="rtl"] .language-toggle {
+            margin-left: 1rem;
+        }
+
+        @media (max-width: 768px) {
+            body[dir="rtl"] .accessibility-controls {
+                left: 15px;
+                right: auto;
+            }
+
+            .language-toggle {
+                padding: 0.4rem 0.8rem;
+                font-size: 0.85rem;
+            }
+        }
+
         :root {
             --primary-dark: #653025;
             --primary-light: #8d2e1d;
@@ -633,6 +951,7 @@
             from {
                 opacity: 0;
             }
+
             to {
                 opacity: 1;
             }
@@ -643,6 +962,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -1035,18 +1355,70 @@
 
     <nav>
         <div class="nav-container">
-            <a href="Home.html" class="logo">ATHAR Museum</a>
+            <a href="Home.html" class="logo">
+                <span class="english-only notranslate">ATHAR Museum</span>
+                <span class="arabic-only notranslate"
+                    style="font-family: 'Aref Ruqaa', serif; font-size: 30px;">أثــــر</span>
+            </a>
+
             <ul class="nav-links">
-                <li><a href="Home.html">Home</a></li>
-                <li><a href="AboutUs.html">About Us</a></li>
-                <li><a href="Events.html">Events</a></li>
-                <li><a href="Ticketing.html">Ticketing</a></li>
-                <li><a href="News.html" class="active">News</a></li>
-                <li><a href="Exhibitions.html">Exhibitions</a></li>
-                <li><a href="Gallery.html">Gallery</a></li>
+                <li>
+                    <a href="Home.html">
+                        <span class="english-only notranslate">Home</span>
+                        <span class="arabic-only notranslate">الصفحة الرئيسية</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="AboutUs.html">
+                        <span class="english-only notranslate">About Us</span>
+                        <span class="arabic-only notranslate">من نحن</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Events.html">
+                        <span class="english-only notranslate">Events</span>
+                        <span class="arabic-only notranslate">الفعاليات</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Ticketing.html">
+                        <span class="english-only notranslate">Ticketing</span>
+                        <span class="arabic-only notranslate">التذاكر</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="News.html" class="active">
+                        <span class="english-only notranslate">News</span>
+                        <span class="arabic-only notranslate">الأخبار</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Exhibitions.html">
+                        <span class="english-only notranslate">Exhibitions</span>
+                        <span class="arabic-only notranslate">المعارض</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Gallery.html">
+                        <span class="english-only notranslate">Gallery</span>
+                        <span class="arabic-only notranslate">مجموعة التراث</span>
+                    </a>
+                </li>
             </ul>
-            <a href="Account.html" class="account-icon" title="My Account"><span
-                    class="material-icons">person</span></a>
+
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div id="google_translate_element" style="display: none;"></div>
+
+                <button class="language-toggle" id="language-toggle" onclick="translateToArabic()"
+                    title="Switch Language">
+                    <span class="material-icons notranslate">translate</span>
+                    <span class="translate-text" id="lang-text">العربية</span>
+                </button>
+
+                <a href="Account.html" class="account-icon" title="My Account">
+                    <span class="material-icons">person</span>
+                </a>
+            </div>
         </div>
     </nav>
 

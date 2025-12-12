@@ -969,41 +969,96 @@
             publicKey: '-44BWtrRgLumgCqoN'
         };
 
-        async function sendCancellationEmailWithRefund(recipientEmail, recipientName, bookingId, eventName, eventDate, refundAmount) {
-            const templateParams = {
-                recipientEmail: recipientEmail,
-                recipientName: recipientName,
-                bookingId: bookingId,
-                eventName: eventName,
-                eventDate: eventDate,
-                refundAmount: refundAmount
-            };
+        async function cancelTicketsInBatch(ticketsToCancel, eventData, adminEmail) {
+            let successCount = 0;
+            let failCount = 0;
+            let emailsSent = 0;
 
-            try {
-                console.log(`📧 Sending email to: ${recipientEmail}`);
+            for (const ticket of ticketsToCancel) {
+                try {
+                    await updateDoc(doc(db, "Ticketing", ticket.id), {
+                        status: 'cancelled',
+                        cancelledAt: serverTimestamp(),
+                        cancelledBy: adminEmail,
+                        cancellationReason: 'event_cancelled',
+                        refundStatus: 'pending',
+                        refundAmount: ticket.totalPrice,
+                        originalEventData: {
+                            eventName: eventData.title,
+                            eventDate: eventData.startDate,
+                            eventEndTime: eventData.endTime,
+                            eventId: eventData.id
+                        }
+                    });
 
-                const response = await emailjs.send(
-                    EMAILJS_CONFIG.serviceId,
-                    EMAILJS_CONFIG.templateId,
-                    templateParams
-                );
+                    // ✅ Format date without time
+                    const formattedDate = new Date(ticket.visitDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
 
-                console.log(`✅ Email sent successfully to: ${recipientEmail}`);
-                return true;
-            } catch (error) {
-                console.error(`❌ Failed to send email to: ${recipientEmail}`, error);
-                return false;
+                    // ✅ Send email notification via EmailJS
+                    const emailSent = await sendCancellationEmailWithRefund(
+                        ticket.email || ticket.userEmail,
+                        ticket.customerName || ticket.userName || 'Valued Customer',
+                        ticket.id,
+                        eventData.title,
+                        formattedDate,  // ← Now just "December 15, 2025"
+                        ticket.totalPrice
+                    );
+
+                    if (emailSent) {
+                        emailsSent++;
+                        console.log(`✅ Email sent to: ${ticket.email || ticket.userEmail}`);
+                    } else {
+                        console.log(`⚠️ Failed to send email to: ${ticket.email || ticket.userEmail}`);
+                    }
+
+                    // In-app notification for members
+                    if (ticket.userId && ticket.userId !== 'guest') {
+                        await addDoc(collection(db, "UserNotifications"), {
+                            userId: ticket.userId,
+                            type: 'event_cancellation_refund',
+                            title: 'Event Cancelled - Refund Confirmed',
+                            message: `"${eventData.title}" has been cancelled. Full refund of $${ticket.totalPrice.toFixed(2)} will be processed.`,
+                            bookingId: ticket.id,
+                            read: false,
+                            createdAt: serverTimestamp(),
+                            metadata: {
+                                eventName: eventData.title,
+                                refundAmount: ticket.totalPrice
+                            }
+                        });
+                    }
+
+                    successCount++;
+                } catch (error) {
+                    console.error(`Error cancelling ticket ${ticket.id}:`, error);
+                    failCount++;
+                }
             }
+
+            console.log(`Batch complete: ${successCount} cancelled, ${failCount} failed, ${emailsSent} emails sent`);
+            return { successCount, failCount, emailsSent };
         }
 
         async function testEmailJSEmail(testEmail) {
             console.log('🧪 Testing EmailJS...');
+
+            // Format test date
+            const testDate = new Date('2025-01-15').toLocaleDateString('en-US', {
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+
             const success = await sendCancellationEmailWithRefund(
                 testEmail,
                 'Test Customer',
                 'TEST-12345',
                 'Test Event',
-                'January 15, 2025',
+                testDate,  // ← "January 15, 2025"
                 '25.00'
             );
             console.log(success ? '✅ Test passed!' : '❌ Test failed!');
@@ -1234,15 +1289,21 @@
                     });
 
                     // ✅ Send email notification via EmailJS
+                    // Format date without time (e.g., "January 15, 2025")
+                    const formattedDate = new Date(ticket.visitDate).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric'
+                    });
+
                     const emailSent = await sendCancellationEmailWithRefund(
                         ticket.email || ticket.userEmail,
                         ticket.customerName || ticket.userName || 'Valued Customer',
                         ticket.id,
                         eventData.title,
-                        ticket.visitDate,
+                        formattedDate,  // ✅ Now just the date!
                         ticket.totalPrice
                     );
-
                     if (emailSent) {
                         emailsSent++;
                         console.log(`✅ Email sent to: ${ticket.email || ticket.userEmail}`);
@@ -1500,7 +1561,7 @@
 
             return Timestamp.fromDate(datetime);
         }
-        
+
         function updateStats() {
             document.getElementById('total-events').textContent = events.length;
             document.getElementById('upcoming-events').textContent = events.filter(e => e.status === 'upcoming').length;

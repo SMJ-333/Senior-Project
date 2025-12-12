@@ -1756,30 +1756,48 @@
                 const eventsCol = collection(db, 'Events');
                 const eventsSnapshot = await getDocs(eventsCol);
 
-                const now = new Date();
                 const upcomingEvents = [];
 
                 eventsSnapshot.forEach(doc => {
                     const data = doc.data();
-                    const startDate = data.startDate?.toDate();
 
-                    // Only include events that haven't started yet
-                    if (startDate && startDate > now) {
+                    const status = data.status || 'upcoming';
+
+                    console.log(`📅 Event "${data.title}": status="${status}" (from Firestore)`);
+
+                    // Only include events with status 'upcoming'
+                    if (status === 'upcoming') {
+                        const startDate = data.startDate?.toDate();
+
                         upcomingEvents.push({
                             id: doc.id,
                             ...data,
-                            startDate: startDate
+                            startDate: startDate,
+                            status: status
                         });
+
+                        console.log(`✅ Added upcoming event: "${data.title}"`);
+                    } else {
+                        console.log(`⏭️ Skipped event "${data.title}" - status is "${status}" (not upcoming)`);
                     }
                 });
 
                 // Sort by date (earliest first) and take top 3
-                upcomingEvents.sort((a, b) => a.startDate - b.startDate);
+                upcomingEvents.sort((a, b) => {
+                    // Handle cases where startDate might be null
+                    if (!a.startDate && !b.startDate) return 0;
+                    if (!a.startDate) return 1;
+                    if (!b.startDate) return -1;
+                    return a.startDate - b.startDate;
+                });
+
                 const top3Events = upcomingEvents.slice(0, 3);
 
+                console.log(`📊 Found ${upcomingEvents.length} upcoming events, showing top 3`);
                 displayUpcomingEvents(top3Events);
+
             } catch (error) {
-                console.error('Error loading upcoming events:', error);
+                console.error('❌ Error loading upcoming events:', error);
                 document.getElementById('upcoming-events-container').innerHTML = `
                     <p style="color: var(--text-light); text-align: center; padding: 2rem;">
                         Unable to load events
