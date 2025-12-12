@@ -9,10 +9,11 @@
         href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
     <!-- ✅ EmailJS SDK -->
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script type="text/javascript">
-        // Initialize EmailJS with your Public Key
         (function () {
             emailjs.init("-44BWtrRgLumgCqoN");
         })();
@@ -182,6 +183,11 @@
             color: var(--primary-dark);
         }
 
+        .stat-icon.danger {
+            background: linear-gradient(135deg, #f56565, #e53e3e);
+            color: var(--white);
+        }
+
         .stat-info h3 {
             font-size: 2rem;
             color: var(--primary-dark);
@@ -238,28 +244,6 @@
             display: flex;
             gap: 0.5rem;
             align-items: center;
-        }
-
-        .filter-btn {
-            background: var(--neutral-light);
-            color: var(--text-dark);
-            border: 2px solid transparent;
-            padding: 0.5rem 1rem;
-            border-radius: 8px;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-            font-size: 0.9rem;
-        }
-
-        .filter-btn:hover {
-            background: #e2e8f0;
-        }
-
-        .filter-btn.active {
-            background: var(--accent);
-            color: var(--primary-dark);
-            border-color: var(--accent);
         }
 
         .filter-select {
@@ -334,7 +318,19 @@
         .table-wrapper {
             max-height: 450px;
             overflow-y: auto;
-            overflow-x: auto;
+            overflow-x: hidden;
+        }
+
+        #refunds-table th,
+        #refunds-table td {
+            padding: 0.8rem 1rem;
+            /* Reduced from 1rem 1.5rem */
+            font-size: 0.9rem;
+            /* Slightly smaller text */
+        }
+
+        #refunds-table th {
+            font-size: 0.85rem;
         }
 
         .table-wrapper::-webkit-scrollbar {
@@ -435,6 +431,26 @@
             color: #991b1b;
         }
 
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-processing {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .status-completed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-failed {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
         .action-buttons {
             display: flex;
             gap: 0.5rem;
@@ -461,6 +477,12 @@
 
         .btn-status:hover {
             background: var(--neutral-light);
+            transform: scale(1.05);
+        }
+
+        .btn-refund:hover {
+            background: var(--success);
+            color: var(--white);
             transform: scale(1.05);
         }
 
@@ -656,87 +678,7 @@
             font-size: 0.9rem;
         }
 
-        .analytics-section {
-            margin-top: 5rem;
-        }
-
-        .charts-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(430px, 1fr));
-            gap: 2rem;
-            max-width: 1400px;
-        }
-
-        .chart-card {
-            background: var(--white);
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: var(--shadow);
-        }
-
-        .chart-title {
-            font-size: 1.3rem;
-            color: var(--primary-dark);
-            margin-bottom: 1rem;
-            font-weight: 600;
-            font-family: 'Playfair Display', serif;
-        }
-
-        .chart-controls {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            justify-content: center;
-        }
-
-        .chart-btn {
-            background: var(--neutral-light);
-            color: var(--text-dark);
-            border: none;
-            padding: 0.4rem 0.8rem;
-            border-radius: 6px;
-            font-size: 0.85rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .chart-btn:hover {
-            background: #e2e8f0;
-        }
-
-        .chart-btn.active {
-            background: var(--accent);
-            color: var(--primary-dark);
-        }
-
-        .revenue-chart-wrapper {
-            position: relative;
-            height: 300px;
-            width: 100%;
-        }
-
-        .revenue-chart-container {
-            position: relative;
-            height: 100%;
-            width: 100%;
-        }
-
-        .chart-card canvas {
-            max-height: 300px;
-        }
-
-        @keyframes spin {
-            0% {
-                transform: rotate(0deg);
-            }
-
-            100% {
-                transform: rotate(360deg);
-            }
-        }
-
-        /* ===== CUSTOM ALERT SYSTEM ===== */
+        /* Custom Alert System */
         .custom-alert-overlay {
             display: none;
             position: fixed;
@@ -979,10 +921,6 @@
             .detail-grid {
                 grid-template-columns: 1fr;
             }
-
-            .charts-grid {
-                grid-template-columns: 1fr;
-            }
         }
 
         @media (max-width: 600px) {
@@ -1030,7 +968,7 @@
             </button>
             <div class="header-title">
                 <h1>Ticket Sales Management</h1>
-                <div class="header-subtitle">View and manage all ticket purchases</div>
+                <div class="header-subtitle">View and manage all ticket purchases & refunds</div>
             </div>
         </div>
         <div class="header-actions">
@@ -1042,6 +980,7 @@
     </header>
 
     <div class="container">
+        <!-- Stats Grid -->
         <div class="stats-grid">
             <div class="stat-card">
                 <div class="stat-icon primary">
@@ -1090,6 +1029,7 @@
             </div>
         </div>
 
+        <!-- Bookings Table -->
         <div class="action-bar">
             <div class="search-box">
                 <span class="material-icons search-icon">search</span>
@@ -1163,11 +1103,9 @@
             </h2>
             <div class="filter-controls">
                 <select class="filter-select" id="refund-status-filter">
-                    <option value="all">All Status</option>
-                    <option value="pending">Pending</option>
-                    <option value="processing">Processing</option>
-                    <option value="completed">Completed</option>
-                    <option value="failed">Failed</option>
+                    <option value="all">All Refunds</option>
+                    <option value="pending">Pending Only</option>
+                    <option value="completed">Completed Only</option>
                 </select>
             </div>
         </div>
@@ -1212,61 +1150,78 @@
                 </table>
             </div>
         </div>
-
         <!-- Analytics Section -->
-        <div class="analytics-section">
+        <div class="analytics-section" style="margin-top: 5rem;">
             <h2
                 style="font-family: 'Playfair Display', serif; color: var(--primary-dark); margin-bottom: 2rem; margin-left: 1rem;">
-                Booking
-                Analytics</h2>
+                Booking Analytics
+            </h2>
 
-            <div class="charts-grid">
+            <div class="charts-grid"
+                style="display: grid; grid-template-columns: repeat(auto-fit, minmax(430px, 1fr)); gap: 2rem; max-width: 1400px;">
                 <!-- Revenue Chart -->
-                <div class="chart-card">
-                    <h3 class="chart-title">Revenue Overview</h3>
-                    <div class="chart-controls">
-                        <button class="chart-btn active" data-period="day"
-                            onclick="changeRevenuePeriod('day')">Daily</button>
-                        <button class="chart-btn" data-period="month"
-                            onclick="changeRevenuePeriod('month')">Monthly</button>
-                        <button class="chart-btn" data-period="year"
-                            onclick="changeRevenuePeriod('year')">Yearly</button>
+                <div class="chart-card"
+                    style="background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow);">
+                    <h3 class="chart-title"
+                        style="font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 1rem; font-weight: 600; font-family: 'Playfair Display', serif;">
+                        Revenue Overview</h3>
+                    <div class="chart-controls"
+                        style="display: flex; gap: 0.5rem; margin-bottom: 1rem; justify-content: center;">
+                        <button class="chart-btn active" data-period="day" onclick="changeRevenuePeriod('day')"
+                            style="background: var(--neutral-light); color: var(--text-dark); border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: var(--transition);">Daily</button>
+                        <button class="chart-btn" data-period="month" onclick="changeRevenuePeriod('month')"
+                            style="background: var(--neutral-light); color: var(--text-dark); border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: var(--transition);">Monthly</button>
+                        <button class="chart-btn" data-period="year" onclick="changeRevenuePeriod('year')"
+                            style="background: var(--neutral-light); color: var(--text-dark); border: none; padding: 0.4rem 0.8rem; border-radius: 6px; font-size: 0.85rem; font-weight: 500; cursor: pointer; transition: var(--transition);">Yearly</button>
                     </div>
-                    <div class="revenue-chart-wrapper">
-                        <div class="revenue-chart-container">
-                            <canvas id="revenueChart"></canvas>
-                        </div>
+                    <div style="position: relative; height: 300px; width: 100%;">
+                        <canvas id="revenueChart"></canvas>
                     </div>
                 </div>
 
                 <!-- Ticket Types Chart -->
-                <div class="chart-card">
-                    <h3 class="chart-title">Ticket Types Distribution</h3>
-                    <canvas id="ticketTypesChart"></canvas>
+                <div class="chart-card"
+                    style="background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow);">
+                    <h3 class="chart-title"
+                        style="font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 1rem; font-weight: 600; font-family: 'Playfair Display', serif;">
+                        Ticket Types Distribution</h3>
+                    <canvas id="ticketTypesChart" style="max-height: 300px;"></canvas>
                 </div>
 
                 <!-- Status Chart -->
-                <div class="chart-card">
-                    <h3 class="chart-title">Booking Status</h3>
-                    <canvas id="statusChart"></canvas>
+                <div class="chart-card"
+                    style="background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow);">
+                    <h3 class="chart-title"
+                        style="font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 1rem; font-weight: 600; font-family: 'Playfair Display', serif;">
+                        Booking Status</h3>
+                    <canvas id="statusChart" style="max-height: 300px;"></canvas>
                 </div>
 
                 <!-- Visitors Chart -->
-                <div class="chart-card">
-                    <h3 class="chart-title">Visitor Types Breakdown</h3>
-                    <canvas id="visitorsChart"></canvas>
+                <div class="chart-card"
+                    style="background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow);">
+                    <h3 class="chart-title"
+                        style="font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 1rem; font-weight: 600; font-family: 'Playfair Display', serif;">
+                        Visitor Types Breakdown</h3>
+                    <canvas id="visitorsChart" style="max-height: 300px;"></canvas>
                 </div>
 
                 <!-- Event Tickets Chart -->
-                <div class="chart-card">
-                    <h3 class="chart-title">Tickets Sold by Event</h3>
-                    <canvas id="eventTicketsChart"></canvas>
+                <div class="chart-card"
+                    style="background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow);">
+                    <h3 class="chart-title"
+                        style="font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 1rem; font-weight: 600; font-family: 'Playfair Display', serif;">
+                        Tickets Sold by Event</h3>
+                    <canvas id="eventTicketsChart" style="max-height: 300px;"></canvas>
                 </div>
 
                 <!-- Busiest Times Chart -->
-                <div class="chart-card">
-                    <h3 class="chart-title">Busiest Visit Times</h3>
-                    <canvas id="busiestTimesChart"></canvas>
+                <div class="chart-card"
+                    style="background: var(--white); padding: 1.5rem; border-radius: 12px; box-shadow: var(--shadow);">
+                    <h3 class="chart-title"
+                        style="font-size: 1.3rem; color: var(--primary-dark); margin-bottom: 1rem; font-weight: 600; font-family: 'Playfair Display', serif;">
+                        Busiest Visit Times</h3>
+                    <canvas id="busiestTimesChart" style="max-height: 300px;"></canvas>
                 </div>
             </div>
         </div>
@@ -1280,7 +1235,6 @@
                 <button class="close-modal" id="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <!-- Customer Information Group -->
                 <div class="detail-section">
                     <h3 class="section-heading">Customer Information</h3>
                     <div class="detail-grid">
@@ -1303,7 +1257,6 @@
                     </div>
                 </div>
 
-                <!-- Booking Information Group -->
                 <div class="detail-section">
                     <h3 class="section-heading">Booking Information</h3>
                     <div class="detail-grid">
@@ -1326,7 +1279,6 @@
                     </div>
                 </div>
 
-                <!-- Visit Details Group -->
                 <div class="detail-section">
                     <h3 class="section-heading">Visit Details</h3>
                     <div class="detail-grid">
@@ -1341,7 +1293,6 @@
                     </div>
                 </div>
 
-                <!-- Visitors Breakdown Group -->
                 <div class="detail-section">
                     <h3 class="section-heading">Visitors Breakdown</h3>
                     <div class="detail-grid">
@@ -1364,7 +1315,6 @@
                     </div>
                 </div>
 
-                <!-- Payment Information Group -->
                 <div class="detail-section">
                     <h3 class="section-heading">Payment Information</h3>
                     <div class="detail-grid">
@@ -1383,7 +1333,6 @@
                     </div>
                 </div>
 
-                <!-- Status Group -->
                 <div class="detail-section">
                     <h3 class="section-heading">Status</h3>
                     <div class="detail-grid" style="grid-template-columns: 1fr;">
@@ -1413,31 +1362,24 @@
                 Message content
             </div>
             <div class="custom-alert-actions" id="customAlertActions">
-                <!-- Buttons will be added dynamically -->
             </div>
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
     <script type="module">
         import { auth, db } from './firebase-config.js';
-        import { collection, getDocs, deleteDoc, doc, query, orderBy, onSnapshot, updateDoc, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+        import { collection, getDocs, doc, query, orderBy, onSnapshot, updateDoc, addDoc, serverTimestamp, where } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
         import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 
         // ===== EMAILJS EMAIL NOTIFICATION SYSTEM =====
         const EMAILJS_CONFIG = {
             serviceId: 'service_mjy8g9h',
-            templateIdManual: 'template_887d9rd',  // Manual cancellation (general + event)
-            templateIdEvent: 'template_30kx56m',    // Event cancelled by museum
+            templateIdManual: 'template_887d9rd',
+            templateIdEvent: 'template_30kx56m',
             publicKey: '-44BWtrRgLumgCqoN'
         };
 
-        /**
-         * Send manual cancellation email (customer requested)
-         * Works for BOTH general visits AND event tickets
-         */
         async function sendManualCancellationEmail(recipientEmail, recipientName, bookingId, ticketInfo, visitDate, refundAmount) {
-            // Format date without time
             const formattedDate = new Date(visitDate).toLocaleDateString('en-US', {
                 year: 'numeric',
                 month: 'long',
@@ -1448,20 +1390,18 @@
                 recipientEmail: recipientEmail,
                 recipientName: recipientName,
                 bookingId: bookingId,
-                ticketInfo: ticketInfo,  // "General Museum Visit" or "Art Workshop"
+                ticketInfo: ticketInfo,
                 visitDate: formattedDate,
                 refundAmount: refundAmount
             };
 
             try {
                 console.log(`📧 Sending manual cancellation email to: ${recipientEmail}`);
-
                 const response = await emailjs.send(
                     EMAILJS_CONFIG.serviceId,
                     EMAILJS_CONFIG.templateIdManual,
                     templateParams
                 );
-
                 console.log(`✅ Manual cancellation email sent to: ${recipientEmail}`);
                 return true;
             } catch (error) {
@@ -1577,20 +1517,6 @@
             });
         }
 
-        function showConfirmAlert(title, message) {
-            return showCustomAlert({
-                type: 'warning',
-                icon: 'help_outline',
-                title: title,
-                subtitle: 'Please confirm your action',
-                body: `<p>${message}</p>`,
-                buttons: [
-                    { text: 'Cancel', type: 'secondary', value: false },
-                    { text: 'Confirm', type: 'primary', value: true, icon: 'check' }
-                ]
-            });
-        }
-
         async function logActivity(type, action, targetTitle, metadata = {}) {
             try {
                 const user = auth.currentUser;
@@ -1609,22 +1535,16 @@
         }
 
         let allBookings = [];
+        let allRefunds = [];
         let filteredBookings = [];
+        let filteredRefunds = [];
         let currentUser = null;
         let currentTypeFilter = 'all';
         let currentStatusFilter = 'all';
+        let currentRefundStatusFilter = 'all';
 
         const viewModal = document.getElementById('view-modal');
         const closeModalBtn = document.getElementById('close-modal');
-        const ticketsTbody = document.getElementById('tickets-tbody');
-        const ticketsTable = document.getElementById('tickets-table');
-        const loading = document.getElementById('loading');
-        const emptyState = document.getElementById('empty-state');
-        const searchInput = document.getElementById('search-input');
-        const exportBtn = document.getElementById('export-btn');
-        const typeFilter = document.getElementById('type-filter');
-        const statusFilter = document.getElementById('status-filter');
-        const clearFiltersBtn = document.getElementById('clear-filters-btn');
 
         onAuthStateChanged(auth, (user) => {
             currentUser = user;
@@ -1661,14 +1581,21 @@
             const totalBookings = allBookings.length;
             const totalVisitors = allBookings.reduce((sum, booking) => sum + (booking.totalVisitors || 0), 0);
             const eventBookings = allBookings.filter(b => b.ticketType === 'event').length;
+            const pendingRefunds = allRefunds.filter(r => r.refundStatus === 'pending').length;
 
-            document.getElementById('total-revenue').textContent = `${totalRevenue.toFixed(2)}`;
+            document.getElementById('total-revenue').textContent = `$${totalRevenue.toFixed(2)}`;
             document.getElementById('total-bookings').textContent = totalBookings;
             document.getElementById('total-visitors').textContent = totalVisitors;
             document.getElementById('event-bookings').textContent = eventBookings;
+            document.getElementById('pending-refunds').textContent = pendingRefunds;
         }
 
         function renderBookingsTable(bookingsList) {
+            const loading = document.getElementById('loading');
+            const ticketsTbody = document.getElementById('tickets-tbody');
+            const ticketsTable = document.getElementById('tickets-table');
+            const emptyState = document.getElementById('empty-state');
+
             loading.style.display = 'none';
             ticketsTbody.innerHTML = '';
 
@@ -1681,7 +1608,7 @@
             ticketsTable.style.display = 'table';
             emptyState.style.display = 'none';
 
-            bookingsList.forEach((booking, index) => {
+            bookingsList.forEach((booking) => {
                 const badgeClass = booking.ticketType === 'event' ? 'badge-event' : 'badge-general';
                 const typeText = booking.ticketType === 'event' ? 'Event' : 'General Visit';
 
@@ -1693,7 +1620,7 @@
                 if (booking.ticketType === 'general') {
                     ticketPriceDisplay = '<div class="price-cell" style="font-size: 0.95rem;">$15.00</div>';
                 } else if (booking.eventPrice) {
-                    ticketPriceDisplay = `<div class="price-cell" style="font-size: 0.95rem;">${booking.eventPrice.toFixed(2)}</div>`;
+                    ticketPriceDisplay = `<div class="price-cell" style="font-size: 0.95rem;">$${booking.eventPrice.toFixed(2)}</div>`;
                 } else {
                     ticketPriceDisplay = '<span style="color: var(--text-light); font-size: 0.85rem;">N/A</span>';
                 }
@@ -1719,15 +1646,15 @@
                             C: ${booking.visitors?.children?.count || 0}
                         </div>
                     </td>
-                    <td><div class="price-cell">${(booking.totalPrice || 0).toFixed(2)}</div></td>
+                    <td><div class="price-cell">$${(booking.totalPrice || 0).toFixed(2)}</div></td>
                     <td><span class="status-badge status-${booking.status || 'confirmed'}">${(booking.status || 'confirmed').charAt(0).toUpperCase() + (booking.status || 'confirmed').slice(1)}</span></td>
                     <td>
                         <div class="action-buttons">
                             <button class="btn-icon btn-view" data-id="${booking.id}" title="View Details">
-                                <span class="material-icons" style="font-size: 1.2rem;">edit</span>
+                                <span class="material-icons" style="font-size: 1.2rem;">visibility</span>
                             </button>
-                            <button class="btn-icon btn-status" data-id="${booking.id}" data-status="${booking.status || 'confirmed'}" title="Change Status">
-                                <span class="material-icons" style="font-size: 1.2rem;">delete</span>
+                            <button class="btn-icon btn-status" data-id="${booking.id}" data-status="${booking.status || 'confirmed'}" title="Cancel Booking">
+                                <span class="material-icons" style="font-size: 1.2rem;">cancel</span>
                             </button>
                         </div>
                     </td>
@@ -1744,6 +1671,162 @@
             });
         }
 
+        // ✅ NEW: Render Refunds Table
+        function renderRefundsTable(refundsList) {
+            const refundsLoading = document.getElementById('refunds-loading');
+            const refundsTbody = document.getElementById('refunds-tbody');
+            const refundsTable = document.getElementById('refunds-table');
+            const refundsEmptyState = document.getElementById('refunds-empty-state');
+
+            refundsLoading.style.display = 'none';
+            refundsTbody.innerHTML = '';
+
+            if (refundsList.length === 0) {
+                refundsTable.style.display = 'none';
+                refundsEmptyState.style.display = 'block';
+                return;
+            }
+
+            refundsTable.style.display = 'table';
+            refundsEmptyState.style.display = 'none';
+
+            refundsList.forEach((refund) => {
+                const eventInfo = refund.ticketType === 'event'
+                    ? refund.eventName || 'Event Ticket'
+                    : 'General Visit';
+
+                const paymentMethod = refund.paymentDetails?.method
+                    ? `${refund.paymentDetails.method.charAt(0).toUpperCase() + refund.paymentDetails.method.slice(1)}${refund.paymentDetails.cardLastFour ? ' ****' + refund.paymentDetails.cardLastFour : ''}`
+                    : 'N/A';
+
+                const reason = refund.cancellationReason === 'event_cancelled'
+                    ? 'Event Cancelled'
+                    : 'Customer Request';
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>
+                        <code style="background: var(--neutral-light); padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.85rem;">${refund.id.substring(0, 12)}...</code>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">${refund.userName || 'N/A'}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-light);">${refund.userEmail || 'N/A'}</div>
+                    </td>
+                    <td>
+                        <div style="font-weight: 600;">${eventInfo}</div>
+                        <div style="font-size: 0.85rem; color: var(--text-light);">${refund.ticketType === 'event' ? 'Event' : 'General'}</div>
+                    </td>
+                    <td>
+                        <div class="date-cell">${formatTimestamp(refund.cancelledAt)}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-light);">By: ${refund.cancelledBy || 'Admin'}</div>
+                    </td>
+                    <td>
+                        <div class="price-cell">$${(refund.refundAmount || 0).toFixed(2)}</div>
+                        <div style="font-size: 0.8rem; color: var(--text-light);">${refund.currency || 'USD'}</div>
+                    </td>
+                    <td>${paymentMethod}</td>
+                    <td>
+                        <span style="font-size: 0.85rem; font-weight: 500;">${reason}</span>
+                    </td>
+                    <td>
+                        <span class="status-badge status-${refund.refundStatus || 'pending'}">${(refund.refundStatus || 'pending').charAt(0).toUpperCase() + (refund.refundStatus || 'pending').slice(1)}</span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            ${refund.refundStatus === 'pending' ? `
+                                <button class="btn-icon btn-refund" data-id="${refund.id}" data-status="${refund.refundStatus || 'pending'}" title="Mark as Completed">
+                                    <span class="material-icons" style="font-size: 1.2rem;">check_circle</span>
+                                </button>
+                            ` : `
+                                <span style="color: var(--text-light); font-size: 0.85rem;">Completed</span>
+                            `}
+                        </div>
+                    </td>
+                `;
+                refundsTbody.appendChild(row);
+            });
+
+            document.querySelectorAll('.btn-refund').forEach(btn => {
+                btn.addEventListener('click', handleRefundStatusChange);
+            });
+        }
+
+        // ✅ NEW: Handle Refund Status Change (Pending → Completed ONLY)
+        async function handleRefundStatusChange(e) {
+            const refundId = e.currentTarget.getAttribute('data-id');
+            const currentStatus = e.currentTarget.getAttribute('data-status');
+            const refund = allRefunds.find(r => r.id === refundId);
+
+            if (!refund) return;
+
+            // ✅ Only allow changing from pending to completed
+            if (currentStatus !== 'pending') {
+                await showCustomAlert({
+                    type: 'info',
+                    icon: 'info',
+                    title: 'Status Cannot Be Changed',
+                    subtitle: 'Only pending refunds can be updated',
+                    body: `
+                <p>This refund status is currently <strong>${currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}</strong>.</p>
+                <p style="margin-top: 0.5rem; color: var(--text-light);">Only refunds with <strong>Pending</strong> status can be marked as completed.</p>
+            `,
+                    buttons: [
+                        { text: 'Close', type: 'secondary', value: true }
+                    ]
+                });
+                return;
+            }
+
+            const confirmed = await showCustomAlert({
+                type: 'success',
+                icon: 'check_circle',
+                title: 'Mark Refund as Completed?',
+                subtitle: `Booking ID: ${refundId.substring(0, 12)}...`,
+                body: `
+            <p><strong>Customer:</strong> ${refund.userName}</p>
+            <p><strong>Amount:</strong> $${(refund.refundAmount || 0).toFixed(2)}</p>
+            <p><strong>Current Status:</strong> Pending</p>
+            <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--neutral-light);">
+            <div class="custom-alert-highlight info">
+                <strong>ℹ️ Note:</strong> This will mark the refund as completed. Make sure the refund has been processed in your payment system.
+            </div>
+        `,
+                buttons: [
+                    { text: 'Cancel', type: 'secondary', value: false },
+                    { text: 'Mark as Completed', type: 'success', value: true, icon: 'check_circle' }
+                ]
+            });
+
+            if (!confirmed) return;
+
+            try {
+                await updateDoc(doc(db, "Ticketing", refundId), {
+                    refundStatus: 'completed',
+                    refundStatusUpdatedAt: serverTimestamp(),
+                    refundStatusUpdatedBy: auth.currentUser?.email || 'Admin'
+                });
+
+                await logActivity('refund', 'status_updated', `${refund.userName} - ${refund.eventName || 'General Visit'}`, {
+                    bookingId: refundId,
+                    oldStatus: 'pending',
+                    newStatus: 'completed',
+                    refundAmount: refund.refundAmount
+                });
+
+                await showSuccessAlert(
+                    'Refund Completed',
+                    `Refund of <strong>$${(refund.refundAmount || 0).toFixed(2)}</strong> has been marked as completed.`
+                );
+
+            } catch (error) {
+                console.error("❌ Error updating refund status:", error);
+                await showErrorAlert(
+                    'Failed to Update Status',
+                    `An error occurred: ${error.message}`
+                );
+            }
+        }
+
         function loadBookings() {
             try {
                 const q = query(collection(db, "Ticketing"), orderBy("purchaseDate", "desc"));
@@ -1754,26 +1837,28 @@
                         ...doc.data()
                     }));
 
-                    console.log('✅ Loaded bookings:', allBookings);
-                    applyFilters();
-                    updateStats();
-                    initializeCharts();
-
+                    // Filter refunds (cancelled bookings with refundStatus)
                     allRefunds = allBookings.filter(b =>
                         b.status === 'cancelled' &&
                         b.refundStatus &&
                         b.refundAmount > 0
                     );
 
+                    console.log('✅ Loaded bookings:', allBookings.length);
+                    console.log('✅ Loaded refunds:', allRefunds.length);
+
+                    applyFilters();
                     applyRefundFilters();
+                    updateStats();
+                    initializeCharts();
                 }, (error) => {
                     console.error("Error listening to bookings:", error);
-                    loading.innerHTML = '<p style="color: var(--danger);">Error loading bookings. Please refresh the page.</p>';
+                    document.getElementById('loading').innerHTML = '<p style="color: var(--danger);">Error loading bookings. Please refresh the page.</p>';
                 });
 
             } catch (error) {
                 console.error("Error loading bookings:", error);
-                loading.innerHTML = '<p style="color: var(--danger);">Error loading bookings. Please refresh the page.</p>';
+                document.getElementById('loading').innerHTML = '<p style="color: var(--danger);">Error loading bookings. Please refresh the page.</p>';
             }
         }
 
@@ -1792,7 +1877,7 @@
                 bookings = bookings.filter(b => b.status === 'cancelled');
             }
 
-            const searchTerm = searchInput.value.toLowerCase().trim();
+            const searchTerm = document.getElementById('search-input').value.toLowerCase().trim();
             if (searchTerm) {
                 bookings = bookings.filter(booking =>
                     booking.userName?.toLowerCase().includes(searchTerm) ||
@@ -1805,6 +1890,18 @@
 
             filteredBookings = bookings;
             renderBookingsTable(filteredBookings);
+        }
+
+        // Apply Refund Filters
+        function applyRefundFilters() {
+            let refunds = [...allRefunds];
+
+            if (currentRefundStatusFilter !== 'all') {
+                refunds = refunds.filter(r => r.refundStatus === currentRefundStatusFilter);
+            }
+
+            filteredRefunds = refunds;
+            renderRefundsTable(filteredRefunds);
         }
 
         function handleView(e) {
@@ -1832,7 +1929,7 @@
             if (booking.ticketType === 'general') {
                 document.getElementById('detail-ticket-price').textContent = '$15.00';
             } else if (booking.eventPrice) {
-                document.getElementById('detail-ticket-price').textContent = `${booking.eventPrice.toFixed(2)}`;
+                document.getElementById('detail-ticket-price').textContent = `$${booking.eventPrice.toFixed(2)}`;
             } else {
                 document.getElementById('detail-ticket-price').textContent = 'N/A';
             }
@@ -1870,7 +1967,6 @@
 
             if (!booking) return;
 
-            // Prevent re-confirming cancelled tickets
             if (currentStatus === 'cancelled') {
                 await showCustomAlert({
                     type: 'danger',
@@ -1878,19 +1974,19 @@
                     title: 'Cannot Change Status',
                     subtitle: 'Cancelled bookings cannot be reactivated',
                     body: `
-                <div class="custom-alert-highlight">
-                    <p><strong>⚠️ This booking has been cancelled and cannot be confirmed again.</strong></p>
-                    <p style="margin-top: 0.5rem;">Once a ticket is cancelled, the status is permanent. If the customer needs a new booking, they must purchase a new ticket.</p>
-                </div>
-                <div style="margin-top: 1rem;">
-                    <strong>Booking Details:</strong>
-                    <ul style="margin: 0.5rem 0 0 1.2rem;">
-                        <li>Customer: ${booking.userName}</li>
-                        <li>Type: ${booking.ticketType === 'event' ? booking.eventName : 'General Visit'}</li>
-                        <li>Visit Date: ${formatDate(booking.visitDate)}</li>
-                    </ul>
-                </div>
-            `,
+                        <div class="custom-alert-highlight">
+                            <p><strong>⚠️ This booking has been cancelled and cannot be confirmed again.</strong></p>
+                            <p style="margin-top: 0.5rem;">Once a ticket is cancelled, the status is permanent. If the customer needs a new booking, they must purchase a new ticket.</p>
+                        </div>
+                        <div style="margin-top: 1rem;">
+                            <strong>Booking Details:</strong>
+                            <ul style="margin: 0.5rem 0 0 1.2rem;">
+                                <li>Customer: ${booking.userName}</li>
+                                <li>Type: ${booking.ticketType === 'event' ? booking.eventName : 'General Visit'}</li>
+                                <li>Visit Date: ${formatDate(booking.visitDate)}</li>
+                            </ul>
+                        </div>
+                    `,
                     buttons: [
                         { text: 'Close', type: 'secondary', value: true }
                     ]
@@ -1898,10 +1994,7 @@
                 return;
             }
 
-            // Only allow confirmed → cancelled (one-way)
             const newStatus = 'cancelled';
-            const newStatusText = 'Cancelled';
-            const currentStatusText = 'Confirmed';
 
             const confirmed = await showCustomAlert({
                 type: 'warning',
@@ -1909,12 +2002,12 @@
                 title: 'Cancel This Booking?',
                 subtitle: 'This action cannot be undone',
                 body: `
-        <p><strong>${booking.userName}</strong> • ${booking.ticketType === 'event' ? booking.eventName : 'General Visit'}</p>
-        <p style="color: var(--text-light); font-size: 0.9rem;">Visit: ${formatDate(booking.visitDate)} • Total: $${(booking.totalPrice || 0).toFixed(2)}</p>
-        <div class="custom-alert-highlight" style="margin-top: 1rem;">
-            <strong>⚠️ Warning:</strong> Customer will be notified and booking cannot be restored.
-        </div>
-    `,
+                    <p><strong>${booking.userName}</strong> • ${booking.ticketType === 'event' ? booking.eventName : 'General Visit'}</p>
+                    <p style="color: var(--text-light); font-size: 0.9rem;">Visit: ${formatDate(booking.visitDate)} • Total: $${(booking.totalPrice || 0).toFixed(2)}</p>
+                    <div class="custom-alert-highlight" style="margin-top: 1rem;">
+                        <strong>⚠️ Warning:</strong> Customer will be notified and booking cannot be restored.
+                    </div>
+                `,
                 buttons: [
                     { text: 'Keep Booking', type: 'secondary', value: false },
                     { text: 'Cancel Booking', type: 'danger', value: true, icon: 'cancel' }
@@ -1924,7 +2017,6 @@
             if (!confirmed) return;
 
             try {
-                // Update booking status in Firestore
                 await updateDoc(doc(db, "Ticketing", bookingId), {
                     status: newStatus,
                     cancelledAt: serverTimestamp(),
@@ -1934,83 +2026,64 @@
                     cancellationReason: 'admin_manual'
                 });
 
-                // SEND EMAIL NOTIFICATION (for both members AND guests)
                 let emailSent = false;
                 if (booking.userEmail) {
                     if (booking.ticketType === 'general') {
-                        // General visit cancellation
                         emailSent = await sendManualCancellationEmail(
                             booking.userEmail,
                             booking.userName || 'Valued Customer',
                             bookingId,
-                            'General Museum Visit',  // ticketInfo
+                            'General Museum Visit',
                             booking.visitDate,
                             (booking.totalPrice || 0).toFixed(2)
                         );
                     } else if (booking.ticketType === 'event') {
-                        // Event ticket cancellation (customer requested, NOT event cancelled)
                         emailSent = await sendManualCancellationEmail(
                             booking.userEmail,
                             booking.userName || 'Valued Customer',
                             bookingId,
-                            booking.eventName || 'Event Ticket',  // ticketInfo
+                            booking.eventName || 'Event Ticket',
                             booking.visitDate,
                             (booking.totalPrice || 0).toFixed(2)
                         );
                     }
-
-                    if (emailSent) {
-                        console.log(`✅ Cancellation email sent to: ${booking.userEmail}`);
-                    } else {
-                        console.log(`⚠️ Failed to send email to: ${booking.userEmail}`);
-                    }
                 }
 
-                // Send notification to user (if not guest)
                 if (booking.userId && booking.userId !== 'guest') {
                     try {
-                        await sendTicketCancellationNotification(booking.userId, {
-                            bookingId: bookingId,
-                            visitInfo: booking.ticketType === 'event' ? booking.eventName : 'General Museum Visit',
-                            visitDate: formatDate(booking.visitDate),
-                            visitTime: booking.visitTime || 'Event Time',
-                            totalAmount: (booking.totalPrice || 0).toFixed(2),
-                            customerName: booking.userName,
-                            customerEmail: booking.userEmail,
-                            cancellationType: 'admin', // or 'event' if event was cancelled
-                            reason: 'This booking has been cancelled by museum administration.'
+                        await addDoc(collection(db, "Notifications"), {
+                            userId: booking.userId,
+                            type: 'ticket_cancelled',
+                            title: '❌ Booking Cancelled',
+                            message: `Your booking for ${booking.ticketType === 'event' ? booking.eventName : 'General Museum Visit'} on ${formatDate(booking.visitDate)} has been cancelled.`,
+                            read: false,
+                            timestamp: serverTimestamp()
                         });
-                        console.log('✅ Cancellation notification sent to user:', booking.userId);
                     } catch (notifError) {
                         console.error('⚠️ Failed to send notification:', notifError);
-                        // Continue even if notification fails
                     }
                 }
 
-                // Log activity
                 const targetTitle = `${booking.userName || 'Customer'} - ${booking.ticketType === 'event' ? booking.eventName : 'General Visit'}`;
                 await logActivity('ticket', 'cancelled', targetTitle, {
                     bookingId: bookingId,
-                    changes: `status from ${currentStatusText} to ${newStatusText}`,
                     ticketType: booking.ticketType,
                     visitDate: booking.visitDate,
                     totalPrice: booking.totalPrice,
                     customerEmail: booking.userEmail,
                     cancelledBy: 'admin',
-                    emailSent: emailSent,  // ← Track if email was sent
-                    notificationSent: booking.userId !== 'guest'
+                    emailSent: emailSent
                 });
 
-                // Show success message
                 await showSuccessAlert(
                     'Booking Cancelled',
                     `
-                    <p>The booking has been successfully cancelled.</p>
-                    ${emailSent ?
+                        <p>The booking has been successfully cancelled.</p>
+                        ${emailSent ?
                         '<p style="margin-top: 0.5rem;"><strong>✓</strong> Customer has been notified via email.</p>' :
                         '<p style="margin-top: 0.5rem; color: var(--text-light);">Email notification could not be sent.</p>'
                     }
-                    ${booking.userId !== 'guest' ?
+                        ${booking.userId !== 'guest' ?
                         '<p style="font-size: 0.9rem; color: var(--text-light);">In-app notification also sent to member.</p>' :
                         ''
                     }
@@ -2026,130 +2099,33 @@
             }
         }
 
-        async function sendTicketCancellationNotification(userId, details) {
-            try {
-                await addDoc(collection(db, "Notifications"), {
-                    userId: userId,
-                    type: 'ticket_cancelled',
-                    title: '❌ Booking Cancelled',
-                    message: `Your booking for ${details.visitInfo} on ${details.visitDate} has been cancelled.`,
-                    read: false,
-                    timestamp: serverTimestamp(),
-                    data: {
-                        bookingId: details.bookingId,
-                        visitInfo: details.visitInfo,
-                        visitDate: details.visitDate,
-                        visitTime: details.visitTime,
-                        totalAmount: details.totalAmount,
-                        cancellationType: details.cancellationType || 'admin',
-                        reason: details.reason || 'This booking has been cancelled.',
-                        refundInfo: 'Please contact support for refund information.'
-                    }
-                });
-
-                console.log('✅ Cancellation notification created for user:', userId);
-                return true;
-
-            } catch (error) {
-                console.error('❌ Error sending cancellation notification:', error);
-                throw error;
-            }
-        }
-
-        function handleSearch() {
-            applyFilters();
-        }
-
-        async function exportToCSV() {
-            if (allBookings.length === 0) {
-                await showErrorAlert('No Data to Export', 'There are no bookings to export.');
-                return;
-            }
-
-            const headers = ['Booking ID', 'User ID', 'Customer Name', 'Email', 'Phone', 'Type', 'Event Name', 'Ticket Price', 'Visit Date', 'Visit Time', 'Adults', 'Seniors', 'Children', 'Total Visitors', 'Total Price', 'Payment Method', 'Status', 'Purchase Date'];
-
-            const rows = allBookings.map(booking => {
-                let ticketPrice;
-                if (booking.ticketType === 'general') {
-                    ticketPrice = '15.00';
-                } else if (booking.eventPrice) {
-                    ticketPrice = booking.eventPrice.toFixed(2);
-                } else {
-                    ticketPrice = 'N/A';
-                }
-
-                return [
-                    booking.id,
-                    booking.userId || 'N/A',
-                    booking.userName || 'N/A',
-                    booking.userEmail || 'N/A',
-                    booking.userPhone || 'N/A',
-                    booking.ticketType || 'general',
-                    booking.eventName || 'N/A',
-                    ticketPrice,
-                    booking.visitDate || 'N/A',
-                    booking.visitTime || 'N/A',
-                    booking.visitors?.adults?.count || 0,
-                    booking.visitors?.seniors?.count || 0,
-                    booking.visitors?.children?.count || 0,
-                    booking.totalVisitors || 0,
-                    booking.totalPrice || 0,
-                    booking.paymentDetails?.method || 'N/A',
-                    booking.status || 'confirmed',
-                    formatTimestamp(booking.purchaseDate)
-                ];
-            });
-
-            let csvContent = headers.join(',') + '\n';
-            rows.forEach(row => {
-                csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
-            });
-
-            const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
-            const link = document.createElement('a');
-            const url = URL.createObjectURL(blob);
-
-            link.setAttribute('href', url);
-            link.setAttribute('download', `ticket_sales_${new Date().toISOString().split('T')[0]}.csv`);
-            link.style.visibility = 'hidden';
-
-            document.body.appendChild(link);
-            link.click();
-            document.body.removeChild(link);
-
-            await showSuccessAlert(
-                'Export Successful',
-                `CSV file with ${allBookings.length} bookings has been downloaded.`
-            );
-        }
-
+        // Event listeners
         closeModalBtn.addEventListener('click', closeModalFn);
-        searchInput.addEventListener('input', handleSearch);
-        exportBtn.addEventListener('click', exportToCSV);
 
-        typeFilter.addEventListener('change', function () {
+        document.getElementById('search-input').addEventListener('input', applyFilters);
+
+        document.getElementById('type-filter').addEventListener('change', function () {
             currentTypeFilter = this.value;
             applyFilters();
         });
 
-        statusFilter.addEventListener('change', function () {
+        document.getElementById('status-filter').addEventListener('change', function () {
             currentStatusFilter = this.value;
             applyFilters();
         });
 
-        clearFiltersBtn.addEventListener('click', function () {
-            typeFilter.value = 'all';
-            statusFilter.value = 'all';
-            currentTypeFilter = 'all';
-            currentStatusFilter = 'all';
-            searchInput.value = '';
-            applyFilters();
-        });
-
-        // Add the refund status filter listener here:
         document.getElementById('refund-status-filter').addEventListener('change', function () {
             currentRefundStatusFilter = this.value;
             applyRefundFilters();
+        });
+
+        document.getElementById('clear-filters-btn').addEventListener('click', function () {
+            document.getElementById('type-filter').value = 'all';
+            document.getElementById('status-filter').value = 'all';
+            currentTypeFilter = 'all';
+            currentStatusFilter = 'all';
+            document.getElementById('search-input').value = '';
+            applyFilters();
         });
 
         viewModal.addEventListener('click', (e) => {
@@ -2164,19 +2140,16 @@
             }
         });
 
-        document.addEventListener('DOMContentLoaded', loadBookings);
-
+        // ===== CHARTS INITIALIZATION =====
         let revenueChart, ticketTypesChart, statusChart, visitorsChart, eventTicketsChart, busiestTimesChart;
         let currentRevenuePeriod = 'day';
 
         window.changeRevenuePeriod = function (period) {
             currentRevenuePeriod = period;
-
             document.querySelectorAll('.chart-btn[data-period]').forEach(btn => {
                 btn.classList.remove('active');
             });
             document.querySelector(`.chart-btn[data-period="${period}"]`).classList.add('active');
-
             initializeRevenueChart();
         }
 
@@ -2443,175 +2416,49 @@
             });
         }
 
-
-        let allRefunds = [];
-        let filteredRefunds = [];
-        let currentRefundStatusFilter = 'all';
-
-        // Update the stats function to include pending refunds
-        const pendingRefunds = allRefunds.filter(r => r.refundStatus === 'pending').length;
-        document.getElementById('pending-refunds').textContent = pendingRefunds;
-
-        // Render Refunds Table
-        function renderRefundsTable(refundsList) {
-            const refundsLoading = document.getElementById('refunds-loading');
-            const refundsTbody = document.getElementById('refunds-tbody');
-            const refundsTable = document.getElementById('refunds-table');
-            const refundsEmptyState = document.getElementById('refunds-empty-state');
-
-            refundsLoading.style.display = 'none';
-            refundsTbody.innerHTML = '';
-
-            if (refundsList.length === 0) {
-                refundsTable.style.display = 'none';
-                refundsEmptyState.style.display = 'block';
+        // Also add export refunds and call to initializeCharts in loadBookings
+        async function exportRefundsToCSV() {
+            if (allRefunds.length === 0) {
+                await showErrorAlert('No Data', 'No refunds to export.');
                 return;
             }
 
-            refundsTable.style.display = 'table';
-            refundsEmptyState.style.display = 'none';
+            const headers = [
+                'Booking ID', 'Customer Name', 'Email', 'Event/Type',
+                'Cancelled Date', 'Refund Amount', 'Currency',
+                'Payment Method', 'Reason', 'Status'
+            ];
 
-            refundsList.forEach((refund) => {
-                const eventInfo = refund.ticketType === 'event'
-                    ? refund.eventName || 'Event Ticket'
-                    : 'General Visit';
+            const rows = allRefunds.map(refund => [
+                refund.id,
+                refund.userName || 'N/A',
+                refund.userEmail || 'N/A',
+                refund.ticketType === 'event' ? refund.eventName : 'General Visit',
+                formatTimestamp(refund.cancelledAt),
+                (refund.refundAmount || 0).toFixed(2),
+                refund.currency || 'USD',
+                refund.paymentDetails?.method || 'N/A',
+                refund.cancellationReason === 'event_cancelled' ? 'Event Cancelled' : 'Customer Request',
+                refund.refundStatus || 'pending'
+            ]);
 
-                const paymentMethod = refund.paymentDetails?.method
-                    ? `${refund.paymentDetails.method.charAt(0).toUpperCase() + refund.paymentDetails.method.slice(1)}${refund.paymentDetails.cardLastFour ? ' ****' + refund.paymentDetails.cardLastFour : ''}`
-                    : 'N/A';
-
-                const reason = refund.cancellationReason === 'event_cancelled'
-                    ? 'Event Cancelled'
-                    : 'Customer Request';
-
-                const row = document.createElement('tr');
-                row.innerHTML = `
-            <td>
-                <code style="background: var(--neutral-light); padding: 0.3rem 0.6rem; border-radius: 4px; font-size: 0.85rem;">${refund.id.substring(0, 12)}...</code>
-            </td>
-            <td>
-                <div style="font-weight: 600;">${refund.userName || 'N/A'}</div>
-                <div style="font-size: 0.85rem; color: var(--text-light);">${refund.userEmail || 'N/A'}</div>
-            </td>
-            <td>
-                <div style="font-weight: 600;">${eventInfo}</div>
-                <div style="font-size: 0.85rem; color: var(--text-light);">${refund.ticketType === 'event' ? 'Event' : 'General'}</div>
-            </td>
-            <td>
-                <div class="date-cell">${formatTimestamp(refund.cancelledAt)}</div>
-                <div style="font-size: 0.8rem; color: var(--text-light);">By: ${refund.cancelledBy || 'Admin'}</div>
-            </td>
-            <td>
-                <div class="price-cell">$${(refund.refundAmount || 0).toFixed(2)}</div>
-                <div style="font-size: 0.8rem; color: var(--text-light);">${refund.currency || 'USD'}</div>
-            </td>
-            <td>${paymentMethod}</td>
-            <td>
-                <span style="font-size: 0.85rem; font-weight: 500;">${reason}</span>
-            </td>
-            <td>
-                <span class="status-badge status-${refund.refundStatus || 'pending'}">${(refund.refundStatus || 'pending').charAt(0).toUpperCase() + (refund.refundStatus || 'pending').slice(1)}</span>
-            </td>
-            <td>
-                <div class="action-buttons">
-                    <button class="btn-icon btn-refund" data-id="${refund.id}" data-status="${refund.refundStatus || 'pending'}" title="Update Refund Status">
-                        <span class="material-icons" style="font-size: 1.2rem;">edit</span>
-                    </button>
-                </div>
-            </td>
-        `;
-                refundsTbody.appendChild(row);
+            let csvContent = headers.join(',') + '\n';
+            rows.forEach(row => {
+                csvContent += row.map(cell => `"${cell}"`).join(',') + '\n';
             });
 
-            document.querySelectorAll('.btn-refund').forEach(btn => {
-                btn.addEventListener('click', handleRefundStatusChange);
-            });
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = `refunds_${new Date().toISOString().split('T')[0]}.csv`;
+            link.click();
+
+            await showSuccessAlert('Export Complete', `${allRefunds.length} refunds exported.`);
         }
 
-        // Apply Refund Filters
-        function applyRefundFilters() {
-            let refunds = [...allRefunds];
+        document.getElementById('export-refunds-btn').addEventListener('click', exportRefundsToCSV);
 
-            if (currentRefundStatusFilter !== 'all') {
-                refunds = refunds.filter(r => r.refundStatus === currentRefundStatusFilter);
-            }
-
-            filteredRefunds = refunds;
-            renderRefundsTable(filteredRefunds);
-        }
-
-        // Handle Refund Status Change
-        async function handleRefundStatusChange(e) {
-            const refundId = e.currentTarget.getAttribute('data-id');
-            const currentStatus = e.currentTarget.getAttribute('data-status');
-            const refund = allRefunds.find(r => r.id === refundId);
-
-            if (!refund) return;
-
-            const statusOptions = `
-        <select id="new-refund-status" class="filter-select" style="width: 100%; margin: 1rem 0;">
-            <option value="pending" ${currentStatus === 'pending' ? 'selected' : ''}>Pending</option>
-            <option value="processing" ${currentStatus === 'processing' ? 'selected' : ''}>Processing</option>
-            <option value="completed" ${currentStatus === 'completed' ? 'selected' : ''}>Completed</option>
-            <option value="failed" ${currentStatus === 'failed' ? 'selected' : ''}>Failed</option>
-        </select>
-    `;
-
-            const confirmed = await showCustomAlert({
-                type: 'info',
-                icon: 'edit',
-                title: 'Update Refund Status',
-                subtitle: `Booking ID: ${refundId.substring(0, 12)}...`,
-                body: `
-            <p><strong>Customer:</strong> ${refund.userName}</p>
-            <p><strong>Amount:</strong> $${(refund.refundAmount || 0).toFixed(2)}</p>
-            <p><strong>Current Status:</strong> ${currentStatus.charAt(0).toUpperCase() + currentStatus.slice(1)}</p>
-            <hr style="margin: 1rem 0; border: none; border-top: 1px solid var(--neutral-light);">
-            <label style="font-weight: 600; display: block; margin-bottom: 0.5rem;">New Status:</label>
-            ${statusOptions}
-        `,
-                buttons: [
-                    { text: 'Cancel', type: 'secondary', value: false },
-                    { text: 'Update Status', type: 'primary', value: true, icon: 'check' }
-                ]
-            });
-
-            if (!confirmed) return;
-
-            const newStatus = document.getElementById('new-refund-status').value;
-
-            if (newStatus === currentStatus) {
-                await showErrorAlert('No Change', 'The status was not changed.');
-                return;
-            }
-
-            try {
-                await updateDoc(doc(db, "Ticketing", refundId), {
-                    refundStatus: newStatus,
-                    refundStatusUpdatedAt: serverTimestamp(),
-                    refundStatusUpdatedBy: auth.currentUser?.email || 'Admin'
-                });
-
-                await logActivity('refund', 'status_updated', `${refund.userName} - ${refund.eventName || 'General Visit'}`, {
-                    bookingId: refundId,
-                    oldStatus: currentStatus,
-                    newStatus: newStatus,
-                    refundAmount: refund.refundAmount
-                });
-
-                await showSuccessAlert(
-                    'Refund Status Updated',
-                    `Refund status changed from <strong>${currentStatus}</strong> to <strong>${newStatus}</strong>.`
-                );
-
-            } catch (error) {
-                console.error("❌ Error updating refund status:", error);
-                await showErrorAlert(
-                    'Failed to Update Status',
-                    `An error occurred: ${error.message}`
-                );
-            }
-        }
+        document.addEventListener('DOMContentLoaded', loadBookings);
     </script>
     <script src="cache-helper.js"></script>
 
