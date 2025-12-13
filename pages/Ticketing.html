@@ -13,7 +13,6 @@
     <!-- Arabic Font -->
     <link href="https://fonts.googleapis.com/css2?family=Aref+Ruqaa:wght@400;700&display=swap" rel="stylesheet">
 
-    <!-- Google Translate Script -->
     <script type="text/javascript">
         function googleTranslateElementInit() {
             new google.translate.TranslateElement({
@@ -22,313 +21,14 @@
                 autoDisplay: false
             }, 'google_translate_element');
         }
-
-        // Always start with English
-        var currentLang = 'en';
-        var isTranslating = false;
-
-        function translateToArabic() {
-            if (isTranslating) {
-                console.log('Translation in progress, please wait...');
-                return;
-            }
-
-            var translateText = document.querySelector('.translate-text');
-            var selectElement = document.querySelector('.goog-te-combo');
-
-            if (!selectElement) {
-                setTimeout(translateToArabic, 300);
-                return;
-            }
-
-            isTranslating = true;
-
-            if (currentLang === 'en') {
-                // Switch to Arabic
-                selectElement.value = 'ar';
-                selectElement.dispatchEvent(new Event('change'));
-
-                function updateButtonToEnglish() {
-                    if (translateText) translateText.textContent = 'English';
-                }
-                updateButtonToEnglish();
-
-                setTimeout(function () {
-                    document.documentElement.setAttribute('dir', 'rtl');
-                    document.body.setAttribute('dir', 'rtl');
-                    document.documentElement.setAttribute('lang', 'ar');
-
-                    updateButtonToEnglish();
-                    currentLang = 'ar';
-                    isTranslating = false;
-                }, 1500);
-
-                setTimeout(updateButtonToEnglish, 500);
-                setTimeout(updateButtonToEnglish, 1000);
-                setTimeout(updateButtonToEnglish, 2000);
-
-            } else {
-                // Switch back to English
-                selectElement.value = 'en';
-                selectElement.dispatchEvent(new Event('change'));
-
-                function updateButtonToArabic() {
-                    if (translateText) translateText.textContent = 'العربية';
-                }
-                updateButtonToArabic();
-
-                setTimeout(function () {
-                    document.documentElement.setAttribute('dir', 'ltr');
-                    document.body.setAttribute('dir', 'ltr');
-                    document.documentElement.setAttribute('lang', 'en');
-
-                    updateButtonToArabic();
-                    currentLang = 'en';
-                    isTranslating = false;
-                }, 1500);
-
-                setTimeout(updateButtonToArabic, 500);
-                setTimeout(updateButtonToArabic, 1000);
-                setTimeout(updateButtonToArabic, 2000);
-            }
-        }
-
-        // On page load - DO NOT translate, just mark icons
-        window.addEventListener('load', function () {
-            var materialIcons = document.querySelectorAll('.material-icons');
-            materialIcons.forEach(function (icon) {
-                icon.classList.add('notranslate');
-            });
-
-            // Set initial button text
-            setTimeout(function () {
-                var translateText = document.querySelector('.translate-text');
-                if (translateText) {
-                    translateText.textContent = 'العربية';
-                }
-            }, 1000);
-        });
-
-        // Keep the button text correct
-        setInterval(function () {
-            var translateText = document.querySelector('.translate-text');
-            if (translateText) {
-                if (currentLang === 'ar') {
-                    if (translateText.textContent !== 'English') {
-                        translateText.textContent = 'English';
-                    }
-                } else {
-                    if (translateText.textContent !== 'العربية') {
-                        translateText.textContent = 'العربية';
-                    }
-                }
-            }
-        }, 2000);
     </script>
-    <script type="text/javascript"
-        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
+
+    <!-- Load translation helper -->
+    <script src="translation-helper.js"></script>
+    
     <style>
-        /* ===== GOOGLE TRANSLATE HIDING ===== */
-        .goog-te-banner-frame.skiptranslate {
-            display: none !important;
-        }
-
-        body {
-            top: 0px !important;
-            position: static !important;
-        }
-
-        .goog-te-balloon-frame {
-            display: none !important;
-        }
-
-        .goog-tooltip {
-            display: none !important;
-        }
-
-        .goog-tooltip:hover {
-            display: none !important;
-        }
-
-        .goog-text-highlight {
-            background-color: transparent !important;
-            border: none !important;
-            box-shadow: none !important;
-        }
-
-        #goog-gt-tt {
-            display: none !important;
-        }
-
-        .goog-te-banner-frame {
-            display: none !important;
-        }
-
-        .goog-te-banner-frame.skiptranslate,
-        .goog-te-gadget-simple {
-            display: none !important;
-        }
-
-        iframe.goog-te-banner-frame {
-            display: none !important;
-        }
-
-        body>.skiptranslate {
-            display: none !important;
-        }
-
-        iframe.skiptranslate {
-            display: none !important;
-        }
-
-        .VIpgJd-ZVi9od-aZ2wEe-wOHMyf {
-            display: none !important;
-        }
-
-        .VIpgJd-ZVi9od-aZ2wEe-OiiCO {
-            display: none !important;
-        }
-
-        .VIpgJd-ZVi9od-xl07Ob-lTBxed {
-            display: none !important;
-        }
-
-        /* ===== LANGUAGE TOGGLE BUTTON ===== */
-        .language-toggle {
-            background: var(--accent);
-            color: var(--primary-dark);
-            border: 2px solid var(--accent);
-            padding: 0.5rem 1.2rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.95rem;
-            font-family: 'Inter', sans-serif;
-        }
-
-        .language-toggle:hover {
-            background: var(--accent-light);
-            transform: scale(1.05);
-            box-shadow: 0 4px 12px rgba(176, 141, 87, 0.3);
-        }
-
-        .language-toggle .material-icons {
-            font-size: 1.2rem;
-        }
-
-        /* ===== DUAL LANGUAGE DISPLAY ===== */
-        .arabic-only {
-            display: none;
-        }
-
-        body[dir="rtl"] .english-only {
-            display: none;
-        }
-
-        body[dir="rtl"] .arabic-only {
-            display: inline;
-        }
-
-        /* ===== RTL SUPPORT FOR ARABIC ===== */
-        body[dir="rtl"] {
-            direction: rtl;
-            text-align: right;
-        }
-
-        body[dir="rtl"] .nav-container {
-            flex-direction: row;
-        }
-
-        body[dir="rtl"] .logo::before {
-            margin-right: 0;
-            margin-left: 0.5rem;
-        }
-
-        body[dir="rtl"] .nav-links a::after {
-            left: auto;
-            right: 50%;
-            transform: translateX(50%);
-        }
-
-        body[dir="rtl"] .search-icon {
-            margin-right: 0;
-            margin-left: 1rem;
-        }
-
-        body[dir="rtl"] .nav-container>div:last-child {
-            order: 3;
-            margin-right: 0;
-        }
-
-        body[dir="rtl"] .logo {
-            order: 1;
-        }
-
-        body[dir="rtl"] .nav-links {
-            order: 2;
-        }
-
-        body[dir="rtl"] .info-grid {
-            direction: rtl;
-        }
-
-        body[dir="rtl"] .event-item,
-        body[dir="rtl"] .exhibition-item {
-            border-left: none;
-            border-right: 4px solid transparent;
-        }
-
-        body[dir="rtl"] .event-item:hover,
-        body[dir="rtl"] .exhibition-item:hover {
-            transform: translateX(-5px);
-            border-left: none;
-            border-right: 4px solid var(--accent);
-        }
-
-        body[dir="rtl"] .footer-info {
-            direction: rtl;
-        }
-
-        body[dir="rtl"] .recommendation-badge {
-            right: auto;
-            left: 1rem;
-        }
-
-        body[dir="rtl"] .accessibility-controls {
-            right: auto;
-            left: 20px;
-        }
-
-        body[dir="rtl"] .accessibility-menu {
-            right: auto;
-            left: 0;
-        }
-
-        body[dir="rtl"] .suggestion-icon {
-            margin-right: 0;
-            margin-left: 1rem;
-        }
-
-        body[dir="rtl"] .language-toggle {
-            margin-left: 1rem;
-        }
-
-        @media (max-width: 768px) {
-            body[dir="rtl"] .accessibility-controls {
-                left: 15px;
-                right: auto;
-            }
-
-            .language-toggle {
-                padding: 0.4rem 0.8rem;
-                font-size: 0.85rem;
-            }
-        }
-
         :root {
             --primary-dark: #653025;
             --primary-light: #8d2e1d;
@@ -1367,7 +1067,7 @@
                 <div class="calendar">
                     <div class="calendar-header">
                         <h4 id="calendar-month"></h4>
-                        <div class="calendar-nav">
+                        <div class="calendar-nav keep-ltr">
                             <button class="calendar-btn" id="prev-month">←</button>
                             <button class="calendar-btn" id="next-month">→</button>
                         </div>
@@ -3194,8 +2894,8 @@
                 this.stopSpeaking();
 
                 // Detect current language from page direction
-                const isArabic = document.documentElement.getAttribute('dir') === 'rtl' || 
-                                 document.documentElement.getAttribute('lang') === 'ar';
+                const isArabic = document.documentElement.getAttribute('dir') === 'rtl' ||
+                    document.documentElement.getAttribute('lang') === 'ar';
 
                 // Use Web Speech API (built-in browser support)
                 const utterance = new SpeechSynthesisUtterance(text);
@@ -3207,8 +2907,8 @@
                 // Try to find a better Arabic voice
                 if (isArabic) {
                     const voices = window.speechSynthesis.getVoices();
-                    const arabicVoice = voices.find(voice => 
-                        voice.lang.startsWith('ar') || 
+                    const arabicVoice = voices.find(voice =>
+                        voice.lang.startsWith('ar') ||
                         voice.name.includes('Arabic') ||
                         voice.name.includes('Laila') || // macOS/iOS
                         voice.name.includes('Majed')    // Windows
@@ -3219,8 +2919,8 @@
                     }
                 } else {
                     const voices = window.speechSynthesis.getVoices();
-                    const englishVoice = voices.find(voice => 
-                        voice.lang.startsWith('en') && 
+                    const englishVoice = voices.find(voice =>
+                        voice.lang.startsWith('en') &&
                         voice.name.includes('Female')
                     );
                     if (englishVoice) {

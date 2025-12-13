@@ -10,6 +10,22 @@
         rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_API_KEY"></script>
+
+    <script type="text/javascript">
+        function googleTranslateElementInit() {
+            new google.translate.TranslateElement({
+                pageLanguage: 'en',
+                includedLanguages: 'ar,en',
+                autoDisplay: false
+            }, 'google_translate_element');
+        }
+    </script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
+
+    <!-- Load translation helper -->
+    <script src="translation-helper.js"></script>
+
     <style>
         :root {
             --primary-dark: #653025;
@@ -881,20 +897,69 @@
 <body>
     <nav>
         <div class="nav-container">
-            <a href="Home.html" class="logo">ATHAR Museum</a>
-            <ul class="nav-links">
-                <li><a href="Home.html">Home</a></li>
-                <li><a href="AboutUs.html">About Us</a></li>
-                <li><a href="Events.html">Events</a></li>
-                <li><a href="Ticketing.html">Ticketing</a></li>
-                <li><a href="News.html">News</a></li>
-                <li><a href="Exhibitions.html">Exhibitions</a></li>
-                <li><a href="Gallery.html">Gallery</a></li>
-            </ul>
-            <a href="Account.html" class="account-icon active" title="My Account">
-                <span class="material-icons">person</span>
-                <span class="notification-badge" id="navNotificationBadge" style="display: none;">0</span>
+            <a href="Home.html" class="logo">
+                <span class="english-only notranslate">ATHAR Museum</span>
+                <span class="arabic-only notranslate"
+                    style="font-family: 'Aref Ruqaa', serif; font-size: 30px;">أثــــر</span>
             </a>
+            <ul class="nav-links">
+                <li>
+                    <a href="Home.html" class="active">
+                        <span class="english-only notranslate">Home</span>
+                        <span class="arabic-only notranslate">الصفحة الرئيسية</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="AboutUs.html">
+                        <span class="english-only notranslate">About Us</span>
+                        <span class="arabic-only notranslate">من نحن</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Events.html">
+                        <span class="english-only notranslate">Events</span>
+                        <span class="arabic-only notranslate">الفعاليات</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Ticketing.html">
+                        <span class="english-only notranslate">Ticketing</span>
+                        <span class="arabic-only notranslate">التذاكر</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="News.html">
+                        <span class="english-only notranslate">News</span>
+                        <span class="arabic-only notranslate">الأخبار</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Exhibitions.html">
+                        <span class="english-only notranslate">Exhibitions</span>
+                        <span class="arabic-only notranslate">المعارض</span>
+                    </a>
+                </li>
+                <li>
+                    <a href="Gallery.html">
+                        <span class="english-only notranslate">Gallery</span>
+                        <span class="arabic-only notranslate">مجموعة التراث</span>
+                    </a>
+                </li>
+            </ul>
+            <div style="display: flex; align-items: center; gap: 1rem;">
+                <div id="google_translate_element" style="display: none;"></div>
+                <!-- Custom Language Toggle Button -->
+                <button class="language-toggle" id="language-toggle" onclick="translateToArabic()"
+                    title="Switch Language">
+                    <span class="material-icons notranslate">translate</span>
+                    <span class="translate-text" id="lang-text">العربية</span>
+                </button>
+
+                <a href="Account.html" class="account-icon active" title="My Account">
+                    <span class="material-icons">person</span>
+                    <span class="notification-badge" id="navNotificationBadge" style="display: none;">0</span>
+                </a>
+            </div>
         </div>
     </nav>
 
