@@ -1081,7 +1081,7 @@
                 querySnapshot.forEach((doc) => {
                     const data = doc.data();
 
-                    // ✅ Normalize both sides: trim spaces and compare case‑insensitively
+                    // Normalize both sides: trim spaces and compare case‑insensitively
                     if (
                         data.Exhibition &&
                         data.Exhibition.trim().toLowerCase() === exhibitionName.trim().toLowerCase()

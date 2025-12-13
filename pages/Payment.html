@@ -2462,7 +2462,7 @@
                     const ticketRef = await addDoc(collection(db, "Ticketing"), ticketData);
                     console.log('✅ Member ticket saved:', ticketRef.id);
 
-                    // ✅ Send notification for member free booking
+                    // Send notification for member free booking
                     if (currentUser && sendBookingConfirmationNotification) {
                         try {
                             await sendBookingConfirmationNotification(currentUser.uid, {

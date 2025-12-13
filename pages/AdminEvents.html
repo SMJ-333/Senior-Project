@@ -986,7 +986,7 @@
         };
 
         
-// Safe EmailJS send function with fallback
+        // Safe EmailJS send function with fallback
         async function sendCancellationEmailWithRefund(email, name, ticketId, eventName, eventDate, refundAmount) {
             if (!window.emailjsLoaded || typeof emailjs === 'undefined') {
                 console.warn('⚠️ EmailJS not available - email not sent to:', email);
@@ -1263,7 +1263,7 @@
                         }
                     });
 
-                    // ✅ Send email notification via EmailJS
+                    // Send email notification via EmailJS
                     // Format date without time (e.g., "January 15, 2025")
                     const formattedDate = new Date(ticket.visitDate).toLocaleDateString('en-US', {
                         year: 'numeric',

@@ -701,7 +701,6 @@
                     }
                 });
 
-                // ========== تنبيهات المعارض (NEW!) ==========
                 // جمع إحصائيات المعارض من القطع الفنية
                 const artworksSnapshot = await getDocs(collection(db, "Museum_Collection"));
                 const exhibitionStats = {};
@@ -868,7 +867,7 @@
                 const timeAgo = getTimeAgo(activity.timestamp);
                 const description = formatActivityDescription(activity);
                 
-                // ✅ Add special styling for deleted events with tickets
+                // Add special styling for deleted events with tickets
                 const isDeletedWithTickets = activity.type === 'event' && activity.action === 'deleted_with_tickets';
                 const borderColor = isDeletedWithTickets ? 'var(--danger)' : 'var(--accent)';
                 const bgColor = isDeletedWithTickets ? 'rgba(245, 101, 101, 0.05)' : 'var(--neutral-light)';
@@ -897,10 +896,8 @@
             }
         }
 
-        function formatActivityDescription(activity) {
-            // ✅✅✅ COMPREHENSIVE CHANGE DETECTION FOR ALL TYPES ✅✅✅
-            
-            // ✅ 1. EVENTS - Show all field changes
+        function formatActivityDescription(activity) {            
+            // 1. EVENTS - Show all field changes
             if (activity.type === 'event' && activity.action === 'updated' && activity.metadata?.changes) {
                 return {
                     main: `<strong>Event updated:</strong> ${activity.targetTitle}`,
@@ -908,7 +905,7 @@
                 };
             }
 
-            // ✅ 2. NEWS - Show all field changes
+            // 2. NEWS - Show all field changes
             if (activity.type === 'news' && activity.action === 'updated') {
                 const changes = activity.metadata?.changes || activity.metadata?.changeDescription;
                 if (changes) {
@@ -919,7 +916,7 @@
                 }
             }
 
-            // ✅ 3. GALLERY/ARTWORKS - Show all field changes
+            // 3. GALLERY/ARTWORKS - Show all field changes
             if (activity.type === 'gallery' && activity.action === 'updated') {
                 const changes = activity.metadata?.changes || activity.metadata?.changeDescription;
                 if (changes) {
@@ -930,7 +927,7 @@
                 }
             }
 
-            // ✅ 4. EXHIBITIONS - Show all field changes
+            // 4. EXHIBITIONS - Show all field changes
             if (activity.type === 'exhibit' && activity.action === 'updated' && activity.metadata?.changes) {
                 return {
                     main: `<strong>Exhibition updated:</strong> ${activity.targetTitle}`,
@@ -938,7 +935,7 @@
                 };
             }
 
-            // ✅ 5. TICKETS/BOOKINGS - Show status changes
+            // 5. TICKETS/BOOKINGS - Show status changes
             if (activity.type === 'ticket' && activity.action === 'status_changed' && activity.metadata?.changes) {
                 return {
                     main: `<strong>Booking status changed:</strong> ${activity.targetTitle}`,
@@ -946,7 +943,7 @@
                 };
             }
 
-            // ✅ 6. USERS - Show all field changes
+            // 6. USERS - Show all field changes
             if (activity.type === 'user' && activity.action === 'updated' && activity.metadata?.changes) {
                 return {
                     main: `<strong>User updated:</strong> ${activity.targetTitle}`,
@@ -994,12 +991,12 @@
         const mainText = templates[activity.type]?.[activity.action] || 
             `<strong>${activity.type} ${activity.action}:</strong> ${activity.targetTitle}`;
 
-        // ✅ SPECIAL HANDLING: Show ticket count for deleted events with tickets
+        // Show ticket count for deleted events with tickets
         let changesText = null;
         if (activity.type === 'event' && activity.action === 'deleted_with_tickets' && activity.metadata?.ticketsSold) {
             changesText = `⚠️ ${activity.metadata.ticketsSold} ticket(s) were sold - Refunds required!`;
         }
-        // ✅ FALLBACK: Check for any metadata changes that weren't caught above
+        // Check for any metadata changes that weren't caught above
         else if (activity.metadata) {
             if (activity.metadata.changes) {
                 changesText = `Changes: ${activity.metadata.changes}`;

@@ -1452,7 +1452,7 @@
             }
         }
 
-        // New function to check if a specific date should be available for an event
+        // Check if a specific date should be available for an event
         function isEventDateAvailable(eventData, dateToCheck) {
             if (!eventData || !dateToCheck) {
                 console.log('❌ isEventDateAvailable: Missing eventData or dateToCheck');
@@ -1629,12 +1629,12 @@
                 for (const docSnap of snapshot.docs) {
                     const data = docSnap.data();
 
-                    // ✅ CHANGED: Use status directly from Firestore
+                    // Use status directly from Firestore
                     const status = data.status || 'upcoming';
 
                     console.log(`📅 Event "${data.title}": status="${status}" (from Firestore)`);
 
-                    // ✅ CHANGED: Only show events with 'ongoing' or 'upcoming' status
+                    // Only show events with 'ongoing' or 'upcoming' status
                     if (status === 'ongoing' || status === 'upcoming') {
                         const eventId = docSnap.id;
                         const maxAttendeesPerDay = data.maxAttendeesPerDay || data.maxAttendees || 50;

@@ -1496,7 +1496,7 @@
                         imageUrl: data.imageUrl || '',
                         maxAttendeesPerDay: data.maxAttendeesPerDay || 50,
                         price: data.price || 0,
-                        status: data.status || 'upcoming', // ✅ CHANGED: Use status from Firestore
+                        status: data.status || 'upcoming',
                         dailyBookings: data.dailyBookings || {}
                     });
                 });
@@ -1732,7 +1732,7 @@
             const mostRecentEvent = filteredEvents.length > 0 ? filteredEvents[0] : null;
             displayFeaturedEvent(mostRecentEvent);
 
-            // ✅ CHANGED: Separate ongoing and upcoming events
+            // Separate ongoing and upcoming events
             const ongoingEvents = filteredEvents.filter(e => e.status === 'ongoing');
             const upcomingEvents = filteredEvents.filter(e => e.status === 'upcoming');
 

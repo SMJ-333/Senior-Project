@@ -1671,7 +1671,7 @@
             });
         }
 
-        // ✅ NEW: Render Refunds Table
+        // Render Refunds Table
         function renderRefundsTable(refundsList) {
             const refundsLoading = document.getElementById('refunds-loading');
             const refundsTbody = document.getElementById('refunds-tbody');
@@ -1751,7 +1751,7 @@
             });
         }
 
-        // ✅ NEW: Handle Refund Status Change (Pending → Completed ONLY)
+        // Handle Refund Status Change (Pending → Completed ONLY)
         async function handleRefundStatusChange(e) {
             const refundId = e.currentTarget.getAttribute('data-id');
             const currentStatus = e.currentTarget.getAttribute('data-status');
@@ -1759,7 +1759,7 @@
 
             if (!refund) return;
 
-            // ✅ Only allow changing from pending to completed
+            // Only allow changing from pending to completed
             if (currentStatus !== 'pending') {
                 await showCustomAlert({
                     type: 'info',

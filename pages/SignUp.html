@@ -744,7 +744,7 @@
             <button type="submit" class="signup-button">Continue</button>
         </form>
 
-        <!-- STEP (NEW) : PAYMENT CARD (SEPARATE CARD) -->
+        <!-- PAYMENT CARD (SEPARATE CARD) -->
         <div id="paymentStep" class="hidden">
             <!--<h2 style="text-align:center; color: var(--primary-dark); font-family:'Playfair Display',serif;">Membership Payment</h2>-->
 
@@ -896,7 +896,7 @@
         const step2Arrow = document.getElementById('step2Arrow');
         const backArrow = document.getElementById('backArrow');
 
-        const paymentStep = document.getElementById('paymentStep'); // NEW payment card
+        const paymentStep = document.getElementById('paymentStep');
 
         const finishBtn = document.getElementById('finishBtn');
         const selectAllBtn = document.getElementById('selectAllBtn');
@@ -934,7 +934,7 @@
             messageDiv.style.display = 'none';
         }
 
-        // helper: show inline field error
+        // show inline field error
         function setFieldError(elemId, msg = '') {
             const el = document.getElementById('err-' + elemId);
             if (!el) return;
@@ -1053,7 +1053,7 @@
             return (paymentMap[countryValue] || paymentMap.DEFAULT).text;
         }
 
-        /* ---------- helper: scroll to element center ---------- */
+        /* ---------- scroll to element center ---------- */
         function scrollToElem(el) {
             if (!el) return;
             el.scrollIntoView({ behavior: 'smooth', block: 'center' });

@@ -1921,7 +1921,7 @@
 
             try {
                 if (id) {
-                    // ✅✅✅ UPDATE EXISTING ARTWORK - TRACK ALL CHANGES ✅✅✅
+                    // UPDATE EXISTING ARTWORK - TRACK ALL CHANGES
                     const currentArtwork = allArtworks.find(item => item.id === id);
                     const changes = [];
 
@@ -2039,7 +2039,7 @@
                         await showSuccessAlert('Artwork Saved', 'Artwork has been saved with no changes.');
                     }
                 } else {
-                    // ✅ ADD NEW ARTWORK
+                    // ADD NEW ARTWORK
                     console.log('Creating new artwork:', artworkData);
                     await addDoc(collection(db, "Museum_Collection"), artworkData);
                     
